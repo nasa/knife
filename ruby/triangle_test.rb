@@ -31,7 +31,7 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 1, @triangle.children.size
  end
 
- def Xtest_cut_with_into_two_pieces
+ def test_cut_with_into_two_pieces
   # 2
   # | \  
   # |   +
@@ -41,10 +41,8 @@ class TestTriangle < Test::Unit::TestCase
   n1 = [0.8, -1.0, -2.0]
   n2 = [0.8,  2.0,  1.0]
   assert_equal true, @triangle.cut_with(n0,n1,n2)
-  assert_equal @n0, @triangle.nodes[0]
-  assert_equal @n1, @triangle.nodes[1]
-  assert_equal @n2, @triangle.nodes[2]
-  
+  assert_equal [0.8, 0.0, 0.0], @triangle.nodes[3]
+  assert_equal [0.8, 0.2, 0.0], @triangle.nodes[4]
  end
 
 
