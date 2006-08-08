@@ -112,9 +112,21 @@ class Triangle
   raise "improper cut: #{new_nodes.join(' ')}" if 2 != new_nodes.size
   index0 = add_unique_node new_nodes[0]
   index1 = add_unique_node new_nodes[1]
- 
+
+  puts "edge missing" if find_child_with(index0,index1).nil?
+
   true
  end
+
+ def find_child_with(node0,node1)
+  @children.each_with_index do |canidate, index|
+   return index if (((node0 == canidate[0]) && (node1 == canidate[1] )) ||
+                    ((node0 == canidate[1]) && (node1 == canidate[2] )) ||
+                    ((node0 == canidate[2]) && (node1 == canidate[0] )))
+  end
+  nil
+ end
+
 
  def split_children(new_node_index)
   node = @nodes[new_node_index]
