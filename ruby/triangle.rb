@@ -127,7 +127,6 @@ class Triangle
   nil
  end
 
-
  def split_children(new_node_index)
   node = @nodes[new_node_index]
   child_index, bary = enclosing_child(node)
