@@ -167,34 +167,34 @@ class Triangle
  end
 
  def enclosing_child(node)
-  enclosing_child = 0
-  enclosing_bary = barycentric(node,@children[enclosing_child])
+  enclosing_child_index = 0
+  enclosing_bary = barycentric(node,@children[enclosing_child_index])
   greatest_min_bary = enclosing_bary.min
   @children.each_index do |child|
    bary = barycentric(node,@children[child])
    min_bary = bary.min
    if ( min_bary > greatest_min_bary)
-    enclosing_child = child
+    enclosing_child_index = child
     enclosing_bary = bary
     greatest_min_bary = min_bary
    end
   end
-  return enclosing_child, enclosing_bary
+  return enclosing_child_index, enclosing_bary
  end
 
  def barycentric(node,child)
-  n0 = triangle_normal(node,child[1],child[2])
-  n1 = triangle_normal(node,child[2],child[0])
-  n2 = triangle_normal(node,child[0],child[1])
-  avg = Array.new(3)
-  avg[0] = n1[0]+n1[0]+n1[0]
-  avg[1] = n1[1]+n1[1]+n1[1]
-  avg[2] = n1[2]+n1[2]+n1[2]
-  total = (avg[0]*avg[0] + avg[1]*avg[1] + avg[2]*avg[2])
+  n0 = triangle_normal(node,@nodes[child[1]],@nodes[child[2]])
+  n1 = triangle_normal(node,@nodes[child[2]],@nodes[child[0]])
+  n2 = triangle_normal(node,@nodes[child[0]],@nodes[child[1]])
+  avg = triangle_normal(@nodes[child[0]],@nodes[child[1]],@nodes[child[2]])
+  len = (avg[0]*avg[0] + avg[1]*avg[1] + avg[2]*avg[2])
+  avg[0] /= len
+  avg[1] /= len
+  avg[2] /= len
   a0 = (n0[0]*avg[0] + n0[1]*avg[1] + n0[2]*avg[2])
   a1 = (n1[0]*avg[0] + n1[1]*avg[1] + n1[2]*avg[2])
   a2 = (n2[0]*avg[0] + n2[1]*avg[1] + n2[2]*avg[2])
-  [a0/total, a1/total, a2/total]
+  [a0, a1, a2]
  end
 
 #extract to node or vertex class?
