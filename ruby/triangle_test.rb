@@ -183,6 +183,17 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal true, @triangle.cut_with(triangle2)
   assert_equal  6, @triangle.nodes.size, "node number"
   assert_equal  5, @triangle.children.size, "child number"
+ end
+
+ def test_cut_with_slice_slice
+  n0 = [ 0.2, -1.0,  1.0]
+  n1 = [ 0.2, -1.0, -2.0]
+  n2 = [ 0.2,  2.0,  1.0]
+  assert_equal true, @triangle.cut_with(Triangle.new(n0,n1,n2))
+  n0 = [-1.0,  0.2,  1.0]
+  n1 = [-1.0,  0.2, -2.0]
+  n2 = [ 2.0,  0.2,  1.0]
+  assert_equal true, @triangle.cut_with(Triangle.new(n0,n1,n2))
   dump
  end
 
