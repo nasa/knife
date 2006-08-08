@@ -110,15 +110,18 @@ class TestTriangle < Test::Unit::TestCase
  def test_cut_with_into_two_pieces
   # 2
   # | \  
-  # |   +
+  # |   4
   # |   | \
-  # 0 - + - 1
+  # 0 - 3 - 1
   n0 = [0.8, -1.0,  1.0]
   n1 = [0.8, -1.0, -2.0]
   n2 = [0.8,  2.0,  1.0]
   assert_equal true, @triangle.cut_with(Triangle.new(n0,n1,n2))
   array_in_delta [0.8, 0.0, 0.0], @triangle.nodes[3]
   array_in_delta [0.8, 0.2, 0.0], @triangle.nodes[4]
+  assert_equal [3,4,2], @triangle.children[0]
+  assert_equal [0,3,2], @triangle.children[1]
+  assert_equal [3,1,4], @triangle.children[2]
  end
 
  def Xtest_dump
