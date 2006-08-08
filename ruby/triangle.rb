@@ -118,7 +118,9 @@ class Triangle
 
  def split_children(new_node_index)
   node = @nodes[new_node_index]
-  child, bary = enclosing_child(node)
+  child_index, bary = enclosing_child(node)
+  #printf "%25.15e%25.15e%25.15e\n",bary[0],bary[1],bary[2]
+  child = @children[child_index]
   side_tolerence = 1.0e-12
   if bary.min < side_tolerence
    case true
@@ -130,7 +132,7 @@ class Triangle
     insert_node_into_child_side(new_node_index,child[0],child[1])
    end
   else
-   insert_node_into_child_interior(new_node_index,child)
+   insert_node_into_child_interior(new_node_index,child_index)
   end
  end
 
@@ -140,18 +142,18 @@ class Triangle
    child = @children[indx]
    if ( (node0 == child[0] && node1 == child[1]) ||
         (node1 == child[0] && node0 == child[1]) )
-    child[0] = new_index
     @children << [child[0], new_index, child[2]]
+    child[0] = new_index
    end
    if ( (node0 == child[1] && node1 == child[2]) ||
         (node1 == child[1] && node0 == child[2]) )
-    child[1] = new_index
     @children << [child[0], child[1], new_index]
+    child[1] = new_index
    end
    if ( (node0 == child[2] && node1 == child[0]) ||
         (node1 == child[2] && node0 == child[0]) )
-    child[2] = new_index
     @children << [new_index, child[1], child[2]]
+    child[2] = new_index
    end
   end
   self
