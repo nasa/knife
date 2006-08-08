@@ -177,6 +177,59 @@ class Triangle
   self
  end
 
+ def connect_nodes(node0,node1)
+  first_child = nil
+  right_node = nil
+  left_node = nil
+  each_triangle_around_node(node0) do |child|
+   n0, n1, n2 = triangle.orient(child,node0)
+   if (right_handed?(n0,n1,node1) &&
+       right_handed?(n2,n0,node1) )
+    first_child = child
+    left_node = n2
+    right_node = n1
+    break
+   end
+  end
+  if first_child.nil?
+   raise "first_child.nil?"
+  else
+   [first_child]+next_children_in_connection(node0,node1,
+                                             left_node,right_node)
+  end
+ end
+
+ def next_child_in_connection(node0,node1,left_node,right_node)
+  child = find_child_with(left_node,right_node)
+  return nil if child.nil?
+  n0, n1, n2 = orient(child,left_node)
+  return [child] if node1==n2
+  if right_handed?(node0,node1,n2)
+   [triangle]+next_children_in_connection(node0,node1,n2,right_node)
+  else
+   [triangle]+next_children_in_connection(node0,node1,left_node,n2)
+  end
+ end
+
+ def orient(child,node)
+  case true
+  when node==child[0]
+   [ child[0], child[1], child[2] ]
+  when node==child[1]
+   [ child[1], child[2], child[0] ]
+  when node==child[2]
+   [ child[2], child[0], child[1] ]
+  else
+   nil 
+  end
+ end
+
+ def each_child_around_node(node)
+  @children.each do |child|
+   yield child if child.include?(node)
+  end
+ end
+
  def enclosing_child(node)
   enclosing_child_index = 0
   enclosing_bary = barycentric(node,@children[enclosing_child_index])
