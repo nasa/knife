@@ -3,7 +3,7 @@ class Triangle
 
  EMPTY = -1
 
- attr_reader :nodes
+ attr_reader :nodes, :children
 
  def initialize(n0,n1,n2)
   @nodes = [n0, n1, n2]
