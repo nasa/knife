@@ -47,11 +47,6 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 4, @triangle.nodes.size
  end
 
- def test_add_node
-  
- end
-
-
  def test_splits_nil_when_misses_top
   n0 = [0.3,  0.3, -1.0]
   n1 = [0.3,  0.3, -2.0]
