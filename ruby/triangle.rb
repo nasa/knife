@@ -107,10 +107,9 @@ class Triangle
   
   return false if 0 == new_nodes.size
   raise "improper cut: #{new_nodes.join(' ')}" if 2 != new_nodes.size
-  new_nodes.each do |new_node|
-   add_unique_node new_node
-  end
-
+  add_unique_node new_node[0]
+  add_unique_node new_node[1]
+ 
   true
  end
 
