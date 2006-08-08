@@ -4,6 +4,7 @@ refine_path = File.expand_path("~/GRIDEX/refine/src")
 
 $:.push refine_path
 
+require 'polyhedron'
 require 'triangle'
 
 require 'Adj/Adj'
@@ -50,7 +51,7 @@ volume_grid.ncell.times do |cell_index|
                           volume_grid.nodeXYZ(cell[2]),
                           volume_grid.nodeXYZ(cell[3]) )
 end
-puts "volume has #{volume.size} tetes"
+puts "volume has #{volume.size} tets"
 
 start_time = Time.now
 count = 0
@@ -69,18 +70,4 @@ volume.each do |polyhedron|
  end
 end
 puts "the cuts required #{Time.now-start_time} sec"
-
-cuts = 0
-File.open('cut_om6.t','w') do |f|
- f.print cut_surface.first.tecplot_header
- volume.each do |polyhedron| 
-  if polyhedron.has_been_cut?
-   polyhedron.finalize_cuts
-   cuts += 1
-   polyhedron.exterior.each { |tri| f.print tri.tecplot_zone('int') }
-   polyhedron.interior.each { |tri| f.print tri.tecplot_zone('ext') }
-  end
- end
-end
-puts "#{cuts} tets cut of #{volume.size}"
 

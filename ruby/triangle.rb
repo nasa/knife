@@ -9,6 +9,27 @@ class Triangle
   @nodes = [n0, n1, n2]
  end
 
+ def center
+  [ (@nodes[0][0]+@nodes[1][0]+@nodes[2][0])/3.0,
+    (@nodes[0][1]+@nodes[1][1]+@nodes[2][1])/3.0,
+    (@nodes[0][2]+@nodes[1][2]+@nodes[2][2])/3.0 ]
+ end
+
+ def diameter
+  l2 = (@nodes[0][0]-center[0])**2 + 
+       (@nodes[0][1]-center[1])**2 + 
+       (@nodes[0][2]-center[2])**2 
+  d2 = (@nodes[1][0]-center[0])**2 + 
+       (@nodes[1][1]-center[1])**2 + 
+       (@nodes[1][2]-center[2])**2
+  l2 = d2 if d2 > l2
+  d2 = (@nodes[2][0]-center[0])**2 + 
+       (@nodes[2][1]-center[1])**2 + 
+       (@nodes[2][2]-center[2])**2
+  l2 = d2 if d2 > l2
+  1.0001*Math::sqrt(l2)
+ end
+
  def add_unique_node(new_node)
   smallest_one_norm = one_norm(new_node,@nodes[0])
   smallest_index = 0

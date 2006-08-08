@@ -26,6 +26,17 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal @n2, @triangle.nodes[2]
  end
 
+ def test_center
+  tol = 1.0e-15
+  assert_in_delta (1.0/3.0), @triangle.center[0], tol
+  assert_in_delta (1.0/3.0), @triangle.center[1], tol
+  assert_in_delta 0.0, @triangle.center[2], tol
+ end
+
+ def test_diameter
+  assert_in_delta 0.74543052809918, @triangle.diameter, 1.0e-12
+ end
+
  def test_add_unique_node
   assert_equal 0, @triangle.add_unique_node(@n0)
   assert_equal 3, @triangle.nodes.size
