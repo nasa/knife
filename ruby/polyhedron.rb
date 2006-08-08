@@ -33,9 +33,9 @@ class Polyhedron
   @diameter = 1.0001*Math::sqrt(l2)
  end
 
- def cut_with(triangle)
+ def cut_into(triangle)
   @exterior.each do |face|
-   face.cut_with(triangle)
+   triangle.cut_with(face)
   end
  end
 

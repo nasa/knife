@@ -231,7 +231,7 @@ class Triangle
    output += sprintf("%25.15e%25.15e%25.15e\n",node[0],node[1],node[2])
   end
   @children.each do |child|
-   output += sprintf(" %6d %6d %6d\n",1+child[0],1+child[1],1+child[0])
+   output += sprintf(" %6d %6d %6d\n",1+child[0],1+child[1],1+child[2])
   end
   output
  end

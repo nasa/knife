@@ -63,7 +63,7 @@ volume.each do |polyhedron|
  cut_tree.touched(probe).each do |index|
   tool = cut_surface[index]
   begin
-  polyhedron.cut_with(tool)
+  polyhedron.cut_into(tool)
   rescue RuntimeError
    puts "#$! raised at "+polyhedron.center.join(',')
   end
@@ -71,3 +71,9 @@ volume.each do |polyhedron|
 end
 puts "the cuts required #{Time.now-start_time} sec"
 
+File.open('cut_om6.t','w') do |f|
+ f.print cut_surface.first.tecplot_header
+ cut_surface.each do |triangle|
+  f.print triangle.tecplot_zone
+ end
+end
