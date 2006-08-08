@@ -159,6 +159,7 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal true, @triangle.cut_with(triangle2)
   assert_equal true, @triangle.cut_with(triangle3)
   assert_equal  7, @triangle.nodes.size, "node number"
+  assert_equal  7, @triangle.children.size, "child number"
   # 2
   # | \6 
   # |  5 \
