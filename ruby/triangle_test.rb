@@ -167,6 +167,25 @@ class TestTriangle < Test::Unit::TestCase
   # 0 -3 -  - 1
  end
 
+ def test_cut_with_creates_two_branch_segments_sharing_node_trailing_edge
+  # 2
+  # | \  
+  # 5\  \
+  # 3-4   \
+  # 0------ 1
+  n0 = [-1.0,  0.2, -1.0]
+  n1 = [ 0.3,  0.2, -1.0]
+  n2 = [ 0.3,  0.2,  1.0]
+  n3 = [-1.0,  1.0, -1.0]
+  triangle1 = Triangle.new(n0,n1,n2)
+  triangle2 = Triangle.new(n2,n1,n3)
+  assert_equal true, @triangle.cut_with(triangle1)
+  assert_equal true, @triangle.cut_with(triangle2)
+  assert_equal  6, @triangle.nodes.size, "node number"
+  assert_equal  5, @triangle.children.size, "child number"
+  dump
+ end
+
  def Xtest_dump
   node = [0.8, 0.0, 0.0]
   @triangle.add_unique_node(node)
