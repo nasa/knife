@@ -220,4 +220,20 @@ class Triangle
   (norm[0]*norm[0] + norm[1]*norm[1] + norm[2]*norm[2])
  end
 
+ def tecplot_header
+  'title="cut cell geometry"'+"\n"+'variables="x","y","z"'+"\n"
+ end
+
+ def tecplot_zone(title='surf')
+  output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
+                   title, @nodes.size, @children.size)
+  @nodes.each do |node|
+   output += sprintf("%25.15e%25.15e%25.15e\n",node[0],node[1],node[2])
+  end
+  @children.each do |child|
+   output += sprintf(" %6d %6d %6d\n",1+child[0],1+child[1],1+child[0])
+  end
+  output
+ end
+
 end
