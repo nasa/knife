@@ -119,7 +119,6 @@ class Triangle
  def split_children(new_node_index)
   node = @nodes[new_node_index]
   child_index, bary = enclosing_child(node)
-  #printf "%25.15e%25.15e%25.15e\n",bary[0],bary[1],bary[2]
   child = @children[child_index]
   side_tolerence = 1.0e-12
   if bary.min < side_tolerence
@@ -176,7 +175,7 @@ class Triangle
    min_bary = bary.min
    if ( min_bary > greatest_min_bary)
     enclosing_child = child
-    nclosing_bary = bary
+    enclosing_bary = bary
     greatest_min_bary = min_bary
    end
   end
@@ -184,11 +183,18 @@ class Triangle
  end
 
  def barycentric(node,child)
-  area0 = area2(node,child[1],child[2])
-  area1 = area2(node,child[2],child[0])
-  area2 = area2(node,child[0],child[1])
-  total = area0+area1+area2
-  [area0/total, area1/total, area2/total]
+  n0 = triangle_normal(node,child[1],child[2])
+  n1 = triangle_normal(node,child[2],child[0])
+  n2 = triangle_normal(node,child[0],child[1])
+  avg = Array.new(3)
+  avg[0] = n1[0]+n1[0]+n1[0]
+  avg[1] = n1[1]+n1[1]+n1[1]
+  avg[2] = n1[2]+n1[2]+n1[2]
+  total = (avg[0]*avg[0] + avg[1]*avg[1] + avg[2]*avg[2])
+  a0 = (n0[0]*avg[0] + n0[1]*avg[1] + n0[2]*avg[2])
+  a1 = (n1[0]*avg[0] + n1[1]*avg[1] + n1[2]*avg[2])
+  a2 = (n2[0]*avg[0] + n2[1]*avg[1] + n2[2]*avg[2])
+  [a0/total, a1/total, a2/total]
  end
 
 #extract to node or vertex class?
@@ -204,7 +210,7 @@ class Triangle
   det = -( m11 - m12 + m13 )
  end
 
- def area2(a,b,c)
+ def triangle_normal(a,b,c)
   edge1=Array.new(3)
   edge2=Array.new(3)
   edge1[0] = b[0]-a[0]
@@ -219,7 +225,7 @@ class Triangle
   norm[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2]
   norm[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0]
 
-  (norm[0]*norm[0] + norm[1]*norm[1] + norm[2]*norm[2])
+  norm
  end
 
  def tecplot_header
