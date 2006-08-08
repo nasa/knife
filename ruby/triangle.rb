@@ -161,7 +161,7 @@ class Triangle
  def insert_node_into_child_interior(new_index,child_index)
   child = @children[child_index]
   @children << [child[0], new_index, child[2]]
-  @children << [child[0], child[2], new_index]
+  @children << [child[0], child[1], new_index]
   child[0] = new_index
   self
  end
