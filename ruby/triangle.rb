@@ -107,8 +107,8 @@ class Triangle
   
   return false if 0 == new_nodes.size
   raise "improper cut: #{new_nodes.join(' ')}" if 2 != new_nodes.size
-  add_unique_node new_node[0]
-  add_unique_node new_node[1]
+  index0 = add_unique_node new_node[0]
+  index1 = add_unique_node new_node[1]
  
   true
  end
@@ -124,6 +124,21 @@ class Triangle
   m12 = (a[1]-d[1])*((b[0]-d[0])*(c[2]-d[2])-(c[0]-d[0])*(b[2]-d[2]))
   m13 = (a[2]-d[2])*((b[0]-d[0])*(c[1]-d[1])-(c[0]-d[0])*(b[1]-d[1]))
   det = -( m11 - m12 + m13 )
+ end
+
+ def area2(a,b,c)
+  edge1[0] = b[0]-a[0]
+  edge1[1] = b[1]-a[1]
+  edge1[2] = b[2]-a[2]
+  edge2[0] = c[0]-a[0]
+  edge2[1] = c[1]-a[1]
+  edge2[2] = c[2]-a[2]
+
+  norm[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1]
+  norm[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2]
+  norm[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0]
+
+  (norm[0]*norm[0] + norm[1]*norm[1] + norm[2]*norm[2])
  end
 
 end
