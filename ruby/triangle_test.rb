@@ -146,6 +146,26 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal [3,1,5], @triangle.children[4]
  end
 
+ def test_cut_with_creates_two_branch_segments_and_interior_segment
+  n0 = [0.3, -0.1, -1.0]
+  n1 = [0.3,  0.5, -1.0]
+  n2 = [0.3,  1.0, -1.0]
+  n3 = [0.3, -0.1,  1.0]
+  n4 = [0.3,  0.5,  1.0]
+  triangle1 = Triangle.new(n0,n1,n3)
+  triangle2 = Triangle.new(n1,n4,n3)
+  triangle3 = Triangle.new(n1,n2,n4)
+  assert_equal true, @triangle.cut_with(triangle1)
+  assert_equal true, @triangle.cut_with(triangle2)
+  assert_equal true, @triangle.cut_with(triangle3)
+  assert_equal  7, @triangle.nodes.size, "node number"
+  # 2
+  # | \6 
+  # |  5 \
+  # |  4    \
+  # 0 -3 -  - 1
+ end
+
  def Xtest_dump
   node = [0.8, 0.0, 0.0]
   @triangle.add_unique_node(node)
