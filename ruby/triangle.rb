@@ -7,6 +7,7 @@ class Triangle
 
  def initialize(n0,n1,n2)
   @nodes = [n0, n1, n2]
+  @children = [[0,1,2]]
  end
 
  def center
@@ -44,7 +45,9 @@ class Triangle
    smallest_index
   else
    @nodes << new_node
-   (@nodes.size-1)
+   new_node_index = (@nodes.size-1)
+   split_children(new_node_index)
+   new_node_index 
   end
  end
 
@@ -107,10 +110,83 @@ class Triangle
   
   return false if 0 == new_nodes.size
   raise "improper cut: #{new_nodes.join(' ')}" if 2 != new_nodes.size
-  index0 = add_unique_node new_node[0]
-  index1 = add_unique_node new_node[1]
+  index0 = add_unique_node new_nodes[0]
+  index1 = add_unique_node new_nodes[1]
  
   true
+ end
+
+ def split_children(new_node_index)
+  node = @nodes[new_node_index]
+  child, bary = enclosing_child(node)
+  side_tolerence = 1.0e-12
+  if bary.min < side_tolerence
+   case true
+   when bary[0] <= bary[1] && bary[0] <= bary[2]
+    insert_node_into_child_side(new_node_index,child[1],child[2])
+   when bary[1] <= bary[0] && bary[1] <= bary[2]
+    insert_node_into_child_side(new_node_index,child[2],child[0])
+   else
+    insert_node_into_child_side(new_node_index,child[0],child[1])
+   end
+  else
+   insert_node_into_child_interior(new_node_index,child)
+  end
+ end
+
+ def insert_node_into_child_side(new_index,node0,node1)
+  original_children = @children.size
+  original_children.times do |indx|
+   child = @children[indx]
+   if ( (node0 == child[0] && node1 == child[1]) ||
+        (node1 == child[0] && node0 == child[1]) )
+    child[0] = new_index
+    @children << [child[0], new_index, child[2]]
+   end
+   if ( (node0 == child[1] && node1 == child[2]) ||
+        (node1 == child[1] && node0 == child[2]) )
+    child[1] = new_index
+    @children << [child[0], child[1], new_index]
+   end
+   if ( (node0 == child[2] && node1 == child[0]) ||
+        (node1 == child[2] && node0 == child[0]) )
+    child[2] = new_index
+    @children << [new_index, child[1], child[2]]
+   end
+  end
+  self
+ end
+
+ def insert_node_into_child_interior(new_index,child_index)
+  child = @children[child_index]
+  @children << [child[0], new_index, child[2]]
+  @children << [child[0], child[2], new_index]
+  child[0] = new_index
+  self
+ end
+
+ def enclosing_child(node)
+  enclosing_child = 0
+  enclosing_bary = barycentric(node,@children[enclosing_child])
+  greatest_min_bary = enclosing_bary.min
+  @children.each_index do |child|
+   bary = barycentric(node,@children[child])
+   min_bary = bary.min
+   if ( min_bary > greatest_min_bary)
+    enclosing_child = child
+    nclosing_bary = bary
+    greatest_min_bary = min_bary
+   end
+  end
+  return enclosing_child, enclosing_bary
+ end
+
+ def barycentric(node,child)
+  area0 = area2(node,child[1],child[2])
+  area1 = area2(node,child[2],child[0])
+  area2 = area2(node,child[0],child[1])
+  total = area0+area1+area2
+  [area0/total, area1/total, area2/total]
  end
 
 #extract to node or vertex class?
@@ -127,6 +203,8 @@ class Triangle
  end
 
  def area2(a,b,c)
+  edge1=Array.new(3)
+  edge2=Array.new(3)
   edge1[0] = b[0]-a[0]
   edge1[1] = b[1]-a[1]
   edge1[2] = b[2]-a[2]
@@ -134,6 +212,7 @@ class Triangle
   edge2[1] = c[1]-a[1]
   edge2[2] = c[2]-a[2]
 
+  norm=Array.new(3)
   norm[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1]
   norm[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2]
   norm[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0]
