@@ -121,15 +121,11 @@ class TestTriangle < Test::Unit::TestCase
   array_in_delta [0.8, 0.2, 0.0], @triangle.nodes[4]
  end
 
- def Xtest_it
+ def Xtest_dump
   node = [0.8, 0.0, 0.0]
-  @triangle.sub
   @triangle.add_unique_node(node)
-  @triangle.sub
   node = [0.8, 0.2, 0.0]
   @triangle.add_unique_node(node)
-  @triangle.sub
-  dump
  end
 
  def dump(filename='dump.t')
