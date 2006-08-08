@@ -121,6 +121,13 @@ class TestTriangle < Test::Unit::TestCase
   array_in_delta [0.8, 0.2, 0.0], @triangle.nodes[4]
  end
 
+ def dump(filename='dump.t')
+  File.open(filename,'w') do |f|
+   f.print @triangle.tecplot_header
+   f.print @triangle.tecplot_zone
+  end
+ end
+
  def test_one_norm
   n0 = [0.3, 0.3, 0.0]
   n1 = [0.5, 0.5, 0.2]
