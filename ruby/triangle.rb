@@ -1,4 +1,6 @@
 
+require 'ring'
+
 class Triangle
 
  EMPTY = -1
@@ -113,16 +115,19 @@ class Triangle
   index0 = add_unique_node new_nodes[0]
   index1 = add_unique_node new_nodes[1]
 
-  puts "edge missing" if find_child_with(index0,index1).nil?
+  if find_child_with(index0,index1).nil?
+   puts "edge missing" unless recover_edge(index0,index1)
+   
+  end
 
   true
  end
 
  def find_child_with(node0,node1)
   @children.each_with_index do |canidate, index|
-   return index if (((node0 == canidate[0]) && (node1 == canidate[1] )) ||
-                    ((node0 == canidate[1]) && (node1 == canidate[2] )) ||
-                    ((node0 == canidate[2]) && (node1 == canidate[0] )))
+   return canidate if (((node0 == canidate[0]) && (node1 == canidate[1] )) ||
+                       ((node0 == canidate[1]) && (node1 == canidate[2] )) ||
+                       ((node0 == canidate[2]) && (node1 == canidate[0] )))
   end
   nil
  end
@@ -177,12 +182,33 @@ class Triangle
   self
  end
 
+ def recover_edge(node0,node1)
+  connection = connect_nodes(node0,node1)
+  if connection.empty? || connection.include?(nil)
+   puts "recover_edge:connection.empty? #{connection.empty?}"
+   puts "recover_edge:connection.include?(nil) #{connection.include?(nil)}"
+   return false
+  end 
+  ring0 = Ring.from_children(connection)
+  ring1 = ring0.split!(node0,node1)
+  @children -= connection
+  return false if ring0.triangulate.empty?
+  ring0.triangulate.each do |child|
+   @children << child
+  end
+  return false if ring1.triangulate.empty?
+  ring1.triangulate.each do |child|
+   @children << child
+  end
+  true
+ end
+
  def connect_nodes(node0,node1)
   first_child = nil
   right_node = nil
   left_node = nil
-  each_triangle_around_node(node0) do |child|
-   n0, n1, n2 = triangle.orient(child,node0)
+  each_child_around_node(node0) do |child|
+   n0, n1, n2 = orient(child,node0)
    if (right_handed?(n0,n1,node1) &&
        right_handed?(n2,n0,node1) )
     first_child = child
@@ -194,7 +220,7 @@ class Triangle
   if first_child.nil?
    raise "first_child.nil?"
   else
-   [first_child]+next_children_in_connection(node0,node1,
+   [first_child] << next_child_in_connection(node0,node1,
                                              left_node,right_node)
   end
  end
@@ -203,11 +229,11 @@ class Triangle
   child = find_child_with(left_node,right_node)
   return nil if child.nil?
   n0, n1, n2 = orient(child,left_node)
-  return [child] if node1==n2
+  return child if node1==n2
   if right_handed?(node0,node1,n2)
-   [triangle]+next_children_in_connection(node0,node1,n2,right_node)
+   [child] << next_child_in_connection(node0,node1,n2,right_node)
   else
-   [triangle]+next_children_in_connection(node0,node1,left_node,n2)
+   [child] << next_child_in_connection(node0,node1,left_node,n2)
   end
  end
 
@@ -259,6 +285,13 @@ class Triangle
   a1 = (n1[0]*avg[0] + n1[1]*avg[1] + n1[2]*avg[2])
   a2 = (n2[0]*avg[0] + n2[1]*avg[1] + n2[2]*avg[2])
   [a0, a1, a2]
+ end
+
+ def right_handed?(node0,node1,node2)
+  normal   = triangle_normal(@nodes[0],@nodes[1],@nodes[2])
+  canidate = triangle_normal(@nodes[node0],@nodes[node1],@nodes[node2])
+  dot = (normal[0]*canidate[0]+normal[1]*canidate[1]+normal[2]*canidate[2])
+  (dot > 1.0e-14)
  end
 
 #extract to node or vertex class?
