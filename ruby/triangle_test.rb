@@ -194,21 +194,7 @@ class TestTriangle < Test::Unit::TestCase
   n1 = [-1.0,  0.6, -2.0]
   n2 = [ 2.0,  0.6,  1.0]
   assert_equal true, @triangle.cut_with(Triangle.new(n0,n1,n2))
-  dump
- end
-
- def Xtest_dump
-  node = [0.8, 0.0, 0.0]
-  @triangle.add_unique_node(node)
-  node = [0.8, 0.2, 0.0]
-  @triangle.add_unique_node(node)
- end
-
- def dump(filename='dump.t')
-  File.open(filename,'w') do |f|
-   f.print @triangle.tecplot_header
-   f.print @triangle.tecplot_zone
-  end
+  @triangle.dump
  end
 
  def test_one_norm

@@ -308,4 +308,11 @@ class Triangle
   output
  end
 
+ def dump(filename='dump.t')
+  File.open(filename,'w') do |f|
+   f.print tecplot_header
+   f.print tecplot_zone
+  end
+ end
+
 end
