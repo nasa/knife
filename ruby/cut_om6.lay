@@ -149,6 +149,17 @@ $!GLOBALSCATTER
     COLOR = RED
     FILLCOLOR = RED
     }
+$!BLANKING 
+  VALUE
+    {
+    INCLUDE = YES
+    CONSTRAINT 1
+      {
+      INCLUDE = YES
+      VALUECUTOFF = -1E-06
+      VARA = 3
+      }
+    }
 $!FIELD  [1]
   MESH
     {
