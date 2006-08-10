@@ -66,24 +66,18 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_order!
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(2.0,0.0)
-  segment = [node0, node1]
-  ring = Ring.new.insert_segment([node1, node2]).insert_segment([node0, node1])
+  ring = Ring.new.insert_segment([1, 2]).insert_segment([0, 1])
 
-  assert_equal [[node1,node2],[node0,node1]], ring
+  assert_equal [[1,2],[0,1]], ring
 
-  joker = Node.new(5.0,5.0)
+  assert_nil ring.order!(5)
+  assert_equal [[1,2],[0,1]], ring
 
-  assert_nil ring.order!(joker)
-  assert_equal [[node1,node2],[node0,node1]], ring
+  assert_nil ring.order!(1)
+  assert_equal [[1,2],[0,1]], ring
 
-  assert_nil ring.order!(node1)
-  assert_equal [[node1,node2],[node0,node1]], ring
-
-  assert_equal ring, ring.order!(node0)
-  assert_equal [[node0,node1],[node1,node2]], ring
+  assert_equal ring, ring.order!(0)
+  assert_equal [[0,1],[1,2]], ring
  end
 
  def test_split
