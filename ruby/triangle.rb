@@ -125,7 +125,7 @@ class Triangle
   index1 = add_unique_node new_nodes[1]
 
   if find_child_with(index0,index1).nil?
-   puts "edge missing" unless recover_edge(index0,index1)
+   exit unless recover_edge(index0,index1)
   end
 
   true
@@ -243,8 +243,7 @@ class Triangle
   if first_child.nil?
    raise "first_child.nil?"
   else
-   [first_child] << next_child_in_connection(node0,node1,
-                                             left_node,right_node)
+   next_child_in_connection(node0,node1,left_node,right_node) << first_child
   end
  end
 
@@ -252,11 +251,11 @@ class Triangle
   child = find_child_with(left_node,right_node)
   return nil if child.nil?
   n0, n1, n2 = orient(child,left_node)
-  return child if node1==n2
+  return [child] if node1==n2
   if right_handed?(node0,node1,n2)
-   [child] << next_child_in_connection(node0,node1,n2,right_node)
+   next_child_in_connection(node0,node1,n2,right_node) << child
   else
-   [child] << next_child_in_connection(node0,node1,left_node,n2)
+   next_child_in_connection(node0,node1,left_node,n2) << child
   end
  end
 
