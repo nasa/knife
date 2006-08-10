@@ -33,9 +33,12 @@ class Polyhedron
   @diameter = 1.0001*Math::sqrt(l2)
  end
 
- def cut_into(triangle)
+ def cut_with(triangle)
   @exterior.each do |face|
-   triangle.cut_with(face)
+   if triangle.cut_with(face)
+    puts "cut not reciprocated" unless face.cut_with(triangle)
+    @interior << triangle
+   end
   end
  end
 
