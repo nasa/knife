@@ -198,15 +198,28 @@ class Triangle
    return false
   end 
   ring0 = Ring.from_children(connection)
-  return nil if ring0.nil?
+  if ring0.nil?
+   puts "recover_edge: ring0 nil"
+   return false
+  end 
   ring1 = ring0.split!(node0,node1)
-  return nil if ring1.nil?
+  if ring1.nil?
+   puts "recover_edge: ring1 nil"
+   ring0.why_no_split(node0,node1)
+   return false
+  end 
   @children -= connection
-  return false if ring0.triangulate.empty?
+  if ring0.triangulate.empty?
+   puts "recover_edge: ring0 not triangulated"
+   return false
+  end 
   ring0.triangulate.each do |child|
    @children << child
   end
-  return false if ring1.triangulate.empty?
+  if ring1.triangulate.empty?
+   puts "recover_edge: ring1 not triangulated"
+   return false
+  end 
   ring1.triangulate.each do |child|
    @children << child
   end
