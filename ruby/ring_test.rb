@@ -105,35 +105,4 @@ class TestRing< Test::Unit::TestCase
   assert_equal [0,3,2], triangles[1]
  end
 
- def Xtest_from_connection_of_two_triangles
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(0.0,1.0)
-  node3 = Node.new(1.0,1.0)
-  ans = [node0, node1, node3, node2, node0]
-  triangle0 = Triangle.new(node0,node1,node2)
-  triangle1 = Triangle.new(node2,node1,node3)
-  connection = [triangle0,triangle1]
-  ring = Ring.from_connection(node0,node3,connection)
-  assert ring.is_a?(Ring), "not a ring"
-  assert_equal ans, ring
- end
-
- def Xtest_from_connection_of_four_triangles
-  node0 = Node.new( 0.0,0.0)
-  node1 = Node.new( 1.0,1.0)
-  node2 = Node.new( 1.0,2.0)
-  node3 = Node.new( 0.0,3.0)
-  node4 = Node.new(-1.0,2.0)
-  node5 = Node.new(-1.0,1.0)
-  ans = [node0, node1, node2, node3, node4, node5, node0]
-  triangle0 = Triangle.new(node0,node1,node5)
-  triangle1 = Triangle.new(node1,node4,node5)
-  triangle2 = Triangle.new(node2,node4,node1)
-  triangle3 = Triangle.new(node3,node4,node2)
-  connection = [triangle0,triangle1,triangle2,triangle3]
-  ring = Ring.from_connection(node0,node3,connection)
-  assert_equal ans, ring
- end
-
 end
