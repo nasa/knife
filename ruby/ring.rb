@@ -36,6 +36,21 @@ class Ring < Array
   false
  end
 
+ def to_s
+  out = ""
+  each do |seg|
+   out += "[#{seg.join(',')}]"
+  end
+  out
+ end
+
+ def why_no_split(node0,node1)
+  puts to_s
+  puts "no node0" unless has?(node0)
+  puts "no node0"  unless has?(node1)
+  puts "no order"  if order!(node0).nil?
+ end
+
  def split!(node0,node1)
   return nil unless has?(node0)
   return nil unless has?(node1)
