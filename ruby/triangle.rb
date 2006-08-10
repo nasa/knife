@@ -205,7 +205,6 @@ class Triangle
   ring1 = ring0.split!(node0,node1)
   if ring1.nil?
    puts "recover_edge: ring1 nil"
-   ring0.why_no_split(node0,node1)
    return false
   end 
   @children -= connection
