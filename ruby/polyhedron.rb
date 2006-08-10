@@ -42,4 +42,8 @@ class Polyhedron
   end
  end
 
+ def cut?
+  !@interior.empty?
+ end
+
 end
