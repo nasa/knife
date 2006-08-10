@@ -63,7 +63,7 @@ volume.each do |polyhedron|
  cut_tree.touched(probe).each do |index|
   tool = cut_surface[index]
   begin
-  polyhedron.cut_into(tool)
+  polyhedron.cut_with(tool)
   rescue RuntimeError
    puts "#$! raised at "+polyhedron.center.join(',')
   end
