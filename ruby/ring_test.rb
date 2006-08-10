@@ -81,24 +81,17 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_split
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(0.0,1.0)
-  node3 = Node.new(1.0,1.0)
-  triangle0 = Triangle.new(node0,node1,node2)
-  triangle1 = Triangle.new(node2,node1,node3)
 
-  ring0 = Ring.new.insert_triangle(triangle0).insert_triangle(triangle1)
+  ring0 = Ring.new.insert_child([0,1,2]).insert_child([2,1,3])
 
-  joker = Node.new(5.0,5.0)
-  assert_nil ring0.split!(node0,joker)
-  assert_nil ring0.split!(joker,node3)
+  assert_nil ring0.split!(0,5)
+  assert_nil ring0.split!(5,3)
 
-  ring1 = ring0.split!(node0,node3)
+  ring1 = ring0.split!(0,3)
   assert ring1.is_a?(Ring), "not a ring"
 
-  assert_equal [[node0,node1],[node1,node3],[node3,node0]], ring0
-  assert_equal [[node3,node2],[node2,node0],[node0,node3]], ring1
+  assert_equal [[0,1],[1,3],[3,0]], ring0
+  assert_equal [[3,2],[2,0],[0,3]], ring1
  end
 
  def test_triangulate_one_triangle
