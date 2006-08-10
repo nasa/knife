@@ -117,7 +117,6 @@ class Triangle
 
   if find_child_with(index0,index1).nil?
    puts "edge missing" unless recover_edge(index0,index1)
-   
   end
 
   true
@@ -190,7 +189,9 @@ class Triangle
    return false
   end 
   ring0 = Ring.from_children(connection)
+  return nil if ring0.nil?
   ring1 = ring0.split!(node0,node1)
+  return nil if ring1.nil?
   @children -= connection
   return false if ring0.triangulate.empty?
   ring0.triangulate.each do |child|
