@@ -44,14 +44,10 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_has?
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  joker = Node.new(5.0,5.0)
-
-  ring = Ring.new.insert_segment([node1,node0])
-  assert_equal true, ring.has?(node0)
-  assert_equal true, ring.has?(node1)
-  assert_equal false, ring.has?(joker)
+  ring = Ring.new.insert_segment([1,0])
+  assert_equal true, ring.has?(0)
+  assert_equal true, ring.has?(1)
+  assert_equal false, ring.has?(5)
  end
 
  def test_find_segment_starting_with
@@ -95,35 +91,18 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_triangulate_one_triangle
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(0.0,1.0)
-  triangle = Triangle.new(node0,node1,node2)
-  ring = Ring.new.insert_triangle(triangle)
+  ring = Ring.new.insert_child([0,1,2])
   triangles = ring.triangulate
   assert_equal 1, triangles.size
-  assert_equal triangle.n0, triangles.first.n0
-  assert_equal triangle.n1, triangles.first.n1
-  assert_equal triangle.n2, triangles.first.n2
+  assert_equal [0,1,2], triangles.first
  end
 
  def test_triangulate_two_triangles
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(0.0,1.0)
-  node3 = Node.new(1.0,1.0)
-  ans = [node0, node1, node3, node2, node0]
-  triangle0 = Triangle.new(node0,node1,node2)
-  triangle1 = Triangle.new(node2,node1,node3)
-  ring = Ring.new.insert_triangle(triangle0).insert_triangle(triangle1)
+  ring = Ring.new.insert_child([0,1,2]).insert_child([2,1,3])
   triangles = ring.triangulate
   assert_equal 2, triangles.size
-  assert_equal node0, triangles[0].n0
-  assert_equal node1, triangles[0].n1
-  assert_equal node3, triangles[0].n2
-  assert_equal node0, triangles[1].n0
-  assert_equal node3, triangles[1].n1
-  assert_equal node2, triangles[1].n2
+  assert_equal [0,1,3], triangles[0]
+  assert_equal [0,3,2], triangles[1]
  end
 
  def Xtest_from_connection_of_two_triangles
