@@ -292,6 +292,7 @@ class Triangle
   normal   = triangle_normal(@nodes[0],@nodes[1],@nodes[2])
   canidate = triangle_normal(@nodes[node0],@nodes[node1],@nodes[node2])
   dot = (normal[0]*canidate[0]+normal[1]*canidate[1]+normal[2]*canidate[2])
+  raise "degeneracy, right_handed #{dot}" if dot.abs < 1.0e-13
   (dot > 1.0e-14)
  end
 
