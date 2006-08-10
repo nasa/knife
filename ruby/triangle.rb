@@ -55,10 +55,15 @@ class Triangle
 
  def splits(n0,n1)
 
+  tol = 1.0e-12
+
   # these tetradedral volumes are made of 3 triangle vertexes 
   # and segment endpoints
   top_volume    = volume6(@nodes[0], @nodes[1], @nodes[2], n0)
   bottom_volume = volume6(@nodes[0], @nodes[1], @nodes[2], n1)
+
+  puts "top #{top_volume}" if top_volume.abs < tol
+  puts "bottom #{bottom_volume}" if bottom_volume.abs < tol
 
   # if signs match, segment is entirely above or below triangle
   return nil if (top_volume > 0.0 && bottom_volume > 0.0 )
@@ -68,6 +73,10 @@ class Triangle
   volume_side2 = volume6(@nodes[0], @nodes[1], n0, n1)
   volume_side0 = volume6(@nodes[1], @nodes[2], n0, n1)
   volume_side1 = volume6(@nodes[2], @nodes[0], n0, n1)
+
+  puts "side0 #{volume_side0}" if volume_side0.abs < tol
+  puts "side1 #{volume_side1}" if volume_side1.abs < tol
+  puts "side2 #{volume_side2}" if volume_side2.abs < tol
 
   # if signs match segment is inside triangle
   unless ( (volume_side0 > 0.0 && volume_side1 > 0.0 && volume_side2 > 0.0 ) ||
