@@ -55,20 +55,14 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_find_segment_starting_with
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(2.0,0.0)
-  segment = [node0, node1]
-  ring = Ring.new.insert_segment([node1, node2]).insert_segment([node0, node1])
+  segment = [0, 1]
+  ring = Ring.new.insert_segment([1, 2]).insert_segment([0, 1])
 
-  assert_equal [[node1,node2],[node0,node1]], ring
+  assert_nil ring.find_segment_starting_with(5)
+  assert_nil ring.find_segment_starting_with(2)
 
-  joker = Node.new(5.0,5.0)
-  assert_nil ring.find_segment_starting_with(joker)
-  assert_nil ring.find_segment_starting_with(node2)
-
-  assert_equal [node0,node1], ring.find_segment_starting_with(node0)
-  assert_equal [node1,node2], ring.find_segment_starting_with(node1)
+  assert_equal [0,1], ring.find_segment_starting_with(0)
+  assert_equal [1,2], ring.find_segment_starting_with(1)
  end
 
  def test_order!
