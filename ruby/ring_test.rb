@@ -3,8 +3,6 @@
 
 require 'test/unit'
 require 'ring'
-require 'triangle'
-require 'node'
 
 class TestRing< Test::Unit::TestCase
 
@@ -14,9 +12,7 @@ class TestRing< Test::Unit::TestCase
  end
 
  def test_insert_segment
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  segment = [node0, node1]
+  segment = [0, 1]
   ring = Ring.new
 
   assert_equal ring, ring.insert_segment(segment)
@@ -32,22 +28,19 @@ class TestRing< Test::Unit::TestCase
   assert ring.empty?
  end
 
- def test_insert_triangle
-  node0 = Node.new(0.0,0.0)
-  node1 = Node.new(1.0,0.0)
-  node2 = Node.new(0.0,1.0)
-  node3 = Node.new(1.0,1.0)
-  triangle0 = Triangle.new(node0,node1,node2)
-  triangle1 = Triangle.new(node2,node1,node3)
+ def test_insert_child
+  # 2 - 3
+  # | \ |
+  # 0 - 1
 
   ring = Ring.new
-  assert_equal ring, ring.insert_triangle(triangle0)
+  assert_equal ring, ring.insert_child([0,1,2])
   assert_equal 3, ring.size
-  assert_equal [[node0,node1],[node1,node2],[node2,node0]], ring
+  assert_equal [[0,1],[1,2],[2,0]], ring
 
-  assert_equal ring, ring.insert_triangle(triangle1)
+  assert_equal ring, ring.insert_child([1,3,2])
   assert_equal 4, ring.size
-  assert_equal [[node0,node1],[node2,node0],[node1,node3],[node3,node2]], ring
+  assert_equal [[0,1],[2,0],[1,3],[3,2]], ring
  end
 
  def test_has?
