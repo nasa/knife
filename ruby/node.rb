@@ -1,4 +1,4 @@
-#  node, x-y-z triplet
+#  x-y-z triplet
 
 class Node < Array
 
