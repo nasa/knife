@@ -28,9 +28,7 @@ class TestTriangle < Test::Unit::TestCase
 
  def test_center
   tol = 1.0e-15
-  assert_in_delta (1.0/3.0), @triangle.center[0], tol
-  assert_in_delta (1.0/3.0), @triangle.center[1], tol
-  assert_in_delta 0.0, @triangle.center[2], tol
+  array_in_delta [(1.0/3.0),(1.0/3.0),0.0], @triangle.center
  end
 
  def test_diameter
@@ -74,13 +72,9 @@ class TestTriangle < Test::Unit::TestCase
   target = [0.3,  0.3, 0.0]
   tol = 1.0e-14
   ans = @triangle.splits(n0,n1)
-  assert_in_delta target[0], ans[0], tol
-  assert_in_delta target[1], ans[1], tol
-  assert_in_delta target[2], ans[2], tol
+  array_in_delta target, ans
   ans = @triangle.splits(n1,n0)
-  assert_in_delta target[0], ans[0], tol
-  assert_in_delta target[1], ans[1], tol
-  assert_in_delta target[2], ans[2], tol
+  array_in_delta target, ans
  end
 
  def test_splits_returns_a_node_at_offset
@@ -89,13 +83,9 @@ class TestTriangle < Test::Unit::TestCase
   target = [0.3,  0.3, 0.0]
   tol = 1.0e-14
   ans = @triangle.splits(n0,n1)
-  assert_in_delta target[0], ans[0], tol
-  assert_in_delta target[1], ans[1], tol
-  assert_in_delta target[2], ans[2], tol
+  array_in_delta target, ans
   ans = @triangle.splits(n1,n0)
-  assert_in_delta target[0], ans[0], tol
-  assert_in_delta target[1], ans[1], tol
-  assert_in_delta target[2], ans[2], tol
+  array_in_delta target, ans
  end
 
 
