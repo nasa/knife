@@ -9,16 +9,28 @@ require 'triangle'
 
 class TestCut < Test::Unit::TestCase
  
- def test_class
-  node0 = Node.new(0.0,0.0,0.0)
-  node1 = Node.new(1.0,0.0,0.0)
-  node2 = Node.new(0.0,1.0,0.0)
+ def set_up
+  @node0 = Node.new(  0.0,  0.0,  0.0)
+  @node1 = Node.new(  1.0,  0.0,  0.0)
+  @node2 = Node.new(  0.0,  1.0,  0.0)
+  @segment0 = Segment.new(@node1,@node2)
+  @segment1 = Segment.new(@node2,@node0)
+  @segment2 = Segment.new(@node0,@node1)
+  @triangle = Triangle.new(@segment0,@segment1,@segment2)
+ end
+ def setup; set_up; end
+
+
+ def test_non_intersecting_cut
+  node0 = Node.new(  2.0, -1.0, -1.0)
+  node1 = Node.new(  2.0,  1.5, -1.0)
+  node2 = Node.new(  2.0,  1.5,  1.0)
   segment0 = Segment.new(node1,node2)
   segment1 = Segment.new(node2,node0)
   segment2 = Segment.new(node0,node1)
   triangle = Triangle.new(segment0,segment1,segment2)
-  cut = Cut.new(triangle,triangle)
-  assert cut.is_a?(Cut), "not a Cut"
+  cut = Cut.between(@triangle,triangle)
+  assert_nil cut, "phantom cut"
  end
 
 end

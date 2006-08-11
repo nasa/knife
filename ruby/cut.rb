@@ -2,8 +2,8 @@
 
 class Cut
 
- def initialize(triangle0, triangle1)
-
+ def Cut.between(triangle0, triangle1)
+  nil
  end
 
 end
