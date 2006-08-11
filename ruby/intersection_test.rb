@@ -32,4 +32,28 @@ class TestIntersection < Test::Unit::TestCase
   assert_equal segment, intersection.segment
  end
 
+ def test_volume6
+  tol = 1.0e-16
+  assert_in_delta( 1.0, Intersection.volume6([0.0,0.0,0.0],
+                                             [1.0,0.0,0.0],
+                                             [0.0,1.0,0.0],
+                                             [0.0,0.0,1.0]), tol )
+  assert_in_delta(-1.0, Intersection.volume6([0.0,0.0,0.0],
+                                             [1.0,0.0,0.0],
+                                             [0.0,1.0,0.0],
+                                             [0.0,0.0,-1.0]), tol )
+  assert_in_delta(-1.0, Intersection.volume6([0.0,0.0,0.0],
+                                             [0.0,1.0,0.0],
+                                             [1.0,0.0,0.0],
+                                             [0.0,0.0,1.0]), tol )
+  assert_in_delta(-1.0, Intersection.volume6([1.0,0.0,0.0],
+                                             [0.0,0.0,0.0],
+                                             [0.0,1.0,0.0],
+                                             [0.0,0.0,1.0]), tol )
+  assert_in_delta(-1.0, Intersection.volume6([0.0,0.0,0.0],
+                                             [1.0,0.0,0.0],
+                                             [0.0,0.0,1.0],
+                                             [0.0,1.0,0.0]), tol )
+ end
+
 end

@@ -49,28 +49,4 @@ class TestCut < Test::Unit::TestCase
   assert cut.is_a?(Cut), "Cut not returned"
  end
 
- def test_volume6
-  tol = 1.0e-16
-  assert_in_delta( 1.0, Cut.volume6([0.0,0.0,0.0],
-                                    [1.0,0.0,0.0],
-                                    [0.0,1.0,0.0],
-                                    [0.0,0.0,1.0]), tol )
-  assert_in_delta(-1.0, Cut.volume6([0.0,0.0,0.0],
-                                    [1.0,0.0,0.0],
-                                    [0.0,1.0,0.0],
-                                    [0.0,0.0,-1.0]), tol )
-  assert_in_delta(-1.0, Cut.volume6([0.0,0.0,0.0],
-                                    [0.0,1.0,0.0],
-                                    [1.0,0.0,0.0],
-                                    [0.0,0.0,1.0]), tol )
-  assert_in_delta(-1.0, Cut.volume6([1.0,0.0,0.0],
-                                    [0.0,0.0,0.0],
-                                    [0.0,1.0,0.0],
-                                    [0.0,0.0,1.0]), tol )
-  assert_in_delta(-1.0, Cut.volume6([0.0,0.0,0.0],
-                                    [1.0,0.0,0.0],
-                                    [0.0,0.0,1.0],
-                                    [0.0,1.0,0.0]), tol )
- end
-
 end
