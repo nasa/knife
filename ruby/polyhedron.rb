@@ -46,4 +46,19 @@ class Polyhedron
   !@interior.empty?
  end
 
+ def tecplot_header
+  @exterior.first.tecplot_header
+ end
+
+ def tecplot_zone
+  out = ""
+  @exterior.each do |face|
+   out += face.tecplot_zone+"\n"
+  end
+  @interior.each do |face|
+   out += face.tecplot_zone+"\n"
+  end
+  out
+ end
+
 end
