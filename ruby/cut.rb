@@ -5,15 +5,16 @@ class Cut
  def Cut.between(triangle0, triangle1)
   intersections = Array.new
   triangle0.each do |segment|
-   intersections << [triangle1, segment] if Cut.intersection(triangle1, segment)
+   intersections << [triangle1, segment] if Cut.intersect(triangle1, segment)
   end
   triangle1.each do |segment|
-   intersections << [triangle0, segment] if Cut.intersection(triangle0,segment)
+   intersections << [triangle0, segment] if Cut.intersect(triangle0,segment)
   end
-  ((intersections.empty?) ? nil : new )
+  return nil unless 2 == intersections.size
+  Cut.new(intersections[0],intersections[1])
  end
 
- def Cut.intersection(triangle, segment)
+ def Cut.intersect(triangle, segment)
   
   t0 = triangle.node(0)
   t1 = triangle.node(1)
@@ -69,6 +70,11 @@ class Cut
   m12 = (a[1]-d[1])*((b[0]-d[0])*(c[2]-d[2])-(c[0]-d[0])*(b[2]-d[2]))
   m13 = (a[2]-d[2])*((b[0]-d[0])*(c[1]-d[1])-(c[0]-d[0])*(b[1]-d[1]))
   det = -( m11 - m12 + m13 )
+ end
+
+ def initialize(intersection0,intersection1)
+  @intersection0 = intersection0
+  @intersection1 = intersection1
  end
 
 end
