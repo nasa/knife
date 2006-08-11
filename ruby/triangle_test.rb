@@ -28,4 +28,6 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal segment2, triangle[2]
  end
 
+ # test that segments from a continuous loop
+
 end
