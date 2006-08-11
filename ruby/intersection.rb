@@ -3,6 +3,8 @@
 class Intersection
 
  attr_reader :triangle, :segment
+ attr_reader :t
+ attr_reader :u, :v, :w
 
  def Intersection.of(triangle, segment)
   
@@ -51,7 +53,6 @@ class Intersection
    return nil
   end
 
-  # find intersection point
   new(triangle, segment)
  end
 
@@ -65,6 +66,28 @@ class Intersection
  def initialize(triangle, segment)
   @triangle = triangle
   @segment = segment
- end
+
+  # find intersection point
+  t0 = triangle.node(0)
+  t1 = triangle.node(1)
+  t2 = triangle.node(2)
+
+  s0 = segment[0]
+  s1 = segment[1]
+
+  top_volume    = Intersection.volume6(t0, t1, t2, s0)
+  bottom_volume = Intersection.volume6(t0, t1, t2, s1)
+
+  total_volume = top_volume - bottom_volume
+  @t = top_volume/total_volume
+
+  volume_side2 = Intersection.volume6(t0, t1, s0, s1)
+  volume_side0 = Intersection.volume6(t1, t2, s0, s1)
+  volume_side1 = Intersection.volume6(t2, t0, s0, s1)
+  total_volume = volume_side0 + volume_side1 + volume_side2
+  @u = volume_side0/total_volume
+  @v = volume_side1/total_volume
+  @w = volume_side2/total_volume
+end
 
 end

@@ -21,7 +21,7 @@ class TestIntersection < Test::Unit::TestCase
   triangle = Triangle.new(segment0,segment1,segment2)
 
   nodedn = Node.new(0.3,0.3,-1.0)
-  nodeup = Node.new(0.3,0.3, 1.0)
+  nodeup = Node.new(0.3,0.3, 3.0)
   segment = Segment.new(nodedn,nodeup)
 
   intersection = Intersection.new(triangle,segment)
@@ -30,6 +30,12 @@ class TestIntersection < Test::Unit::TestCase
 
   assert_equal triangle, intersection.triangle
   assert_equal segment, intersection.segment
+
+  tol = 1.0e-15
+  assert_in_delta 0.25, intersection.t, tol
+  assert_in_delta 0.4, intersection.u, tol
+  assert_in_delta 0.3, intersection.v, tol
+  assert_in_delta 0.3, intersection.w, tol
  end
 
  def test_volume6
