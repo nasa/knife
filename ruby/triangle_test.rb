@@ -29,6 +29,8 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal segment0, triangle.segment(0)
   assert_equal segment1, triangle.segment(1)
   assert_equal segment2, triangle.segment(2)
+
+  assert_equal [], triangle.cuts
  end
 
  def test_node

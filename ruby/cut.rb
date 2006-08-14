@@ -22,6 +22,13 @@ class Cut
  def initialize(intersection0,intersection1)
   @intersection0 = intersection0
   @intersection1 = intersection1
+
+  @intersection0.triangle.cuts << self
+  @intersection0.segment.cuts << self
+  if @intersection0.triangle != @intersection1.triangle
+   @intersection1.triangle.cuts << self
+  end
+  @intersection1.segment.cuts << self
  end
 
 end

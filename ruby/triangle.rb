@@ -3,9 +3,11 @@
 class Triangle
 
  attr_reader :segments
+ attr_reader :cuts
 
  def initialize(segment0,segment1,segment2)
   @segments = [ segment0, segment1, segment2 ]
+  @cuts = Array.new
  end
  
  def segment(index)
@@ -15,11 +17,11 @@ class Triangle
  def node(index)
   case index
   when 0
-   @segments[2][0]
+   segment(2).node(0)
   when 1
-   @segments[0][0]
+   segment(0).node(0)
   when 2
-   @segments[1][0]
+   segment(1).node(0)
   else
    nil
   end

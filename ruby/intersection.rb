@@ -12,8 +12,8 @@ class Intersection
   t1 = triangle.node(1)
   t2 = triangle.node(2)
 
-  s0 = segment[0]
-  s1 = segment[1]
+  s0 = segment.node(0)
+  s1 = segment.node(1)
 
   singular_tol = 1.0e-12
 
@@ -72,8 +72,8 @@ class Intersection
   t1 = triangle.node(1)
   t2 = triangle.node(2)
 
-  s0 = segment[0]
-  s1 = segment[1]
+  s0 = segment.node(0)
+  s1 = segment.node(1)
 
   top_volume    = Intersection.volume6(t0, t1, t2, s0)
   bottom_volume = Intersection.volume6(t0, t1, t2, s1)

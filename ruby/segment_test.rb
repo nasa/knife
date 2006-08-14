@@ -17,8 +17,10 @@ class TestSegment < Test::Unit::TestCase
 
   assert segment.is_a?(Segment), "not a segment"
 
-  assert_equal node0, segment[0]
-  assert_equal node1, segment[1]
+  assert_equal node0, segment.node(0)
+  assert_equal node1, segment.node(1)
+
+  assert_equal [], segment.cuts
  end
 
 end
