@@ -36,18 +36,33 @@ class Triangle
   end
  end
 
+ def insert_cut
+  node0 = add_unique_intersection cut.intersection0
+  node1 = add_unique_intersection cut.intersection1
+ end
+
  def add_unique_intersection(intersection)
   @nodes.each do |node|
    return node if intersection == node.intersection
   end
-  node = TriangleNode.from_triangle_intersection(triangle,intersection)
-  @nodes << node
-  node
+  u,v,w = intersection_uvw(intersection)
+  node = TriangleNode.new(u,v,w,intersection)
+  insert_node(node)
  end
 
- def insert_cut
-  node0 = add_unique_intersection cut.intersection0
-  node1 = add_unique_intersection cut.intersection1
+ def intersection_uvw(intersection)
+  if self == intersection.triangle
+   return intersection.u,intersection.v,intersection.w
+  end
+  @segments.each do |segment|
+   
+  end
+ end
+
+
+ def insert_node(node)
+  
+  node
  end
 
 end
