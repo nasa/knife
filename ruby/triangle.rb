@@ -36,18 +36,4 @@ class Triangle
   raise "no common original_node2"
  end
 
- def intersection_uvw(intersection)
-  if self == intersection.triangle
-   return intersection.u,intersection.v,intersection.w
-  end
-  u=0.0;v=0.0;w=0.0
-  u = (    intersection.t) if intersection.segment[1] == original_node0
-  v = (    intersection.t) if intersection.segment[1] == original_node1
-  w = (    intersection.t) if intersection.segment[1] == original_node2
-  u = (1.0-intersection.t) if intersection.segment[0] == original_node0
-  v = (1.0-intersection.t) if intersection.segment[0] == original_node1
-  w = (1.0-intersection.t) if intersection.segment[0] == original_node2
-  return u,v,w
- end
-
 end
