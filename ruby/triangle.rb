@@ -39,7 +39,7 @@ class Triangle
   return segment(0).node(0) if segment(0).node(0) == segment(1).node(1)  
   return segment(0).node(1) if segment(0).node(1) == segment(1).node(0)  
   return segment(0).node(1) if segment(0).node(1) == segment(1).node(1)  
-  raise "no common original_node1"
+  raise "no common original_node2"
  end
 
  def triangulate_cuts
@@ -55,7 +55,7 @@ class Triangle
 
  def add_unique_intersection(intersection)
   @nodes.each do |node|
-   return node if intersection == node.intersection
+   return node if intersection == node.parent
   end
   u,v,w = intersection_uvw(intersection)
   node = TriangleNode.new(u,v,w,intersection)
@@ -66,11 +66,8 @@ class Triangle
   if self == intersection.triangle
    return intersection.u,intersection.v,intersection.w
   end
-  @segments.each do |segment|
-   
-  end
+  raise "intersection segment not found in intersection_uvw"
  end
-
 
  def insert_node(node)
   
