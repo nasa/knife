@@ -81,4 +81,18 @@ class Intersection
   @segment.intersections << self
  end
 
+ def uvw(triangle)
+  if @triangle == triangle
+   return @u,@v,@w
+  end
+  u=0.0;v=0.0;w=0.0
+  u = (    @t) if @segment[1] == triangle.original_node0
+  v = (    @t) if @segment[1] == triangle.original_node1
+  w = (    @t) if @segment[1] == triangle.original_node2
+  u = (1.0-@t) if @segment[0] == triangle.original_node0
+  v = (1.0-@t) if @segment[0] == triangle.original_node1
+  w = (1.0-@t) if @segment[0] == triangle.original_node2
+  return u,v,w
+ end
+
 end
