@@ -13,14 +13,17 @@ class TestTriangle < Test::Unit::TestCase
  
  TOL = 1.0e-14
 
- def test_initialize
-  node0 = Node.new(0.0, 0.1, 0.2)
-  node1 = Node.new(1.0, 1.1, 1.2)
-  node2 = Node.new(2.0, 2.1, 2.2)
+ def set_up
+  @node0 = Node.new(  0.0,  0.0,  0.0)
+  @node1 = Node.new(  1.0,  0.0,  0.0)
+  @node2 = Node.new(  0.0,  1.0,  0.0)
+ end
+ def setup; set_up; end
 
-  segment0 = Segment.new(node1,node2)
-  segment1 = Segment.new(node2,node0)
-  segment2 = Segment.new(node0,node1)
+ def test_initialize
+  segment0 = Segment.new(@node1,@node2)
+  segment1 = Segment.new(@node2,@node0)
+  segment2 = Segment.new(@node0,@node1)
 
   triangle = Triangle.new(segment0,segment1,segment2)
 
@@ -34,46 +37,42 @@ class TestTriangle < Test::Unit::TestCase
  end
 
  def test_node
-  node0 = Node.new(0.0, 0.1, 0.2)
-  node1 = Node.new(1.0, 1.1, 1.2)
-  node2 = Node.new(2.0, 2.1, 2.2)
-
-  segment0  = Segment.new(node1,node2)
-  segment0r = Segment.new(node2,node1)
-  segment1  = Segment.new(node2,node0)
-  segment1r = Segment.new(node0,node2)
-  segment2  = Segment.new(node0,node1)
-  segment2r = Segment.new(node1,node0)
+  segment0  = Segment.new(@node1,@node2)
+  segment0r = Segment.new(@node2,@node1)
+  segment1  = Segment.new(@node2,@node0)
+  segment1r = Segment.new(@node0,@node2)
+  segment2  = Segment.new(@node0,@node1)
+  segment2r = Segment.new(@node1,@node0)
 
   triangle = Triangle.new(segment0,segment1,segment2)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
 
   triangle = Triangle.new(segment0r,segment1,segment2)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
 
   triangle = Triangle.new(segment0,segment1r,segment2)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
 
   triangle = Triangle.new(segment0,segment1,segment2r)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
 
   triangle = Triangle.new(segment0r,segment1r,segment2)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
 
   triangle = Triangle.new(segment0r,segment1r,segment2r)
-  assert_equal node0, triangle.original_node0
-  assert_equal node1, triangle.original_node1
-  assert_equal node2, triangle.original_node2
+  assert_equal @node0, triangle.original_node0
+  assert_equal @node1, triangle.original_node1
+  assert_equal @node2, triangle.original_node2
  end
 
 end
