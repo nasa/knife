@@ -10,7 +10,9 @@ class Triangle
  def initialize(segment0,segment1,segment2)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @nodes = [TriangleNode.new(0), TriangleNode.new(1), TriangleNode.new(2)]
+  @nodes = [TriangleNode.new(1.0,0.0,0.0), 
+            TriangleNode.new(0.0,1.0,0.0), 
+            TriangleNode.new(0.0,0.0,0.1)]
   @children = [[0,1,2]]
  end
  
