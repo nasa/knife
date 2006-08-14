@@ -42,26 +42,6 @@ class Triangle
   raise "no common original_node2"
  end
 
- def triangulate_cuts
-  @cuts.each do |cut|
-   insert_cut(cut)
-  end
- end
-
- def insert_cut
-  node0 = add_unique_intersection cut.intersection0
-  node1 = add_unique_intersection cut.intersection1
- end
-
- def add_unique_intersection(intersection)
-  @nodes.each do |node|
-   return node if intersection == node.parent
-  end
-  u,v,w = intersection_uvw(intersection)
-  node = TriangleNode.new(u,v,w,intersection)
-  insert_node(node)
- end
-
  def intersection_uvw(intersection)
   if self == intersection.triangle
    return intersection.u,intersection.v,intersection.w
@@ -74,11 +54,6 @@ class Triangle
   v = (1.0-intersection.t) if intersection.segment[0] == original_node1
   w = (1.0-intersection.t) if intersection.segment[0] == original_node2
   return u,v,w
- end
-
- def insert_node(node)
-  
-  node
  end
 
 end
