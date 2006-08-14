@@ -73,6 +73,7 @@ class Triangle
   u = (1.0-intersection.t) if intersection.segment[0] == original_node0
   v = (1.0-intersection.t) if intersection.segment[0] == original_node1
   w = (1.0-intersection.t) if intersection.segment[0] == original_node2
+  return u,v,w
  end
 
  def insert_node(node)
