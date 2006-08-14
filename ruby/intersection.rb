@@ -28,12 +28,9 @@ class Intersection
   top_volume    = Intersection.volume6(t0, t1, t2, s0)
   bottom_volume = Intersection.volume6(t0, t1, t2, s1)
 
-  puts "top #{top_volume}" if top_volume.abs < singular_tol
-  puts "bottom #{bottom_volume}" if bottom_volume.abs < singular_tol
-
   # raise exception if degeneracy detected
-  raise 'degeneracy, top_volume zero'    if top_volume.zero?
-  raise 'degeneracy, bottom_volume zero' if bottom_volume.zero?
+  raise "top #{top_volume}"    if top_volume.abs < singular_tol
+  raise "bottom #{top_volume}" if bottom_volume.abs < singular_tol
 
   # if signs match, segment is entirely above or below triangle
   return nil if (top_volume > 0.0 && bottom_volume > 0.0 )
@@ -44,14 +41,10 @@ class Intersection
   volume_side0 = Intersection.volume6(t1, t2, s0, s1)
   volume_side1 = Intersection.volume6(t2, t0, s0, s1)
 
-  puts "side0 #{volume_side0}" if volume_side0.abs < singular_tol
-  puts "side1 #{volume_side1}" if volume_side1.abs < singular_tol
-  puts "side2 #{volume_side2}" if volume_side2.abs < singular_tol
-
   # raise exception if degeneracy detected
-  raise 'degeneracy, volume_side0 zero' if volume_side0.zero?
-  raise 'degeneracy, volume_side1 zero' if volume_side1.zero?
-  raise 'degeneracy, volume_side2 zero' if volume_side2.zero?
+  raise "side0 #{volume_side0}" if volume_side0.abs < singular_tol
+  raise "side1 #{volume_side1}" if volume_side1.abs < singular_tol
+  raise "side2 #{volume_side2}" if volume_side2.abs < singular_tol
 
   # if signs match segment is inside triangle
   unless ( (volume_side0 > 0.0 && volume_side1 > 0.0 && volume_side2 > 0.0 ) ||
@@ -59,9 +52,9 @@ class Intersection
    return nil
   end
 
+  # compute intersection parameter, can be replaced with det ratios?
   total_volume = top_volume - bottom_volume
   t = top_volume/total_volume
-
 
   total_volume = volume_side0 + volume_side1 + volume_side2
   u = volume_side0/total_volume
