@@ -9,41 +9,41 @@ require 'node'
 
 class TestIntersection < Test::Unit::TestCase
  
+ def set_up
+  @node0 = Node.new(  0.0,  0.0,  0.0)
+  @node1 = Node.new(  1.0,  0.0,  0.0)
+  @node2 = Node.new(  0.0,  1.0,  0.0)
+  @segment0 = Segment.new(@node1,@node2)
+  @segment1 = Segment.new(@node2,@node0)
+  @segment2 = Segment.new(@node0,@node1)
+  @triangle = Triangle.new(@segment0,@segment1,@segment2)
+  @nodedn = Node.new(0.3,0.3,-1.0)
+  @nodeup = Node.new(0.3,0.3, 3.0)
+  @segment = Segment.new(@nodedn,@nodeup)
+ end
+ def setup; set_up; end
+
  def test_of
-  node0 = Node.new(  0.0,  0.0,  0.0)
-  node1 = Node.new(  1.0,  0.0,  0.0)
-  node2 = Node.new(  0.0,  1.0,  0.0)
-
-  segment0 = Segment.new(node1,node2)
-  segment1 = Segment.new(node2,node0)
-  segment2 = Segment.new(node0,node1)
-
-  triangle = Triangle.new(segment0,segment1,segment2)
-
   miss0 = Node.new(0.6,0.6,-1.0)
   miss1 = Node.new(0.6,0.6, 3.0)
   miss  = Segment.new(miss0,miss1)
 
-  assert_nil Intersection.of(triangle,miss)
+  assert_nil Intersection.of(@triangle,miss)
 
-  nodedn = Node.new(0.3,0.3,-1.0)
-  nodeup = Node.new(0.3,0.3, 3.0)
-  segment = Segment.new(nodedn,nodeup)
-
-  intersection = Intersection.of(triangle,segment)
+  intersection = Intersection.of(@triangle,@segment)
 
   assert intersection.is_a?(Intersection), "not an intersection"
-  assert_equal triangle, intersection.triangle
-  assert_equal segment,  intersection.segment
+  assert_equal @triangle, intersection.triangle
+  assert_equal @segment,  intersection.segment
   tol = 1.0e-15
   assert_in_delta 0.25, intersection.t, tol
   assert_in_delta 0.40, intersection.u, tol
   assert_in_delta 0.30, intersection.v, tol
   assert_in_delta 0.30, intersection.w, tol
 
-  assert_equal [intersection], segment.intersections
+  assert_equal [intersection], @segment.intersections
 
-  intersection2 = Intersection.of(triangle,segment)
+  intersection2 = Intersection.of(@triangle,@segment)
   assert( intersection.equal?(intersection2), "non-unique intersections" )
  end
 
@@ -72,32 +72,18 @@ class TestIntersection < Test::Unit::TestCase
  end
 
  def test_initialize
-  node0 = Node.new(  0.0,  0.0,  0.0)
-  node1 = Node.new(  1.0,  0.0,  0.0)
-  node2 = Node.new(  0.0,  1.0,  0.0)
-
-  segment0 = Segment.new(node1,node2)
-  segment1 = Segment.new(node2,node0)
-  segment2 = Segment.new(node0,node1)
-
-  triangle = Triangle.new(segment0,segment1,segment2)
-
-  nodedn = Node.new(0.3,0.3,-1.0)
-  nodeup = Node.new(0.3,0.3, 3.0)
-  segment = Segment.new(nodedn,nodeup)
-
-  intersection = Intersection.new(triangle,segment,0.25,0.4,0.3,0.3)
+  intersection = Intersection.new(@triangle,@segment,0.1,0.2,0.3,0.4)
 
   assert intersection.is_a?(Intersection), "not an intersection"
 
-  assert_equal triangle, intersection.triangle
-  assert_equal segment,  intersection.segment
+  assert_equal @triangle, intersection.triangle
+  assert_equal @segment,  intersection.segment
 
   tol = 1.0e-15
-  assert_in_delta 0.25, intersection.t, tol
-  assert_in_delta 0.40, intersection.u, tol
-  assert_in_delta 0.30, intersection.v, tol
-  assert_in_delta 0.30, intersection.w, tol
+  assert_in_delta 0.1, intersection.t, tol
+  assert_in_delta 0.2, intersection.u, tol
+  assert_in_delta 0.3, intersection.v, tol
+  assert_in_delta 0.4, intersection.w, tol
  end
 
 end
