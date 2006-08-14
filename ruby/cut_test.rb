@@ -76,6 +76,4 @@ class TestCut < Test::Unit::TestCase
 
  end
 
-
-
 end
