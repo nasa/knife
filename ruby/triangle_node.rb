@@ -4,7 +4,7 @@ class TriangleNode
 
  attr_reader :u, :v, :w
 
- def initialize(triangle,index)
+ def initialize(index)
   @u = 0.0
   @v = 0.0
   @w = 0.0
