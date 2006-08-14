@@ -1,6 +1,6 @@
 # defined from 3 segments
 
-class Triangle < Array
+class Triangle
 
  attr_reader :segments
 
