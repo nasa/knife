@@ -30,9 +30,16 @@ class TestIntersection < Test::Unit::TestCase
   nodeup = Node.new(0.3,0.3, 3.0)
   segment = Segment.new(nodedn,nodeup)
 
-  intersection = Intersection.new(triangle,segment)
+  intersection = Intersection.of(triangle,segment)
 
   assert intersection.is_a?(Intersection), "not an intersection"
+  assert_equal triangle, intersection.triangle
+  assert_equal segment,  intersection.segment
+  tol = 1.0e-15
+  assert_in_delta 0.25, intersection.t, tol
+  assert_in_delta 0.40, intersection.u, tol
+  assert_in_delta 0.30, intersection.v, tol
+  assert_in_delta 0.30, intersection.w, tol
  end
 
  def test_volume6
@@ -74,7 +81,7 @@ class TestIntersection < Test::Unit::TestCase
   nodeup = Node.new(0.3,0.3, 3.0)
   segment = Segment.new(nodedn,nodeup)
 
-  intersection = Intersection.new(triangle,segment)
+  intersection = Intersection.new(triangle,segment,0.25,0.4,0.3,0.3)
 
   assert intersection.is_a?(Intersection), "not an intersection"
 
@@ -83,9 +90,9 @@ class TestIntersection < Test::Unit::TestCase
 
   tol = 1.0e-15
   assert_in_delta 0.25, intersection.t, tol
-  assert_in_delta 0.4, intersection.u, tol
-  assert_in_delta 0.3, intersection.v, tol
-  assert_in_delta 0.3, intersection.w, tol
+  assert_in_delta 0.40, intersection.u, tol
+  assert_in_delta 0.30, intersection.v, tol
+  assert_in_delta 0.30, intersection.w, tol
  end
 
 end

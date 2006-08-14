@@ -53,7 +53,15 @@ class Intersection
    return nil
   end
 
-  new(triangle, segment)
+  total_volume = top_volume - bottom_volume
+  t = top_volume/total_volume
+
+  total_volume = volume_side0 + volume_side1 + volume_side2
+  u = volume_side0/total_volume
+  v = volume_side1/total_volume
+  w = volume_side2/total_volume
+
+  new(triangle, segment, t, u, v, w)
  end
 
  def Intersection.volume6(a,b,c,d)
@@ -63,31 +71,13 @@ class Intersection
   det = -( m11 - m12 + m13 )
  end
 
- def initialize(triangle, segment)
+ def initialize(triangle, segment, t, u, v, w)
   @triangle = triangle
   @segment = segment
-
-  # find intersection point
-  t0 = triangle.node(0)
-  t1 = triangle.node(1)
-  t2 = triangle.node(2)
-
-  s0 = segment.node(0)
-  s1 = segment.node(1)
-
-  top_volume    = Intersection.volume6(t0, t1, t2, s0)
-  bottom_volume = Intersection.volume6(t0, t1, t2, s1)
-
-  total_volume = top_volume - bottom_volume
-  @t = top_volume/total_volume
-
-  volume_side2 = Intersection.volume6(t0, t1, s0, s1)
-  volume_side0 = Intersection.volume6(t1, t2, s0, s1)
-  volume_side1 = Intersection.volume6(t2, t0, s0, s1)
-  total_volume = volume_side0 + volume_side1 + volume_side2
-  @u = volume_side0/total_volume
-  @v = volume_side1/total_volume
-  @w = volume_side2/total_volume
+  @t = t
+  @u = u
+  @v = v
+  @w = w
 end
 
 end
