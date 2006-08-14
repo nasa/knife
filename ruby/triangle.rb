@@ -11,6 +11,7 @@ class Triangle
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
   @nodes = [TriangleNode.new(0), TriangleNode.new(1), TriangleNode.new(2)]
+  @children = [[0,1,2]]
  end
  
  def segment(index)
