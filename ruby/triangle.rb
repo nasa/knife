@@ -10,9 +10,9 @@ class Triangle
  def initialize(segment0,segment1,segment2)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @nodes = [TriangleNode.new(1.0,0.0,0.0), 
-            TriangleNode.new(0.0,1.0,0.0), 
-            TriangleNode.new(0.0,0.0,1.0)]
+  @nodes = [TriangleNode.new(1.0,0.0,0.0,original_node0), 
+            TriangleNode.new(0.0,1.0,0.0,original_node1), 
+            TriangleNode.new(0.0,0.0,1.0,original_node2)]
   @children = [[@nodes[0],@nodes[1],@nodes[2]]]
  end
  
@@ -21,13 +21,25 @@ class Triangle
  end
 
  def original_node0
-   segment(2).node(0)
+  return segment(2).node(0) if segment(2).node(0) == segment(1).node(0)  
+  return segment(2).node(0) if segment(2).node(0) == segment(1).node(1)  
+  return segment(2).node(1) if segment(2).node(1) == segment(1).node(0)  
+  return segment(2).node(1) if segment(2).node(1) == segment(1).node(1)  
+  raise "no common original_node0"
  end
  def original_node1
-   segment(0).node(0)
+  return segment(0).node(0) if segment(0).node(0) == segment(2).node(0)  
+  return segment(0).node(0) if segment(0).node(0) == segment(2).node(1)  
+  return segment(0).node(1) if segment(0).node(1) == segment(2).node(0)  
+  return segment(0).node(1) if segment(0).node(1) == segment(2).node(1)  
+  raise "no common original_node1"
  end
  def original_node2
-   segment(1).node(0)
+  return segment(0).node(0) if segment(0).node(0) == segment(1).node(0)  
+  return segment(0).node(0) if segment(0).node(0) == segment(1).node(1)  
+  return segment(0).node(1) if segment(0).node(1) == segment(1).node(0)  
+  return segment(0).node(1) if segment(0).node(1) == segment(1).node(1)  
+  raise "no common original_node1"
  end
 
  def triangulate_cuts

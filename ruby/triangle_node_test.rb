@@ -16,11 +16,11 @@ class TestTriangleNode < Test::Unit::TestCase
   assert_in_delta 0.2, triangle_node.u, TOL
   assert_in_delta 0.3, triangle_node.v, TOL
   assert_in_delta 0.5, triangle_node.w, TOL
-  triangle_node = TriangleNode.new(0.2,0.3,0.5,"dummy intersection")
+  triangle_node = TriangleNode.new(0.2,0.3,0.5,"dummy parent")
   assert_in_delta 0.2, triangle_node.u, TOL
   assert_in_delta 0.3, triangle_node.v, TOL
   assert_in_delta 0.5, triangle_node.w, TOL
-  assert_equal "dummy intersection", triangle_node.intersection
+  assert_equal "dummy parent", triangle_node.parent
  end
 
 

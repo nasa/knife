@@ -3,13 +3,13 @@
 class TriangleNode
 
  attr_reader :u, :v, :w
- attr_reader :intersection
+ attr_reader :parent
 
- def initialize(u,v,w,intersection=nil)
+ def initialize(u,v,w,parent=nil)
   @u = u
   @v = v
   @w = w
-  @intersection = intersection
+  @parent = parent
  end
 
 end
