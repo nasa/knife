@@ -8,6 +8,12 @@ class Intersection
 
  def Intersection.of(triangle, segment)
   
+  segment.intersections.each do |intersection|
+   if (segment == intersection.segment) && (triangle == intersection.triangle)
+    return intersection
+   end
+  end
+
   t0 = triangle.original_node0
   t1 = triangle.original_node1
   t2 = triangle.original_node2
@@ -56,11 +62,6 @@ class Intersection
   total_volume = top_volume - bottom_volume
   t = top_volume/total_volume
 
-  segment.intersections.each do |intersection|
-   if (segment == intersection.segment) && (t - intersection.t).abs < 1.0e-15
-    return intersection
-   end
-  end
 
   total_volume = volume_side0 + volume_side1 + volume_side2
   u = volume_side0/total_volume
