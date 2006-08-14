@@ -16,19 +16,15 @@ class Cut
   end
   return nil if 0 == intersections.size
   raise "improper cut #{intersections.size}" unless 2 == intersections.size
-  Cut.new(intersections[0],intersections[1])
+  Cut.new(intersections[0],intersections[1], triangle0, triangle1)
  end
  
- def initialize(intersection0,intersection1)
+ def initialize(intersection0, intersection1, triangle0, triangle1)
   @intersection0 = intersection0
   @intersection1 = intersection1
-
-  @intersection0.triangle.cuts << self
-  @intersection0.segment.cuts << self
-  if @intersection0.triangle != @intersection1.triangle
-   @intersection1.triangle.cuts << self
-  end
-  @intersection1.segment.cuts << self
+  @triangles = [triangle0, triangle1]
+  triangle0.cuts << self
+  triangle1.cuts << self
  end
 
 end
