@@ -12,8 +12,8 @@ class Triangle
   @cuts = Array.new
   @nodes = [TriangleNode.new(1.0,0.0,0.0), 
             TriangleNode.new(0.0,1.0,0.0), 
-            TriangleNode.new(0.0,0.0,0.1)]
-  @children = [[0,1,2]]
+            TriangleNode.new(0.0,0.0,1.0)]
+  @children = [[@nodes[0],@nodes[1],@nodes[2]]]
  end
  
  def segment(index)
@@ -34,6 +34,23 @@ class Triangle
  end
 
  def triangulate_cuts
+  @cuts.each do |cut|
+   insert_cut(cut)
+  end
+ end
+
+ def add_unique_intersection(intersection)
+  @nodes.each do |node|
+   return node if intersection == node.intersection
+  end
+  node = TriangleNode.from_triangle_intersection(triangle,intersection)
+  @nodes << node
+  node
+ end
+
+ def insert_cut
+  node0 = add_unique_intersection cut.intersection0
+  node1 = add_unique_intersection cut.intersection1
  end
 
 end
