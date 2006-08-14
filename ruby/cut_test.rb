@@ -48,6 +48,7 @@ class TestCut < Test::Unit::TestCase
   cut = Cut.between(@triangle,triangle)
   assert cut.is_a?(Cut), "Cut not returned"
   assert_equal [],  @triangle.cuts
+  assert_equal 1, triangle.cuts.size
   assert_equal cut, triangle.cuts[0]
   assert_equal cut, @segment0.cuts[0]
   assert_equal cut, @segment2.cuts[0]
