@@ -33,4 +33,7 @@ class Triangle
   end
  end
 
+ def triangulate_cuts
+ end
+
 end
