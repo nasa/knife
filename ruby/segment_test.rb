@@ -20,7 +20,7 @@ class TestSegment < Test::Unit::TestCase
   assert_equal node0, segment.node(0)
   assert_equal node1, segment.node(1)
 
-  assert_equal [], segment.cuts
+  assert_equal [], segment.intersections
  end
 
 end

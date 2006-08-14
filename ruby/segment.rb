@@ -2,11 +2,11 @@
 
 class Segment
 
- attr_reader :cuts
+ attr_reader :intersections
 
  def initialize(node0, node1)
   @nodes = [node0, node1]
-  @cuts = Array.new
+  @intersections = Array.new
  end
 
  def node(index)
