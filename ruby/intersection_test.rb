@@ -79,7 +79,7 @@ class TestIntersection < Test::Unit::TestCase
   assert intersection.is_a?(Intersection), "not an intersection"
 
   assert_equal triangle, intersection.triangle
-  assert_equal segment, intersection.segment
+  assert_equal segment,  intersection.segment
 
   tol = 1.0e-15
   assert_in_delta 0.25, intersection.t, tol
