@@ -1,7 +1,5 @@
 # defined from 3 segments
 
-require 'triangle_node'
-
 class Triangle
 
  attr_reader :segments
@@ -10,10 +8,6 @@ class Triangle
  def initialize(segment0,segment1,segment2)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @nodes = [TriangleNode.new(1.0,0.0,0.0,original_node0), 
-            TriangleNode.new(0.0,1.0,0.0,original_node1), 
-            TriangleNode.new(0.0,0.0,1.0,original_node2)]
-  @children = [[@nodes[0],@nodes[1],@nodes[2]]]
  end
  
  def segment(index)
