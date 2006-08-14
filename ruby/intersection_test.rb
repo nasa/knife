@@ -40,6 +40,11 @@ class TestIntersection < Test::Unit::TestCase
   assert_in_delta 0.40, intersection.u, tol
   assert_in_delta 0.30, intersection.v, tol
   assert_in_delta 0.30, intersection.w, tol
+
+  assert_equal [intersection], segment.intersections
+
+  intersection2 = Intersection.of(triangle,segment)
+  assert( intersection.equal?(intersection2), "non-unique intersections" )
  end
 
  def test_volume6
