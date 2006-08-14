@@ -54,4 +54,28 @@ class TestCut < Test::Unit::TestCase
   assert_equal cut, @segment2.cuts[0]
  end
 
+ def test_cut_with_creates_branch
+  # 2
+  # | \  
+  # |   \
+  # |   4 \
+  # 0 - 3 - 1
+  node0 = Node.new(  0.3,  0.3,  1.0)
+  node1 = Node.new(  0.3,  0.3, -1.0)
+  node2 = Node.new(  0.3, -1.0, -1.0)
+  segment0 = Segment.new(node1,node2)
+  segment1 = Segment.new(node2,node0)
+  segment2 = Segment.new(node0,node1)
+  triangle = Triangle.new(segment0,segment1,segment2)
+  cut = Cut.between(@triangle,triangle)
+  assert cut.is_a?(Cut), "Cut not returned"
+  assert_equal cut, @triangle.cuts[0]
+  assert_equal cut, triangle.cuts[0]
+  assert_equal cut, @segment2.cuts[0]
+  assert_equal cut, segment2.cuts[0]
+
+ end
+
+
+
 end
