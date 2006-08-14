@@ -85,6 +85,6 @@ class Intersection
   @v = v
   @w = w
   @segment.intersections << self
-end
+ end
 
 end
