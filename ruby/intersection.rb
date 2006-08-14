@@ -8,9 +8,9 @@ class Intersection
 
  def Intersection.of(triangle, segment)
   
-  t0 = triangle.node(0)
-  t1 = triangle.node(1)
-  t2 = triangle.node(2)
+  t0 = triangle.original_node0
+  t1 = triangle.original_node1
+  t2 = triangle.original_node2
 
   s0 = segment.node(0)
   s1 = segment.node(1)

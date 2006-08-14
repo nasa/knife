@@ -20,17 +20,14 @@ class Triangle
   @segments[index]
  end
 
- def node(index)
-  case index
-  when 0
+ def original_node0
    segment(2).node(0)
-  when 1
+ end
+ def original_node1
    segment(0).node(0)
-  when 2
+ end
+ def original_node2
    segment(1).node(0)
-  else
-   nil
-  end
  end
 
  def triangulate_cuts

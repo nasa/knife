@@ -43,11 +43,10 @@ class TestTriangle < Test::Unit::TestCase
   segment2 = Segment.new(node0,node1)
 
   triangle = Triangle.new(segment0,segment1,segment2)
-  assert_nil triangle.node(-1)
-  assert_nil triangle.node(3)
-  assert_equal node0, triangle.node(0)
-  assert_equal node1, triangle.node(1)
-  assert_equal node2, triangle.node(2)
+
+  assert_equal node0, triangle.original_node0
+  assert_equal node1, triangle.original_node1
+  assert_equal node2, triangle.original_node2
  end
 
 end
