@@ -26,9 +26,9 @@ class TestTriangle < Test::Unit::TestCase
 
   assert triangle.is_a?(Triangle), "not a triangle"
 
-  assert_equal segment0, triangle[0]
-  assert_equal segment1, triangle[1]
-  assert_equal segment2, triangle[2]
+  assert_equal segment0, triangle.segment(0)
+  assert_equal segment1, triangle.segment(1)
+  assert_equal segment2, triangle.segment(2)
  end
 
  def test_node

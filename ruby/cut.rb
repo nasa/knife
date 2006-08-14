@@ -6,11 +6,11 @@ class Cut
 
  def Cut.between(triangle0, triangle1)
   intersections = Array.new
-  triangle0.each do |segment|
+  triangle0.segments.each do |segment|
    intersection = Intersection.of(triangle1, segment)
    intersections << intersection if intersection
   end
-  triangle1.each do |segment|
+  triangle1.segments.each do |segment|
    intersection = Intersection.of(triangle0, segment)
    intersections << intersection if intersection
   end

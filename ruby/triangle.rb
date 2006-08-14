@@ -2,20 +2,24 @@
 
 class Triangle < Array
 
+ attr_reader :segments
+
  def initialize(segment0,segment1,segment2)
-  self << segment0
-  self << segment1
-  self << segment2
+  @segments = [ segment0, segment1, segment2 ]
+ end
+ 
+ def segment(index)
+  @segments[index]
  end
 
  def node(index)
   case index
   when 0
-   self[2][0]
+   @segments[2][0]
   when 1
-   self[0][0]
+   @segments[0][0]
   when 2
-   self[1][0]
+   @segments[1][0]
   else
    nil
   end
