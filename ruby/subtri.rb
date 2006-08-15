@@ -14,6 +14,13 @@ class Subtri
   (n0==node||n1==node||n2==node)
  end
 
+ def orient(node)
+  return [n0, n1, n2] if node==n0
+  return [n1, n2, n0] if node==n1
+  return [n2, n0, n1] if node==n2
+  raise "node #{node} not found for orient"
+ end
+
  def barycentric(node)
   u0 = n1.v-n0.v
   u1 = n1.w-n0.w

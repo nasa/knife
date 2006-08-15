@@ -25,6 +25,25 @@ class TestSubtri < Test::Unit::TestCase
   assert_equal( true, subtri.has?("n2"))
  end
 
+ def test_orient
+  subtri = Subtri.new("n0", "n1", "n2")
+  n0,n1,n2 = subtri.orient("n0")
+  assert_equal "n0", n0
+  assert_equal "n1", n1
+  assert_equal "n2", n2
+  n1,n2,n0 = subtri.orient("n1")
+  assert_equal "n0", n0
+  assert_equal "n1", n1
+  assert_equal "n2", n2
+  n2,n0,n1 = subtri.orient("n2")
+  assert_equal "n0", n0
+  assert_equal "n1", n1
+  assert_equal "n2", n2
+  assert_raise RuntimeError do
+   subtri.orient("dog")
+  end
+ end
+
  def test_barycentric
   subtri = Subtri.new(Subnode.new(1.0,0.0,0.0),
                       Subnode.new(0.0,1.0,0.0),
