@@ -50,6 +50,7 @@ class Triangle
    node0 = add_unique_subnode(cut.intersection0)
    node1 = add_unique_subnode(cut.intersection1)
   end
+  self
  end
 
  def add_unique_subnode(intersection)

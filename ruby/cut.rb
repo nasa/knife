@@ -4,6 +4,8 @@ require "intersection"
 
 class Cut
 
+ attr_reader :intersection0, :intersection1
+
  def Cut.between(triangle0, triangle1)
   intersections = Array.new
   triangle0.segments.each do |segment|
