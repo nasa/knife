@@ -117,7 +117,7 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 2, triangle.subtris.size
  end
 
- def test_cut_with_into_two_pieces
+ def test_cut_into_two_pieces
   # 2
   # | \  
   # |   4
@@ -141,6 +141,38 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal triangle, triangle.triangulate_cuts
   assert_equal 5, triangle.subnodes.size
   assert_equal 3, triangle.subtris.size
+ end
+
+ def test_cut_requiring_reconstruction
+  segment0 = Segment.new(@node1,@node2)
+  segment1 = Segment.new(@node2,@node0)
+  segment2 = Segment.new(@node0,@node1)
+  triangle = Triangle.new(segment0,segment1,segment2)
+
+  nodea = Node.new(  0.8, -1.0, -1.0)
+  nodeb = Node.new(  0.8,  3.0, -1.0)
+  nodec = Node.new(  0.8, -1.0,  3.0)
+  segmenta = Segment.new(nodeb,nodec)
+  segmentb = Segment.new(nodec,nodea)
+  segmentc = Segment.new(nodea,nodeb)
+  cutter = Triangle.new(segmenta,segmentb,segmentc)
+
+  Cut.between(triangle,cutter)
+
+  nodea = Node.new(  0.5, -1.0, -1.0)
+  nodeb = Node.new(  0.5,  3.0, -1.0)
+  nodec = Node.new(  0.5, -1.0,  3.0)
+  segmenta = Segment.new(nodeb,nodec)
+  segmentb = Segment.new(nodec,nodea)
+  segmentc = Segment.new(nodea,nodeb)
+  cutter = Triangle.new(segmenta,segmentb,segmentc)
+
+  Cut.between(triangle,cutter)
+
+  assert_equal triangle, triangle.triangulate_cuts
+  triangle.eps
+  assert_equal 7, triangle.subnodes.size
+  assert_equal 5, triangle.subtris.size
  end
 
 end
