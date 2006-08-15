@@ -117,6 +117,25 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 2, triangle.subtris.size
  end
 
+ def test_find_subtri_with
+  segment0 = Segment.new(@node1,@node2)
+  segment1 = Segment.new(@node2,@node0)
+  segment2 = Segment.new(@node0,@node1)
+
+  triangle = Triangle.new(segment0,segment1,segment2)
+  assert_nil triangle.find_subtri_with(triangle.subnodes[1],
+                                       triangle.subnodes[0])
+  assert_equal( triangle.subtris[0], 
+                triangle.find_subtri_with(triangle.subnodes[0],
+                                          triangle.subnodes[1]) )
+  assert_equal( triangle.subtris[0], 
+                triangle.find_subtri_with(triangle.subnodes[1],
+                                          triangle.subnodes[2]) )
+  assert_equal( triangle.subtris[0], 
+                triangle.find_subtri_with(triangle.subnodes[2],
+                                          triangle.subnodes[0]) )
+ end
+
  def test_cut_into_two_pieces
   # 2
   # | \  

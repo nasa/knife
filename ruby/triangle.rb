@@ -49,6 +49,9 @@ class Triangle
   @cuts.each do |cut|
    node0 = add_unique_subnode(cut.intersection0)
    node1 = add_unique_subnode(cut.intersection1)
+   unless find_subtri_with(node0,node1)
+    raise "cut is not triangle side"
+   end
   end
   self
  end
@@ -126,6 +129,15 @@ class Triangle
   @subtris << Subtri.new(subtri.n0, subtri.n1, subnode)
   subtri.n0 = subnode
   self
+ end
+
+ def find_subtri_with(node0,node1)
+  @subtris.each do |canidate|
+   return canidate if (((node0 == canidate.n0) && (node1 == canidate.n1 )) ||
+                       ((node0 == canidate.n1) && (node1 == canidate.n2 )) ||
+                       ((node0 == canidate.n2) && (node1 == canidate.n0 )))
+  end
+  nil
  end
 
  def eps(eps_filename = 'triangle.eps')
