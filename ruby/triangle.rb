@@ -23,6 +23,27 @@ class Triangle
   @segments[index]
  end
 
+ def center
+  [ (original_node0[0]+original_node1[0]+original_node2[0])/3.0,
+    (original_node0[1]+original_node1[1]+original_node2[1])/3.0,
+    (original_node0[2]+original_node1[2]+original_node2[2])/3.0 ]
+ end
+
+ def diameter
+  l2 = (original_node0[0]-center[0])**2 + 
+       (original_node0[1]-center[1])**2 + 
+       (original_node0[2]-center[2])**2 
+  d2 = (original_node1[0]-center[0])**2 + 
+       (original_node1[1]-center[1])**2 + 
+       (original_node1[2]-center[2])**2
+  l2 = d2 if d2 > l2
+  d2 = (original_node2[0]-center[0])**2 + 
+       (original_node2[1]-center[1])**2 + 
+       (original_node2[2]-center[2])**2
+  l2 = d2 if d2 > l2
+  1.0001*Math::sqrt(l2)
+ end
+
  def original_node0
   return segment(2).node(0) if segment(2).node(0) == segment(1).node(0)  
   return segment(2).node(0) if segment(2).node(0) == segment(1).node(1)  
