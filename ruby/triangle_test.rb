@@ -94,6 +94,26 @@ class TestTriangle < Test::Unit::TestCase
   second_node = triangle.add_unique_subnode(intersection)
   assert_equal 4, triangle.subnodes.size
   assert_equal first_node, second_node
+
+  assert_equal 3, triangle.subtris.size
+ end
+
+ def Xtest_add_subnode_into_subtri_side
+  segment0 = Segment.new(@node1,@node2)
+  segment1 = Segment.new(@node2,@node0)
+  segment2 = Segment.new(@node0,@node1)
+
+  triangle = Triangle.new(segment0,segment1,segment2)
+  nodea = Node.new(0.3, 0.3,-1.0)
+  nodeb = Node.new(0.3, 0.3, 3.0)
+  nodec = Node.new(0.3,-1.0, 0.0)
+  segmenta = Segment.new(nodeb,nodec)
+  segmentb = Segment.new(nodea,nodec)
+  segmentc = Segment.new(nodea,nodeb)
+  cutter = Triangle.new(segmenta,segmentb,segmentc)
+  intersection = Intersection.of(cutter,segment2)
+  
+  assert_equal 2, triangle.subtris.size
  end
 
 end
