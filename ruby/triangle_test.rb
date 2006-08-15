@@ -5,6 +5,7 @@ require 'test/unit'
 require 'node'
 require 'segment'
 require 'triangle'
+require 'intersection'
 
 # todo
 # - test that segments from a continuous loop
@@ -33,7 +34,8 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal segment1, triangle.segment(1)
   assert_equal segment2, triangle.segment(2)
 
-  assert_equal [], triangle.cuts
+  assert_equal 3, triangle.subnodes.size
+  assert_equal 1, triangle.subtris.size
  end
 
  def test_node
@@ -73,6 +75,25 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal @node0, triangle.original_node0
   assert_equal @node1, triangle.original_node1
   assert_equal @node2, triangle.original_node2
+ end
+
+ def test_add_unique_subnode
+  segment0 = Segment.new(@node1,@node2)
+  segment1 = Segment.new(@node2,@node0)
+  segment2 = Segment.new(@node0,@node1)
+
+  triangle = Triangle.new(segment0,segment1,segment2)
+  nodea = Node.new(0.3,0.3,-1.0)
+  nodeb = Node.new(0.3,0.3, 3.0)
+  segment = Segment.new(nodea,nodeb)
+  intersection = Intersection.of(triangle,segment)
+  
+  first_node = triangle.add_unique_subnode(intersection)
+  assert_equal 4, triangle.subnodes.size
+ 
+  second_node = triangle.add_unique_subnode(intersection)
+  assert_equal 4, triangle.subnodes.size
+  assert_equal first_node, second_node
  end
 
 end
