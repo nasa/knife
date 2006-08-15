@@ -6,6 +6,7 @@ $:.push refine_path
 
 require 'node'
 require 'segment'
+require 'triangle'
 
 # for Grid...
 require 'Adj/Adj'
@@ -31,7 +32,7 @@ surface_grid.nface.times do |face_index|
  end
 end
 
-puts "cut surface has #{traingles} triangless"
+puts "cut surface has #{triangles} triangless"
 
 node = 0
 surface_grid.nnode.times do |node_index|
@@ -70,21 +71,21 @@ surface_grid.nface.times do |face_index|
   node1 = [face[0],face[1]].max
   unless segment[node0][node1]
    segment[node0][node1] = Segment.new(surface_node[node0],surface_node[node1])
-   segments++
+   segments += 1
   end
 
   node0 = [face[1],face[2]].min
   node1 = [face[1],face[2]].max
   unless segment[node0][node1]
    segment[node0][node1] = Segment.new(surface_node[node0],surface_node[node1])
-   segments++
+   segments += 1
   end
 
   node0 = [face[2],face[0]].min
   node1 = [face[2],face[0]].max
   unless segment[node0][node1]
    segment[node0][node1] = Segment.new(surface_node[node0],surface_node[node1])
-   segments++
+   segments += 1
   end
 
  end
