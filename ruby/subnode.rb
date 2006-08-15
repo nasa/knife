@@ -1,6 +1,6 @@
-#  node of a triangle created from 
+#  node of a triangle
 
-class TriangleNode
+class Subnode
 
  attr_reader :u, :v, :w
  attr_reader :parent
