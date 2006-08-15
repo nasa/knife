@@ -134,8 +134,10 @@ near_list.each_index do |index|
 end
 puts "the tree built in #{Time.now-start_time} sec"
 
+#load up volume to cut
 volume_grid = Grid.from_FAST File.expand_path("~/GRIDEX/refine/test/om6box.fgrid")
 
+#make volume nodes
 volume_node = Array.new(volume_grid.nnode)
 
 volume_grid.nnode.times do |node_index|
@@ -143,6 +145,7 @@ volume_grid.nnode.times do |node_index|
  volume_node[node] = Node.new(xyz[0],xyz[1],xyz[2])
 end
 
+#make volume segments
 volume_grid.createConn
 
 segment = Array.new(volume_grid.nconn)
