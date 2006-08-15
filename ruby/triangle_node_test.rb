@@ -16,6 +16,8 @@ class TestTriangleNode < Test::Unit::TestCase
   assert_in_delta 0.2, triangle_node.u, TOL
   assert_in_delta 0.3, triangle_node.v, TOL
   assert_in_delta 0.5, triangle_node.w, TOL
+  assert_nil triangle_node.parent
+
   triangle_node = TriangleNode.new(0.2,0.3,0.5,"dummy parent")
   assert_in_delta 0.2, triangle_node.u, TOL
   assert_in_delta 0.3, triangle_node.v, TOL
