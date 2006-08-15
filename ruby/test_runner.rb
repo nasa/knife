@@ -6,6 +6,8 @@ Dir['*_test.rb'].each do |test|
  failed << test unless system(File.expand_path(test))
 end
 
+puts
+
 if failed.empty?
  puts "All tests passed." 
 else
