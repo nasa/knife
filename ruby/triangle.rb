@@ -50,7 +50,7 @@ class Triangle
    node0 = add_unique_subnode(cut.intersection0)
    node1 = add_unique_subnode(cut.intersection1)
    unless find_subtri_with(node0,node1)
-    raise "cut is not triangle side"
+    raise "cut is not subtriangle side"
    end
   end
   self
