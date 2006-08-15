@@ -146,7 +146,7 @@ class Triangle
   set size ratio -1
   set xlabel 'X'
   set ylabel 'Y'
-  plot '-' title '' with lines lw 0.5
+  plot [-0.1:1.1] [-0.1:1.1] '-' title '' with lines lw 0.5
   END_OF_HEADER
   @subtris.each do |subtri|
    node = subtri.n0
