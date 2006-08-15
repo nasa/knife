@@ -10,6 +10,10 @@ class Subtri
   @n2 = n2
  end
 
+ def has?(node)
+  (n0==node||n1==node||n2==node)
+ end
+
  def barycentric(node)
   u0 = n1.v-n0.v
   u1 = n1.w-n0.w

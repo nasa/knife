@@ -17,6 +17,14 @@ class TestSubtri < Test::Unit::TestCase
   assert_equal "n2", subtri.n2
  end
 
+ def test_has?
+  subtri = Subtri.new("n0", "n1", "n2")
+  assert_equal( false, subtri.has?("dog"))
+  assert_equal( true, subtri.has?("n0"))
+  assert_equal( true, subtri.has?("n1"))
+  assert_equal( true, subtri.has?("n2"))
+ end
+
  def test_barycentric
   subtri = Subtri.new(Subnode.new(1.0,0.0,0.0),
                       Subnode.new(0.0,1.0,0.0),
