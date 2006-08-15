@@ -128,5 +128,39 @@ class Triangle
   self
  end
 
+ def eps(eps_filename = 'triangle.eps')
+  temp_file_name = 'gnuplot_mesh_command'
+  File.open(temp_file_name,'w') do |f|
+   f.puts gnuplot_command(eps_filename)
+  end
+  system("gnuplot #{temp_file_name}")
+  File.delete(temp_file_name)
+  self
+ end
+
+ def gnuplot_command(eps_filename)
+  output = <<-END_OF_HEADER
+  reset
+  set term postscript eps
+  set output '#{eps_filename}'
+  set size ratio -1
+  set xlabel 'X'
+  set ylabel 'Y'
+  plot '-' title '' with lines lw 0.5
+  END_OF_HEADER
+  @subtris.each do |subtri|
+   node = subtri.n0
+   output << sprintf("%25.15f %25.15f\n",node.v,node.w)
+   node = subtri.n1
+   output << sprintf("%25.15f %25.15f\n",node.v,node.w)
+   node = subtri.n2
+   output << sprintf("%25.15f %25.15f\n",node.v,node.w)
+   node = subtri.n0
+   output << sprintf("%25.15f %25.15f\n",node.v,node.w)
+   output << "\n\n"
+  end
+  output+"e\n"
+ end
+
 
 end
