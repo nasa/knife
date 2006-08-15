@@ -74,4 +74,17 @@ class TestCut < Test::Unit::TestCase
   assert_equal cut,  triangle.cuts[0]
  end
 
+ def test_initialize
+  node0 = Node.new(  2.0, -1.0, -1.0)
+  node1 = Node.new(  2.0,  1.5, -1.0)
+  node2 = Node.new(  2.0,  1.5,  1.0)
+  segment0 = Segment.new(node1,node2)
+  segment1 = Segment.new(node2,node0)
+  segment2 = Segment.new(node0,node1)
+  triangle = Triangle.new(segment0,segment1,segment2)
+  cut = Cut.new("i0","i1",@triangle,triangle)
+  assert_equal "i0", cut.intersection0
+  assert_equal "i1", cut.intersection1
+ end
+
 end
