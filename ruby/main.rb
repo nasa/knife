@@ -120,6 +120,7 @@ surface_grid.nface.times do |face_index|
  end
 end
 
+#build a near tree to speed up searches
 start_time = Time.now
 near_list = Array.new(cut_surface.size)
 cut_surface.each_with_index do |triangle, index|
@@ -134,6 +135,26 @@ end
 puts "the tree built in #{Time.now-start_time} sec"
 
 volume_grid = Grid.from_FAST File.expand_path("~/GRIDEX/refine/test/om6box.fgrid")
+
+volume_node = Array.new(volume_grid.nnode)
+
+volume_grid.nnode.times do |node_index|
+ xyz = volume_grid.nodeXYZ(node_index)
+ volume_node[node] = Node.new(xyz[0],xyz[1],xyz[2])
+end
+
+volume_grid.createConn
+
+segment = Array.new(volume_grid.nconn)
+
+volume_grid.nconn.times do |conn_index|
+ nodes = volume_grid.conn2Node(conn_index)
+ segment[conn_index] = Segment.new(nodes.min,nodes.max)
+end
+
+cell2tri = Array.new(4*volume_grid.ncell)
+
+
 
 volume = Array.new
 volume_grid.ncell.times do |cell_index|
