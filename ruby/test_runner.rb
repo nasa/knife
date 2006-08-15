@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
 # unit test runner
 
+bar = ""
 failed = Array.new
 Dir['*_test.rb'].each do |test|
- failed << test unless system(File.expand_path(test))
+ if system(File.expand_path(test))
+  bar += "G"
+ else
+  bar += "R"
+  failed << test
+ end 
 end
 
 puts
@@ -14,3 +20,5 @@ else
  puts "Failed tests:" 
  puts failed
 end
+
+puts bar
