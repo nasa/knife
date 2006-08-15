@@ -144,8 +144,8 @@ class Triangle
   set term postscript eps
   set output '#{eps_filename}'
   set size ratio -1
-  set xlabel 'X'
-  set ylabel 'Y'
+  set xlabel 'V'
+  set ylabel 'W'
   plot [-0.1:1.1] [-0.1:1.1] '-' title '' with lines lw 0.5
   END_OF_HEADER
   @subtris.each do |subtri|
