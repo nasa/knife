@@ -47,13 +47,35 @@ class Triangle
 
  def triangulate_cuts
   @cuts.each do |cut|
-   node0 = add_unique_subnode(cut.intersection0)
-   node1 = add_unique_subnode(cut.intersection1)
-   unless find_subtri_with(node0,node1)
-    raise "cut is not subtriangle side"
+   subnode0 = add_unique_subnode(cut.intersection0)
+   subnode1 = add_unique_subnode(cut.intersection1)
+   unless find_subtri_with(subnode0,subnode1)
+    raise "cut is not subtriangle side" unless recover_edge(subnode0,subnode1)
    end
   end
   self
+ end
+
+ def each_subtri_around_subnode(subnode)
+  @subtris.each do |subtri|
+   yield subtri if subtri.has?(subnode)
+  end
+ end
+
+ def first_blocking_subtri_side(subnode0,subnode1)
+  each_subtri_around_subnode(subnode0) do |subtri|
+   n0, n1, n2 = subtri.orient(subnode0)
+   return n2, n1 if (Subtri.right_handed?(n0,n1,subnode1) &&
+                     Subtri.right_handed?(n2,n0,subnode1) )
+  end
+  raise "first_triangle.nil?"
+ end
+
+ def recover_edge(subnode0,subnode1)
+  left_node,right_node = first_blocking_subtri_side(subnode0,subnode1)
+  swap_side(left_node,right_node)
+  return true if find_subtri_with(subnode0,subnode1)
+  recover_edge(subnode0,subnode1)
  end
 
  def add_unique_subnode(intersection)
@@ -139,6 +161,27 @@ class Triangle
   end
   nil
  end
+
+ def swap_side(node0,node1)
+  subtri0 = find_subtri_with( node0, node1)
+  subtri1 = find_subtri_with( node1, node0)
+  raise "subtri side not found in swap" if subtri0.nil? || subtri1.nil?
+  n0, n1, n2 = subtri0.orient(node0)
+  node2 = n2
+  n0, n1, n2 = subtri1.orient(node1)
+  node3 = n2
+
+  subtri0.n0 = node1
+  subtri0.n1 = node2
+  subtri0.n2 = node3
+
+  subtri1.n0 = node0
+  subtri1.n1 = node3
+  subtri1.n2 = node2
+
+  self
+ end
+
 
  def eps(eps_filename = 'triangle.eps')
   temp_file_name = 'gnuplot_mesh_command'
