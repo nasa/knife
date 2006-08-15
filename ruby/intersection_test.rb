@@ -17,10 +17,10 @@ class TestIntersection < Test::Unit::TestCase
   @segment1 = Segment.new(@node2,@node0)
   @segment2 = Segment.new(@node0,@node1)
   @triangle = Triangle.new(@segment0,@segment1,@segment2)
-  @nodedn = Node.new(0.3,0.3,-1.0)
-  @nodeup = Node.new(0.3,0.3, 3.0)
-  @nodemd = Node.new(0.3,1.0, 0.0)
-  @segment = Segment.new(@nodedn,@nodeup)
+  @nodea = Node.new(0.3,0.3,-1.0)
+  @nodeb = Node.new(0.3,0.3, 3.0)
+  @nodec = Node.new(0.3,1.0, 0.0)
+  @segment = Segment.new(@nodea,@nodeb)
  end
  def setup; set_up; end
 
@@ -89,22 +89,33 @@ class TestIntersection < Test::Unit::TestCase
 
  def test_uvw
   tol = 1.0e-15
-  segmentmd = Segment.new(@nodeup,@nodedn)
-  segmentup = Segment.new(@nodedn,@nodemd)
-  segmentdn = Segment.new(@nodemd,@nodeup)
-  intersection = Intersection.of(@triangle,segmentmd)
+  segmenta = Segment.new(@nodeb,@nodec)
+  segmentb = Segment.new(@nodea,@nodec)
+  segmentc = Segment.new(@nodea,@nodeb)
+  intersection = Intersection.of(@triangle,segmentc)
 
   u,v,w = intersection.uvw(@triangle)
   assert_in_delta 0.40, u, tol
   assert_in_delta 0.30, v, tol
   assert_in_delta 0.30, w, tol
 
-  triangle = Triangle.new(segmentup,segmentup,segmentup)
-
+  triangle = Triangle.new(segmenta,segmentb,segmentc)
   u,v,w = intersection.uvw(triangle)
-  assert_in_delta 0.25, u, tol
-  assert_in_delta 0.75, v, tol
+  assert_in_delta 0.75, u, tol
+  assert_in_delta 0.25, v, tol
   assert_in_delta 0.00, w, tol
+
+  triangle = Triangle.new(segmenta,segmentc,segmentb)
+  u,v,w = intersection.uvw(triangle)
+  assert_in_delta 0.75, u, tol
+  assert_in_delta 0.00, v, tol
+  assert_in_delta 0.25, w, tol
+
+  triangle = Triangle.new(segmentc,segmenta,segmentb)
+  u,v,w = intersection.uvw(triangle)
+  assert_in_delta 0.00, u, tol
+  assert_in_delta 0.75, v, tol
+  assert_in_delta 0.25, w, tol
  end
 
 end
