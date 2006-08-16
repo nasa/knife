@@ -208,7 +208,7 @@ start_time = Time.now
 count = 0
 volume_triangles.each do |triangle|
  count += 1 
- puts "#{count} of #{volume_triangles.size}" if count.divmod(100)[1]==0
+ printf('%6d of %6d',count,volume_triangles.size) if count.divmod(100)[1]==0
  center = triangle.center
  diameter = triangle.diameter
  probe = Near.new(-1,center[0],center[1],center[2],diameter)
