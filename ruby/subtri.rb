@@ -16,8 +16,6 @@ class Subtri
   area(n0,n1,n2) > 1.0e-15
  end
 
-
-
  def initialize(n0, n1, n2)
   @n0 = n0
   @n1 = n1
