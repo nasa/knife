@@ -228,7 +228,11 @@ count = 0
 cut_surface.each do |triangle|
  count += 1 
  printf('%6d of %6d\n',count,cut_surface.size) if count.divmod(100)[1]==0
- triangle.triangulate_cuts
+ begin
+  triangle.triangulate_cuts
+ rescue RuntimeError
+  puts "#{count} raised `#$!' at "+triangle.center.join(',')
+ end
 end
 puts "the cut triangulation required #{Time.now-start_time} sec"
 
