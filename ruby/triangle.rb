@@ -13,9 +13,9 @@ class Triangle
  def initialize(segment0,segment1,segment2)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @subnodes = [ Subnode.new(1.0,0.0,0.0),
-                Subnode.new(0.0,1.0,0.0),
-                Subnode.new(0.0,0.0,1.0)]
+  @subnodes = [ Subnode.new(1.0,0.0,0.0,original_node0),
+                Subnode.new(0.0,1.0,0.0,original_node1),
+                Subnode.new(0.0,0.0,1.0,original_node2)]
   @subtris = [ Subtri.new(@subnodes[0],@subnodes[1],@subnodes[2]) ]
  end
  
@@ -203,7 +203,6 @@ class Triangle
   self
  end
 
-
  def eps(eps_filename = 'triangle.eps')
   temp_file_name = 'gnuplot_mesh_command'
   File.open(temp_file_name,'w') do |f|
@@ -237,6 +236,5 @@ class Triangle
   end
   output+"e\n"
  end
-
 
 end
