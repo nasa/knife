@@ -12,4 +12,8 @@ class Subnode
   @parent = parent
  end
 
+ def x; parent.x; end
+ def y; parent.y; end
+ def z; parent.z; end
+
 end
