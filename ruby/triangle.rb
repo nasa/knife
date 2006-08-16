@@ -160,7 +160,7 @@ class Triangle
    if ( (node0 == subtri.n2 && node1 == subtri.n0) ||
         (node1 == subtri.n2 && node0 == subtri.n0) )
     @subtris << Subtri.new(subnode, subtri.n1, subtri.n2 )
-    subtri.n0 = subnode
+    subtri.n2 = subnode
     return self
    end
   end
