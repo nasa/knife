@@ -7,7 +7,6 @@ require 'subnode'
 
 class TestSubtri < Test::Unit::TestCase
  
-
  def test_right_handed?
   assert_equal true,  Subtri.right_handed?(Subnode.new(1.0,0.0,0.0),
                                            Subnode.new(0.0,1.0,0.0),
@@ -74,6 +73,5 @@ class TestSubtri < Test::Unit::TestCase
   assert_in_delta v, bary[1], tol
   assert_in_delta w, bary[2], tol
  end
-
 
 end
