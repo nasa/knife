@@ -49,7 +49,14 @@ class Subtri
   vv = v0*v0+v1*v1
 
   denom = uv*uv - uu*vv
-  raise "barycentric denom #{denom} small" if denom.abs < 1.0e-15
+  if denom.abs < 1.0e-15
+   puts "bary"
+   printf("node [%25.18f,%25.18f]\n",node.v,node.w)
+   printf("n0   [%25.18f,%25.18f]\n",n0.v,n0.w)
+   printf("n1   [%25.18f,%25.18f]\n",n1.v,n1.w)
+   printf("n2   [%25.18f,%25.18f]\n",n2.v,n2.w)
+   raise "barycentric denom #{denom} small"
+  end
   s = (uv*wv-vv*wu)/denom;
   t = (uv*wu-uu*wv)/denom;
 
