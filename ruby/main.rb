@@ -228,11 +228,4 @@ File.open('cut_om6.t','w') do |f|
  cut_surface.each do |triangle|
   f.print triangle.tecplot_zone
  end
- volume.each do |poly|
-  if poly.cut?
-   poly.exterior.each do |triangle|
-    f.print triangle.tecplot_zone
-   end
-  end
- end
 end
