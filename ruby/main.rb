@@ -235,6 +235,7 @@ cut_surface.each do |triangle|
   triangle.dump(sprintf('tri%04d.t',  count))
   puts "#{count} raised `#$!' at "+triangle.center.join(',')
  end
+ puts triangle.min_subtri_area if triangle.min_subtri_area < 1.0e-15
 end
 puts "the cut triangulation required #{Time.now-start_time} sec"
 
