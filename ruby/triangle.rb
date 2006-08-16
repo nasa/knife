@@ -263,4 +263,12 @@ class Triangle
   end
  end
 
+ def min_subtri_area
+  area = 1.0
+  @subtris.each do |subtri|
+   area = [area, subtri.area].min
+  end
+  area
+ end
+
 end
