@@ -16,6 +16,9 @@ class TestNode < Test::Unit::TestCase
   assert_in_delta 1.1, node[0], TOL
   assert_in_delta 2.2, node[1], TOL
   assert_in_delta 3.3, node[2], TOL
+  assert_in_delta 1.1, node.x, TOL
+  assert_in_delta 2.2, node.y, TOL
+  assert_in_delta 3.3, node.z, TOL
  end
 
 end
