@@ -156,6 +156,20 @@ volume_grid.nconn.times do |conn_index|
 end
 
 cell2tri = Array.new(4*volume_grid.ncell)
+volume_grid.ncell.times do |cell_index|
+ cell_nodes = volume_grid.cell(cell_index)
+ # 0
+ unless cell2tri[0+4*cell_index]
+  tri_nodes = [cell_nodes[1],cell_nodes[2],cell_nodes[3]]
+  segment0 = segment[volume_grid.findConn(tri_nodes[1],tri_nodes[2])]
+  segment1 = segment[volume_grid.findConn(tri_nodes[2],tri_nodes[0])]
+  segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
+  tri = Triangle.new( segment0, segment1, segment2)
+  cell2tri[0+4*cell_index] = tri
+  other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
+                                                   tri_nodes[2],cell_index)
+ end  
+end
 
 
 
