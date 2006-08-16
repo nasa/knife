@@ -5,26 +5,17 @@ require 'subtri'
 
 class Triangle
 
+ attr_reader :original_node0, :original_node1, :original_node2
+
  attr_reader :segments
  attr_reader :cuts
  attr_reader :subnodes
  attr_reader :subtris
 
- attr_reader :original_node0, :original_node1, :original_node2
-
  def initialize(segment0,segment1,segment2)
-  @original_node0=segment2.node(0) if segment2.node(0)==segment1.node(0)  
-  @original_node0=segment2.node(0) if segment2.node(0)==segment1.node(1)  
-  @original_node0=segment2.node(1) if segment2.node(1)==segment1.node(0)  
-  @original_node0=segment2.node(1) if segment2.node(1)==segment1.node(1)  
-  @original_node1=segment0.node(0) if segment0.node(0)==segment2.node(0)  
-  @original_node1=segment0.node(0) if segment0.node(0)==segment2.node(1)  
-  @original_node1=segment0.node(1) if segment0.node(1)==segment2.node(0)  
-  @original_node1=segment0.node(1) if segment0.node(1)==segment2.node(1)  
-  @original_node2=segment0.node(0) if segment0.node(0)==segment1.node(0)  
-  @original_node2=segment0.node(0) if segment0.node(0)==segment1.node(1)  
-  @original_node2=segment0.node(1) if segment0.node(1)==segment1.node(0)  
-  @original_node2=segment0.node(1) if segment0.node(1)==segment1.node(1)  
+  @original_node0=segment1.common_node(segment2)
+  @original_node1=segment0.common_node(segment2)
+  @original_node2=segment0.common_node(segment1)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
   @subnodes = [ Subnode.new(1.0,0.0,0.0,@original_node0),
