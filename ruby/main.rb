@@ -258,7 +258,11 @@ volume_triangles.each do |triangle|
   triangle.dump(sprintf('vol%04d.t',  count))
   puts "#{count} raised `#$!' at "+triangle.center.join(',')
  end
- puts triangle.min_subtri_area if triangle.min_subtri_area < 1.0e-15
+ if triangle.min_subtri_area < 1.0e-15
+  puts triangle.min_subtri_area 
+  triangle.eps( sprintf('vol%04d.eps',count))
+  triangle.dump(sprintf('vol%04d.t',  count))
+ end
 end
 puts "the volume triangulation required #{Time.now-start_time} sec"
 
