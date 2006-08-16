@@ -7,6 +7,7 @@ $:.push refine_path
 require 'node'
 require 'segment'
 require 'triangle'
+require 'polyhedron'
 require 'cut'
 
 # for Grid...
@@ -159,7 +160,6 @@ volume_grid.nconn.times do |conn_index|
 end
 puts "#{volume_grid.nconn} volume segments created"
 
-
 def cell2face(face)
  case face
  when 0; [1,3,2]
@@ -180,10 +180,16 @@ end
 cell2tri = Array.new(4*volume_grid.ncell)
 volume_triangles = Array.new
 
+volume_poly = Array.new(volume_grid.ncell)
+
 volume_grid.ncell.times do |cell_index|
+ poly = Polyhedron.new
+ volume_poly[cell_index] = poly
  cell_nodes = volume_grid.cell(cell_index)
  4.times do |face_index|
-  unless cell2tri[face_index+4*cell_index]
+  if cell2tri[face_index+4*cell_index]
+   poly.add_reversed_triangle cell2tri[face_index+4*cell_index]
+  else
    tri_index = cell2face(face_index)
    tri_nodes = cell_nodes.values_at(tri_index[0],tri_index[1],tri_index[2])
    segment0 = segment[volume_grid.findConn(tri_nodes[1],tri_nodes[2])]
@@ -191,7 +197,8 @@ volume_grid.ncell.times do |cell_index|
    segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
    tri = Triangle.new( segment0, segment1, segment2)
    volume_triangles << tri
-   cell2tri[0+4*cell_index] = tri
+   cell2tri[face_index+4*cell_index] = tri
+   poly.add_triangle tri
    other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
                                                     tri_nodes[2],cell_index)
    if other_cell >= 0
