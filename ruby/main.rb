@@ -215,7 +215,7 @@ start_time = Time.now
 count = 0
 volume_triangles.each do |triangle|
  count += 1 
- printf("%6d of %6d\n",count,volume_triangles.size) if count.divmod(100)[1]==0
+ printf("%6d of %6d\n",count,volume_triangles.size) if count.divmod(1000)[1]==0
  center = triangle.center
  diameter = triangle.diameter
  probe = Near.new(-1,center[0],center[1],center[2],diameter)
@@ -245,6 +245,22 @@ cut_surface.each do |triangle|
  puts triangle.min_subtri_area if triangle.min_subtri_area < 1.0e-15
 end
 puts "the cut triangulation required #{Time.now-start_time} sec"
+
+start_time = Time.now
+count = 0
+volume_triangles.each do |triangle|
+ count += 1 
+ printf("%6d of %6d\n",count,cut_surface.size) if count.divmod(1000)[1]==0
+ begin
+  triangle.triangulate_cuts
+ rescue RuntimeError
+  triangle.eps( sprintf('vol%04d.eps',count))
+  triangle.dump(sprintf('vol%04d.t',  count))
+  puts "#{count} raised `#$!' at "+triangle.center.join(',')
+ end
+ puts triangle.min_subtri_area if triangle.min_subtri_area < 1.0e-15
+end
+puts "the volume triangulation required #{Time.now-start_time} sec"
 
 File.open('cut_om6.t','w') do |f|
  f.print cut_surface.first.tecplot_header
