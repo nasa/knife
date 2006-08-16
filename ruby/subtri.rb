@@ -41,4 +41,8 @@ class Subtri
   [area0/total, area1/total, area2/total]
  end
 
+ def area
+  Subtri.area(n0,n1,n2)
+ end
+
 end
