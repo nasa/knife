@@ -14,6 +14,8 @@ end
 
 puts
 
+puts bar
+
 if failed.empty?
  puts "All tests passed." 
 else
@@ -21,4 +23,3 @@ else
  puts failed
 end
 
-puts bar
