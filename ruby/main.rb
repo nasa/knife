@@ -145,6 +145,7 @@ volume_grid.nnode.times do |node_index|
  xyz = volume_grid.nodeXYZ(node_index)
  volume_node[node] = Node.new(xyz[0],xyz[1],xyz[2])
 end
+puts "#{volume_grid.nnode} volume nodes created"
 
 #make volume segments
 volume_grid.createConn
@@ -153,8 +154,11 @@ segment = Array.new(volume_grid.nconn)
 
 volume_grid.nconn.times do |conn_index|
  nodes = volume_grid.conn2Node(conn_index)
- segment[conn_index] = Segment.new(nodes.min,nodes.max)
+ segment[conn_index] = Segment.new(volume_node[nodes.min],
+                                   volume_node[nodes.max])
 end
+puts "#{volume_grid.nconn} volume segments created"
+
 
 def cell2face(face)
  case face
@@ -186,6 +190,10 @@ volume_grid.ncell.times do |cell_index|
    segment1 = segment[volume_grid.findConn(tri_nodes[2],tri_nodes[0])]
    segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
    tri = Triangle.new( segment0, segment1, segment2)
+   puts "tri"
+   puts tri.original_node0.join(',')
+   puts tri.original_node1.join(',')
+   puts tri.original_node2.join(',')
    volume_triangles << tri
    cell2tri[0+4*cell_index] = tri
    other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
