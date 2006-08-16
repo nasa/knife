@@ -49,6 +49,7 @@ class Subtri
   vv = v0*v0+v1*v1
 
   denom = uv*uv - uu*vv
+  raise "barycentric denom #{denom} small" if denom.abs < 1.0e-15
   s = (uv*wv-vv*wu)/denom;
   t = (uv*wu-uu*wv)/denom;
 
