@@ -231,6 +231,7 @@ cut_surface.each do |triangle|
  begin
   triangle.triangulate_cuts
  rescue RuntimeError
+  triangle.eps(sprintf('tri%04d.eps',count))
   puts "#{count} raised `#$!' at "+triangle.center.join(',')
  end
 end
