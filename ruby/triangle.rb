@@ -249,9 +249,9 @@ class Triangle
   end
   @subtris.each do |subtri|
    output += sprintf(" %6d %6d %6d\n",
-                     1+@subnodes.index(subtri,n0),
-                     1+@subnodes.index(subtri,n1),
-                     1+@subnodes.index(subtri,n2) )
+                     1+@subnodes.index(subtri.n0),
+                     1+@subnodes.index(subtri.n1),
+                     1+@subnodes.index(subtri.n2) )
   end
   output
  end
