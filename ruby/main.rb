@@ -213,7 +213,7 @@ volume_triangles.each do |triangle|
   begin
   Cut.between(triangle,tool)
   rescue RuntimeError
-   puts "#$! raised at "+triangle.center.join(',')
+   puts "#{count} raised `#$!' at "+triangle.center.join(',')
   end
  end
 end
