@@ -34,33 +34,11 @@ class Subtri
  end
 
  def barycentric(node)
-  u0 = n1.v-n0.v
-  u1 = n1.w-n0.w
-  v0 = n2.v-n0.v
-  v1 = n2.w-n0.w
-  w0 = node.v-n0.v
-  w1 = node.w-n0.w
-
-  uv = u0*v0+u1*v1
-  wv = w0*v0+w1*v1
-  wu = w0*u0+w1*u1
-
-  uu = u0*u0+u1*u1
-  vv = v0*v0+v1*v1
-
-  denom = uv*uv - uu*vv
-  if denom.abs < 1.0e-15
-   puts "bary"
-   printf("node [%25.18f,%25.18f]\n",node.v,node.w)
-   printf("n0   [%25.18f,%25.18f]\n",n0.v,n0.w)
-   printf("n1   [%25.18f,%25.18f]\n",n1.v,n1.w)
-   printf("n2   [%25.18f,%25.18f]\n",n2.v,n2.w)
-   raise "barycentric denom #{denom} small"
-  end
-  s = (uv*wv-vv*wu)/denom;
-  t = (uv*wu-uu*wv)/denom;
-
-  bary = [1.0-s-t,s,t]
+  area0 = Subtri.area(node,n1,n2)
+  area1 = Subtri.area(n0,node,n2)
+  area2 = Subtri.area(n0,n1,node)
+  total = area0+area1+area2
+  [area0/total, area1/total, area2/total]
  end
 
 end
