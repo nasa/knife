@@ -7,6 +7,7 @@ $:.push refine_path
 require 'node'
 require 'segment'
 require 'triangle'
+require 'cut'
 
 # for Grid...
 require 'Adj/Adj'
@@ -155,47 +156,64 @@ volume_grid.nconn.times do |conn_index|
  segment[conn_index] = Segment.new(nodes.min,nodes.max)
 end
 
+def cell2face(face)
+ case face
+ when 0; [1,3,2]
+ when 1; [0,2,3]
+ when 2; [0,3,1]
+ when 3; [0,1,2]
+ else; nil; end
+end
+
+def cell_face_index(cell,face)
+ return 0 if cell.values_at(1,2,3).sort == face.sort
+ return 1 if cell.values_at(0,2,3).sort == face.sort
+ return 2 if cell.values_at(0,1,3).sort == face.sort
+ return 3 if cell.values_at(0,1,2).sort == face.sort
+ nil
+end
+
 cell2tri = Array.new(4*volume_grid.ncell)
+volume_triangles = Array.new
+
 volume_grid.ncell.times do |cell_index|
  cell_nodes = volume_grid.cell(cell_index)
- # 0
- unless cell2tri[0+4*cell_index]
-  tri_nodes = [cell_nodes[1],cell_nodes[2],cell_nodes[3]]
-  segment0 = segment[volume_grid.findConn(tri_nodes[1],tri_nodes[2])]
-  segment1 = segment[volume_grid.findConn(tri_nodes[2],tri_nodes[0])]
-  segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
-  tri = Triangle.new( segment0, segment1, segment2)
-  cell2tri[0+4*cell_index] = tri
-  other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
-                                                   tri_nodes[2],cell_index)
+ 4.times do |face_index|
+  unless cell2tri[face_index+4*cell_index]
+   tri_index = cell2face(face_index)
+   tri_nodes = cell_nodes.values_at(tri_index[0],tri_index[1],tri_index[2])
+   segment0 = segment[volume_grid.findConn(tri_nodes[1],tri_nodes[2])]
+   segment1 = segment[volume_grid.findConn(tri_nodes[2],tri_nodes[0])]
+   segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
+   tri = Triangle.new( segment0, segment1, segment2)
+   volume_triangles << tri
+   cell2tri[0+4*cell_index] = tri
+   other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
+                                                    tri_nodes[2],cell_index)
+   if other_cell >= 0
+    indx = cell_face_index(volume_grid.cell(other_cell),tri_nodes)+4*other_cell
+    cell2tri[indx] = tri
+   end
+  end
  end  
 end
 
-
-
-volume = Array.new
-volume_grid.ncell.times do |cell_index|
- cell = volume_grid.cell(cell_index)
- volume << Polyhedron.new(volume_grid.nodeXYZ(cell[0]),
-                          volume_grid.nodeXYZ(cell[1]),
-                          volume_grid.nodeXYZ(cell[2]),
-                          volume_grid.nodeXYZ(cell[3]) )
-end
-puts "volume has #{volume.size} tets"
+puts "volume has #{volume_triangles.size} unique tetrahedral sides"
 
 start_time = Time.now
 count = 0
-volume.each do |polyhedron|
- count += 1 ; puts "#{count} of #{volume.size}" if count.divmod(100)[1]==0
- center = polyhedron.center
- diameter = polyhedron.diameter
+volume_triangles.each do |triangle|
+ count += 1 
+ puts "#{count} of #{volume_triangles.size}" if count.divmod(100)[1]==0
+ center = triangle.center
+ diameter = triangle.diameter
  probe = Near.new(-1,center[0],center[1],center[2],diameter)
  cut_tree.touched(probe).each do |index|
   tool = cut_surface[index]
   begin
-  polyhedron.cut_with(tool)
+  Cut.between(triangle,tool)
   rescue RuntimeError
-   puts "#$! raised at "+polyhedron.center.join(',')
+   puts "#$! raised at "+triangle.center.join(',')
   end
  end
 end
