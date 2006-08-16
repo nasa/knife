@@ -237,4 +237,30 @@ class Triangle
   output+"e\n"
  end
 
+ def tecplot_header
+  'title="cut cell geometry"'+"\n"+'variables="x","y","z"'+"\n"
+ end
+
+ def tecplot_zone(title='surf')
+  output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
+                   title, @subnodes.size, @subtris.size)
+  @subnodes.each do |subnode|
+   output += sprintf("%25.15e%25.15e%25.15e\n",subnode.x,subnode.y,subnode.z)
+  end
+  @subtris.each do |subtri|
+   output += sprintf(" %6d %6d %6d\n",
+                     1+@subnodes.index(subtri,n0),
+                     1+@subnodes.index(subtri,n1),
+                     1+@subnodes.index(subtri,n2) )
+  end
+  output
+ end
+
+ def dump(filename='dump.t')
+  File.open(filename,'w') do |f|
+   f.print tecplot_header
+   f.print tecplot_zone
+  end
+ end
+
 end
