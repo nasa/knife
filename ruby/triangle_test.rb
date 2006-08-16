@@ -189,7 +189,6 @@ class TestTriangle < Test::Unit::TestCase
   Cut.between(triangle,cutter)
 
   assert_equal triangle, triangle.triangulate_cuts
-  triangle.eps
   assert_equal 7, triangle.subnodes.size
   assert_equal 5, triangle.subtris.size
  end
