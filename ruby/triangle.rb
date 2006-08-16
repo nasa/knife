@@ -10,12 +10,26 @@ class Triangle
  attr_reader :subnodes
  attr_reader :subtris
 
+ attr_reader :original_node0, :original_node1, :original_node2
+
  def initialize(segment0,segment1,segment2)
+  @original_node0=segment2.node(0) if segment2.node(0)==segment1.node(0)  
+  @original_node0=segment2.node(0) if segment2.node(0)==segment1.node(1)  
+  @original_node0=segment2.node(1) if segment2.node(1)==segment1.node(0)  
+  @original_node0=segment2.node(1) if segment2.node(1)==segment1.node(1)  
+  @original_node1=segment0.node(0) if segment0.node(0)==segment2.node(0)  
+  @original_node1=segment0.node(0) if segment0.node(0)==segment2.node(1)  
+  @original_node1=segment0.node(1) if segment0.node(1)==segment2.node(0)  
+  @original_node1=segment0.node(1) if segment0.node(1)==segment2.node(1)  
+  @original_node2=segment0.node(0) if segment0.node(0)==segment1.node(0)  
+  @original_node2=segment0.node(0) if segment0.node(0)==segment1.node(1)  
+  @original_node2=segment0.node(1) if segment0.node(1)==segment1.node(0)  
+  @original_node2=segment0.node(1) if segment0.node(1)==segment1.node(1)  
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @subnodes = [ Subnode.new(1.0,0.0,0.0,original_node0),
-                Subnode.new(0.0,1.0,0.0,original_node1),
-                Subnode.new(0.0,0.0,1.0,original_node2)]
+  @subnodes = [ Subnode.new(1.0,0.0,0.0,@original_node0),
+                Subnode.new(0.0,1.0,0.0,@original_node1),
+                Subnode.new(0.0,0.0,1.0,@original_node2)]
   @subtris = [ Subtri.new(@subnodes[0],@subnodes[1],@subnodes[2]) ]
  end
  
@@ -42,28 +56,6 @@ class Triangle
        (original_node2[2]-center[2])**2
   l2 = d2 if d2 > l2
   1.0001*Math::sqrt(l2)
- end
-
- def original_node0
-  return segment(2).node(0) if segment(2).node(0) == segment(1).node(0)  
-  return segment(2).node(0) if segment(2).node(0) == segment(1).node(1)  
-  return segment(2).node(1) if segment(2).node(1) == segment(1).node(0)  
-  return segment(2).node(1) if segment(2).node(1) == segment(1).node(1)  
-  raise "no common original_node0"
- end
- def original_node1
-  return segment(0).node(0) if segment(0).node(0) == segment(2).node(0)  
-  return segment(0).node(0) if segment(0).node(0) == segment(2).node(1)  
-  return segment(0).node(1) if segment(0).node(1) == segment(2).node(0)  
-  return segment(0).node(1) if segment(0).node(1) == segment(2).node(1)  
-  raise "no common original_node1"
- end
- def original_node2
-  return segment(0).node(0) if segment(0).node(0) == segment(1).node(0)  
-  return segment(0).node(0) if segment(0).node(0) == segment(1).node(1)  
-  return segment(0).node(1) if segment(0).node(1) == segment(1).node(0)  
-  return segment(0).node(1) if segment(0).node(1) == segment(1).node(1)  
-  raise "no common original_node2"
  end
 
  def triangulate_cuts
