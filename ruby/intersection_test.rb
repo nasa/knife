@@ -118,4 +118,21 @@ class TestIntersection < Test::Unit::TestCase
   assert_in_delta 0.25, w, tol
  end
 
+ def test_xyz
+  tol = 1.0e-15
+  nodea = Node.new(0.0,0.0,0.0)
+  nodeb = Node.new(1.0,2.0,3.0)
+  segment = Segment.new(nodea,nodeb)
+  t = 0.5
+  intersection = Intersection.new(@triangle,segment,t,0.2,0.3,4)
+  assert_in_delta 0.5, intersection.x, tol
+  assert_in_delta 1.0, intersection.y, tol
+  assert_in_delta 1.5, intersection.z, tol
+  t = 0.75
+  intersection = Intersection.new(@triangle,segment,t,0.2,0.3,4)
+  assert_in_delta 0.75, intersection.x, tol
+  assert_in_delta 1.50, intersection.y, tol
+  assert_in_delta 2.25, intersection.z, tol
+ end
+
 end

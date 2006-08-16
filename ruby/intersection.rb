@@ -95,4 +95,8 @@ class Intersection
   return u,v,w
  end
 
+ def x; (1.0-t)*segment.node(0).x + t*segment.node(1).x; end
+ def y; (1.0-t)*segment.node(0).y + t*segment.node(1).y; end
+ def z; (1.0-t)*segment.node(0).z + t*segment.node(1).z; end
+
 end
