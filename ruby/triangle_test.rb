@@ -88,7 +88,7 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal "new side", @triangle.subtris[0].s2
  end
 
- def Xtest_add_subnode_into_subtri_side
+ def test_add_subnode_into_subtri_side
   sidenode = Node.new(0.5,0.0,0.0)
   sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
   @triangle.insert_subnode_into_subtri_side(sidesubnode,
@@ -109,7 +109,6 @@ class TestTriangle < Test::Unit::TestCase
   assert_nil              @triangle.subtris[1].s0
   assert_equal @segment1, @triangle.subtris[1].s1
   assert_equal @segment2, @triangle.subtris[1].s2
-
  end
 
  def test_add_subnode_into_subtri_side_twice
