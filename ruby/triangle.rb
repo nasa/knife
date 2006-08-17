@@ -221,14 +221,16 @@ class Triangle
  end
 
  def tecplot_header
-  'title="cut cell geometry"'+"\n"+'variables="x","y","z"'+"\n"
+  'title="cut cell geometry"'+"\n"+'variables="x","y","z","v","w"'+"\n"
  end
 
  def tecplot_zone(title='surf')
   output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
                    title, @subnodes.size, @subtris.size)
   @subnodes.each do |subnode|
-   output += sprintf("%25.15e%25.15e%25.15e\n",subnode.x,subnode.y,subnode.z)
+   output += sprintf("%25.15e%25.15e%25.15e%25.15e%25.15e\n",
+                     subnode.x,subnode.y,subnode.z,
+                     subnode.v,subnode.w)
   end
   @subtris.each do |subtri|
    output += sprintf(" %6d %6d %6d\n",
