@@ -13,6 +13,20 @@ class Subtri
   0.5*(a*d-b*c)
  end
 
+ def Subtri.mean_ratio(n0,n1,n2)
+  dv0 = n2.v-n1.v
+  dv1 = n0.v-n2.v
+  dv2 = n1.v-n0.v
+  dw0 = n2.w-n1.w
+  dw1 = n0.w-n2.w
+  dw2 = n1.w-n0.w
+
+  l2 = dv0*dv0+dw0*dw0 + dv1*dv1+dw1*dw1 + dv2*dv2+dw2*dw2
+
+  4.0*(1.73205080756888)*area(n0,n1,n2)/l2 # 4 times the sqrt(3) to normalize
+ end
+
+
  def Subtri.right_handed?(n0,n1,n2)
   area(n0,n1,n2) > 1.0e-15
  end
@@ -104,6 +118,9 @@ class Subtri
 
  def area
   Subtri.area(n0,n1,n2)
+ end
+ def mean_ratio
+  Subtri.mean_ratio(n0,n1,n2)
  end
 
 end
