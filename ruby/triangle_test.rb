@@ -176,11 +176,13 @@ class TestTriangle < Test::Unit::TestCase
   segmentc = Segment.new(nodea,nodeb)
   cutter = Triangle.new(segmenta,segmentb,segmentc)
 
-  Cut.between(@triangle,cutter)
+  cut = Cut.between(@triangle,cutter)
 
   assert_equal @triangle, @triangle.triangulate_cuts
   assert_equal 5, @triangle.subnodes.size
   assert_equal 3, @triangle.subtris.size
+  assert_equal cut, @triangle.subtris[1].side_with_nodes(@triangle.subnodes[3],
+                                                         @triangle.subnodes[4])
  end
 
  def test_cut_requiring_reconstruction

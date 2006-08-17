@@ -57,6 +57,7 @@ class Triangle
    unless find_subtri_with(subnode0,subnode1)
     raise "cut is not subtriangle side" unless recover_edge(subnode0,subnode1)
    end
+   set_subtri_side(subnode0, subnode1, cut)
   end
   self
  end

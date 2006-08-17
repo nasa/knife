@@ -60,7 +60,7 @@ class TestSubtri < Test::Unit::TestCase
   assert_equal "newer side", subtri.s0
  end
 
- def test_side
+ def test_side_with_nodes
   subtri = Subtri.new("n0", "n1", "n2", "s0", "s1", "s2")
   assert_equal "s0", subtri.side_with_nodes("n1","n2")
   assert_equal "s1", subtri.side_with_nodes("n0","n2")
