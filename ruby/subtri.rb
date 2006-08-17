@@ -30,6 +30,22 @@ class Subtri
   (n0==node||n1==node||n2==node)
  end
 
+ def set_side(node0, node1, new_side = nil)
+  if ( (node0 == @n0 && node1 == @n1) || (node1 == @n0 && node0 == @n1) )
+   @s2 = new_side
+   return self
+  end
+  if ( (node0 == @n1 && node1 == @n2) || (node1 == @n1 && node0 == @n2) )
+   @s0 = new_side
+   return self
+  end
+  if ( (node0 == @n2 && node1 == @n0) || (node1 == @n2 && node0 == @n0) )
+   @s1 = new_side
+   return self
+  end
+  nil
+ end
+
  def orient(node)
   return [n0, n1, n2] if node==n0
   return [n1, n2, n0] if node==n1
