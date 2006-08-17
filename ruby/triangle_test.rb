@@ -148,6 +148,36 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 2, @triangle.subtris.size
  end
 
+ def test_insert_subnode_into_subtri_interior
+  newnode = Node.new(0.3,0.3,0.0)
+  newsubnode = Subnode.new(0.4,0.3,0.3,newnode)
+  @triangle.insert_subnode_into_subtri_interior(newsubnode,@triangle.subtris[0])
+  assert_equal 3, @triangle.subtris.size
+
+  assert_equal newsubnode,            @triangle.subtris[0].n0
+  assert_equal @triangle.subnodes[1], @triangle.subtris[0].n1
+  assert_equal @triangle.subnodes[2], @triangle.subtris[0].n2
+  assert_equal @triangle.subnodes[0], @triangle.subtris[1].n0
+  assert_equal newsubnode,            @triangle.subtris[1].n1
+  assert_equal @triangle.subnodes[2], @triangle.subtris[1].n2
+  assert_equal @triangle.subnodes[0], @triangle.subtris[2].n0
+  assert_equal @triangle.subnodes[1], @triangle.subtris[2].n1
+  assert_equal newsubnode,            @triangle.subtris[2].n2
+
+  assert_equal @segment0, @triangle.subtris[0].s0
+  assert_nil              @triangle.subtris[0].s1
+  assert_nil              @triangle.subtris[0].s2
+
+  assert_nil              @triangle.subtris[1].s0
+  assert_equal @segment1, @triangle.subtris[1].s1
+  assert_nil              @triangle.subtris[1].s2
+
+  assert_nil              @triangle.subtris[2].s0
+  assert_nil              @triangle.subtris[2].s1
+  assert_equal @segment2, @triangle.subtris[2].s2
+ end
+
+
  def test_find_subtri_with
   assert_nil @triangle.find_subtri_with(@triangle.subnodes[1],
                                         @triangle.subnodes[0])
