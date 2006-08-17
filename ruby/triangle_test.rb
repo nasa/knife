@@ -80,7 +80,20 @@ class TestTriangle < Test::Unit::TestCase
                                             @triangle.subnodes[0],
                                             @triangle.subnodes[1])
   assert_equal 2, @triangle.subtris.size
+  assert_equal sidesubnode,           @triangle.subtris[0].n0
+  assert_equal @triangle.subnodes[1], @triangle.subtris[0].n1
+  assert_equal @triangle.subnodes[2], @triangle.subtris[0].n2
+  assert_equal @triangle.subnodes[0], @triangle.subtris[1].n0
+  assert_equal sidesubnode,           @triangle.subtris[1].n1
+  assert_equal @triangle.subnodes[2], @triangle.subtris[1].n2
+ end
 
+ def test_add_subnode_into_subtri_side_twice
+  sidenode = Node.new(0.5,0.0,0.0)
+  sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
+  @triangle.insert_subnode_into_subtri_side(sidesubnode,
+                                            @triangle.subnodes[0],
+                                            @triangle.subnodes[1])
   centernode = Node.new(0.5,0.0,0.0)
   centersubnode = Subnode.new(0.4,0.4,0.2,centernode)
   @triangle.insert_subnode_into_subtri_side(centersubnode,
