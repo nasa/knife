@@ -73,19 +73,43 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 3, @triangle.subtris.size
  end
 
- def test_add_subnode_into_subtri_side
+ def test_set_subtri_side
+  sidenode = Node.new(0.5,0.0,0.0)
+  sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
+  assert_raise RuntimeError do
+   @triangle.set_subtri_side(sidenode,@triangle.subnodes[1],"dummy")
+  end
+  assert_equal @triangle, @triangle.set_subtri_side(@triangle.subnodes[0],
+                                                    @triangle.subnodes[2])
+  assert_nil @triangle.subtris[0].s1
+  assert_equal @triangle, @triangle.set_subtri_side(@triangle.subnodes[0],
+                                                    @triangle.subnodes[1],
+                                                    "new side")
+  assert_equal "new side", @triangle.subtris[0].s2
+ end
+
+ def Xtest_add_subnode_into_subtri_side
   sidenode = Node.new(0.5,0.0,0.0)
   sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
   @triangle.insert_subnode_into_subtri_side(sidesubnode,
                                             @triangle.subnodes[0],
                                             @triangle.subnodes[1])
   assert_equal 2, @triangle.subtris.size
+
   assert_equal sidesubnode,           @triangle.subtris[0].n0
   assert_equal @triangle.subnodes[1], @triangle.subtris[0].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[0].n2
   assert_equal @triangle.subnodes[0], @triangle.subtris[1].n0
   assert_equal sidesubnode,           @triangle.subtris[1].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[1].n2
+
+  assert_equal @segment0, @triangle.subtris[0].s0
+  assert_nil              @triangle.subtris[0].s1
+  assert_equal @segment2, @triangle.subtris[0].s2
+  assert_nil              @triangle.subtris[1].s0
+  assert_equal @segment1, @triangle.subtris[1].s1
+  assert_equal @segment2, @triangle.subtris[1].s2
+
  end
 
  def test_add_subnode_into_subtri_side_twice
