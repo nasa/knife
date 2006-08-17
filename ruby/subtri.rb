@@ -46,6 +46,19 @@ class Subtri
   nil
  end
 
+ def side_with_nodes(node0, node1)
+  if ( (node0 == @n0 && node1 == @n1) || (node1 == @n0 && node0 == @n1) )
+   return s2
+  end
+  if ( (node0 == @n1 && node1 == @n2) || (node1 == @n1 && node0 == @n2) )
+   return s0
+  end
+  if ( (node0 == @n2 && node1 == @n0) || (node1 == @n2 && node0 == @n0) )
+   return s1
+  end
+  nil
+ end
+
  def split_side_with(newnode,node0,node1)
   if ( (node0 == n0 && node1 == n1) || (node1 == n0 && node0 == n1) )
    subtri = dup

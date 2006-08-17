@@ -60,6 +60,16 @@ class TestSubtri < Test::Unit::TestCase
   assert_equal "newer side", subtri.s0
  end
 
+ def test_side
+  subtri = Subtri.new("n0", "n1", "n2", "s0", "s1", "s2")
+  assert_equal "s0", subtri.side_with_nodes("n1","n2")
+  assert_equal "s1", subtri.side_with_nodes("n0","n2")
+  assert_equal "s2", subtri.side_with_nodes("n0","n1")
+  assert_equal "s0", subtri.side_with_nodes("n2","n1")
+  assert_equal "s1", subtri.side_with_nodes("n2","n0")
+  assert_equal "s2", subtri.side_with_nodes("n1","n0")
+ end
+
  def test_orient
   subtri = Subtri.new("n0", "n1", "n2")
   n0,n1,n2 = subtri.orient("n0")
