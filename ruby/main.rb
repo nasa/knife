@@ -250,7 +250,7 @@ start_time = Time.now
 count = 0
 volume_triangles.each do |triangle|
  count += 1 
- printf("%6d of %6d\n",count,cut_surface.size) if count.divmod(1000)[1]==0
+ printf("%6d of %6d\n",count,volume_triangles.size) if count.divmod(1000)[1]==0
  begin
   triangle.triangulate_cuts
  rescue RuntimeError
