@@ -6,10 +6,10 @@ class Subtri
  attr_accessor :s0, :s1, :s2
 
  def Subtri.area(n0,n1,n2)
-  a = (n0.v-n2.v)
-  b = (n0.w-n2.w)
-  c = (n1.v-n2.v)
-  d = (n1.w-n2.w)
+  a = n0.v-n2.v
+  b = n0.w-n2.w
+  c = n1.v-n2.v
+  d = n1.w-n2.w
   0.5*(a*d-b*c)
  end
 
@@ -25,7 +25,6 @@ class Subtri
 
   4.0*(1.73205080756888)*area(n0,n1,n2)/l2 # 4 times the sqrt(3) to normalize
  end
-
 
  def Subtri.right_handed?(n0,n1,n2)
   area(n0,n1,n2) > 1.0e-15
