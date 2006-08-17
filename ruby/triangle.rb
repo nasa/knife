@@ -140,30 +140,8 @@ class Triangle
   raise "subtri side missing for inss" unless (find_subtri_with(node0,node1) || 
                                                find_subtri_with(node1,node0) )
   @subtris.each do |subtri|
-   if ( (node0 == subtri.n0 && node1 == subtri.n1) ||
-        (node1 == subtri.n0 && node0 == subtri.n1) )
-    @subtris << subtri.dup
-    @subtris.last.n1 = subnode
-    subtri.n0 = subnode
-    @subtris.last.set_side(subnode,subtri.n2)
-    subtri.set_side(subnode,subtri.n2)
-   end
-   if ( (node0 == subtri.n1 && node1 == subtri.n2) ||
-        (node1 == subtri.n1 && node0 == subtri.n2) )
-    @subtris << subtri.dup
-    @subtris.last.n2 = subnode
-    subtri.n1 = subnode
-    @subtris.last.set_side(subnode,subtri.n0)
-    subtri.set_side(subnode,subtri.n0)
-   end
-   if ( (node0 == subtri.n2 && node1 == subtri.n0) ||
-        (node1 == subtri.n2 && node0 == subtri.n0) )
-    @subtris << subtri.dup
-    @subtris.last.n0 = subnode
-    subtri.n2 = subnode
-    @subtris.last.set_side(subnode,subtri.n1)
-    subtri.set_side(subnode,subtri.n1)
-   end
+   newtri = subtri.split_side_with(subnode,node0,node1)
+   @subtris << newtri if newtri
   end
   self
  end

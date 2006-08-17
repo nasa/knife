@@ -46,6 +46,34 @@ class Subtri
   nil
  end
 
+ def split_side_with(newnode,node0,node1)
+  if ( (node0 == n0 && node1 == n1) || (node1 == n0 && node0 == n1) )
+   subtri = dup
+   subtri.n1 = newnode
+   @n0 = newnode
+   set_side(newnode,@n2)
+   subtri.set_side(newnode,subtri.n2)
+   return subtri
+  end
+  if ( (node0 == n1 && node1 == n2) || (node1 == n1 && node0 == n2) )
+   subtri = dup
+   subtri.n2 = newnode
+   @n1 = newnode
+   set_side(newnode,@n0)
+   subtri.set_side(newnode,subtri.n0)
+   return subtri
+  end
+  if ( (node0 == n2 && node1 == n0) || (node1 == n2 && node0 == n0) )
+   subtri = dup
+   subtri.n0 = newnode
+   @n2 = newnode
+   set_side(newnode,@n1)
+   subtri.set_side(newnode,subtri.n1)
+   return subtri
+  end
+  return nil
+ end
+
  def orient(node)
   return [n0, n1, n2] if node==n0
   return [n1, n2, n0] if node==n1
