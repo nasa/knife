@@ -28,19 +28,26 @@ class TestTriangle < Test::Unit::TestCase
 
  def test_initialize
   assert @triangle.is_a?(Triangle), "not a triangle"
-
-  assert_equal @segment0, @triangle.segment(0)
-  assert_equal @segment1, @triangle.segment(1)
-  assert_equal @segment2, @triangle.segment(2)
-
-  assert_equal 3, @triangle.subnodes.size
-  assert_equal 1, @triangle.subtris.size
  end
 
- def test_node
+ def test_initialize_node
   assert_equal @node0, @triangle.node0
   assert_equal @node1, @triangle.node1
   assert_equal @node2, @triangle.node2
+ end
+
+ def test_initialize_segment
+  assert_equal @segment0, @triangle.segment(0)
+  assert_equal @segment1, @triangle.segment(1)
+  assert_equal @segment2, @triangle.segment(2)
+ end
+
+ def test_initialize_subnode
+  assert_equal 3, @triangle.subnodes.size
+ end
+
+ def test_initialize_subtri
+  assert_equal 1, @triangle.subtris.size
  end
 
  def test_add_unique_subnode
