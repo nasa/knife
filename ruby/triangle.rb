@@ -279,8 +279,12 @@ class Triangle
  end
 
  def tecplot_zone(title='surf')
+  active = 0
+  @subtris.each do |subtri|
+   active += 1 if subtri.active
+  end
   output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
-                   title, @subnodes.size, @subtris.size)
+                   title, @subnodes.size, active)
   @subnodes.each do |subnode|
    output += sprintf("%25.15e%25.15e%25.15e%25.15e%25.15e\n",
                      subnode.x,subnode.y,subnode.z,
@@ -290,7 +294,7 @@ class Triangle
    output += sprintf(" %6d %6d %6d\n",
                      1+@subnodes.index(subtri.n0),
                      1+@subnodes.index(subtri.n1),
-                     1+@subnodes.index(subtri.n2) )
+                     1+@subnodes.index(subtri.n2) ) if subtri.active
   end
   output
  end
