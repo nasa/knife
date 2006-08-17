@@ -51,6 +51,10 @@ class TestTriangle < Test::Unit::TestCase
 
  def test_initialize_subtri
   assert_equal 1, @triangle.subtris.size
+  subtri = @triangle.subtris[0]
+  assert_equal @segment0, subtri.s0
+  assert_equal @segment1, subtri.s1
+  assert_equal @segment2, subtri.s2
  end
 
  def test_add_unique_subnode
