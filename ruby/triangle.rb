@@ -127,22 +127,11 @@ class Triangle
   return enclosing_subtri, enclosing_bary
  end
 
- def set_subtri_side(node0,node1,newside=nil)
+ def set_subtri_side(node0, node1, new_side = nil)
   raise "subtri side missing for set" unless ( find_subtri_with(node0,node1) || 
                                                find_subtri_with(node1,node0) )
   @subtris.each do |subtri|
-   if ( (node0 == subtri.n0 && node1 == subtri.n1) ||
-        (node1 == subtri.n0 && node0 == subtri.n1) )
-    subtri.s2 = newside
-   end
-   if ( (node0 == subtri.n1 && node1 == subtri.n2) ||
-        (node1 == subtri.n1 && node0 == subtri.n2) )
-    subtri.s0 = newside
-   end
-   if ( (node0 == subtri.n2 && node1 == subtri.n0) ||
-        (node1 == subtri.n2 && node0 == subtri.n0) )
-    subtri.s1 = newside
-   end
+   subtri.set_side(node0,node1,new_side)
   end
   self
  end
