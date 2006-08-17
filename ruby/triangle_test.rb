@@ -89,6 +89,16 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal 4, @triangle.subtris.size
  end
 
+ def test_add_subnode_into_subtri_side_raises
+  sidenode = Node.new(0.5,0.0,0.0)
+  sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
+  assert_raise RuntimeError do
+   @triangle.insert_subnode_into_subtri_side("dummy",
+                                             sidenode,
+                                             @triangle.subnodes[1])
+  end
+ end
+
  def test_add_subnode_into_subtri_side_by_cut
   nodea = Node.new(0.3, 0.3,-1.0)
   nodeb = Node.new(0.3, 0.3, 3.0)

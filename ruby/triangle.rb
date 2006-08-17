@@ -128,27 +128,26 @@ class Triangle
  end
 
  def insert_subnode_into_subtri_side(subnode,node0,node1)
+  raise "subtri side missing" unless ( find_subtri_with(node0,node1) || 
+                                       find_subtri_with(node1,node0) )
   @subtris.each do |subtri|
    if ( (node0 == subtri.n0 && node1 == subtri.n1) ||
         (node1 == subtri.n0 && node0 == subtri.n1) )
     @subtris << Subtri.new(subtri.n0, subnode,   subtri.n2)
     subtri.n0 = subnode
-    return self
    end
    if ( (node0 == subtri.n1 && node1 == subtri.n2) ||
         (node1 == subtri.n1 && node0 == subtri.n2) )
     @subtris << Subtri.new(subtri.n0, subtri.n1, subnode )
     subtri.n1 = subnode
-    return self
    end
    if ( (node0 == subtri.n2 && node1 == subtri.n0) ||
         (node1 == subtri.n2 && node0 == subtri.n0) )
     @subtris << Subtri.new(subnode, subtri.n1, subtri.n2 )
     subtri.n2 = subnode
-    return self
    end
   end
-  raise "could not find node pairs"
+  self
  end
 
  def insert_subnode_into_subtri_interior(subnode,subtri)
