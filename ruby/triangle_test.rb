@@ -74,6 +74,22 @@ class TestTriangle < Test::Unit::TestCase
  end
 
  def test_add_subnode_into_subtri_side
+  sidenode = Node.new(0.5,0.0,0.0)
+  sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
+  @triangle.insert_subnode_into_subtri_side(sidesubnode,
+                                            @triangle.subnodes[0],
+                                            @triangle.subnodes[1])
+  assert_equal 2, @triangle.subtris.size
+
+  centernode = Node.new(0.5,0.0,0.0)
+  centersubnode = Subnode.new(0.4,0.4,0.2,centernode)
+  @triangle.insert_subnode_into_subtri_side(centersubnode,
+                                            @triangle.subnodes[2],
+                                            sidesubnode)
+  assert_equal 4, @triangle.subtris.size
+ end
+
+ def test_add_subnode_into_subtri_side_by_cut
   nodea = Node.new(0.3, 0.3,-1.0)
   nodeb = Node.new(0.3, 0.3, 3.0)
   nodec = Node.new(0.3,-1.0, 0.0)
