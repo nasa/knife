@@ -148,8 +148,18 @@ class Triangle
  end
 
  def insert_subnode_into_subtri_interior(subnode,subtri)
-  @subtris << Subtri.new(subtri.n0, subnode,   subtri.n2)
-  @subtris << Subtri.new(subtri.n0, subtri.n1, subnode)
+  newtri = subtri.dup
+  newtri.set_side(subtri.n1,subtri.n0)
+  newtri.set_side(subtri.n1,subtri.n2)
+  newtri.n1 = subnode
+  @subtris << newtri
+  newtri = subtri.dup
+  newtri.set_side(subtri.n2,subtri.n0)
+  newtri.set_side(subtri.n2,subtri.n1)
+  newtri.n2 = subnode
+  @subtris << newtri
+  subtri.set_side(subtri.n0,subtri.n1)
+  subtri.set_side(subtri.n0,subtri.n2)
   subtri.n0 = subnode
   self
  end
