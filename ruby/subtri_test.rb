@@ -16,17 +16,29 @@ class TestSubtri < Test::Unit::TestCase
                                            Subnode.new(0.0,1.0,0.0))
  end
 
- def test_initialize
+ def test_initialize_3
   subtri = Subtri.new("n0", "n1", "n2")
-
   assert subtri.is_a?(Subtri), "not a subtri"
+ end
 
+ def test_initialize_3
+  subtri = Subtri.new("n0", "n1", "n2")
   assert_equal "n0", subtri.n0
   assert_equal "n1", subtri.n1
   assert_equal "n2", subtri.n2
   assert_nil subtri.s0
   assert_nil subtri.s1
   assert_nil subtri.s2
+ end
+
+ def test_initialize_6
+  subtri = Subtri.new("n0", "n1", "n2", "s0", "s1", "s2")
+  assert_equal "n0", subtri.n0
+  assert_equal "n1", subtri.n1
+  assert_equal "n2", subtri.n2
+  assert_equal "s0", subtri.s0
+  assert_equal "s1", subtri.s1
+  assert_equal "s2", subtri.s2
  end
 
  def test_has?
