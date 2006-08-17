@@ -14,9 +14,9 @@ class Intersection
    end
   end
 
-  t0 = triangle.original_node0
-  t1 = triangle.original_node1
-  t2 = triangle.original_node2
+  t0 = triangle.node0
+  t1 = triangle.node1
+  t2 = triangle.node2
 
   s0 = segment.node(0)
   s1 = segment.node(1)
@@ -86,12 +86,12 @@ class Intersection
    return @u,@v,@w
   end
   u=0.0;v=0.0;w=0.0
-  u = (    @t) if @segment.node(1) == triangle.original_node0
-  v = (    @t) if @segment.node(1) == triangle.original_node1
-  w = (    @t) if @segment.node(1) == triangle.original_node2
-  u = (1.0-@t) if @segment.node(0) == triangle.original_node0
-  v = (1.0-@t) if @segment.node(0) == triangle.original_node1
-  w = (1.0-@t) if @segment.node(0) == triangle.original_node2
+  u = (    @t) if @segment.node(1) == triangle.node0
+  v = (    @t) if @segment.node(1) == triangle.node1
+  w = (    @t) if @segment.node(1) == triangle.node2
+  u = (1.0-@t) if @segment.node(0) == triangle.node0
+  v = (1.0-@t) if @segment.node(0) == triangle.node1
+  w = (1.0-@t) if @segment.node(0) == triangle.node2
   return u,v,w
  end
 

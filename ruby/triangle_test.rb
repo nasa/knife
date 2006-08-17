@@ -41,41 +41,13 @@ class TestTriangle < Test::Unit::TestCase
 
  def test_node
   segment0  = Segment.new(@node1,@node2)
-  segment0r = Segment.new(@node2,@node1)
   segment1  = Segment.new(@node2,@node0)
-  segment1r = Segment.new(@node0,@node2)
   segment2  = Segment.new(@node0,@node1)
-  segment2r = Segment.new(@node1,@node0)
 
   triangle = Triangle.new(segment0,segment1,segment2)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
-
-  triangle = Triangle.new(segment0r,segment1,segment2)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
-
-  triangle = Triangle.new(segment0,segment1r,segment2)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
-
-  triangle = Triangle.new(segment0,segment1,segment2r)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
-
-  triangle = Triangle.new(segment0r,segment1r,segment2)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
-
-  triangle = Triangle.new(segment0r,segment1r,segment2r)
-  assert_equal @node0, triangle.original_node0
-  assert_equal @node1, triangle.original_node1
-  assert_equal @node2, triangle.original_node2
+  assert_equal @node0, triangle.node0
+  assert_equal @node1, triangle.node1
+  assert_equal @node2, triangle.node2
  end
 
  def test_add_unique_subnode

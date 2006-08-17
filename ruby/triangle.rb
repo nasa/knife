@@ -5,7 +5,7 @@ require 'subtri'
 
 class Triangle
 
- attr_reader :original_node0, :original_node1, :original_node2
+ attr_reader :node0, :node1, :node2
 
  attr_reader :segments
  attr_reader :cuts
@@ -15,14 +15,14 @@ class Triangle
  attr_reader :center, :diameter
 
  def initialize(segment0,segment1,segment2)
-  @original_node0=segment1.common_node(segment2)
-  @original_node1=segment0.common_node(segment2)
-  @original_node2=segment0.common_node(segment1)
+  @node0=segment1.common_node(segment2)
+  @node1=segment0.common_node(segment2)
+  @node2=segment0.common_node(segment1)
   @segments = [ segment0, segment1, segment2 ]
   @cuts = Array.new
-  @subnodes = [ Subnode.new(1.0,0.0,0.0,@original_node0),
-                Subnode.new(0.0,1.0,0.0,@original_node1),
-                Subnode.new(0.0,0.0,1.0,@original_node2)]
+  @subnodes = [ Subnode.new(1.0,0.0,0.0,@node0),
+                Subnode.new(0.0,1.0,0.0,@node1),
+                Subnode.new(0.0,0.0,1.0,@node2)]
   @subtris = [ Subtri.new(@subnodes[0],@subnodes[1],@subnodes[2]) ]
   cache_geometry
  end
@@ -32,19 +32,19 @@ class Triangle
  end
 
  def cache_geometry
-  @center = [ (original_node0[0]+original_node1[0]+original_node2[0])/3.0,
-              (original_node0[1]+original_node1[1]+original_node2[1])/3.0,
-              (original_node0[2]+original_node1[2]+original_node2[2])/3.0 ]
-  l2 = (original_node0[0]-center[0])**2 + 
-       (original_node0[1]-center[1])**2 + 
-       (original_node0[2]-center[2])**2 
-  d2 = (original_node1[0]-center[0])**2 + 
-       (original_node1[1]-center[1])**2 + 
-       (original_node1[2]-center[2])**2
+  @center = [ (node0[0]+node1[0]+node2[0])/3.0,
+              (node0[1]+node1[1]+node2[1])/3.0,
+              (node0[2]+node1[2]+node2[2])/3.0 ]
+  l2 = (node0[0]-center[0])**2 + 
+       (node0[1]-center[1])**2 + 
+       (node0[2]-center[2])**2 
+  d2 = (node1[0]-center[0])**2 + 
+       (node1[1]-center[1])**2 + 
+       (node1[2]-center[2])**2
   l2 = d2 if d2 > l2
-  d2 = (original_node2[0]-center[0])**2 + 
-       (original_node2[1]-center[1])**2 + 
-       (original_node2[2]-center[2])**2
+  d2 = (node2[0]-center[0])**2 + 
+       (node2[1]-center[1])**2 + 
+       (node2[2]-center[2])**2
   l2 = d2 if d2 > l2
   @diameter = 1.0001*Math::sqrt(l2)
  end

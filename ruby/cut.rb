@@ -23,13 +23,13 @@ class Cut
  end
  
  def Cut.exclude?(triangle0, triangle1)
-  t0 = triangle0.original_node0
-  t1 = triangle0.original_node1
-  t2 = triangle0.original_node2
+  t0 = triangle0.node0
+  t1 = triangle0.node1
+  t2 = triangle0.node2
 
-  s0 = triangle1.original_node0
-  s1 = triangle1.original_node1
-  s2 = triangle1.original_node2
+  s0 = triangle1.node0
+  s1 = triangle1.node1
+  s2 = triangle1.node2
 
   v0 = Intersection.volume6(t0,t1,t2,s0)
   v1 = Intersection.volume6(t0,t1,t2,s1)
