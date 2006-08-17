@@ -24,6 +24,9 @@ class TestSubtri < Test::Unit::TestCase
   assert_equal "n0", subtri.n0
   assert_equal "n1", subtri.n1
   assert_equal "n2", subtri.n2
+  assert_nil subtri.s0
+  assert_nil subtri.s1
+  assert_nil subtri.s2
  end
 
  def test_has?
