@@ -177,10 +177,16 @@ class Triangle
   subtri0 = find_subtri_with( node0, node1)
   subtri1 = find_subtri_with( node1, node0)
   raise "subtri side not found in swap" if subtri0.nil? || subtri1.nil?
+  raise "no swap active side" unless subtri0.side_with_nodes(node0,node1).nil?
   n0, n1, n2 = subtri0.orient(node0)
   node2 = n2
   n0, n1, n2 = subtri1.orient(node1)
   node3 = n2
+
+  side02 = subtri0.side_with_nodes(node0,node2)
+  side12 = subtri0.side_with_nodes(node1,node2)
+  side03 = subtri1.side_with_nodes(node0,node3)
+  side13 = subtri1.side_with_nodes(node1,node3)
 
   subtri0.n0 = node1
   subtri0.n1 = node2
@@ -189,6 +195,14 @@ class Triangle
   subtri1.n0 = node0
   subtri1.n1 = node3
   subtri1.n2 = node2
+
+  subtri0.s0 = nil
+  subtri0.s1 = side13
+  subtri0.s2 = side12
+
+  subtri1.s0 = nil
+  subtri1.s1 = side02
+  subtri1.s2 = side03
 
   self
  end
