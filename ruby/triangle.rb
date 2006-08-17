@@ -58,6 +58,7 @@ class Triangle
     raise "cut is not subtriangle side" unless recover_edge(subnode0,subnode1)
    end
    set_subtri_side(subnode0, subnode1, cut)
+   swap!
   end
   self
  end
@@ -205,6 +206,38 @@ class Triangle
   subtri1.s2 = side03
 
   self
+ end
+
+ def swap!
+  changed = false
+  subtris.each do |subtri|
+   changed = true if attempt_swap_if_mr_improves(subtri,subtri.n0,subtri.n1)
+   changed = true if attempt_swap_if_mr_improves(subtri,subtri.n1,subtri.n2)
+   changed = true if attempt_swap_if_mr_improves(subtri,subtri.n2,subtri.n0)
+  end
+  return swap! if changed
+  self
+ end
+
+ def attempt_swap_if_mr_improves(subtri0, node0, node1)
+  return false unless subtri0.side_with_nodes(node0,node1).nil?
+  return nil if subtri0.nil?
+  subtri1 = find_subtri_with( node1, node0)
+  return nil if subtri1.nil?
+  n0, n1, n2 = subtri0.orient(node0)
+  node2 = n2
+  n0, n1, n2 = subtri1.orient(node1)
+  node3 = n2
+
+  subtri2_mean_ratio = Subtri.mean_ratio(node1, node2, node3)
+  subtri3_mean_ratio = Subtri.mean_ratio(node0, node3, node2)
+
+  if ([subtri2_mean_ratio,  subtri3_mean_ratio].min >
+      [subtri0.mean_ratio,  subtri1.mean_ratio].min )
+   return true if swap_side(node0,node1)
+  end
+
+  false
  end
 
  def eps(eps_filename = 'triangle.eps')
