@@ -44,6 +44,9 @@ class TestTriangle < Test::Unit::TestCase
 
  def test_initialize_subnode
   assert_equal 3, @triangle.subnodes.size
+  assert_equal @node0, @triangle.subnodes[0].parent
+  assert_equal @node1, @triangle.subnodes[1].parent
+  assert_equal @node2, @triangle.subnodes[2].parent
  end
 
  def test_initialize_subtri
