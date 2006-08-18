@@ -23,4 +23,10 @@ class TestMask < Test::Unit::TestCase
   assert_equal true, mask.reversed
  end
 
+ def test_method_missing
+  mask = Mask.new("elgnairt")
+  assert_equal "triangle", mask.reverse
+  assert_equal "elrt", mask.delete("gnai")
+ end
+
 end
