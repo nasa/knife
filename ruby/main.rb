@@ -18,6 +18,8 @@ require 'Grid/Grid'
 require 'GridMath/GridMath'
 require 'Near/Near'
 
+initial_time = Time.now
+
 # read in the grid
 surface_grid = Grid.from_FAST File.expand_path("~/GRIDEX/refine/test/om6_inv08.fgrid")
 
@@ -272,3 +274,5 @@ File.open('om6_cut_surface.t','w') do |f|
   f.print triangle.tecplot_zone
  end
 end
+
+puts "the entire process required #{Time.now-initial_time} sec"
