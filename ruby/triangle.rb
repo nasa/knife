@@ -64,6 +64,16 @@ class Triangle
   self
  end
 
+ def cut_by
+  cutters = Array.new
+  @cuts.each do |cut|
+   cut.triangles.each do |triangle|
+    cutters << triangle unless self == triangle
+   end
+  end
+  cutters.uniq
+ end
+
  def each_subtri_around_subnode(subnode)
   @subtris.each do |subtri|
    yield subtri if subtri.has?(subnode)
