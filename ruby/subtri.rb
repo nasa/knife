@@ -4,7 +4,6 @@ class Subtri
 
  attr_accessor :n0, :n1, :n2
  attr_accessor :s0, :s1, :s2
- attr_accessor :active
 
  def Subtri.area(n0,n1,n2)
   a = n0.v-n2.v
@@ -39,8 +38,6 @@ class Subtri
   @s0 = s0
   @s1 = s1
   @s2 = s2
-
-  @active = true
  end
 
  def has?(node)

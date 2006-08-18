@@ -25,6 +25,7 @@ class Triangle
                 Subnode.new(0.0,0.0,1.0,@node2)]
   @subtris = [ Subtri.new(@subnodes[0],@subnodes[1],@subnodes[2],
                           segment0,segment1,segment2) ]
+  @active_subtris = nil
   cache_geometry
  end
  
@@ -280,8 +281,12 @@ class Triangle
 
  def tecplot_zone(title='surf')
   active = 0
-  @subtris.each do |subtri|
-   active += 1 if subtri.active
+  if @active_subtris
+   @subtris.each do |subtri|
+    active += 1 if subtri.active
+   end
+  else
+   active = @subtris.size
   end
   output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
                    title, @subnodes.size, active)
@@ -294,7 +299,7 @@ class Triangle
    output += sprintf(" %6d %6d %6d\n",
                      1+@subnodes.index(subtri.n0),
                      1+@subnodes.index(subtri.n1),
-                     1+@subnodes.index(subtri.n2) ) if subtri.active
+                     1+@subnodes.index(subtri.n2) ) if @active_subtris.nil?
   end
   output
  end
