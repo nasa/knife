@@ -34,4 +34,9 @@ class Mask
   (triangle == other)
  end
 
+ def activate(intersection0,intersection1)
+  subtri = find_subtri_with_parents(intersection0,intersection1)
+  @trimmed[triangle.subtris.index(subtri)] = false
+ end
+
 end
