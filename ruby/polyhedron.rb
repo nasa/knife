@@ -25,6 +25,13 @@ class Polyhedron
    @cutters += triangle.cut_by
   end
   @cutters.uniq!
+  self
+ end
+
+ def copy_children
+  @triangles.collect! { |triangle| triangle.dup }
+  @cutters.collect! { |triangle| triangle.dup }
+  self
  end
 
  def tecplot_header
