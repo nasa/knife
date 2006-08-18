@@ -280,7 +280,7 @@ volume_poly.each do |poly|
  poly.gather_cutters
  if poly.cutters.size > 0
   ncut += 1 
-  poly.copy_children
+  poly.trim_external_subtri
  end
 end
 
