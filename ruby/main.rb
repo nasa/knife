@@ -278,7 +278,10 @@ end
 ncut = 0
 volume_poly.each do |poly|
  poly.gather_cutters
- ncut += 1 if poly.cutters.size > 0
+ if poly.cutters.size > 0
+  ncut += 1 
+  poly.copy_children
+ end
 end
 
 puts "#{ncut} of #{volume_poly.size} ployhedra cut"
