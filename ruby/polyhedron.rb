@@ -31,19 +31,40 @@ class Polyhedron
  end
 
  def trim_external_subtri
-  (@cutters).each do |triangle|
+  (@triangles+@cutters).each do |triangle|
    triangle.deactivate_all_subtri
   end
   @cutters.each do |cutter|
    cutter.cuts.each do |cut|
-    if ( @triangles.include?(cut.triangles[0]) ||
-         @triangles.include?(cut.triangles[1]) )
-     cutter.activate(cut.intersection0,cut.intersection1)
-     cutter.activate(cut.intersection1,cut.intersection0)
+    triang = nil
+    triang = cut.triangles[0] if @triangles.include?(cut.triangles[0])
+    triang = cut.triangles[1] if @triangles.include?(cut.triangles[1])
+    if triang
+     cutter_subtri01 = cutter.find_subtri_with_parents(cut.intersection0,
+                                                       cut.intersection1)
+     cutter_subtri10 = cutter.find_subtri_with_parents(cut.intersection1,
+                                                       cut.intersection0)
+     triang_subtri01 = triang.find_subtri_with_parents(cut.intersection0,
+                                                       cut.intersection1)
+     triang_subtri10 = triang.find_subtri_with_parents(cut.intersection1,
+                                                       cut.intersection0)
+     if (cutter_subtri01.convex(triang_subtri10))
+      activate(cutter_subtri01)
+      activate(triang_subtri10)
+     else
+      activate(cutter_subtri10)
+      activate(triang_subtri01)
+     end
     end
    end
   end
   self
+ end
+
+ def activate(subtri)
+  (@triangles+@cutters).each do |triangle|
+   triangle.activate(subtri)
+  end
  end
 
  def tecplot_header
