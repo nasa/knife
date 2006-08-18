@@ -266,7 +266,7 @@ volume_triangles.each do |triangle|
 end
 puts "the volume triangulation required #{Time.now-start_time} sec"
 
-File.open('cut_om6.t','w') do |f|
+File.open('om6_cut_surface.t','w') do |f|
  f.print cut_surface.first.tecplot_header
  cut_surface.each do |triangle|
   f.print triangle.tecplot_zone
