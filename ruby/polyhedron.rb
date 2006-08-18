@@ -39,6 +39,7 @@ class Polyhedron
     if ( @triangles.include?(cut.triangles[0]) ||
          @triangles.include?(cut.triangles[1]) )
      cutter.activate(cut.intersection0,cut.intersection1)
+     cutter.activate(cut.intersection1,cut.intersection0)
     end
    end
   end
