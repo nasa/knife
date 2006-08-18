@@ -29,14 +29,7 @@ class Polyhedron
   self
  end
 
- def copy_children
-  @triangles.collect! { |triangle| triangle.dup }
-  @cutters.collect! { |triangle| triangle.dup }
-  self
- end
-
  def trim_external_subtri
-  
  end
 
  def tecplot_header
