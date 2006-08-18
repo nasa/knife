@@ -9,6 +9,7 @@ class TestPolyhedron < Test::Unit::TestCase
   poly = Polyhedron.new
   assert poly.triangles.empty?
   assert poly.reversed.empty?
+  assert poly.cutters.empty?
  end
 
 end
