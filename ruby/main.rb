@@ -275,4 +275,19 @@ File.open('om6_cut_surface.t','w') do |f|
  end
 end
 
+ncut = 0
+volume_poly.each do |poly|
+ poly.gather_cutters
+ ncut += 1 if poly.cutters.size > 0
+end
+
+puts "#{ncut} of #{volume_poly.size} ployhedra cut"
+
+File.open('om6_cut_poly.t','w') do |f|
+ f.print volume_poly.first.tecplot_header
+ volume_poly.each do |poly|
+  f.print poly.tecplot_zone if poly.cutters
+ end
+end
+
 puts "the entire process required #{Time.now-initial_time} sec"

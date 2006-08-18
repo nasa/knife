@@ -27,4 +27,21 @@ class Polyhedron
   @cutters.uniq!
  end
 
+ def tecplot_header
+  @triangles.first.tecplot_header
+ end
+
+ def tecplot_zone
+  output = ""
+  @triangles.each do |triangle|
+   output += triangle.tecplot_zone
+  end
+  if @cutters
+   @cutters.each do |triangle|
+    output += triangle.tecplot_zone
+   end
+  end
+  output
+ end
+
 end
