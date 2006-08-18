@@ -29,4 +29,10 @@ class TestMask < Test::Unit::TestCase
   assert_equal "elrt", mask.delete("gnai")
  end
 
+ def test_equals
+  str = "tri"
+  mask0 = Mask.new("tri")
+  assert(mask0==str)
+ end
+
 end

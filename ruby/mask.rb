@@ -30,4 +30,8 @@ class Mask
   end
  end
 
+ def ==(other)
+  (triangle == other)
+ end
+
 end
