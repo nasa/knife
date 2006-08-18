@@ -2,6 +2,7 @@
 class Polyhedron
 
  attr_reader :triangles, :reversed
+ attr_reader :cutters
 
  def initialize
   @triangles = Array.new
@@ -16,6 +17,14 @@ class Polyhedron
 
  def add_reversed_triangle(triangle)
   add_triangle(triangle, true)
+ end
+
+ def gather_cutters
+  @cutters = Array.new
+  @triangles.each do |triangle|
+   @cutters += triangle.cut_by
+  end
+  @cutters.uniq!
  end
 
 end
