@@ -1,18 +1,18 @@
 
+require 'mask'
+
 class Polyhedron
 
- attr_reader :triangles, :reversed
+ attr_reader :triangles
  attr_reader :cutters
 
  def initialize
   @triangles = Array.new
-  @reversed  = Array.new
   @cutters = Array.new
  end
 
  def add_triangle(triangle, reversed = false)
-  @triangles << triangle
-  @reversed << reversed
+  @triangles << Mask.new(triangle,reversed)
   self
  end
 
