@@ -5,6 +5,7 @@ require "intersection"
 class Cut
 
  attr_reader :intersection0, :intersection1
+ attr_reader :triangles
 
  def Cut.between(triangle0, triangle1)
   return nil if exclude?(triangle0, triangle1)
