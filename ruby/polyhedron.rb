@@ -31,8 +31,16 @@ class Polyhedron
  end
 
  def trim_external_subtri
-  (@triangles+@cutters).each do |triangle|
+  (@cutters).each do |triangle|
    triangle.deactivate_all_subtri
+  end
+  @cutters.each do |cutter|
+   cutter.cuts.each do |cut|
+    if ( @triangles.include?(cut.triangles[0]) ||
+         @triangles.include?(cut.triangles[1]) )
+     cutter.activate(cut.intersection0,cut.intersection1)
+    end
+   end
   end
   self
  end
