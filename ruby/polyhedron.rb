@@ -7,6 +7,7 @@ class Polyhedron
  def initialize
   @triangles = Array.new
   @reversed  = Array.new
+  @cutters = Array.new
  end
 
  def add_triangle(triangle, reversed = false)
@@ -34,15 +35,17 @@ class Polyhedron
   self
  end
 
+ def trim_external_subtri
+  
+ end
+
  def tecplot_header
   'title="cut cell geometry"'+"\n"+'variables="x","y","z"'+"\n"
  end
 
  def parent_nodes
   nodes = Array.new
-  targets = @triangles
-  targets += @cutters if @cutters
-  targets.each do |triangle|
+  (@triangles+@cutters).each do |triangle|
    triangle.subnodes.each do |subnode|
     nodes << subnode.parent
    end
@@ -52,9 +55,7 @@ class Polyhedron
  
  def all_subtris
   subtris = Array.new
-  targets = @triangles
-  targets += @cutters if @cutters
-  targets.each do |triangle|
+  (@triangles+@cutters).each do |triangle|
    subtris += triangle.subtris
   end
   subtris
