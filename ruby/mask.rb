@@ -9,4 +9,12 @@ class Mask
   @reversed = reversed
  end
 
+ def eql?(other)
+  @triangle.eql?(other)
+ end
+
+ def method_missing(method, *arguments)
+  @triangle.send(method, *arguments)
+ end
+
 end
