@@ -48,17 +48,34 @@ class Polyhedron
                                                        cut.intersection1)
      triang_subtri10 = triang.find_subtri_with_parents(cut.intersection1,
                                                        cut.intersection0)
-     if (cutter_subtri01.convex(triang_subtri10))
-      activate(cutter_subtri01)
-      activate(triang_subtri10)
+     if reversed?(triang)
+      if (cutter_subtri01.convex(triang_subtri01))
+       activate(cutter_subtri01)
+       activate(triang_subtri01)
+      else
+       activate(cutter_subtri10)
+       activate(triang_subtri10)
+      end
      else
-      activate(cutter_subtri10)
-      activate(triang_subtri01)
+      if (cutter_subtri01.convex(triang_subtri10))
+       activate(cutter_subtri01)
+       activate(triang_subtri10)
+      else
+       activate(cutter_subtri10)
+       activate(triang_subtri01)
+      end
      end
     end
    end
   end
   self
+ end
+
+ def reversed?(target)
+  @triangles.each do |triangle|
+   return true if triangle == target && triangle.reversed
+  end
+  false
  end
 
  def activate(subtri)
