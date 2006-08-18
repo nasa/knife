@@ -26,10 +26,15 @@ class Polyhedron
    @cutters += triangle.cut_by
   end
   @cutters.uniq!
+  @cutters.collect! { |triangle| Mask.new(triangle) }
   self
  end
 
  def trim_external_subtri
+  (@triangles+@cutters).each do |triangle|
+   triangle.deactivate_all_subtri
+  end
+  self
  end
 
  def tecplot_header
