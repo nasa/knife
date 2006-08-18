@@ -1,5 +1,7 @@
 #  sub triangle defined by 3 triangle nodes
 
+require 'intersection'
+
 class Subtri
 
  attr_accessor :n0, :n1, :n2
@@ -119,8 +121,20 @@ class Subtri
  def area
   Subtri.area(n0,n1,n2)
  end
+
  def mean_ratio
   Subtri.mean_ratio(n0,n1,n2)
+ end
+
+ def convex(other)
+  node = other.n0
+  node = other.n1 if ( node.parent == n0.parent || 
+                       node.parent == n1.parent || 
+                       node.parent == n1.parent )
+  node = other.n2 if ( node.parent == n0.parent || 
+                       node.parent == n1.parent || 
+                       node.parent == n1.parent )
+  (Intersection.volume6(n0,n1,n2,node) > 0.0)
  end
 
 end
