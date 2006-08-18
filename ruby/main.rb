@@ -286,7 +286,7 @@ puts "#{ncut} of #{volume_poly.size} ployhedra cut"
 File.open('om6_cut_poly.t','w') do |f|
  f.print volume_poly.first.tecplot_header
  volume_poly.each do |poly|
-  f.print poly.tecplot_zone if poly.cutters
+  f.print poly.tecplot_zone unless poly.cutters.empty?
  end
 end
 
