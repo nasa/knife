@@ -184,6 +184,18 @@ class Triangle
   nil
  end
 
+ def find_subtri_with_parents(parent0,parent1)
+  @subtris.each do |canidate|
+   return canidate if (((parent0 == canidate.n0.parent) && 
+                        (parent1 == canidate.n1.parent )) ||
+                       ((parent0 == canidate.n1.parent) && 
+                        (parent1 == canidate.n2.parent )) ||
+                       ((parent0 == canidate.n2.parent) && 
+                        (parent1 == canidate.n0.parent )))
+  end
+  nil
+ end
+
  def swap_side(node0,node1)
   subtri0 = find_subtri_with( node0, node1)
   subtri1 = find_subtri_with( node1, node0)
