@@ -28,18 +28,45 @@ class Polyhedron
  end
 
  def tecplot_header
-  @triangles.first.tecplot_header
+  'title="cut cell geometry"'+"\n"+'variables="x","y","z"'+"\n"
  end
 
- def tecplot_zone
-  output = ""
-  @triangles.each do |triangle|
-   output += triangle.tecplot_zone
-  end
-  if @cutters
-   @cutters.each do |triangle|
-    output += triangle.tecplot_zone
+ def parent_nodes
+  nodes = Array.new
+  targets = @triangles
+  targets += @cutters if @cutters
+  targets.each do |triangle|
+   triangle.subnodes.each do |subnode|
+    nodes << subnode.parent
    end
+  end
+  nodes.uniq
+ end
+ 
+ def all_subtris
+  subtris = Array.new
+  targets = @triangles
+  targets += @cutters if @cutters
+  targets.each do |triangle|
+   subtris += triangle.subtris
+  end
+  subtris
+ end
+ 
+ def tecplot_zone(title='surf')
+  subnodes = parent_nodes
+  subtris = all_subtris
+  output = sprintf("zone t=%s, i=%d, j=%d, f=fepoint, et=triangle\n",
+                   title, subnodes.size, subtris.size)
+  subnodes.each do |subnode|
+   output += sprintf("%25.15e%25.15e%25.15e\n",
+                     subnode.x,subnode.y,subnode.z)
+  end
+  subtris.each do |subtri|
+   output += sprintf(" %6d %6d %6d\n",
+                     1+subnodes.index(subtri.n0.parent),
+                     1+subnodes.index(subtri.n1.parent),
+                     1+subnodes.index(subtri.n2.parent) )
   end
   output
  end
