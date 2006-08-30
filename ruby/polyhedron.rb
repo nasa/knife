@@ -82,10 +82,7 @@ class Polyhedron
      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node1)
      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node0)
      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node2)
-     puts "#{subtri}" unless subtri.nil?
-     if other.active?(subtri)
-      puts "#{triangle} active"
-      triangle.activate_all_subtri
+     triangle.activate_all_subtri if other.active?(subtri)
      end 
     end
    end
