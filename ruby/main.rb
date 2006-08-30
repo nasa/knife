@@ -289,6 +289,12 @@ puts "the painting required #{Time.now-start_time} sec"
 
 puts "#{ncut} of #{volume_poly.size} ployhedra cut"
 
+start_time = Time.now
+volume_poly.each do |poly|
+ poly.section
+end
+puts "the sectioning required #{Time.now-start_time} sec"
+
 File.open('om6_cut_poly.t','w') do |f|
  f.print volume_poly.first.tecplot_header
  volume_poly.each do |poly|

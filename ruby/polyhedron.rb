@@ -130,6 +130,10 @@ class Polyhedron
   self
  end
 
+ def section
+  self
+ end
+
  def reversed?(target)
   @triangles.each do |triangle|
    return true if triangle == target && triangle.reversed
