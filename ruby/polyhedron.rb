@@ -20,6 +20,17 @@ class Polyhedron
   add_triangle(triangle, true)
  end
 
+ def add_unique_cutter(cutter)
+  return nil if cutter.nil?
+  @cutters.each do |existing|
+   return nil if existing.triangle == cutter
+  end
+  mask = Mask.new(cutter)
+  mask.deactivate_all_subtri
+  @cutters << mask
+  mask
+ end
+
  def gather_cutters
   @cutters = Array.new
   @triangles.each do |triangle|
@@ -88,21 +99,25 @@ class Polyhedron
   end
   
   # activate cutters next to active subtris
-   #only worry about cutters
-  #redo =false
-  #@cutters.each do |triangle|
-  # triangle.segment.each do |segment|
-  #  subtri = traingle.find_subtri_with_parents(segment.node(0),segment.node(1))
-  #  if subtri.nil? # try other segment orientation
-  #   subtri = traingle.find_subtri_with_parents(segment.node(1),segment.node(0))
-  #  end
-  #  if (!subtri.nil? && triangle.active(subtri))
-  #   add nieghboring cutter, activate its subtri, paint it
-  # redo = true
-  #  end
-  # end
-  #end
-  #paint if redo
+  @cutters.each do |triangle|
+   triangle.segments.each do |segment|
+    subtri = nil
+    subtri ||= triangle.find_subtri_with_parents(segment.node0,segment.node1)
+    subtri ||= triangle.find_subtri_with_parents(segment.node1,segment.node0)
+    if (!subtri.nil? && triangle.active?(subtri))
+     neighboring_cutter = triangle.neighboring(segment)
+     neighboring_mask = add_unique_cutter neighboring_cutter
+     unless neighboring_mask.nil?
+      subtri = nil
+      subtri ||= neighboring_mask.find_subtri_with_parents(segment.node0,
+                                                           segment.node1)
+      subtri ||= neighboring_mask.find_subtri_with_parents(segment.node1,
+                                                           segment.node0)
+      neighboring_mask.activate(subtri).paint
+     end
+    end
+   end
+  end
   self
  end
 
@@ -117,6 +132,7 @@ class Polyhedron
   (@triangles+@cutters).each do |triangle|
    triangle.activate(subtri)
   end
+  self
  end
 
  def tecplot_header
