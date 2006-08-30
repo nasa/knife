@@ -126,15 +126,15 @@ class Subtri
   Subtri.mean_ratio(n0,n1,n2)
  end
 
- def convex(other)
-  node = other.n0
-  node = other.n1 if ( node.parent == n0.parent || 
-                       node.parent == n1.parent || 
-                       node.parent == n1.parent )
-  node = other.n2 if ( node.parent == n0.parent || 
-                       node.parent == n1.parent || 
-                       node.parent == n1.parent )
-  (Intersection.volume6(n0,n1,n2,node) > 0.0)
+ def above(other)
+  node = n0
+  node = n1 if ( node.parent == other.n0.parent || 
+                 node.parent == other.n1.parent || 
+                 node.parent == other.n2.parent )
+  node = n2 if ( node.parent == other.n0.parent || 
+                 node.parent == other.n1.parent || 
+                 node.parent == other.n2.parent )
+  (Intersection.volume6(other.n0,other.n1,other.n2,node) > 0.0)
  end
 
 end

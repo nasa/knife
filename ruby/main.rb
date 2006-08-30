@@ -281,6 +281,7 @@ volume_poly.each do |poly|
  if poly.cutters.size > 0
   ncut += 1 
   poly.trim_external_subtri
+  poly.paint
  end
 end
 

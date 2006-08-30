@@ -30,7 +30,7 @@ class Intersection
 
   # raise exception if degeneracy detected
   raise "top #{top_volume}"    if top_volume.abs < singular_tol
-  raise "bottom #{top_volume}" if bottom_volume.abs < singular_tol
+  raise "bottom #{bottom_volume}" if bottom_volume.abs < singular_tol
 
   # if signs match, segment is entirely above or below triangle
   return nil if (top_volume > 0.0 && bottom_volume > 0.0 )

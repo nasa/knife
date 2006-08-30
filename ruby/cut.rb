@@ -55,4 +55,7 @@ class Cut
   triangle1.cuts << self
  end
 
+ def to_s
+  "i #{@intersection0}-#{@intersection1} t #{@triangles[0]}+#{@triangles[1]} c"
+ end
 end

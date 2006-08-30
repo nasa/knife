@@ -48,26 +48,42 @@ class Polyhedron
                                                        cut.intersection1)
      triang_subtri10 = triang.find_subtri_with_parents(cut.intersection1,
                                                        cut.intersection0)
+
+     activate(triang_subtri01) if (triang_subtri01.above(cutter_subtri01))
+     activate(triang_subtri10) if (triang_subtri10.above(cutter_subtri01))
+
      if reversed?(triang)
-      if (cutter_subtri01.convex(triang_subtri01))
-       activate(cutter_subtri01)
-       activate(triang_subtri01)
-      else
-       activate(cutter_subtri10)
-       activate(triang_subtri10)
-      end
+      activate(cutter_subtri01) if (!cutter_subtri01.above(triang_subtri01))
+      activate(cutter_subtri10) if (!cutter_subtri10.above(triang_subtri01))
      else
-      if (cutter_subtri01.convex(triang_subtri10))
-       activate(cutter_subtri01)
-       activate(triang_subtri10)
-      else
-       activate(cutter_subtri10)
-       activate(triang_subtri01)
-      end
+      activate(cutter_subtri01) if (cutter_subtri01.above(triang_subtri01))
+      activate(cutter_subtri10) if (cutter_subtri10.above(triang_subtri01))
      end
     end
    end
   end
+  self
+ end
+
+ def paint
+  (@triangles+@cutters).each do |triangle|
+   triangle.paint
+  end
+  #only worry about cutters
+  #redo =false
+  #@cutters.each do |triangle|
+  # triangle.segment.each do |segment|
+  #  subtri = traingle.find_subtri_with_parents(segment.node(0),segment.node(1))
+  #  if subtri.nil? # try other segment orientation
+  #   subtri = traingle.find_subtri_with_parents(segment.node(1),segment.node(0))
+  #  end
+  #  if (!subtri.nil? && triangle.active(subtri))
+  #   add nieghboring cutter, activate its subtri, paint it
+  # redo = true
+  #  end
+  # end
+  #end
+  #paint if redo
   self
  end
 

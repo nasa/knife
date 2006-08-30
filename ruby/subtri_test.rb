@@ -4,6 +4,7 @@
 require 'test/unit'
 require 'subtri'
 require 'subnode'
+require 'node'
 
 class TestSubtri < Test::Unit::TestCase
  
@@ -108,6 +109,35 @@ class TestSubtri < Test::Unit::TestCase
   assert_in_delta u, bary[0], tol
   assert_in_delta v, bary[1], tol
   assert_in_delta w, bary[2], tol
+ end
+
+ def test_above
+  n0 = Subnode.new(0.0,0.0,0.0,Node.new(0.0,0.0,0.0))
+  n1 = Subnode.new(0.0,0.0,0.0,Node.new(1.0,0.0,0.0))
+  n2 = Subnode.new(0.0,0.0,0.0,Node.new(0.0,1.0,0.0))
+  n3 = Subnode.new(0.0,0.0,0.0,Node.new(0.0,0.0,1.0))
+  orig = Subtri.new(n0,n1,n2)
+  side0 = Subtri.new(n3,n2,n1)
+  side1 = Subtri.new(n3,n0,n2)
+  side2 = Subtri.new(n3,n1,n0)
+  assert_equal true, orig.above(side0)
+  assert_equal true, orig.above(side1)
+  assert_equal true, orig.above(side2)
+
+  assert_equal true, side0.above(orig)
+  assert_equal true, side1.above(orig)
+  assert_equal true, side2.above(orig)
+
+  side0 = Subtri.new(n3,n1,n2)
+  side1 = Subtri.new(n3,n2,n0)
+  side2 = Subtri.new(n3,n0,n1)
+  assert_equal false, orig.above(side0)
+  assert_equal false, orig.above(side1)
+  assert_equal false, orig.above(side2)
+
+  assert_equal true, side0.above(orig)
+  assert_equal true, side1.above(orig)
+  assert_equal true, side2.above(orig)
  end
 
 end
