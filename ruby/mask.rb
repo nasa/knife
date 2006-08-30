@@ -45,6 +45,7 @@ class Mask
  def activate(subtri)
   indx = triangle.subtris.index(subtri)
   @trimmed[indx] = false if indx
+  self
  end
 
  def active?(subtri)
