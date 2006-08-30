@@ -18,6 +18,14 @@ class Mask
   @trimmed = Array.new(triangle.subtris.size,true)
  end
 
+ def activate_all_subtri
+  if @trimmed.nil?
+   @trimmed = Array.new(triangle.subtris.size,false)
+  else
+   @trimmed.collect! { false }
+  end
+ end
+
  def subtris
   if @trimmed
    out = Array.new
