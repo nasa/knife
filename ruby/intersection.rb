@@ -18,8 +18,8 @@ class Intersection
   t1 = triangle.node1
   t2 = triangle.node2
 
-  s0 = segment.node(0)
-  s1 = segment.node(1)
+  s0 = segment.node0
+  s1 = segment.node1
 
   singular_tol = 1.0e-12
 
@@ -86,17 +86,17 @@ class Intersection
    return @u,@v,@w
   end
   u=0.0;v=0.0;w=0.0
-  u = (    @t) if @segment.node(1) == triangle.node0
-  v = (    @t) if @segment.node(1) == triangle.node1
-  w = (    @t) if @segment.node(1) == triangle.node2
-  u = (1.0-@t) if @segment.node(0) == triangle.node0
-  v = (1.0-@t) if @segment.node(0) == triangle.node1
-  w = (1.0-@t) if @segment.node(0) == triangle.node2
+  u = (    @t) if @segment.node1 == triangle.node0
+  v = (    @t) if @segment.node1 == triangle.node1
+  w = (    @t) if @segment.node1 == triangle.node2
+  u = (1.0-@t) if @segment.node0 == triangle.node0
+  v = (1.0-@t) if @segment.node0 == triangle.node1
+  w = (1.0-@t) if @segment.node0 == triangle.node2
   return u,v,w
  end
 
- def x; (1.0-t)*segment.node(0).x + t*segment.node(1).x; end
- def y; (1.0-t)*segment.node(0).y + t*segment.node(1).y; end
- def z; (1.0-t)*segment.node(0).z + t*segment.node(1).z; end
+ def x; (1.0-t)*segment.node0.x + t*segment.node1.x; end
+ def y; (1.0-t)*segment.node0.y + t*segment.node1.y; end
+ def z; (1.0-t)*segment.node0.z + t*segment.node1.z; end
 
 end
