@@ -42,6 +42,12 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal @segment2, @triangle.segment(2)
  end
 
+ def test_initialize_segment_registration
+  assert_equal [@triangle], @segment0.triangles
+  assert_equal [@triangle], @segment1.triangles
+  assert_equal [@triangle], @segment2.triangles
+ end
+
  def test_initialize_subnode
   assert_equal 3, @triangle.subnodes.size
   assert_equal @node0, @triangle.subnodes[0].parent

@@ -19,6 +19,9 @@ class Triangle
   @node1=segment0.common_node(segment2)
   @node2=segment0.common_node(segment1)
   @segments = [ segment0, segment1, segment2 ]
+  segment0.triangles << self
+  segment1.triangles << self
+  segment2.triangles << self
   @cuts = Array.new
   @subnodes = [ Subnode.new(1.0,0.0,0.0,@node0),
                 Subnode.new(0.0,1.0,0.0,@node1),
