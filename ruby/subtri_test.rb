@@ -17,7 +17,7 @@ class TestSubtri < Test::Unit::TestCase
                                            Subnode.new(0.0,1.0,0.0))
  end
 
- def test_initialize_3
+ def test_initialize
   subtri = Subtri.new("n0", "n1", "n2")
   assert subtri.is_a?(Subtri), "not a subtri"
  end
