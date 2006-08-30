@@ -275,6 +275,7 @@ File.open('om6_cut_surface.t','w') do |f|
  end
 end
 
+start_time = Time.now
 ncut = 0
 volume_poly.each do |poly|
  poly.gather_cutters
@@ -284,6 +285,7 @@ volume_poly.each do |poly|
   poly.paint
  end
 end
+puts "the painting required #{Time.now-start_time} sec"
 
 puts "#{ncut} of #{volume_poly.size} ployhedra cut"
 
