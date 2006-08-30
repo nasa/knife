@@ -66,10 +66,33 @@ class Polyhedron
  end
 
  def paint
+  # paint individuals
   (@triangles+@cutters).each do |triangle|
    triangle.paint
   end
-  #only worry about cutters
+
+  # activate triangles next to active subtris
+  @triangles.each do |triangle|
+   if 0 == triangle.cuts.size
+    @triangles.each do |other|
+     subtri = nil
+     subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node1)
+     subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node0)
+     subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node2)
+     subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node1)
+     subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node0)
+     subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node2)
+     puts "#{subtri}" unless subtri.nil?
+     if other.active?(subtri)
+      puts "#{triangle} active"
+      triangle.activate_all_subtri
+     end 
+    end
+   end
+  end
+  
+  # activate cutters next to active subtris
+   #only worry about cutters
   #redo =false
   #@cutters.each do |triangle|
   # triangle.segment.each do |segment|
