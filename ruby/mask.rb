@@ -74,4 +74,15 @@ class Mask
   paint_subtri(subtri)
  end
 
+ def uniquely_mark(starting_index)
+  @mark = Array.new(@trimmed.size)
+  @trimmed.each_index do |indx|
+   unless @trimmed[indx]
+    @mark[indx] = starting_index
+    starting_index += 1
+   end
+  end
+  starting_index
+ end
+
 end

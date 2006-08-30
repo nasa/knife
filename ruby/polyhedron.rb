@@ -130,7 +130,17 @@ class Polyhedron
   self
  end
 
+ def cut?
+  (!@cutters.empty?)
+ end
+
  def section
+  return self unless cut?
+  starting_index = 0
+  (@triangles+@cutters).each do |triangle|
+   starting_index = triangle.uniquely_mark(starting_index)
+  end
+  puts starting_index
   self
  end
 
