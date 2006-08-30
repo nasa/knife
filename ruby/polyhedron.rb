@@ -82,9 +82,11 @@ class Polyhedron
    triangle.paint
   end
 
+  requires_another_coat_of_paint = false
+
   # activate triangles next to active subtris
   @triangles.each do |triangle|
-   if 0 == triangle.cuts.size
+   if 0 == triangle.cuts.size && triangle.active?(triangle.subtris[0])
     @triangles.each do |other|
      subtri = nil
      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node1)
@@ -93,7 +95,10 @@ class Polyhedron
      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node1)
      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node0)
      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node2)
-     triangle.activate_all_subtri if other.active?(subtri)
+     if other.active?(subtri)
+      triangle.activate_all_subtri
+      requires_another_coat_of_paint = true
+     end
     end
    end
   end
@@ -114,10 +119,14 @@ class Polyhedron
       subtri ||= neighboring_mask.find_subtri_with_parents(segment.node1,
                                                            segment.node0)
       neighboring_mask.activate(subtri).paint
+      requires_another_coat_of_paint = true
      end
     end
    end
   end
+
+  return paint if requires_another_coat_of_paint
+
   self
  end
 
