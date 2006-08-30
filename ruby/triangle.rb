@@ -199,6 +199,13 @@ class Triangle
   nil
  end
 
+ def neighboring(segment)
+  segment.triangles.each do |triangle|
+   return triangle unless self == triangle
+  end
+  nil
+ end
+
  def swap_side(node0,node1)
   subtri0 = find_subtri_with( node0, node1)
   subtri1 = find_subtri_with( node1, node0)
