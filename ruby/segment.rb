@@ -4,11 +4,13 @@ class Segment
 
  attr_reader :node0, :node1
  attr_reader :intersections
+ attr_reader :triangles
 
  def initialize(node0, node1)
   @node0 = node0
   @node1 = node1
   @intersections = Array.new
+  @triangles = Array.new
  end
 
  def common_node(segment)

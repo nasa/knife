@@ -21,6 +21,7 @@ class TestSegment < Test::Unit::TestCase
   assert_equal node1, segment.node1
 
   assert_equal [], segment.intersections
+  assert_equal [], segment.triangles
  end
 
  def test_common_node
