@@ -165,7 +165,7 @@ class Polyhedron
       subtri1 = mask1.find_subtri_with_parents(cut.intersection1,
                                                cut.intersection0)
      end
-     unless mask1.active?(subtri1)
+     if mask1.active?(subtri1)
       indx0 = triangle0.subtris.index(subtri0)
       indx1 = triangle1.subtris.index(subtri1)
       mark0 = mask0.mark[indx0]
