@@ -192,7 +192,7 @@ class Polyhedron
   self
  end
 
- def triangle_mask(traingle)
+ def triangle_mask(triangle)
   (@triangles+@cutters).each do |mask|
    return mask if triangle == mask.triangle
   end
