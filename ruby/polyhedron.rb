@@ -207,14 +207,7 @@ class Polyhedron
    end
   end
 
-  if keep_relaxing
-   relax_mark
-  else
-   (@triangles+@cutters).each_with_index do |triangle,indx|
-    printf "tri %3d:",indx
-    triangle.echo_marks
-   end
-  end
+  return relax_mark if keep_relaxing
 
   self
  end
