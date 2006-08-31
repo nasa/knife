@@ -1,6 +1,7 @@
 #  sub triangle defined by 3 triangle nodes
 
 require 'intersection'
+require 'cut'
 
 class Subtri
 
@@ -135,6 +136,12 @@ class Subtri
                  node.parent == other.n1.parent || 
                  node.parent == other.n2.parent )
   (Intersection.volume6(other.n0,other.n1,other.n2,node) > 0.0)
+ end
+
+ def each_cut
+  yield s0 if s0.is_a?(Cut)
+  yield s1 if s1.is_a?(Cut)
+  yield s2 if s2.is_a?(Cut)
  end
 
 end
