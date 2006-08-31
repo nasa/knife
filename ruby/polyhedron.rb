@@ -150,10 +150,43 @@ class Polyhedron
   (@triangles+@cutters).each do |triangle|
    triangle.relax_mark
   end
+
+  keep_relaxing = false
+
+  (@triangles+@cutters).each do |mask0|
+   mask0.subtris.each do |subtri0|
+    subtri0.each_cut do |cut|
+     triangle0 = mask0.triangle
+     triangle1 = cut.other_triangle triangle0
+     mask1 = triangle_mask triangle1
+     subtri1 = mask1.find_subtri_with_parents(cut.intersection0,
+                                              cut.intersection1)
+     unless mask1.active?(subtri1)
+      subtri1 = mask1.find_subtri_with_parents(cut.intersection1,
+                                               cut.intersection0)
+     end
+     unless mask1.active?(subtri1)
+      indx0 = triangle0.subtris.index(subtri0)
+      indx1 = triangle1.subtris.index(subtri1)
+      mark0 = mask0.mark[indx0]
+      mark1 = mask1.mark[indx1]
+      mark = [mark0, mark1].min
+      mask0.mark[indx0] = mark
+      mask1.mark[indx1] = mark
+      keep_relaxing = true if mark0 > mark
+      keep_relaxing = true if mark1 > mark
+     end
+    end
+   end
+  end
   
-  (@triangles+@cutters).each_with_index do |triangle,indx|
-   puts "tri #{indx}"
-   triangle.echo_marks
+  if keep_relaxing
+   relax_mark
+  else
+   (@triangles+@cutters).each_with_index do |triangle,indx|
+    puts "tri #{indx}"
+    triangle.echo_marks
+   end
   end
 
   self
