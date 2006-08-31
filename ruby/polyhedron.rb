@@ -86,7 +86,7 @@ class Polyhedron
 
   # activate triangles next to active subtris
   @triangles.each do |triangle|
-   if 0 == triangle.cuts.size && triangle.active?(triangle.subtris[0])
+   if 0 == triangle.cuts.size && !triangle.active?(triangle.subtris[0])
     @triangles.each do |other|
      subtri = nil
      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node1)
@@ -158,7 +158,6 @@ class Polyhedron
 
   self
  end
-
 
  def reversed?(target)
   @triangles.each do |triangle|
