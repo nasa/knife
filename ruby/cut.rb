@@ -58,4 +58,11 @@ class Cut
  def to_s
   "i #{@intersection0}-#{@intersection1} t #{@triangles[0]}+#{@triangles[1]} c"
  end
+
+ def other_triangle(triangle)
+  return @triangles[0] if triangle == @triangles[1]
+  return @triangles[1] if triangle == @triangles[0]
+  nil
+ end
+
 end
