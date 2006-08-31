@@ -183,7 +183,7 @@ class Polyhedron
    relax_mark
   else
    (@triangles+@cutters).each_with_index do |triangle,indx|
-    printf "tri #{indx}:"
+    printf "tri %3d:",indx
     triangle.echo_marks
    end
   end
