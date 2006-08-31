@@ -290,9 +290,12 @@ puts "the painting required #{Time.now-start_time} sec"
 puts "#{ncut} of #{volume_poly.size} ployhedra cut"
 
 start_time = Time.now
+ncut = 0
 volume_poly.each do |poly|
  if poly.cutters.size > 0
+  ncut += 1 
   poly.section
+  printf "zone %6d sections #{poly.unique_marks.join(' ')}\n", ncut
  end
 end
 puts "the sectioning required #{Time.now-start_time} sec"
