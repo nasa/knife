@@ -296,6 +296,9 @@ volume_poly.each do |poly|
   ncut += 1 
   poly.section
   printf "zone %6d sections #{poly.unique_marks.join(' ')}\n", ncut
+  poly.triangles.each do |tri|
+   puts "null tri" if tri.subtris.empty?
+  end
  end
 end
 puts "the sectioning required #{Time.now-start_time} sec"
