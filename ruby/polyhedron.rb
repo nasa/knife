@@ -192,6 +192,13 @@ class Polyhedron
   self
  end
 
+ def triangle_mask(traingle)
+  (@triangles+@cutters).each do |mask|
+   return mask if triangle == mask.triangle
+  end
+  nil
+ end
+
  def reversed?(target)
   @triangles.each do |triangle|
    return true if triangle == target && triangle.reversed
