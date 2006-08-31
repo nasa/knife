@@ -224,7 +224,7 @@ class Polyhedron
   (@triangles+@cutters).each do |mask|
    marks += mask.mark
   end
-  marks.compact.unique
+  marks.compact.uniq
  end
 
  def reversed?(target)
