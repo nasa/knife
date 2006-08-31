@@ -3,6 +3,7 @@
 class Mask
  
  attr_reader :triangle, :reversed
+ attr_reader :mark
 
  def initialize(triangle,reversed=false)
   @triangle = triangle
