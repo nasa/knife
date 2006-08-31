@@ -116,7 +116,7 @@ class Mask
 
  def echo_marks
   @mark.each do |mark|
-   printf " %4d", mark
+   printf " %4d", mark unless mark.nil?
   end
   printf "\n"
  end
