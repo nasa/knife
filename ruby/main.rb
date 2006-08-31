@@ -291,7 +291,9 @@ puts "#{ncut} of #{volume_poly.size} ployhedra cut"
 
 start_time = Time.now
 volume_poly.each do |poly|
- poly.section
+ if poly.cutters.size > 0
+  poly.section
+ end
 end
 puts "the sectioning required #{Time.now-start_time} sec"
 
