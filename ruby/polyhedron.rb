@@ -219,6 +219,14 @@ class Polyhedron
   nil
  end
 
+ def unique_marks
+  marks = Array.new
+  (@triangles+@cutters).each do |mask|
+   marks += mask.mark
+  end
+  marks.compact.unique
+ end
+
  def reversed?(target)
   @triangles.each do |triangle|
    return true if triangle == target && triangle.reversed
