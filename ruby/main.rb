@@ -36,6 +36,9 @@ surface_grid.nface.times do |face_index|
  end
 end
 
+surface_grid.writeTecplotGeomFaceXYZ(1)
+surface_grid.writeTecplotGeomFaceXYZ(2)
+
 puts "cut surface has #{triangles} triangless"
 
 node = 0
