@@ -85,4 +85,38 @@ class Mask
   starting_index
  end
 
+ def relax_mark
+  subtris.each do |subtri|
+   relax_subtri subtri
+  end
+  self
+ end
+
+ def relax_subtri(subtri)
+  return self if subtri.nil?
+  relax_edge(subtri,subtri.n2,subtri.n1) if subtri.s0.nil?
+  relax_edge(subtri,subtri.n0,subtri.n2) if subtri.s1.nil?
+  relax_edge(subtri,subtri.n1,subtri.n0) if subtri.s2.nil?
+  self
+ end
+
+ def relax_edge(subtri0,n0,n1)
+  subtri1 = find_subtri_with(n0,n1)
+  indx0 = triangle.subtris.index(subtri0)
+  indx1 = triangle.subtris.index(subtri1)
+  previous = [@mark[indx0], @mark[indx1]].max
+  mark = [@mark[indx0], @mark[indx1]].min
+  @mark[indx0] = mark
+  @mark[indx1] = mark
+  return self if previous == mark
+  relax_subtri(subtri1)
+ end
+
+ def echo_marks
+  @mark.each do |mark|
+   printf " %4d", mark
+  end
+  printf "\n"
+ end
+
 end
