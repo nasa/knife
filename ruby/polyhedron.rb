@@ -140,7 +140,6 @@ class Polyhedron
   (@triangles+@cutters).each do |triangle|
    starting_index = triangle.uniquely_mark(starting_index)
   end
-  puts "active subtris #{starting_index}"
   relax_mark
   self
  end
