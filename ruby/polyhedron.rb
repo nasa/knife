@@ -140,9 +140,25 @@ class Polyhedron
   (@triangles+@cutters).each do |triangle|
    starting_index = triangle.uniquely_mark(starting_index)
   end
-  puts starting_index
+  puts "active subtris #{starting_index}"
+  relax_mark
   self
  end
+
+ def relax_mark
+  # paint individuals
+  (@triangles+@cutters).each do |triangle|
+   triangle.relax_mark
+  end
+  
+  (@triangles+@cutters).each_with_index do |triangle,indx|
+   puts "tri #{indx}"
+   triangle.echo_marks
+  end
+
+  self
+ end
+
 
  def reversed?(target)
   @triangles.each do |triangle|
