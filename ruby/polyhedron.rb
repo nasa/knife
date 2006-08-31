@@ -152,6 +152,7 @@ class Polyhedron
 
   keep_relaxing = false
 
+  # relax across cuts
   (@triangles+@cutters).each do |mask0|
    mask0.subtris.each do |subtri0|
     subtri0.each_cut do |cut|
@@ -179,6 +180,33 @@ class Polyhedron
    end
   end
   
+  # relax across uncut segments
+  (@triangles+@cutters).each do |mask0|
+   if 0 == mask0.cuts.size && mask0.active?(mask0.subtris[0])
+    subtri0 = mask0.subtris[0]
+    (@triangles+@cutters).each do |mask1|
+     subtri1 = nil
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node0,mask0.node1)
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node1,mask0.node0)
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node1,mask0.node2)
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node2,mask0.node1)
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node2,mask0.node0)
+     subtri1 ||= mask1.find_subtri_with_parents(mask0.node0,mask0.node2)
+     if mask1.active?(subtri1)
+      indx0 = mask0.triangle.subtris.index(subtri0)
+      indx1 = mask1.triangle.subtris.index(subtri1)
+      mark0 = mask0.mark[indx0]
+      mark1 = mask1.mark[indx1]
+      mark = [mark0, mark1].min
+      mask0.mark[indx0] = mark
+      mask1.mark[indx1] = mark
+      keep_relaxing = true if mark0 > mark
+      keep_relaxing = true if mark1 > mark
+     end
+    end
+   end
+  end
+
   if keep_relaxing
    relax_mark
   else
