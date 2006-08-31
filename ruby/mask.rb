@@ -104,12 +104,14 @@ class Mask
   subtri1 = find_subtri_with(n0,n1)
   indx0 = triangle.subtris.index(subtri0)
   indx1 = triangle.subtris.index(subtri1)
-  previous = [@mark[indx0], @mark[indx1]].max
-  mark = [@mark[indx0], @mark[indx1]].min
+  mark0 = @mark[indx0]
+  mark1 = @mark[indx1]
+  mark = [mark0, mark1].min
   @mark[indx0] = mark
   @mark[indx1] = mark
-  return self if previous == mark
-  relax_subtri(subtri1)
+  return relax_subtri(subtri0) if mark0 > mark
+  return relax_subtri(subtri1) if mark1 > mark
+  self
  end
 
  def echo_marks
