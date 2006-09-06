@@ -2,6 +2,8 @@
 
 class Node < Array
 
+ attr_accessor :indx
+
  def initialize(x, y, z)
   self << x
   self << y

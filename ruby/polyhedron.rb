@@ -16,6 +16,16 @@ class Polyhedron
   self
  end
 
+ def corner_indexes
+  indx = Array.new
+  @triangles.each do |tri|
+   indx << tri.node0.indx+1
+   indx << tri.node1.indx+1
+   indx << tri.node2.indx+1
+  end
+  indx.uniq
+ end
+
  def add_reversed_triangle(triangle)
   add_triangle(triangle, true)
  end
