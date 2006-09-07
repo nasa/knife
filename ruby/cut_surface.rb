@@ -126,32 +126,52 @@ class CutSurface
     node0 = [face[2],face[0]].min
     node1 = [face[2],face[0]].max
     segment1 = segment[node0][node1]
-
+    
     cut_triangles[triangles] = Triangle.new(segment0,segment1,segment2)
     triangles += 1
    end
-
-   CutSurface.new(triangles,grid)
   end
 
-  #build a near tree to speed up searches
-  def build_tree
-   near_list = Array.new(@triangles.size)
-   @triangles.each_with_index do |triangle, index|
-    center = triangle.center
-    diameter = triangle.diameter
-    near_list[index] = Near.new(index,center[0],center[1],center[2],diameter)
-   end
-   near_list.each_index do |index|
-    cut_tree.insert(near_list[index]) if index > 0
-   end
-   near_list.first
+  CutSurface.new(cut_triangles,surface_grid)
+ end
+
+ def initialize(triangles,grid=nil)
+  @triangles = triangles
+  @grid = grid
+  
+  @near_tree = build_tree
+ end
+
+ #build a near tree to speed up searches
+ def build_tree
+  near_list = Array.new(@triangles.size)
+  @triangles.each_with_index do |triangle, index|
+   center = triangle.center
+   diameter = triangle.diameter
+   near_list[index] = Near.new(index,center[0],center[1],center[2],diameter)
   end
+  near_list.each_index do |index|
+   near_list.first.insert(near_list[index]) if index > 0
+  end
+  near_list
+ end
 
-  def initialize(triangles,grid=nil)
-   @triangles = triangles
-   @grid = grid
-
-   @near_tree = build_tree
+ def triangulate
+  @triangles.each do |triangle|
+   triangle.triangulate_cuts
+   if triangle.min_subtri_area < 1.0e-15
+    raise "negative subtri area #{triangle.min_subtri_area}"
+   end
   end
  end
+
+ def write_tecplot(filename='cut_surface.t')
+  File.open(filename,'w') do |f|
+   f.print @triangles.first.tecplot_header
+   @triangles.each do |triangle|
+    f.print triangle.tecplot_zone
+   end
+  end
+ end
+
+end
