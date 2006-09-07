@@ -7,12 +7,6 @@ refine_path = File.expand_path("~/GRIDEX/refine/src")
 
 $:.push refine_path
 
-# for Grid...
-require 'Adj/Adj'
-require 'Line/Line'
-require 'Sort/Sort'
-require 'Grid/Grid'
-require 'GridMath/GridMath'
 require 'Near/Near'
 
 class CutSurface
@@ -21,11 +15,8 @@ class CutSurface
  attr_reader :grid
  attr_reader :near_tree
 
- def CutSurface.from_FAST(filename,cut_bcs)
+ def CutSurface.from_grid(surface_grid,cut_bcs)
 
-  # read in the grid
-  surface_grid = Grid.from_FAST File.expand_path(filename)
- 
   # create a global to local index for surface nodes
   triangles = 0
   surface_g2l = Array.new(surface_grid.nnode)

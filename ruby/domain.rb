@@ -5,18 +5,6 @@ require 'triangle'
 require 'polyhedron'
 require 'cut'
 
-refine_path = File.expand_path("~/GRIDEX/refine/src")
-
-$:.push refine_path
-
-# for Grid...
-require 'Adj/Adj'
-require 'Line/Line'
-require 'Sort/Sort'
-require 'Grid/Grid'
-require 'GridMath/GridMath'
-require 'Near/Near'
-
 class Domain
 
  attr_reader :poly, :triangles, :cut_poly, :grid
@@ -38,9 +26,7 @@ class Domain
   nil
  end
 
- def Domain.from_FAST(filename)
-
-  volume_grid = Grid.from_FAST File.expand_path(filename)
+ def Domain.from_grid(volume_grid)
 
   #make volume nodes
   volume_node = Array.new(volume_grid.nnode)
