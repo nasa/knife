@@ -15,7 +15,7 @@ class CutSurface
  attr_reader :grid
  attr_reader :near_tree
 
- def CutSurface.from_grid(surface_grid,cut_bcs)
+ def CutSurface.from_grid(surface_grid,cut_bcs,reversed=false)
 
   # create a global to local index for surface nodes
   triangles = 0
@@ -65,6 +65,12 @@ class CutSurface
     face[1] = surface_g2l[face[1]]
     face[2] = surface_g2l[face[2]]
 
+    if reversed
+     temp = face[0]
+     face[0] = face[1]
+     face[1] = temp
+    end
+
     node0 = [face[0],face[1]].min
     node1 = [face[0],face[1]].max
     unless segment[node0][node1]
@@ -103,6 +109,12 @@ class CutSurface
     face[0] = surface_g2l[face[0]]
     face[1] = surface_g2l[face[1]]
     face[2] = surface_g2l[face[2]]
+
+    if reversed
+     temp = face[0]
+     face[0] = face[1]
+     face[1] = temp
+    end
 
     node0 = [face[0],face[1]].min
     node1 = [face[0],face[1]].max
