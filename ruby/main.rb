@@ -166,7 +166,7 @@ volume_poly.each do |poly|
  if poly.cutters.size > 0
   ncut += 1 
   poly.section
-  printf "zone %6d sections #{poly.unique_marks.join(' ')}\n", ncut
+  #printf "zone %6d sections #{poly.unique_marks.join(' ')}\n", ncut
   poly.triangles.each do |tri|
    puts "null tri" if tri.subtris.empty?
   end
