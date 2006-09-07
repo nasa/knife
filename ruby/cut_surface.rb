@@ -2,8 +2,6 @@
 require 'node'
 require 'segment'
 require 'triangle'
-require 'polyhedron'
-require 'cut'
 
 refine_path = File.expand_path("~/GRIDEX/refine/src")
 
@@ -160,9 +158,10 @@ class CutSurface
   @triangles.each do |triangle|
    triangle.triangulate_cuts
    if triangle.min_subtri_area < 1.0e-15
-    raise "negative subtri area #{triangle.min_subtri_area}"
+    raise "negative cut surface subtri area #{triangle.min_subtri_area}"
    end
   end
+  self
  end
 
  def write_tecplot(filename='cut_surface.t')
@@ -172,6 +171,7 @@ class CutSurface
     f.print triangle.tecplot_zone
    end
   end
+  self
  end
 
 end
