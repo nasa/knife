@@ -21,6 +21,7 @@ class CutSurface
 
  attr_reader :triangles
  attr_reader :grid
+ attr_reader :near_tree
 
  def CutSurface.from_FAST(filename,cut_bcs)
 
@@ -133,8 +134,24 @@ class CutSurface
    CutSurface.new(triangles,grid)
   end
 
+  #build a near tree to speed up searches
+  def build_tree
+   near_list = Array.new(@triangles.size)
+   @triangles.each_with_index do |triangle, index|
+    center = triangle.center
+    diameter = triangle.diameter
+    near_list[index] = Near.new(index,center[0],center[1],center[2],diameter)
+   end
+   near_list.each_index do |index|
+    cut_tree.insert(near_list[index]) if index > 0
+   end
+   near_list.first
+  end
+
   def initialize(triangles,grid=nil)
    @triangles = triangles
    @grid = grid
+
+   @near_tree = build_tree
   end
  end
