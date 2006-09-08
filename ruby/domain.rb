@@ -245,11 +245,12 @@ class Domain
    end
   end
   File.open('postslice.eg','w') do |f|
-   f.puts number_of_element_groups
-   number_of_element_groups.times do |element_group|
+   f.puts @bflags.size
+   @bflags.each_index do |element_group|
     type = Polyhedron::PXE_TetQ1
     type = Polyhedron::PXE_TetCut if element_group == @cut_group
     f.puts type
+    f.puts @bflags[element_group]
     f.puts @element_group_sizes[element_group]
     indx = 0
     @poly.each do |poly|
