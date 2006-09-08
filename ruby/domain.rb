@@ -262,6 +262,9 @@ class Domain
       end
      end
     end
+    @poly.each do |poly|
+     f.puts poly.original_nodes.join(' ') if element_group == poly.element_group
+    end
    end
   end
  end
