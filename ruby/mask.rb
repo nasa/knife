@@ -123,6 +123,7 @@ class Mask
  end
 
  def mark_exterior
+  @triangle.active = false
   @triangle.polyhedra.each do |poly|
    poly.mark_exterior unless poly.cut?
   end
