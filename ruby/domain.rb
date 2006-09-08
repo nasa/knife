@@ -7,7 +7,12 @@ require 'cut'
 
 class Domain
 
+ PXE_BoundaryEG = 0
+ PXE_ExteriorEG = 2
+
  attr_reader :poly, :triangles, :cut_poly, :grid
+ attr_accessor :bflags
+ attr_accessor :element_group_sizes
 
  def Domain.cell2face(face)
   case face
@@ -191,21 +196,24 @@ class Domain
  def assign_element_group_index
   @cut_group = number_of_element_groups
   @exterior_group = @cut_group+1
+  @bflags << PXE_BoundaryEG
+  @bflags << PXE_ExteriorEG
   puts "cut group #{@cut_group} exterior group #{@exterior_group}"
-  counts = Array.new @exterior_group+1
-  counts.collect! { 0 }
+  @element_group_sizes = Array.new @exterior_group+1
+  @element_group_sizes.collect! { 0 }
   @poly.each do |poly|
    poly.element_group = @exterior_group unless poly.active
    poly.element_group = @cut_group if poly.cut?
-   poly.element_index = counts[poly.element_group]
+   poly.element_index = @element_group_sizes[poly.element_group]
    if poly.cut?
-    counts[poly.element_group] += poly.unique_marks.size
+    @element_group_sizes[poly.element_group] += poly.unique_marks.size
    else
-    counts[poly.element_group] += 1
+    @element_group_sizes[poly.element_group] += 1
    end
   end
-  counts.each_with_index do |count,indx| 
-   printf "group %3d has %6d members\n",indx,count
+  @element_group_sizes.each_with_index do |count,indx| 
+   printf("element group %3d has %6d members with %d bflag\n",
+          indx,count,@bflags[indx])
   end
   self
  end
