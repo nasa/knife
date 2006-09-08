@@ -12,6 +12,7 @@ class Triangle
  attr_reader :subnodes
  attr_reader :subtris
  attr_reader :polyhedra
+ attr_accessor :face_index
 
  attr_reader :center, :diameter
 
