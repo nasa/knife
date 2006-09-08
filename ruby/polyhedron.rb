@@ -5,10 +5,12 @@ class Polyhedron
 
  attr_reader :triangles
  attr_reader :cutters
+ attr_reader :active
 
  def initialize
   @triangles = Array.new
   @cutters = Array.new
+  @active = true
  end
 
  def add_triangle(triangle, reversed = false)

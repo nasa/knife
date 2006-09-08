@@ -130,6 +130,10 @@ class Domain
   section
   puts "the sectioning required #{Time.now-start_time} sec"
 
+  start_time = Time.now
+  mark_exterior
+  puts "the exterior determination required #{Time.now-start_time} sec"
+
   self
  end
 
@@ -171,16 +175,24 @@ class Domain
   end
  end
 
+ def mark_exterior
+  self
+ end
+
  def write_tecplot(filename='domain.t')
   File.open(filename,'w') do |f|
    f.puts 'title="domain geometry"'+"\n"+'variables="x","y","z"'+"\n"
+   npoly = 0
+   @poly.each do |poly|
+    npoly +=1 if poly.cutters.empty? && poly.active
+   end
    f.printf("zone t=%s, i=%d, j=%d, f=fepoint, et=tetrahedron\n",
-            "uncut", @grid.nnode, @grid.ncell-@cut_poly.size)
+            "uncut", @grid.nnode, npoly)
    @grid.nnode.times do |indx|
     f.puts @grid.nodeXYZ(indx).join(' ')
    end
    @poly.each do |poly|
-    f.puts poly.corner_indexes.join(' ') if poly.cutters.empty?
+    f.puts poly.corner_indexes.join(' ') if poly.cutters.empty? && poly.active
    end
    @poly.each do |poly|
     f.print poly.tecplot_zone unless poly.cutters.empty?
