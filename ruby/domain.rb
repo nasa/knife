@@ -204,7 +204,6 @@ class Domain
   @poly.each do |poly|
    poly.element_group = @exterior_group unless poly.active
    poly.element_group = @cut_group if poly.cut?
-   poly.element_index = @element_group_sizes[poly.element_group]
    if poly.cut?
     @element_group_sizes[poly.element_group] += poly.unique_marks.size
    else
@@ -216,6 +215,18 @@ class Domain
           indx,count,@bflags[indx])
   end
   self
+ end
+
+ def dump_element_groups
+  File.open('postslice.eg','w') do |f|
+   f.puts @bflags.size
+   number_of_element_groups.times do |element_group|
+    type = Polyhedron::PXE_TetQ1
+    type = Polyhedron::PXE_TetCut if element_group == @cut_group
+    f.puts type
+    f.puts @element_group_sizes[element_group]
+   end
+  end
  end
 
  def write_tecplot(filename='domain.t')

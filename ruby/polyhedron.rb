@@ -10,7 +10,6 @@ class Polyhedron
  attr_reader :cutters
  attr_reader :active
  attr_accessor :element_group
- attr_accessor :element_index
 
  def initialize
   @triangles = Array.new
