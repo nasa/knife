@@ -6,6 +6,7 @@ class Polyhedron
  attr_reader :triangles
  attr_reader :cutters
  attr_reader :active
+ attr_accessor :element_group
 
  def initialize
   @triangles = Array.new
