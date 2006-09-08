@@ -236,7 +236,7 @@ class Domain
      if element_group == poly.element_group
       poly.triangles.each do |triangle|
        if triangle.boundary_group
-        f.puts(-triangle.boundary_index)
+        f.puts(-triangle.boundary_group)
        else
         f.puts triangle.indx
        end
