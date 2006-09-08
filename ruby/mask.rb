@@ -122,4 +122,10 @@ class Mask
   printf "\n"
  end
 
+ def mark_exterior
+  @triangle.polyhedra.each do |poly|
+   poly.mark_exterior unless poly.cut?
+  end
+ end
+
 end

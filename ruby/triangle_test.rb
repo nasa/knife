@@ -63,6 +63,10 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal @segment2, subtri.s2
  end
 
+ def test_initialize_polyhedra
+  assert_equal [], @triangle.polyhedra
+ end
+
  def test_add_unique_subnode
   nodea = Node.new(0.3,0.3,-1.0)
   nodeb = Node.new(0.3,0.3, 3.0)

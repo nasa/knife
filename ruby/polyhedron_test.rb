@@ -43,9 +43,35 @@ class TestPolyhedron < Test::Unit::TestCase
 
  def test_initialize
   poly = Polyhedron.new
-  assert poly.triangles.empty?
-  assert poly.cutters.empty?
+  assert_equal [],   poly.triangles
+  assert_equal [],   poly.cutters
   assert_equal true, poly.active
+ end
+
+ def test_add_triangle
+  poly = Polyhedron.new
+  poly.add_triangle @triangle3
+  assert_equal 1, poly.triangles.size
+  assert( poly.triangles[0].is_a?(Mask))
+  assert_equal @triangle3, poly.triangles[0].triangle
+ end
+
+ def test_add_triangle_reversed
+  poly = Polyhedron.new
+  poly.add_triangle @triangle2, true
+  poly.add_triangle @triangle1, false
+  assert_equal true,  poly.triangles[0].reversed
+  assert_equal false, poly.triangles[1].reversed
+ end
+
+ def test_add_triangle_registers_self
+  assert_equal [@poly], @poly.triangles[0].polyhedra
+ end
+
+ def test_add_reversed_triangle
+  poly = Polyhedron.new
+  poly.add_reversed_triangle @triangle3
+  assert_equal true, poly.triangles[0].reversed
  end
 
  def test_trim_external_subtri
@@ -104,6 +130,7 @@ class TestPolyhedron < Test::Unit::TestCase
  def test_mark_exterior_active
   Cut.between(@triangle3,@cutter)
   @triangle3.triangulate_cuts
+  @poly.triangles[2].deactivate_all_subtri
   @poly.gather_cutters
   @poly.mark_exterior
   assert_equal true, @poly.active

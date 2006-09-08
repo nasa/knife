@@ -14,7 +14,9 @@ class Polyhedron
  end
 
  def add_triangle(triangle, reversed = false)
-  @triangles << Mask.new(triangle,reversed)
+  mask = Mask.new(triangle,reversed)
+  mask.polyhedra << self
+  @triangles << mask
   self
  end
 
@@ -240,7 +242,13 @@ class Polyhedron
  end
 
  def mark_exterior
+  return self unless @active
   @active = false unless cut?
+  @triangles.each do |mask|
+   if mask.triangle.subtris.size == 1 && mask.subtris.size == 0
+    mask.mark_exterior 
+   end
+  end  
  end
 
  def reversed?(target)
