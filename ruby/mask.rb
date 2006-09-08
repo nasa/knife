@@ -86,6 +86,15 @@ class Mask
   starting_index
  end
 
+ def static_mark(marker)
+  @mark = Array.new(@trimmed.size)
+  @trimmed.each_index do |indx|
+   unless @trimmed[indx]
+    @mark[indx] = marker
+   end
+  end
+ end
+
  def relax_mark
   subtris.each do |subtri|
    relax_subtri subtri

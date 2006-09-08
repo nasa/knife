@@ -152,6 +152,12 @@ class Polyhedron
   (!@cutters.empty?)
  end
 
+ def single_section
+  (@triangles+@cutters).each do |triangle|
+   triangle.static_mark(0)
+  end 
+ end
+
  def section
   return self unless cut?
   starting_index = 0

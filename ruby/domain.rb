@@ -138,9 +138,14 @@ class Domain
 
   puts "#{@cut_poly.size} of #{@poly.size} ployhedra cut"
 
-  start_time = Time.now
-  section
-  puts "the sectioning required #{Time.now-start_time} sec"
+  if false
+   start_time = Time.now
+   section
+   puts "the sectioning required #{Time.now-start_time} sec"
+  else
+   single_section
+   puts "SKIP SECTIONING FOR P0 TEST"
+  end 
 
   start_time = Time.now
   mark_exterior
@@ -177,6 +182,12 @@ class Domain
    end
   end
   self
+ end
+
+ def single_section
+  @cut_poly.each do |poly|
+   poly.single_section
+  end
  end
 
  def section
