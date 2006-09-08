@@ -14,6 +14,7 @@ class Triangle
  attr_reader :polyhedra
  attr_accessor :active
  attr_accessor :boundary_group
+ attr_accessor :indx
 
  attr_reader :center, :diameter
 
