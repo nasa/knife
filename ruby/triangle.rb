@@ -12,7 +12,7 @@ class Triangle
  attr_reader :subnodes
  attr_reader :subtris
  attr_reader :polyhedra
- attr_reader :active
+ attr_accessor :active
  attr_accessor :boundary_group
 
  attr_reader :center, :diameter
