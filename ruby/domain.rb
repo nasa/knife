@@ -169,13 +169,14 @@ class Domain
 
  def section
   @cut_poly.each do |poly|
-   if poly.cutters.size > 0
-    poly.section
-   end
+   poly.section
   end
  end
 
  def mark_exterior
+  @cut_poly.each do |poly|
+   poly.mark_exterior
+  end
   self
  end
 

@@ -239,6 +239,10 @@ class Polyhedron
   marks.compact.uniq
  end
 
+ def mark_exterior
+  @active = false unless cut?
+ end
+
  def reversed?(target)
   @triangles.each do |triangle|
    return true if triangle == target && triangle.reversed
