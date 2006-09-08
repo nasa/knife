@@ -189,8 +189,25 @@ class Domain
  end
 
  def assign_element_group_index
-  nElementGroup = number_of_element_groups
-  puts "number of element groups #{nElementGroup}"
+  @cut_group = number_of_element_groups
+  @exterior_group = @cut_group+1
+  puts "cut group #{@cut_group} exterior group #{@exterior_group}"
+  counts = Array.new @exterior_group+1
+  counts.collect! { 0 }
+  @poly.each do |poly|
+   poly.element_group = @exterior_group unless poly.active
+   poly.element_group = @cut_group if poly.cut?
+   poly.element_index = counts[poly.element_group]
+   if poly.cut?
+    counts[poly.element_group] += poly.unique_marks.size
+   else
+    counts[poly.element_group] += 1
+   end
+  end
+  counts.each_with_index do |count,indx| 
+   printf "group %3d has %6d members\n",indx,count
+  end
+  self
  end
 
  def write_tecplot(filename='domain.t')
