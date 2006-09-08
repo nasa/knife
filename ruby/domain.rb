@@ -90,6 +90,13 @@ class Domain
    end  
   end
 
+  volume_triangles.each do |triangle|
+   faceid = volume_grid.faceId(triangle.node0.indx,
+                               triangle.node1.indx,
+                               triangle.node2.indx)
+   triangle.boundary_group = faceid if faceid
+  end
+
   puts "domain has #{volume_triangles.size} unique tetrahedral sides"
 
   Domain.new(volume_poly,volume_triangles,volume_grid)
