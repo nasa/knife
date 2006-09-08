@@ -3,10 +3,14 @@ require 'mask'
 
 class Polyhedron
 
+ PXE_TetQ1  = 4
+ PXE_TetCut = 10
+
  attr_reader :triangles
  attr_reader :cutters
  attr_reader :active
  attr_accessor :element_group
+ attr_accessor :element_index
 
  def initialize
   @triangles = Array.new
