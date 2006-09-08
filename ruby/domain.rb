@@ -66,6 +66,7 @@ class Domain
    poly = Polyhedron.new
    volume_poly[cell_index] = poly
    cell_nodes = volume_grid.cell(cell_index)
+   poly.original_nodes = cell_nodes
    4.times do |face_index|
     if cell2tri[face_index+4*cell_index]
      poly.add_reversed_triangle cell2tri[face_index+4*cell_index]
@@ -278,7 +279,9 @@ class Domain
     f.puts @grid.nodeXYZ(indx).join(' ')
    end
    @poly.each do |poly|
-    f.puts poly.corner_indexes.join(' ') if poly.cutters.empty? && poly.active
+    if poly.cutters.empty? && poly.active
+     f.puts poly.original_nodes.collect{|n|n+1}.join(' ') 
+    end
    end
    @poly.each do |poly|
     f.print poly.tecplot_zone unless poly.cutters.empty?

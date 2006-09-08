@@ -10,6 +10,7 @@ class Polyhedron
  attr_reader :cutters
  attr_reader :active
  attr_accessor :element_group
+ attr_accessor :original_nodes
 
  def initialize
   @triangles = Array.new
@@ -22,16 +23,6 @@ class Polyhedron
   mask.polyhedra << self
   @triangles << mask
   self
- end
-
- def corner_indexes
-  indx = Array.new
-  @triangles.each do |tri|
-   indx << tri.node0.indx+1
-   indx << tri.node1.indx+1
-   indx << tri.node2.indx+1
-  end
-  indx.uniq
  end
 
  def add_reversed_triangle(triangle)
