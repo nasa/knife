@@ -251,8 +251,11 @@ class Domain
     type = Polyhedron::PXE_TetCut if element_group == @cut_group
     f.puts type
     f.puts @element_group_sizes[element_group]
+    indx = 0
     @poly.each do |poly|
      if element_group == poly.element_group
+      poly.indx = indx
+      indx +=1
       poly.triangles.each do |triangle|
        if triangle.boundary_group
         f.puts(-triangle.boundary_group)
