@@ -236,6 +236,13 @@ class Domain
  end
 
  def dump_element_groups
+  faces = 0
+  @triangles.each do |triangle|
+   unless triangle.boundary_group
+    triangle.indx = faces
+    faces += 1
+   end
+  end
   File.open('postslice.eg','w') do |f|
    f.puts @bflags.size
    number_of_element_groups.times do |element_group|
