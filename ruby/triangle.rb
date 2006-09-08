@@ -12,6 +12,7 @@ class Triangle
  attr_reader :subnodes
  attr_reader :subtris
  attr_reader :polyhedra
+ attr_reader :active
  attr_accessor :boundary_group
 
  attr_reader :center, :diameter
@@ -31,6 +32,7 @@ class Triangle
   @subtris = [ Subtri.new(@subnodes[0],@subnodes[1],@subnodes[2],
                           segment0,segment1,segment2) ]
   @polyhedra = Array.new
+  @active = true
   cache_geometry
  end
  
