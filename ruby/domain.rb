@@ -180,6 +180,19 @@ class Domain
   self
  end
 
+ def number_of_element_groups
+  nElementGroup = 0
+  @poly.each do |poly|
+   nElementGroup = [ nElementGroup, poly.element_group ].max
+  end
+  nElementGroup += 1  
+ end
+
+ def assign_element_group_index
+  nElementGroup = number_of_element_groups
+  puts "number of element groups #{nElementGroup}"
+ end
+
  def write_tecplot(filename='domain.t')
   File.open(filename,'w') do |f|
    f.puts 'title="domain geometry"'+"\n"+'variables="x","y","z"'+"\n"
