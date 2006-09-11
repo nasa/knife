@@ -41,6 +41,10 @@ class Triangle
   @segments[index]
  end
 
+ def active_interior_face
+  (active && boundary_group.nil?)
+ end
+
  def cache_geometry
   @center = [ (node0[0]+node1[0]+node2[0])/3.0,
               (node0[1]+node1[1]+node2[1])/3.0,

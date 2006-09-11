@@ -242,14 +242,16 @@ class Domain
 
   interior_faces = 0
   @triangles.each do |triangle|
-   unless triangle.boundary_group
+   if triangle.active_interior_face
     triangle.indx = interior_faces
     interior_faces += 1
    end
   end
   File.open('postslice.eg','w') do |f|
-   f.puts @bflags.size
-   @bflags.each_index do |element_group|
+   ngroups = @bflags.size
+   ngroups -= 1 if @bflags.include? PXE_ExteriorEG
+   f.puts ngroups
+   ngroups.times do |element_group|
     type = Polyhedron::PXE_TetQ1
     type = Polyhedron::PXE_TetCut if element_group == @cut_group
     f.puts type
@@ -278,7 +280,7 @@ class Domain
   File.open('postslice.if','w') do |f|
    f.puts interior_faces
    @triangles.each do |triangle|
-    unless triangle.boundary_group
+    if triangle.active_interior_face
      raise "interior faces needs two poly" unless 2 == triangle.polyhedra.size
      triangle.polyhedra.each do |poly|
       f.printf("%10d %10d %10d\n", 
