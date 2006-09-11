@@ -277,6 +277,16 @@ class Domain
    end
   end
 
+  puts "DUMMY INTEGRATION RULES FOR P0 TEST"
+  File.open('postslice.eq','w') do |f|
+   element_group = @cut_group
+   f.puts element_group
+   f.puts @element_group_sizes[element_group]
+   @poly.each do |poly|
+    poly.dump_integration_rule(f) if element_group == poly.element_group
+   end
+  end
+
   File.open('postslice.if','w') do |f|
    f.puts interior_faces
    @triangles.each do |triangle|
