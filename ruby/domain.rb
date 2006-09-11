@@ -295,7 +295,8 @@ class Domain
    end
    f.puts nbound
    puts "number of boundary groups #{nbound}"
-   nbound.times do |boundary_index|
+   nbound.times do |bi|
+    boundary_index = bi+1
     nbface = 0
     @triangles.each do |triangle|
      nbface += 1 if boundary_index == triangle.boundary_group
