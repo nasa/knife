@@ -292,6 +292,11 @@ class Polyhedron
   end
   subtris
  end
+
+ def dump_integration_rule(f)
+  f.puts 1
+  f.puts "0.3 0.3 0.3 1.0"
+ end
  
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
