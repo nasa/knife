@@ -293,7 +293,6 @@ class Domain
    @triangles.each do |triangle|
     nbound = [nbound,triangle.boundary_group].max if triangle.boundary_group
    end
-   nbound += 1
    f.puts nbound
    puts "number of boundary groups #{nbound}"
    nbound.times do |boundary_index|
