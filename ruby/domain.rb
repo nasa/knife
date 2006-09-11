@@ -237,6 +237,9 @@ class Domain
  end
 
  def dump_element_groups
+
+  assign_element_group_index
+
   faces = 0
   @triangles.each do |triangle|
    unless triangle.boundary_group
