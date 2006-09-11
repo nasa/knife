@@ -240,11 +240,11 @@ class Domain
 
   assign_element_group_index
 
-  faces = 0
+  interior_faces = 0
   @triangles.each do |triangle|
    unless triangle.boundary_group
-    triangle.indx = faces
-    faces += 1
+    triangle.indx = interior_faces
+    interior_faces += 1
    end
   end
   File.open('postslice.eg','w') do |f|
@@ -271,6 +271,18 @@ class Domain
     end
     @poly.each do |poly|
      f.puts poly.original_nodes.join(' ') if element_group == poly.element_group
+    end
+   end
+  end
+  File.open('postslice.if','w') do |f|
+   f.puts interior_faces
+   @triangles.each do |triangle|
+    unless triangle.boundary_group
+     raise "interior faces needs two poly" unless 2 == triangle.polyhedra.size
+     triangle.polyhedra.each do |poly|
+      f.printf("%10d %10d %10d\n", 
+               poly.element_group, poly.indx, poly.triangle_index(triangle))
+     end
     end
    end
   end

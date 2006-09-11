@@ -235,6 +235,10 @@ class Polyhedron
   nil
  end
 
+ def triangle_index(triangle)
+  @triangles.index(triangle_mask(triangle))
+ end
+
  def unique_marks
   marks = Array.new
   (@triangles+@cutters).each do |mask|
