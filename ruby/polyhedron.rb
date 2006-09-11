@@ -3,8 +3,8 @@ require 'mask'
 
 class Polyhedron
 
- PXE_TetQ1  = 4
- PXE_TetCut = 10
+ PXE_TetQ1  = 5
+ PXE_TetCut = 11
 
  attr_reader :triangles
  attr_reader :cutters
