@@ -236,7 +236,7 @@ class Domain
   self
  end
 
- def dump_element_groups
+ def dump_grid_for_pxa
 
   assign_element_group_index
 
@@ -274,6 +274,7 @@ class Domain
     end
    end
   end
+
   File.open('postslice.if','w') do |f|
    f.puts interior_faces
    @triangles.each do |triangle|
@@ -286,6 +287,34 @@ class Domain
     end
    end
   end
+
+  File.open('postslice.bf','w') do |f|
+   nbound = 0
+   @triangles.each do |triangle|
+    nbound = [nbound,triangle.boundary_group].max if triangle.boundary_group
+   end
+   nbound += 1
+   f.puts nbound
+   puts "number of boundary groups #{nbound}"
+   nbound.times do |boundary_index|
+    nbface = 0
+    @triangles.each do |triangle|
+     nbface += 1 if boundary_index == triangle.boundary_group
+    end
+    f.puts nbface
+    puts "boundary group #{boundary_index} has #{nbface} faces"
+    @triangles.each do |triangle|
+     if boundary_index == triangle.boundary_group
+      raise "interior faces needs two poly" unless 1 == triangle.polyhedra.size
+      poly = triangle.polyhedra.first
+      f.printf("%10d %10d %10d\n", 
+               poly.element_group, poly.indx, poly.triangle_index(triangle))
+     end
+    end
+    
+   end
+  end
+
  end
 
  def write_tecplot(filename='domain.t')
