@@ -9,6 +9,7 @@ class Domain
 
  PXE_BoundaryEG = 0
  PXE_ExteriorEG = 2
+ PX_BFACE_WHOLE = -1
 
  attr_reader :poly, :triangles, :cut_poly, :grid
  attr_accessor :bflags
@@ -295,6 +296,32 @@ class Domain
      triangle.polyhedra.each do |poly|
       f.printf("%10d %10d %10d\n", 
                poly.element_group, poly.indx, poly.triangle_index(triangle))
+     end
+    end
+   end
+  end
+
+  File.open('postslice.iq','w') do |f|
+   f.puts interior_faces
+   nface = 0
+   @triangles.each do |triangle|
+    if triangle.active_interior_face
+     if 1 == triangle.subtris.size
+      f.puts PX_BFACE_WHOLE
+     else
+      f.puts nface
+      nface += 1
+     end
+    end
+   end
+   f.puts nface
+   @triangles.each do |triangle|
+    if triangle.active_interior_face && 1 < triangle.subtris.size
+     mask = triangle.polyhedra.first.triangle_mask(triangle)
+     quad = mask.active_subtri_quadrature
+     f.puts quad.size
+     quad.each do |rule|
+      f.puts "#{rule[0]} #{rule[1]} #{rule[3]}"
      end
     end
    end

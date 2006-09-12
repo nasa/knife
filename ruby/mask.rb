@@ -138,4 +138,12 @@ class Mask
   end
  end
 
+ def active_subtri_quadrature
+  points = Array.new
+  subtris.each do |subtri|
+   points += subtri.quadrature_rule
+  end
+  points
+ end
+
 end
