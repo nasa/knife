@@ -14,7 +14,7 @@ class Triangle
  attr_reader :polyhedra
  attr_accessor :active
  attr_accessor :boundary_group
- attr_accessor :indx
+ attr_accessor :interior_index
  attr_accessor :quad_rule_index
 
  attr_reader :center, :diameter

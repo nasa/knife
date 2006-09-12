@@ -243,8 +243,8 @@ class Domain
 
   interior_faces = 0
   @triangles.each do |triangle|
-   if triangle.active_interior_face
-    triangle.indx = interior_faces
+   if triangle.active && triangle.boundary_group.nil?
+    triangle.interior_index = interior_faces
     interior_faces += 1
    end
   end
@@ -267,7 +267,7 @@ class Domain
        if triangle.boundary_group
         f.puts(-triangle.boundary_group)
        else
-        f.puts triangle.indx
+        f.puts triangle.interior_index
        end
       end
      end
@@ -291,7 +291,7 @@ class Domain
   File.open('postslice.if','w') do |f|
    f.puts interior_faces
    @triangles.each do |triangle|
-    if triangle.active_interior_face
+    if triangle.active && triangle.boundary_group.nil?
      raise "interior faces needs two poly" unless 2 == triangle.polyhedra.size
      triangle.polyhedra.each do |poly|
       f.printf("%10d %10d %10d\n", 
@@ -301,22 +301,28 @@ class Domain
    end
   end
 
+  cut_face_rules = 0
+  @triangles.each do |triangle|
+   if triangle.active && 1 < triangle.subtris.size
+    triangle.quad_rule_index = cut_face_rules
+    cut_face_rules += 1
+   end
+  end
+
   File.open('postslice.iq','w') do |f|
    f.puts interior_faces
-   nface = 0
    @triangles.each do |triangle|
-    if triangle.active_interior_face
+    if triangle.active && triangle.boundary_group.nil?
      if 1 == triangle.subtris.size
       f.puts PX_BFACE_WHOLE
      else
-      f.puts nface
-      nface += 1
+      f.puts triangle.quad_rule_index
      end
     end
    end
-   f.puts nface
+   f.puts cut_face_rules
    @triangles.each do |triangle|
-    if triangle.active_interior_face && 1 < triangle.subtris.size
+    unless triangle.quad_rule_index.nil?
      mask = triangle.polyhedra.first.triangle_mask(triangle)
      quad = mask.active_subtri_quadrature
      f.puts quad.size
@@ -338,21 +344,29 @@ class Domain
     boundary_index = bi+1
     nbface = 0
     @triangles.each do |triangle|
-     nbface += 1 if boundary_index == triangle.boundary_group
+     nbface += 1 if boundary_index == triangle.boundary_group && triangle.active
     end
     f.puts nbface
     puts "boundary group #{boundary_index} has #{nbface} faces"
     @triangles.each do |triangle|
-     if boundary_index == triangle.boundary_group
-      raise "interior faces needs two poly" unless 1 == triangle.polyhedra.size
+     if boundary_index == triangle.boundary_group && triangle.active
+      raise "boundary faces need one poly" unless 1 == triangle.polyhedra.size
       poly = triangle.polyhedra.first
       f.printf("%10d %10d %10d\n", 
                poly.element_group, poly.indx, poly.triangle_index(triangle))
      end
     end
-    
-   end
-  end
+    @triangles.each do |triangle|
+     if boundary_index == triangle.boundary_group && triangle.active
+      if triangle.quad_rule_index.nil?
+       f.puts PX_BFACE_WHOLE
+      else
+       f.puts triangle.quad_rule_index
+      end
+     end
+    end 
+   end # nbound
+  end # postslice.bf
 
  end
 
