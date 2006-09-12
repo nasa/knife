@@ -298,6 +298,10 @@ class Polyhedron
   f.puts "0.3 0.3 0.3 1.0"
  end
  
+ def cut_surface_quadrature
+  [ [ 1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0/6.0, 1.0, 0.0, 0.0 ] ]
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
