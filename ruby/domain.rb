@@ -368,6 +368,19 @@ class Domain
    end # nbound
   end # postslice.bf
 
+  File.open('postslice.cs','w') do |f|
+   f.puts @cut_poly.size
+   @cut_poly.each do |poly|
+    f.printf("%2d %10d\n",poly.element_group,poly.indx)
+   end
+   @cut_poly.each do |poly|
+     quad = poly.cut_surface_quadrature
+     f.puts quad.size
+     quad.each do |rule|
+      f.puts rule.join(' ')
+     end
+   end
+  end
  end
 
  def write_tecplot(filename='domain.t')
