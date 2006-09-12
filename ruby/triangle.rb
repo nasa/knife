@@ -15,6 +15,7 @@ class Triangle
  attr_accessor :active
  attr_accessor :boundary_group
  attr_accessor :indx
+ attr_accessor :quad_rule_index
 
  attr_reader :center, :diameter
 
@@ -39,10 +40,6 @@ class Triangle
  
  def segment(index)
   @segments[index]
- end
-
- def active_interior_face
-  (active && boundary_group.nil?)
  end
 
  def cache_geometry
