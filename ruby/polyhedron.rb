@@ -12,6 +12,7 @@ class Polyhedron
  attr_reader :cutters
  attr_reader :active
  attr_accessor :original_nodes
+ attr_accessor :original_node_indexes
  attr_accessor :element_group
  attr_accessor :indx
 
@@ -327,7 +328,7 @@ class Polyhedron
     subtri.physical_quadrature_rule.each do |point|
      bary = barycentric(point[0],point[1],point[2])
      # px expects outward pointing normals
-     rule << [bary[0],bary[1],bary[2], point[3], -point[4],-point[5],-point[6]]
+     rule << [bary[1],bary[2],bary[3], point[3], -point[4],-point[5],-point[6]]
     end
    end
   end
