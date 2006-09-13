@@ -251,12 +251,18 @@ class Polyhedron
 
  def mark_exterior
   return self unless @active
-  @active = false unless cut?
-  @triangles.each do |mask|
-   if mask.triangle.subtris.size == 1 && mask.subtris.size == 0
+  if cut?
+   @triangles.each do |mask|
+    if mask.triangle.subtris.size == 1 && mask.subtris.size == 0
+     mask.mark_exterior 
+    end
+   end
+  else
+   @active = false
+   @triangles.each do |mask|
     mask.mark_exterior 
    end
-  end  
+  end
  end
 
  def reversed?(target)
