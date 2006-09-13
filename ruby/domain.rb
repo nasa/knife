@@ -248,6 +248,12 @@ class Domain
     interior_faces += 1
    end
   end
+
+  nbound = 0
+  @triangles.each do |triangle|
+   nbound = [nbound,triangle.boundary_group].max if triangle.boundary_group
+  end
+
   File.open('postslice.eg','w') do |f|
    ngroups = @bflags.size
    ngroups -= 1 if @bflags.include? PXE_ExteriorEG
@@ -264,10 +270,14 @@ class Domain
       poly.indx = indx
       indx +=1
       poly.triangles.each do |triangle|
-       if triangle.boundary_group
-        f.puts(-triangle.boundary_group)
+       if triangle.active
+        if triangle.boundary_group
+         f.puts(-triangle.boundary_group)
+        else
+         f.puts triangle.interior_index
+        end
        else
-        f.puts triangle.interior_index
+        f.puts(-nbound)
        end
       end
      end
