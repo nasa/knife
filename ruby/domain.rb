@@ -67,7 +67,8 @@ class Domain
    poly = Polyhedron.new
    volume_poly[cell_index] = poly
    cell_nodes = volume_grid.cell(cell_index)
-   poly.original_nodes = cell_nodes
+   poly.original_node_indexes = cell_nodes
+   poly.original_nodes = cell_nodes.collect {|i| volume_node[i]}
    4.times do |face_index|
     if cell2tri[face_index+4*cell_index]
      poly.add_reversed_triangle cell2tri[face_index+4*cell_index]
@@ -283,7 +284,7 @@ class Domain
      end
     end
     @poly.each do |poly|
-     f.puts poly.original_nodes.join(' ') if element_group == poly.element_group
+     f.puts poly.original_node_indexes.join(' ') if element_group == poly.element_group
     end
    end
   end
@@ -407,7 +408,7 @@ class Domain
    end
    @poly.each do |poly|
     if poly.cutters.empty? && poly.active
-     f.puts poly.original_nodes.collect{|n|n+1}.join(' ') 
+     f.puts poly.original_node_indexes.collect{|n|n+1}.join(' ') 
     end
    end
    @poly.each do |poly|
