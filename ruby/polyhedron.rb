@@ -326,7 +326,8 @@ class Polyhedron
    triangle.subtris.each do |subtri|
     subtri.physical_quadrature_rule.each do |point|
      bary = barycentric(point[0],point[1],point[2])
-     rule << [bary[0],bary[1],bary[2], point[3], point[4],point[5],point[6]]
+     # px expects outward pointing normals
+     rule << [bary[0],bary[1],bary[2], point[3], -point[4],-point[5],-point[6]]
     end
    end
   end
