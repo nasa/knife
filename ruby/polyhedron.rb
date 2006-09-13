@@ -1,5 +1,7 @@
 
 require 'mask'
+require 'intersection'
+require 'node'
 
 class Polyhedron
 
@@ -298,8 +300,31 @@ class Polyhedron
   f.puts "0.3 0.3 0.3 1.0"
  end
  
+ def barycentric(x,y,z)
+  node = [x,y,z]
+  volume0 = Intersection.volume6(             node,original_nodes[1],
+                                 original_nodes[2],original_nodes[3])
+  volume1 = Intersection.volume6(original_nodes[0],             node,
+                                 original_nodes[2],original_nodes[3])
+  volume2 = Intersection.volume6(original_nodes[0],original_nodes[1],
+                                              node,original_nodes[3])
+  volume3 = Intersection.volume6(original_nodes[0],original_nodes[1],
+                                 original_nodes[2],             node)
+  total = volume0+volume1+volume2+volume3
+  [volume0/total, volume1/total, volume2/total, volume3/total]
+ end
+
  def cut_surface_quadrature
-  [ [ 1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0/6.0, 1.0, 0.0, 0.0 ] ]
+  rule = Array.new
+  @cutters.each do |triangle|
+   triangle.subtris.each do |subtri|
+    subtri.physical_quadrature_rule.each do |point|
+     bary = barycentric(point[0],point[1],point[2])
+     rule << [bary[0],bary[1],bary[2], point[3], point[4],point[5],point[6]]
+    end
+   end
+  end
+  rule
  end
 
  def tecplot_zone(title='surf')
