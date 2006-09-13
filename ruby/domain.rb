@@ -10,6 +10,7 @@ class Domain
  PXE_BoundaryEG = 0
  PXE_ExteriorEG = 2
  PX_BFACE_WHOLE = -1
+ PX_BFACE_NULL = -2
 
  attr_reader :poly, :triangles, :cut_poly, :grid
  attr_accessor :bflags
@@ -244,7 +245,7 @@ class Domain
 
   interior_faces = 0
   @triangles.each do |triangle|
-   if triangle.active && triangle.boundary_group.nil?
+   if triangle.boundary_group.nil?
     triangle.interior_index = interior_faces
     interior_faces += 1
    end
@@ -257,7 +258,6 @@ class Domain
 
   File.open('postslice.eg','w') do |f|
    ngroups = @bflags.size
-   ngroups -= 1 if @bflags.include? PXE_ExteriorEG
    f.puts ngroups
    ngroups.times do |element_group|
     type = Polyhedron::PXE_TetQ1
@@ -271,14 +271,10 @@ class Domain
       poly.indx = indx
       indx +=1
       poly.triangles.each do |triangle|
-       if triangle.active
-        if triangle.boundary_group
-         f.puts(-triangle.boundary_group)
-        else
-         f.puts triangle.interior_index
-        end
+       if triangle.boundary_group
+        f.puts(-triangle.boundary_group)
        else
-        f.puts(-nbound)
+        f.puts triangle.interior_index
        end
       end
      end
@@ -302,7 +298,7 @@ class Domain
   File.open('postslice.if','w') do |f|
    f.puts interior_faces
    @triangles.each do |triangle|
-    if triangle.active && triangle.boundary_group.nil?
+    unless triangle.interior_index.nil?
      raise "interior faces needs two poly" unless 2 == triangle.polyhedra.size
      triangle.polyhedra.each do |poly|
       f.printf("%10d %10d %10d\n", 
@@ -321,16 +317,24 @@ class Domain
   end
 
   File.open('postslice.iq','w') do |f|
+
+   # move to .if
    f.puts interior_faces
    @triangles.each do |triangle|
-    if triangle.active && triangle.boundary_group.nil?
-     if 1 == triangle.subtris.size
-      f.puts PX_BFACE_WHOLE
+    unless triangle.interior_index.nil?
+     if triangle.active
+      if 1 == triangle.subtris.size
+       f.puts PX_BFACE_WHOLE
+      else
+       f.puts triangle.quad_rule_index
+      end
      else
-      f.puts triangle.quad_rule_index
+      f.puts PX_BFACE_NULL
      end
     end
    end
+   # move to .if
+
    f.puts cut_face_rules
    @triangles.each do |triangle|
     unless triangle.quad_rule_index.nil?
@@ -338,7 +342,7 @@ class Domain
      quad = mask.active_subtri_quadrature
      f.puts quad.size
      quad.each do |rule|
-      f.puts "#{rule[0]} #{rule[1]} #{rule[3]}"
+      f.puts "#{rule[1]} #{rule[2]} #{rule[3]}"
      end
     end
    end
@@ -355,12 +359,12 @@ class Domain
     boundary_index = bi+1
     nbface = 0
     @triangles.each do |triangle|
-     nbface += 1 if boundary_index == triangle.boundary_group && triangle.active
+     nbface += 1 if boundary_index == triangle.boundary_group
     end
     f.puts nbface
     puts "boundary group #{boundary_index} has #{nbface} faces"
     @triangles.each do |triangle|
-     if boundary_index == triangle.boundary_group && triangle.active
+     if boundary_index == triangle.boundary_group
       raise "boundary faces need one poly" unless 1 == triangle.polyhedra.size
       poly = triangle.polyhedra.first
       f.printf("%10d %10d %10d\n", 
@@ -368,11 +372,15 @@ class Domain
      end
     end
     @triangles.each do |triangle|
-     if boundary_index == triangle.boundary_group && triangle.active
-      if triangle.quad_rule_index.nil?
-       f.puts PX_BFACE_WHOLE
+     if boundary_index == triangle.boundary_group
+      if triangle.active
+       if triangle.quad_rule_index.nil?
+        f.puts PX_BFACE_WHOLE
+       else
+        f.puts triangle.quad_rule_index
+       end
       else
-       f.puts triangle.quad_rule_index
+       f.puts PX_BFACE_NULL
       end
      end
     end 
