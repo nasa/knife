@@ -60,6 +60,16 @@ class Triangle
   @diameter = 1.0001*Math::sqrt(l2)
  end
 
+ def area
+  edge1 = [node1.x-node0.x, node1.y-node0.y, node1.z-node0.z]
+  edge2 = [node2.x-node0.x, node2.y-node0.y, node2.z-node0.z]
+  norm = [ edge1[1]*edge2[2] - edge1[2]*edge2[1],
+           edge1[2]*edge2[0] - edge1[0]*edge2[2],
+           edge1[0]*edge2[1] - edge1[1]*edge2[0] ] 
+  area2 = Math.sqrt(norm[0]*norm[0]+norm[1]*norm[1]+norm[2]*norm[2])
+  (0.5*area2)
+ end
+
  def triangulate_cuts
   @cuts.each do |cut|
    subnode0 = add_unique_subnode(cut.intersection0)
