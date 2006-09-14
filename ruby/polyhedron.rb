@@ -302,6 +302,13 @@ class Polyhedron
   subtris
  end
 
+ def has_boundary_triangle?
+  @triangles.each do |triangle|
+   return true unless triangle.boundary_group.nil?
+  end
+  false
+ end
+
  def dump_integration_rule(f)
   f.puts 1
   f.puts "0.3 0.3 0.3 1.0"
