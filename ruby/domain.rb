@@ -8,13 +8,12 @@ require 'cut'
 class Domain
 
  PXE_BoundaryEG = 0
+ PXE_InteriorEG = 1
  PXE_ExteriorEG = 2
  PX_BFACE_WHOLE = -1
  PX_BFACE_NULL = -2
 
  attr_reader :poly, :triangles, :cut_poly, :grid
- attr_accessor :bflags
- attr_accessor :element_group_sizes
 
  def Domain.cell2face(face)
   case face
@@ -207,26 +206,48 @@ class Domain
   self
  end
 
- def number_of_element_groups
-  nElementGroup = 0
-  @poly.each do |poly|
-   nElementGroup = [ nElementGroup, poly.element_group ].max
+ def get_element_groups_from_file(filename ='preslice.eg')
+  File.open(filename) do |eg|
+   @number_of_element_groups = eg.gets.to_i
+   @bflags = Array.new(@number_of_element_groups)
+   @bflags.collect! { eg.gets.to_i }
+   nelem = eg.gets.to_i
+   raise "inconsistant preslice element count" if @poly.size != nelem
+   @poly.each do |poly|
+    poly.element_group = eg.gets.to_i
+   end
   end
-  nElementGroup += 1  
+ end
+
+ def add_new_element_group(bflag)
+  @bflags << bflag
+  new_element_group = @number_of_element_groups
+  @number_of_element_groups += 1
+  return new_element_group
  end
 
  def assign_element_group_index
-  @cut_group = number_of_element_groups
-  @exterior_group = @cut_group+1
-  @bflags << PXE_BoundaryEG
-  @bflags << PXE_ExteriorEG
-  puts "cut group #{@cut_group} exterior group #{@exterior_group}"
-  @element_group_sizes = Array.new @exterior_group+1
+
+  @boundary_cut_group = add_new_element_group(PXE_BoundaryEG)
+  @interior_cut_group = add_new_element_group(PXE_InteriorEG)
+  @exterior_group     = add_new_element_group(PXE_ExteriorEG)
+
+  @cut_groups = [@boundary_cut_group,@interior_cut_group]
+
+  puts "boundary cut group #{@boundary_cut_group}"
+  puts "interior cut group #{@interior_cut_group}"
+  puts "exterior group     #{@exterior_group}"
+
+  @element_group_sizes = Array.new(@number_of_element_groups)
   @element_group_sizes.collect! { 0 }
   @poly.each do |poly|
    poly.element_group = @exterior_group unless poly.active
-   poly.element_group = @cut_group if poly.cut?
    if poly.cut?
+    if poly.has_boundary_triangle?
+     poly.element_group = @boundary_cut_group
+    else
+     poly.element_group = @interior_cut_group
+    end
     @element_group_sizes[poly.element_group] += poly.unique_marks.size
    else
     @element_group_sizes[poly.element_group] += 1
@@ -261,7 +282,7 @@ class Domain
    f.puts ngroups
    ngroups.times do |element_group|
     type = Polyhedron::PXE_TetQ1
-    type = Polyhedron::PXE_TetCut if element_group == @cut_group
+    type = Polyhedron::PXE_TetCut if @cut_groups.include? element_group
     f.puts type
     f.puts @bflags[element_group]
     f.puts @element_group_sizes[element_group]
@@ -287,11 +308,13 @@ class Domain
 
   puts "DUMMY INTEGRATION RULES FOR P0 TEST"
   File.open('postslice.eq','w') do |f|
-   element_group = @cut_group
-   f.puts element_group
-   f.puts @element_group_sizes[element_group]
-   @poly.each do |poly|
-    poly.dump_integration_rule(f) if element_group == poly.element_group
+   f.puts @cut_groups.size
+   @cut_groups.each do |element_group|
+    f.puts element_group
+    f.puts @element_group_sizes[element_group]
+    @poly.each do |poly|
+     poly.dump_integration_rule(f) if element_group == poly.element_group
+    end
    end
   end
 
