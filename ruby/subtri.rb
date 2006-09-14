@@ -144,7 +144,7 @@ class Subtri
   yield s2 if s2.is_a?(Cut)
  end
 
- def directed_area
+ def directed_area2
   node0 = n0.parent
   node1 = n1.parent
   node2 = n2.parent
@@ -156,7 +156,7 @@ class Subtri
  end
 
  def quadrature_rule
-  norm = directed_area
+  norm = directed_area2
   area = 0.5*Math.sqrt(norm[0]*norm[0]+norm[1]*norm[1]+norm[2]*norm[2])
   b0 = 1.0/3.0; b1 = 1.0/3.0; b2 = 1.0/3.0;
   [ [b0*n0.u+b1*n1.u+b2*n2.u, 
@@ -166,8 +166,7 @@ class Subtri
  end
 
  def physical_quadrature_rule
-  norm = directed_area
-  area2 = Math.sqrt(norm[0]*norm[0]+norm[1]*norm[1]+norm[2]*norm[2])
+  norm = directed_area2
   b0 = 1.0/3.0; b1 = 1.0/3.0; b2 = 1.0/3.0;
   [ [b0*n0.x+b1*n1.x+b2*n2.x, 
      b0*n0.y+b1*n1.y+b2*n2.y,
