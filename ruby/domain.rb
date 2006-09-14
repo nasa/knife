@@ -356,6 +356,9 @@ class Domain
     end
    end
 
+   # existing face (interior and boundary) quad rules
+   # flux uses 2/2*area, 1/2*w
+
    f.puts cut_face_rules
    @triangles.each do |triangle|
     unless triangle.quad_rule_index.nil?
