@@ -253,11 +253,73 @@ class Domain
     @element_group_sizes[poly.element_group] += 1
    end
   end
+  
+  puts "before removal"
+
   @element_group_sizes.each_with_index do |count,indx| 
    printf("element group %3d has %6d members with %d bflag\n",
           indx,count,@bflags[indx])
   end
+
+  remove_empty_element_groups
+
+  puts "after removal"
+  @element_group_sizes.each_with_index do |count,indx| 
+   printf("element group %3d has %6d members with %d bflag\n",
+          indx,count,@bflags[indx])
+  end
+  
   self
+ end
+
+ def remove_empty_element_groups
+
+  standard_groups = @number_of_element_groups - 3
+
+  if 0 == @element_group_sizes[@exterior_group]
+   @element_group_sizes.delete_at @exterior_group
+   @bflags.delete_at @exterior_group
+   @number_of_element_groups -= 1
+
+   @exterior_group = nil
+  end
+
+  if 0 == @element_group_sizes[@interior_cut_group]
+   @element_group_sizes.delete_at @interior_cut_group
+   @bflags.delete_at @interior_cut_group
+   @number_of_element_groups -= 1
+
+   @interior_cut_group = nil
+   @exterior_group -= 1 unless @exterior_group.nil?
+  end
+
+  if 0 == @element_group_sizes[@boundary_cut_group]
+   @element_group_sizes.delete_at @exterior_cut_group
+   @bflags.delete_at @exterior_cut_group
+   @number_of_element_groups -= 1
+
+   @boundary_cut_group = nil
+   @interior_cut_group -= 1 unless @interior_cut_group.nil?
+   @exterior_group -= 1 unless @exterior_group.nil?
+  end
+
+  (standard_groups-1).downto(0) do |element_group|
+   
+   if 0 == @element_group_sizes[element_group]
+    @element_group_sizes.delete_at element_group
+    @bflags.delete_at element_group
+    @number_of_element_groups -= 1
+
+    @boundary_cut_group -= 1 unless @exterior_cut_group.nil?
+    @interior_cut_group -= 1 unless @interior_cut_group.nil?
+    @exterior_group -= 1 unless @exterior_group.nil?
+   end
+  end
+
+  @cut_groups = [@boundary_cut_group,@interior_cut_group].compact
+  
+  puts "cut groups #{@cut_groups.join(' ')}"
+
  end
 
  def dump_grid_for_pxa
