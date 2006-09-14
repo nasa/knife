@@ -285,7 +285,7 @@ class Domain
    poly.element_group -= 1 if element_group < poly.element_group
   end
   
-  @boundary_cut_group -= 1 unless(@exterior_cut_group.nil? || 
+  @boundary_cut_group -= 1 unless(@boundary_cut_group.nil? || 
                                   element_group > @boundary_cut_group )
   @interior_cut_group -= 1 unless(@interior_cut_group.nil? || 
                                   element_group > @interior_cut_group )
@@ -323,9 +323,8 @@ class Domain
   end
 
   File.open('postslice.eg','w') do |f|
-   ngroups = @bflags.size
-   f.puts ngroups
-   ngroups.times do |element_group|
+   f.puts @number_of_element_groups
+   @number_of_element_groups.times do |element_group|
     type = Polyhedron::PXE_TetQ1
     type = Polyhedron::PXE_TetCut if @cut_groups.include? element_group
     f.puts type
