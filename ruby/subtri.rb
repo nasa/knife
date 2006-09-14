@@ -168,14 +168,11 @@ class Subtri
  def physical_quadrature_rule
   norm = directed_area
   area2 = Math.sqrt(norm[0]*norm[0]+norm[1]*norm[1]+norm[2]*norm[2])
-  norm[0] /= area2
-  norm[1] /= area2
-  norm[2] /= area2
   b0 = 1.0/3.0; b1 = 1.0/3.0; b2 = 1.0/3.0;
   [ [b0*n0.x+b1*n1.x+b2*n2.x, 
      b0*n0.y+b1*n1.y+b2*n2.y,
      b0*n0.z+b1*n1.z+b2*n2.z,
-     area2,
+     2.0,
      norm[0], norm[1], norm[2]] ]
  end
 
