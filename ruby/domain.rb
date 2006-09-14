@@ -478,14 +478,16 @@ class Domain
    @poly.each do |poly|
     npoly +=1 if poly.cutters.empty? && poly.active
    end
-   f.printf("zone t=%s, i=%d, j=%d, f=fepoint, et=tetrahedron\n",
-            "uncut", @grid.nnode, npoly)
-   @grid.nnode.times do |indx|
-    f.puts @grid.nodeXYZ(indx).join(' ')
-   end
-   @poly.each do |poly|
-    if poly.cutters.empty? && poly.active
-     f.puts poly.original_node_indexes.collect{|n|n+1}.join(' ') 
+   if npoly > 0
+    f.printf("zone t=%s, i=%d, j=%d, f=fepoint, et=tetrahedron\n",
+             "uncut", @grid.nnode, npoly)
+    @grid.nnode.times do |indx|
+     f.puts @grid.nodeXYZ(indx).join(' ')
+    end
+    @poly.each do |poly|
+     if poly.cutters.empty? && poly.active
+      f.puts poly.original_node_indexes.collect{|n|n+1}.join(' ') 
+     end
     end
    end
    @poly.each do |poly|
