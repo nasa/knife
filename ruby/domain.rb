@@ -341,7 +341,6 @@ class Domain
 
   File.open('postslice.iq','w') do |f|
 
-   # move to .if
    f.puts interior_faces
    @triangles.each do |triangle|
     unless triangle.interior_index.nil?
@@ -356,7 +355,6 @@ class Domain
      end
     end
    end
-   # move to .if
 
    f.puts cut_face_rules
    @triangles.each do |triangle|
