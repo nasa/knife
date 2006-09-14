@@ -359,12 +359,12 @@ class Domain
    f.puts cut_face_rules
    @triangles.each do |triangle|
     unless triangle.quad_rule_index.nil?
-     area = triangle.area
+     area2 = 2.0*triangle.area
      mask = triangle.polyhedra.first.triangle_mask(triangle)
      quad = mask.active_subtri_quadrature
      f.puts quad.size
      quad.each do |rule|
-      f.puts "#{rule[1]} #{rule[2]} #{rule[3]/area}"
+      f.puts "#{rule[1]} #{rule[2]} #{rule[3]/area2}"
      end
     end
    end
