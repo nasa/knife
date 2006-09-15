@@ -255,23 +255,23 @@ class Domain
   end
   
   puts "before removal"
-
-  @element_group_sizes.each_with_index do |count,indx| 
-   printf("element group %3d has %6d members with %d bflag\n",
-          indx,count,@bflags[indx])
-  end
+  echo_groups
 
   remove_empty_element_groups
 
   puts "after removal"
+  echo_groups
+
+  puts "cut groups #{@cut_groups.join(' ')}"
+
+  self
+ end
+
+ def echo_groups
   @element_group_sizes.each_with_index do |count,indx| 
    printf("element group %3d has %6d members with %d bflag\n",
           indx,count,@bflags[indx])
   end
-  
-  puts "cut groups #{@cut_groups.join(' ')}"
-
-  self
  end
 
  def delete_group(element_group)
