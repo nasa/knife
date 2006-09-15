@@ -110,13 +110,27 @@ class Domain
   @triangles= triangles
   @cut_poly = Array.new
 
+  @verbose = false
+  @report_time = Time.now
+
+
   @grid = grid
+ end
+
+ def show_progress
+  @verbose = true
  end
 
  def boolean_subtract(cut_surface)
 
   start_time = Time.now
+  count = 0
   @triangles.each do |triangle|
+   count += 1
+   if @verbose && (Time.now-@report_time) > 5.0
+    puts "#{count} of #{@triangles.size} cut in #{Time.now-start_time} sec"
+    @report_time = Time.now
+   end 
    center = triangle.center
    diameter = triangle.diameter
    probe = Near.new(-1,center[0],center[1],center[2],diameter)
