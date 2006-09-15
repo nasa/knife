@@ -269,6 +269,8 @@ class Domain
           indx,count,@bflags[indx])
   end
   
+  puts "cut groups #{@cut_groups.join(' ')}"
+
   self
  end
 
@@ -302,7 +304,6 @@ class Domain
 
   @cut_groups = [@boundary_cut_group,@interior_cut_group].compact
   
-  puts "cut groups #{@cut_groups.join(' ')}"
  end
 
  def dump_grid_for_pxa
