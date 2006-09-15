@@ -234,10 +234,6 @@ class Domain
 
   @cut_groups = [@boundary_cut_group,@interior_cut_group]
 
-  puts "boundary cut group #{@boundary_cut_group}"
-  puts "interior cut group #{@interior_cut_group}"
-  puts "exterior group     #{@exterior_group}"
-
   @element_group_sizes = Array.new(@number_of_element_groups)
   @element_group_sizes.collect! { 0 }
   @poly.each do |poly|
@@ -272,6 +268,9 @@ class Domain
    printf("element group %3d has %6d members with %d bflag\n",
           indx,count,@bflags[indx])
   end
+  puts "boundary cut group #{@boundary_cut_group}"
+  puts "interior cut group #{@interior_cut_group}"
+  puts "exterior group     #{@exterior_group}"
  end
 
  def delete_group(element_group)
