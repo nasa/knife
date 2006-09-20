@@ -402,6 +402,11 @@ class Domain
       quad.each do |rule|
        f.puts rule.join(' ')
       end
+      geom = poly.subtri_physical_geometry
+      f.puts geom.size
+      geom.each do |tri|
+       f.puts tri.join(' ')
+      end
      end
     end
    end

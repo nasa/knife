@@ -360,6 +360,16 @@ class Polyhedron
   rule
  end
 
+ def subtri_physical_geometry
+  geom = Array.new
+  (@triangles+@cutters).each do |triangle|
+   triangle.subtris.each do |subtri|
+    geom << subtri.physical_geometry
+   end
+  end
+  geom
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris

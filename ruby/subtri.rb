@@ -193,4 +193,8 @@ end
   rule
  end
 
+ def physical_geometry
+  [n0.x, n0.y, n0.z, n1.x, n1.y, n1.z, n2.x, n2.y, n2.z]
+ end
+
 end
