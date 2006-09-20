@@ -391,14 +391,18 @@ class Domain
   end
 
   File.open('postslice.sq','w') do |f|
-   f.puts @cut_poly.size
-   @cut_poly.each do |poly|
-    f.puts poly.element_group
-    f.puts poly.indx
-    quad = poly.surface_quadrature
-    f.puts quad.size
-    quad.each do |rule|
-     f.puts rule.join(' ')
+   f.puts @cut_groups.size
+   @cut_groups.each do |element_group|
+    f.puts element_group
+    f.puts @element_group_sizes[element_group]
+    @poly.each do |poly|
+     if element_group == poly.element_group
+      quad = poly.surface_quadrature
+      f.puts quad.size
+      quad.each do |rule|
+       f.puts rule.join(' ')
+      end
+     end
     end
    end
   end
