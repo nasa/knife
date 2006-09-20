@@ -155,24 +155,34 @@ class Subtri
            edge1[0]*edge2[1] - edge1[1]*edge2[0] ] 
  end
 
+ def triangle_rule
+  [1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0]
+ end
+
  def quadrature_rule
   norm = directed_area2
   area = 0.5*Math.sqrt(norm[0]*norm[0]+norm[1]*norm[1]+norm[2]*norm[2])
-  b0 = 1.0/3.0; b1 = 1.0/3.0; b2 = 1.0/3.0;
-  [ [b0*n0.u+b1*n1.u+b2*n2.u, 
-     b0*n0.v+b1*n1.v+b2*n2.v,
-     b0*n0.w+b1*n1.w+b2*n2.w,
-     area] ]
+  rule = Array.new
+  triangle_rule.each do |b|
+   rule << [b[0]*n0.u+b[1]*n1.u+b[2]*n2.u, 
+            b[0]*n0.v+b[1]*n1.v+b[2]*n2.v,
+            b[0]*n0.w+b[1]*n1.w+b[2]*n2.w,
+            b[3]*area]
+  end
+  rule
  end
 
  def physical_quadrature_rule
   norm = directed_area2
-  b0 = 1.0/3.0; b1 = 1.0/3.0; b2 = 1.0/3.0;
-  [ [b0*n0.x+b1*n1.x+b2*n2.x, 
-     b0*n0.y+b1*n1.y+b2*n2.y,
-     b0*n0.z+b1*n1.z+b2*n2.z,
-     1.0,
-     norm[0], norm[1], norm[2]] ]
+  rule = Array.new
+  triangle_rule.each do |b|
+   rule << [b[0]*n0.x+b[1]*n1.x+b[2]*n2.x, 
+            b[0]*n0.y+b[1]*n1.y+b[2]*n2.y,
+            b[0]*n0.z+b[1]*n1.z+b[2]*n2.z,
+            b[3],
+            norm[0], norm[1], norm[2]]
+  end
+  rule
  end
 
 end
