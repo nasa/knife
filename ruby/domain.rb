@@ -88,9 +88,9 @@ class Domain
      tri = Triangle.new( segment0, segment1, segment2)
      volume_triangles << tri
      cell2tri[face_index+4*cell_index] = tri
-     reversed = ( (tri_index[0]>tri_index[1]>tri_index[2]) ||
-                  (tri_index[1]>tri_index[2]>tri_index[0]) ||
-                  (tri_index[2]>tri_index[0]>tri_index[1]) )
+     reversed = ( (tri_nodes[0]>tri_nodes[1] && tri_nodes[1]>tri_nodes[2]) ||
+                  (tri_nodes[1]>tri_nodes[2] && tri_nodes[2]>tri_nodes[0]) ||
+                  (tri_nodes[2]>tri_nodes[0] && tri_nodes[0]>tri_nodes[1]) )
      if reversed 
       poly.add_reversed_triangle tri
      else
@@ -386,6 +386,19 @@ class Domain
     f.puts @element_group_sizes[element_group]
     @poly.each do |poly|
      poly.dump_integration_rule(f) if element_group == poly.element_group
+    end
+   end
+  end
+
+  File.open('postslice.sq','w') do |f|
+   f.puts @cut_poly.size
+   @cut_poly.each do |poly|
+    f.puts poly.element_group
+    f.puts poly.indx
+    quad = poly.surface_quadrature
+    f.puts quad.size
+    quad.each do |rule|
+     f.puts rule.join(' ')
     end
    end
   end

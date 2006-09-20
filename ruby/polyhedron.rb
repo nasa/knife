@@ -342,6 +342,24 @@ class Polyhedron
   rule
  end
 
+ def surface_quadrature
+  rule = Array.new
+  (@triangles+@cutters).each do |triangle|
+   triangle.subtris.each do |subtri|
+    subtri.physical_quadrature_rule.each do |point|
+     bary = barycentric(point[0],point[1],point[2])
+     # px expects outward pointing normals
+     if triangle.reversed
+      rule << [bary[1],bary[2],bary[3], point[3], point[4],point[5],point[6]]
+     else
+      rule << [bary[1],bary[2],bary[3], point[3], -point[4],-point[5],-point[6]]
+     end
+    end
+   end
+  end
+  rule
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
