@@ -71,23 +71,37 @@ class Domain
    poly.original_nodes = cell_nodes.collect {|i| volume_node[i]}
    4.times do |face_index|
     if cell2tri[face_index+4*cell_index]
-     poly.add_reversed_triangle cell2tri[face_index+4*cell_index]
+     reversed = cell2tri[face_index+4*cell_index][1]
+     tri =  cell2tri[face_index+4*cell_index][0]
+     if reversed
+      poly.add_triangle tri
+     else
+      poly.add_reversed_triangle tri
+     end
     else
      tri_index = cell2face(face_index)
      tri_nodes = cell_nodes.values_at(tri_index[0],tri_index[1],tri_index[2])
-     segment0 = segment[volume_grid.findConn(tri_nodes[1],tri_nodes[2])]
-     segment1 = segment[volume_grid.findConn(tri_nodes[2],tri_nodes[0])]
-     segment2 = segment[volume_grid.findConn(tri_nodes[0],tri_nodes[1])]
+     sorted_nodes = tri_nodes.sort
+     segment0 = segment[volume_grid.findConn(sorted_nodes[1],sorted_nodes[2])]
+     segment1 = segment[volume_grid.findConn(sorted_nodes[0],sorted_nodes[2])]
+     segment2 = segment[volume_grid.findConn(sorted_nodes[0],sorted_nodes[1])]
      tri = Triangle.new( segment0, segment1, segment2)
      volume_triangles << tri
      cell2tri[face_index+4*cell_index] = tri
-     poly.add_triangle tri
+     reversed = ( (tri_index[0]>tri_index[1]>tri_index[2]) ||
+                  (tri_index[1]>tri_index[2]>tri_index[0]) ||
+                  (tri_index[2]>tri_index[0]>tri_index[1]) )
+     if reversed 
+      poly.add_reversed_triangle tri
+     else
+      poly.add_triangle tri
+     end
      other_cell = volume_grid.findOtherCellWith3Nodes(tri_nodes[0],tri_nodes[1],
                                                       tri_nodes[2],cell_index)
      if other_cell >= 0
       indx = cell_face_index(volume_grid.cell(other_cell),
                              tri_nodes) + 4*other_cell
-      cell2tri[indx] = tri
+      cell2tri[indx] = [ tri, reversed ]
      end
     end
    end  
