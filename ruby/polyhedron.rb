@@ -309,11 +309,6 @@ class Polyhedron
   false
  end
 
- def dump_integration_rule(f)
-  f.puts 1
-  f.puts "0.3 0.3 0.3 1.0"
- end
- 
  def barycentric(x,y,z)
   node = [x,y,z]
   volume0 = Intersection.volume6(             node,original_nodes[1],

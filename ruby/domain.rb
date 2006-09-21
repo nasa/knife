@@ -378,18 +378,6 @@ class Domain
    end
   end
 
-  puts "DUMMY INTEGRATION RULES FOR P0 TEST"
-  File.open('postslice.eq','w') do |f|
-   f.puts @cut_groups.size
-   @cut_groups.each do |element_group|
-    f.puts element_group
-    f.puts @element_group_sizes[element_group]
-    @poly.each do |poly|
-     poly.dump_integration_rule(f) if element_group == poly.element_group
-    end
-   end
-  end
-
   File.open('postslice.sq','w') do |f|
    f.puts @cut_groups.size
    @cut_groups.each do |element_group|
