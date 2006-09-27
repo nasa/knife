@@ -231,6 +231,7 @@ class Dual
 
  def write_tecplot(filename='dual.t')
   File.open(filename,'w') do |f|
+   f.puts 'title="dual geometry"'+"\n"+'variables="x","y","z"'+"\n"
    @poly.each do |poly|
     f.print poly.tecplot_zone if poly.active
    end
