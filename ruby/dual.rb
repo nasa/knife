@@ -43,6 +43,20 @@ class Tet
   @boundary[face_index] = faceid
  end
 
+ def shares_face_with(face_index, other_tet, xyz)
+  @neighbor[face_index] = other_tet
+  other_tet.existing_center(self,face_index2face_nodes(face_index),xyz)
+ end
+
+ def existing_center(other_tet,face_nodes,xyz)
+  face_index = face_nodes2face_index(face_nodes)
+  if @face_center[face_index].nil?
+   @neighbor[face_index] = other_tet
+   @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2] )
+  end
+  @face_center[face_index]
+ end
+
 end
 
 class Dual
