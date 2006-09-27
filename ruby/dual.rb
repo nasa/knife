@@ -13,6 +13,28 @@ class Tet
   @edge_center = edge_center
  end
 
+ def face_index2node_index(face_index)
+  case face_index
+  when 0; [1,3,2]
+  when 1; [0,2,3]
+  when 2; [0,3,1]
+  when 3; [0,1,2]
+  else; nil; end
+ end
+
+ def face_nodes2face_index(face_nodes)
+  return 0 if @nodes.values_at(1,2,3).sort == face_nodes.sort
+  return 1 if @nodes.values_at(0,2,3).sort == face_nodes.sort
+  return 2 if @nodes.values_at(0,1,3).sort == face_nodes.sort
+  return 3 if @nodes.values_at(0,1,2).sort == face_nodes.sort
+  nil
+ end
+
+ def face_index2face_nodes(face_index)
+  node_index = face_index2node_index(face_index)
+  @nodes.values_at(node_index[0],node_index[1],node_index[2])
+ end
+
 end
 
 class Dual
@@ -59,6 +81,11 @@ class Dual
                                              grid.cell2Conn(cell,5)))
   end
 
+  tet.each do |t|
+   4.times do |face_index|
+    face_nodes = t.face_index2face_nodes(face_index)
+   end
+  end
 
   Dual.new(poly,grid)
  end
