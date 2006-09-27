@@ -35,9 +35,14 @@ class Tet
   @nodes.values_at(node_index[0],node_index[1],node_index[2])
  end
 
+ def boundary_face(face_index)
+ end
+
 end
 
 class Dual
+
+ EMPTY = -1
 
  attr_reader :grid
 
@@ -81,9 +86,26 @@ class Dual
                                              grid.cell2Conn(cell,5)))
   end
 
-  tet.each do |t|
+  tet.each_with_index do |t,cell|
    4.times do |face_index|
     face_nodes = t.face_index2face_nodes(face_index)
+    other_cell = grid.findOtherCellWith3Nodes(face_nodes[0], 
+                                              face_nodes[1], 
+                                              face_nodes[2], 
+                                              cell)
+    xyz0 = grid.nodeXYZ(face_nodes[0])
+    xyz1 = grid.nodeXYZ(face_nodes[1])
+    xyz2 = grid.nodeXYZ(face_nodes[2])
+    xyz = [ (xyz0[0]+xyz1[0]+xyz2[0])/3.0,
+            (xyz0[1]+xyz1[1]+xyz2[1])/3.0,
+            (xyz0[2]+xyz1[2]+xyz2[2])/3.0 ]
+    if EMPTY==other_cell
+     faceid = grid.findFace(face_nodes[0],face_nodes[1],face_nodes[2])
+     raise "boundary missing" if faceid.nil?
+     t.boundary_face(face_index)
+    else
+     t.shares_face_with(face_index,tet[other_cell],xyz)
+    end
    end
   end
 
