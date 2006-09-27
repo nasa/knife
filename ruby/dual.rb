@@ -5,6 +5,25 @@ require 'triangle'
 require 'polyhedron'
 require 'cut'
 
+
+class SegmentFinder
+
+ def initialize(nnode)
+  @segment = Array.new(nnode)
+  @segment.collect! { Array.new(nnode) }
+ end
+
+ def between(n0,n1)
+  i0 = [n0.indx,n1.indx].min
+  i1 = [n0.indx,n1.indx].max
+  if @segment[i0][i1].nil?
+   @segment[i0][i1] = Segment.new(n0,n1)
+  end
+  @segment[i0][i1]
+ end
+
+end
+
 class Tet
 
  def initialize(nodes,center,edge_center)
@@ -38,28 +57,73 @@ class Tet
   @nodes.values_at(node_index[0],node_index[1],node_index[2])
  end
 
- def boundary_face(face_index,faceid,xyz)
-  @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2] )
+ def boundary_face(face_index,faceid,xyz,node_index)
+  @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2], node_index )
+  node_index +=1
   @boundary[face_index] = faceid
+  node_index
  end
 
- def shares_face_with(face_index, other_tet, xyz)
+ def shares_face_with(face_index, other_tet, xyz, node_index)
   @neighbor[face_index] = other_tet
-  other_tet.existing_center(self,face_index2face_nodes(face_index),xyz)
+  @face_center[face_index], node_index = 
+   other_tet.get_center(self,face_index2face_nodes(face_index),xyz, node_index)
+  node_index
  end
 
- def existing_center(other_tet,face_nodes,xyz)
+ def get_center(other_tet,face_nodes,xyz,node_index)
   face_index = face_nodes2face_index(face_nodes)
   if @face_center[face_index].nil?
    @neighbor[face_index] = other_tet
-   @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2] )
+   @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2], node_index )
+   node_index += 1
   end
-  @face_center[face_index]
+  return @face_center[face_index], node_index
  end
-
- def create_dual(poly, triangle)
+ 
+ EDGE2NODE0 = [0, 0, 0, 1, 1, 2]
+ EDGE2NODE1 = [1, 2, 3, 2, 3, 3]
+ EDGE2FACE0 = [2, 3, 1, 0, 2, 0]
+ EDGE2FACE1 = [3, 1, 2, 3, 0, 1]
+ 
+ def create_dual(segment_finder, triangle, poly)
   6.times do |edge_index|
+   edge_node = @edge_center[edge_index]
+
+   node0 = @nodes[EDGE2NODE0[edge_index]]
+   node1 = @nodes[EDGE2NODE1[edge_index]]
    
+   poly_rev = poly[node0]
+   poly_fwd = poly[node1]
+   
+   n0 = edge_node
+   n1 = @center
+   n2 = @face_center[EDGE2FACE0[edge_index]]
+
+   s0 = segment_finder.between(n1,n2)
+   s1 = segment_finder.between(n0,n2)
+   s2 = segment_finder.between(n0,n1)
+
+   tri = Triangle.new(s0,s1,s2)
+
+   triangle << tri
+   poly_fwd.add_triangle tri
+   poly_rev.add_reversed_triangle tri
+
+   n0 = edge_node
+   n1 = @face_center[EDGE2FACE1[edge_index]]
+   n2 = @center
+
+   s0 = segment_finder.between(n1,n2)
+   s1 = segment_finder.between(n0,n2)
+   s2 = segment_finder.between(n0,n1)
+
+   tri = Triangle.new(s0,s1,s2)
+
+   triangle << tri
+   poly_fwd.add_triangle tri
+   poly_rev.add_reversed_triangle tri
+
   end
  end
 
@@ -80,13 +144,16 @@ class Dual
 
   edge_center = Array.new(grid.nconn)
   
+  node_index = 0
   grid.nconn.times do |conn_index|
    conn_nodes = grid.conn2Node(conn_index)
    xyz0 = grid.nodeXYZ(conn_nodes[0])
    xyz1 = grid.nodeXYZ(conn_nodes[1])
    edge_center[conn_index] = Node.new( 0.5*(xyz0[0]+xyz1[0]),
                                        0.5*(xyz0[1]+xyz1[1]),
-                                       0.5*(xyz0[2]+xyz1[2]) )
+                                       0.5*(xyz0[2]+xyz1[2]), 
+                                       node_index )
+   node_index += 1
   end
 
   tet = Array.new(grid.ncell)
@@ -98,8 +165,9 @@ class Dual
    xyz3 = grid.nodeXYZ(nodes[3])
    center = Node.new( 0.25*(xyz0[0]+xyz1[0]+xyz2[0]+xyz3[0]),
                       0.25*(xyz0[1]+xyz1[1]+xyz2[1]+xyz3[1]),
-                      0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]) )
-   
+                      0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]), 
+                      node_index )
+   node_index += 1
    tet[cell] = Tet.new(nodes,center,
                        edge_center.values_at(grid.cell2Conn(cell,0),
                                              grid.cell2Conn(cell,1),
@@ -125,18 +193,20 @@ class Dual
     if EMPTY==other_cell
      faceid = grid.findFace(face_nodes[0],face_nodes[1],face_nodes[2])
      raise "boundary missing" if faceid.nil?
-     t.boundary_face(face_index,faceid,xyz)
+     node_index = t.boundary_face(face_index,faceid,xyz,node_index)
     else
-     t.shares_face_with(face_index,tet[other_cell],xyz)
+     node_index = t.shares_face_with(face_index,tet[other_cell],xyz,node_index)
     end
    end
   end
+
+  segment_finder = SegmentFinder.new(node_index)
 
   primal_node = Array.new(grid.nnode)
   triangle = Array.new
 
   tet.each do |t|
-   t.create_dual(poly, triangle)
+   t.create_dual(segment_finder, triangle, poly)
   end
 
   Dual.new(poly,triangle,grid)
