@@ -7,23 +7,9 @@ require 'cut'
 
 class Tet
 
- attr_reader :nodes
- attr_redaer :center
-
- def initialize(grid,nodes)
-  @grid = grid
+ def initialize(nodes,center)
   @nodes = nodes
-  create_center
- end
-
- def create_center
-  xyz0 = @grid.nodeXYZ(@node[0])
-  xyz1 = @grid.nodeXYZ(@node[1])
-  xyz2 = @grid.nodeXYZ(@node[2])
-  xyz3 = @grid.nodeXYZ(@node[3])
-  @center = Node.new( 0.25*(xyz0[0]+xyz1[0]+xyz2[0]+xyz3[0]),
-                      0.25*(xyz0[1]+xyz1[1]+xyz2[1]+xyz3[1]),
-                      0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]) )
+  @center = center
  end
 
 end
@@ -38,11 +24,34 @@ class Dual
    poly[node] = Polyhedron.new
   end
 
-  tets = Array.new(grid.ncell)
-  grid.ncell.times do |cell|
-   tets[cell] = Tet.new(grid.cell(cell))
-  end
+  #make volume segments
+  grid.createConn
+
+  edge_center = Array.new(grid.nconn)
   
+  grid.nconn.times do |conn_index|
+   conn_nodes = grid.conn2Node(conn_index)
+   xyz0 = grid.nodeXYZ(conn_nodes[0])
+   xyz1 = grid.nodeXYZ(conn_nodes[1])
+   edge_center[conn_index] = Node.new( 0.5*(xyz0[0]+xyz1[0]),
+                                       0.5*(xyz0[1]+xyz1[1]),
+                                       0.5*(xyz0[2]+xyz1[2]) )
+  end
+
+  tet = Array.new(grid.ncell)
+  grid.ncell.times do |cell|
+   nodes = grid.cell(cell)
+   xyz0 = grid.nodeXYZ(nodes[0])
+   xyz1 = grid.nodeXYZ(nodes[1])
+   xyz2 = grid.nodeXYZ(nodes[2])
+   xyz3 = grid.nodeXYZ(nodes[3])
+   center = Node.new( 0.25*(xyz0[0]+xyz1[0]+xyz2[0]+xyz3[0]),
+                      0.25*(xyz0[1]+xyz1[1]+xyz2[1]+xyz3[1]),
+                      0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]) )
+   tet[cell] = Tet.new(nodes,center)
+  end
+
+
   Dual.new(poly,grid)
  end
 
