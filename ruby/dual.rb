@@ -11,6 +11,9 @@ class Tet
   @nodes = nodes
   @center = center
   @edge_center = edge_center
+  @face_center = Array.new(4)
+  @neighbor = Array.new(4)
+  @boundary = Array.new(4)
  end
 
  def face_index2node_index(face_index)
@@ -35,7 +38,9 @@ class Tet
   @nodes.values_at(node_index[0],node_index[1],node_index[2])
  end
 
- def boundary_face(face_index)
+ def boundary_face(face_index,faceid,xyz)
+  @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2] )
+  @boundary[face_index] = faceid
  end
 
 end
@@ -43,8 +48,6 @@ end
 class Dual
 
  EMPTY = -1
-
- attr_reader :grid
 
  def Dual.from_grid(grid)
   poly = Array.new(grid.nnode)
@@ -102,18 +105,21 @@ class Dual
     if EMPTY==other_cell
      faceid = grid.findFace(face_nodes[0],face_nodes[1],face_nodes[2])
      raise "boundary missing" if faceid.nil?
-     t.boundary_face(face_index)
+     t.boundary_face(face_index,faceid,xyz)
     else
      t.shares_face_with(face_index,tet[other_cell],xyz)
     end
    end
   end
 
-  Dual.new(poly,grid)
+  triangles = Array.new
+
+  Dual.new(poly,triangles,grid)
  end
 
- def initialize(poly=Array.new, grid=nil)
+ def initialize(poly=Array.new, triangles=Array.new, grid=nil)
   @poly = poly
+  @triangles = triangles
   @grid = grid
  end
 
