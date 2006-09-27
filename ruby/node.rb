@@ -4,10 +4,11 @@ class Node < Array
 
  attr_accessor :indx
 
- def initialize(x, y, z)
+ def initialize(x, y, z, indx = nil)
   self << x
   self << y
   self << z
+  @indx = indx
  end
 
  def x; self[0]; end
