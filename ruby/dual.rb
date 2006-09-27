@@ -7,9 +7,10 @@ require 'cut'
 
 class Tet
 
- def initialize(nodes,center)
+ def initialize(nodes,center,edge_center)
   @nodes = nodes
   @center = center
+  @edge_center = edge_center
  end
 
 end
@@ -48,7 +49,14 @@ class Dual
    center = Node.new( 0.25*(xyz0[0]+xyz1[0]+xyz2[0]+xyz3[0]),
                       0.25*(xyz0[1]+xyz1[1]+xyz2[1]+xyz3[1]),
                       0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]) )
-   tet[cell] = Tet.new(nodes,center)
+   
+   tet[cell] = Tet.new(nodes,center,
+                       edge_center.values_at(grid.cell2Conn(cell,0),
+                                             grid.cell2Conn(cell,1),
+                                             grid.cell2Conn(cell,2),
+                                             grid.cell2Conn(cell,3),
+                                             grid.cell2Conn(cell,4),
+                                             grid.cell2Conn(cell,5)))
   end
 
 
