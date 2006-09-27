@@ -57,6 +57,8 @@ class Tet
   @face_center[face_index]
  end
 
+ def create_dual(segment_finder, triangle, primal_node)
+
 end
 
 class Dual
@@ -126,14 +128,14 @@ class Dual
    end
   end
 
-  triangles = Array.new
+  triangle = Array.new
 
-  Dual.new(poly,triangles,grid)
+  Dual.new(poly,triangle,grid)
  end
 
- def initialize(poly=Array.new, triangles=Array.new, grid=nil)
+ def initialize(poly=Array.new, trianglex=Array.new, grid=nil)
   @poly = poly
-  @triangles = triangles
+  @triangle = triangle
   @grid = grid
  end
 
