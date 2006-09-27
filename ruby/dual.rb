@@ -6,6 +6,25 @@ require 'polyhedron'
 require 'cut'
 
 
+class NodeFinder
+
+ def initialize(grid)
+  @grid = grid
+  @nodes = Array.new(@grid.nnode)
+ end
+
+ def get(node,node_index=nil)
+  if @nodes[node].nil?
+   raise "NodeFinder Failed" if node_index.nil?
+   xyz = @grid.nodeXYZ(node)
+   @nodes[node] = Node.new( xyz[0], xyz[1], xyz[2], node_index )
+   node_index +=1
+  end
+  return @nodes[node], node_index
+ end
+
+end
+
 class SegmentFinder
 
  def initialize(nnode)
@@ -57,7 +76,10 @@ class Tet
   @nodes.values_at(node_index[0],node_index[1],node_index[2])
  end
 
- def boundary_face(face_index,faceid,xyz,node_index)
+ def boundary_face(face_index,faceid,xyz,node_index,node_finder)
+  face_index2face_nodes(face_index).each do |node|
+   new_node, node_index = node_finder.get(node,node_index)
+  end
   @face_center[face_index] = Node.new( xyz[0], xyz[1], xyz[2], node_index )
   node_index +=1
   @boundary[face_index] = faceid
@@ -86,7 +108,7 @@ class Tet
  EDGE2FACE0 = [2, 3, 1, 0, 2, 0]
  EDGE2FACE1 = [3, 1, 2, 3, 0, 1]
  
- def create_dual(segment_finder, triangle, poly)
+ def create_dual(segment_finder, node_finder, triangle, poly)
   6.times do |edge_index|
    edge_node = @edge_center[edge_index]
 
@@ -125,6 +147,16 @@ class Tet
    poly_rev.add_reversed_triangle tri
 
   end
+
+  @boundary.each_with_index do |faceid, face_index|
+   unless faceid.nil?
+    face_nodes = face_index2face_nodes(face_index)
+    n0 = node_finder.get(face_nodes[0])
+    n1 = node_finder.get(face_nodes[1])
+    n2 = node_finder.get(face_nodes[2])
+   end
+  end
+
  end
 
 end
@@ -155,6 +187,8 @@ class Dual
                                        node_index )
    node_index += 1
   end
+
+  node_finder = NodeFinder.new(grid)
 
   tet = Array.new(grid.ncell)
   grid.ncell.times do |cell|
@@ -193,7 +227,7 @@ class Dual
     if EMPTY==other_cell
      faceid = grid.findFace(face_nodes[0],face_nodes[1],face_nodes[2])
      raise "boundary missing" if faceid.nil?
-     node_index = t.boundary_face(face_index,faceid,xyz,node_index)
+     node_index = t.boundary_face(face_index,faceid,xyz,node_index,node_finder)
     else
      node_index = t.shares_face_with(face_index,tet[other_cell],xyz,node_index)
     end
@@ -202,11 +236,10 @@ class Dual
 
   segment_finder = SegmentFinder.new(node_index)
 
-  primal_node = Array.new(grid.nnode)
   triangle = Array.new
 
   tet.each do |t|
-   t.create_dual(segment_finder, triangle, poly)
+   t.create_dual(segment_finder, node_finder, triangle, poly)
   end
 
   Dual.new(poly,triangle,grid)
