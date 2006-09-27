@@ -57,7 +57,10 @@ class Tet
   @face_center[face_index]
  end
 
- def create_dual(segment_finder, triangle, primal_node)
+ def create_dual(poly, triangle)
+  6.times do |edge_index|
+   
+  end
  end
 
 end
@@ -129,7 +132,12 @@ class Dual
    end
   end
 
+  primal_node = Array.new(grid.nnode)
   triangle = Array.new
+
+  tet.each do |t|
+   t.create_dual(poly, triangle)
+  end
 
   Dual.new(poly,triangle,grid)
  end
