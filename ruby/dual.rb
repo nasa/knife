@@ -58,6 +58,7 @@ class Tet
  end
 
  def create_dual(segment_finder, triangle, primal_node)
+ end
 
 end
 
@@ -133,7 +134,7 @@ class Dual
   Dual.new(poly,triangle,grid)
  end
 
- def initialize(poly=Array.new, trianglex=Array.new, grid=nil)
+ def initialize(poly=Array.new, triangle=Array.new, grid=nil)
   @poly = poly
   @triangle = triangle
   @grid = grid
