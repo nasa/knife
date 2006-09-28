@@ -393,6 +393,38 @@ class Polyhedron
   vol
  end
 
+ def centroid
+  cent=[0.0,0.0,0.0]
+  vol = 0.0
+  (@triangles+@cutters).each do |triangle|
+   triangle.subtris.each do |subtri|
+    subtri.physical_quadrature_rule.each do |point|
+     xyz = point.slice(0,3)
+     norm = point.slice(4,3)
+     weight = point[3]
+     xyz[0] -= @primal_node[0]
+     xyz[1] -= @primal_node[1]
+     xyz[2] -= @primal_node[2]
+     if triangle.reversed
+      vol     += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])/3.0
+      cent[0] += 0.5*weight*(xyz[0]*xyz[0]*norm[0])/2.0
+      cent[1] += 0.5*weight*(xyz[1]*xyz[1]*norm[1])/2.0
+      cent[2] += 0.5*weight*(xyz[2]*xyz[2]*norm[2])/2.0
+     else
+      vol     -= 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])/3.0
+      cent[0] -= 0.5*weight*(xyz[0]*xyz[0]*norm[0])/2.0
+      cent[1] -= 0.5*weight*(xyz[1]*xyz[1]*norm[1])/2.0
+      cent[2] -= 0.5*weight*(xyz[2]*xyz[2]*norm[2])/2.0
+     end
+    end
+   end
+  end
+  cent[0] = cent[0]/vol + @primal_node[0]
+  cent[1] = cent[1]/vol + @primal_node[1]
+  cent[2] = cent[2]/vol + @primal_node[2]
+  cent
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
