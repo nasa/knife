@@ -44,8 +44,9 @@ end
 
 class Tet
 
- def initialize(nodes,center,edge_center)
+ def initialize(nodes,poly,center,edge_center)
   @nodes = nodes
+  @poly = poly
   @center = center
   @edge_center = edge_center
   @face_center = Array.new(4)
@@ -107,15 +108,13 @@ class Tet
  EDGE2FACE0 = [2, 3, 1, 0, 2, 0]
  EDGE2FACE1 = [3, 1, 2, 3, 0, 1]
  
- def create_dual(segment_finder, node_finder, triangle, poly)
+ def create_dual(segment_finder, node_finder, triangle)
+
   6.times do |edge_index|
    edge_node = @edge_center[edge_index]
 
-   node0 = @nodes[EDGE2NODE0[edge_index]]
-   node1 = @nodes[EDGE2NODE1[edge_index]]
-   
-   poly_rev = poly[node0]
-   poly_fwd = poly[node1]
+   poly_rev = @poly[EDGE2NODE0[edge_index]]
+   poly_fwd = @poly[EDGE2NODE1[edge_index]]
    
    n0 = edge_node
    n1 = @center
@@ -169,7 +168,7 @@ class Tet
      tri = Triangle.new(s0,s1,s2)
 
      triangle << tri
-     poly[node0].add_triangle tri
+     @poly[node2index(node0)].add_triangle tri
     
      n1 = triangle_side2edge_center(node0,node1)
      n2, dummy = node_finder.get(node1)
@@ -180,7 +179,7 @@ class Tet
      tri = Triangle.new(s0,s1,s2)
 
      triangle << tri
-     poly[node1].add_triangle tri
+     @poly[node2index(node1)].add_triangle tri
     end # triangle side
    end # !faceid.nil?
   end
@@ -204,6 +203,10 @@ class Tet
    end
   end
   raise "edge_node not found"
+ end
+
+ def all_poly_active?
+  (@poly[0].active && @poly[1].active && @poly[2].active && @poly[3].active)
  end
 
 end
@@ -249,7 +252,9 @@ class Dual
                       0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]), 
                       node_index )
    node_index += 1
-   tets[cell] = Tet.new(nodes,center,
+   tets[cell] = Tet.new(nodes,
+                        poly.values_at(nodes[0],nodes[1],nodes[2],nodes[3]),
+                        center,
                         edge_center.values_at(grid.cell2Conn(cell,0),
                                               grid.cell2Conn(cell,1),
                                               grid.cell2Conn(cell,2),
@@ -286,7 +291,7 @@ class Dual
   triangle = Array.new
 
   tets.each do |t|
-   t.create_dual(segment_finder, node_finder, triangle, poly)
+   t.create_dual(segment_finder, node_finder, triangle)
   end
 
   Dual.new(poly,triangle,tets,grid)
@@ -334,7 +339,7 @@ class Dual
   paint
   puts "the painting required #{Time.now-start_time} sec"
 
-  puts "#{@cut_poly.size} of #{@poly.size} ployhedra cut"
+  puts "#{@cut_poly.size} of #{@poly.size} polyhedra cut"
 
   if false
    start_time = Time.now
@@ -430,6 +435,15 @@ class Dual
    @poly.each do |poly|
     f.puts poly.primal_node.join(' ') unless poly.primal_node.nil?
    end
+
+   ntet = 0
+   @tets.each_with_index do |tet,node|
+    if tet.all_poly_active?
+     ntet += 1
+    end
+   end
+
+   
 
   end
 
