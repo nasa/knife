@@ -292,14 +292,103 @@ class Dual
   Dual.new(poly,triangle,grid)
  end
 
- def initialize(poly=Array.new, triangle=Array.new, grid=nil)
-  @poly = poly
-  @triangle = triangle
-  @grid = grid
+ def initialize(poly=Array.new, triangles=Array.new, grid=nil)
+  @poly      = poly
+  @cut_poly  = Array.new
+  @triangles = triangles
+  @grid      = grid
  end
 
  def boolean_subtract(cut_surface)
 
+  start_time = Time.now
+  @triangles.each do |triangle|
+   center = triangle.center
+   diameter = triangle.diameter
+   probe = Near.new(-1,center[0],center[1],center[2],diameter)
+   cut_surface.near_tree.first.touched(probe).each do |index|
+    tool = cut_surface.triangles[index]
+    Cut.between(triangle,tool)
+   end
+  end
+  puts "the cuts required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  cut_surface.triangulate
+  puts "the cut triangulation required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  triangulate
+  puts "the volume triangulation required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  paint
+  puts "the painting required #{Time.now-start_time} sec"
+
+  puts "#{@cut_poly.size} of #{@poly.size} ployhedra cut"
+
+  if false
+   start_time = Time.now
+   section
+   puts "the sectioning required #{Time.now-start_time} sec"
+  else
+   single_section
+   puts "SKIP SECTIONING"
+  end 
+
+  start_time = Time.now
+  mark_exterior
+  puts "the exterior determination required #{Time.now-start_time} sec"
+
+  self
+ end
+
+ def triangulate
+  @triangles.each do |triangle|
+   begin
+    triangle.triangulate_cuts
+   rescue RuntimeError
+    triangle.eps( sprintf('vol%04d.eps',count))
+    triangle.dump(sprintf('vol%04d.t',  count))
+    puts "#{count} raised `#$!' at "+triangle.center.join(',')
+   end
+   if triangle.min_subtri_area < 1.0e-15
+    triangle.eps( sprintf('vol%04d.eps',count))
+    triangle.dump(sprintf('vol%04d.t',  count))
+    raise "negative domain subtri area #{triangle.min_subtri_area}"
+   end
+  end
+  self
+ end
+
+ def paint
+  @poly.each do |poly|
+   poly.gather_cutters
+   if poly.cutters.size > 0
+    poly.trim_external_subtri
+    poly.paint
+    @cut_poly << poly
+   end
+  end
+  self
+ end
+
+ def single_section
+  @cut_poly.each do |poly|
+   poly.single_section
+  end
+ end
+
+ def section
+  @cut_poly.each do |poly|
+   poly.section
+  end
+ end
+
+ def mark_exterior
+  @cut_poly.each do |poly|
+   poly.mark_exterior
+  end
   self
  end
 
