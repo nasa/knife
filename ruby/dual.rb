@@ -237,7 +237,7 @@ class Dual
 
   node_finder = NodeFinder.new(grid)
 
-  tet = Array.new(grid.ncell)
+  tets = Array.new(grid.ncell)
   grid.ncell.times do |cell|
    nodes = grid.cell(cell)
    xyz0 = grid.nodeXYZ(nodes[0])
@@ -249,16 +249,16 @@ class Dual
                       0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]), 
                       node_index )
    node_index += 1
-   tet[cell] = Tet.new(nodes,center,
-                       edge_center.values_at(grid.cell2Conn(cell,0),
-                                             grid.cell2Conn(cell,1),
-                                             grid.cell2Conn(cell,2),
-                                             grid.cell2Conn(cell,3),
-                                             grid.cell2Conn(cell,4),
-                                             grid.cell2Conn(cell,5)))
+   tets[cell] = Tet.new(nodes,center,
+                        edge_center.values_at(grid.cell2Conn(cell,0),
+                                              grid.cell2Conn(cell,1),
+                                              grid.cell2Conn(cell,2),
+                                              grid.cell2Conn(cell,3),
+                                              grid.cell2Conn(cell,4),
+                                              grid.cell2Conn(cell,5)))
   end
 
-  tet.each_with_index do |t,cell|
+  tets.each_with_index do |t,cell|
    4.times do |face_index|
     face_nodes = t.face_index2face_nodes(face_index)
     other_cell = grid.findOtherCellWith3Nodes(face_nodes[0], 
@@ -276,7 +276,7 @@ class Dual
      raise "boundary missing" if faceid.nil?
      node_index = t.boundary_face(face_index,faceid,xyz,node_index,node_finder)
     else
-     node_index = t.shares_face_with(face_index,tet[other_cell],xyz,node_index)
+     node_index = t.shares_face_with(face_index,tets[other_cell],xyz,node_index)
     end
    end
   end
@@ -285,17 +285,18 @@ class Dual
 
   triangle = Array.new
 
-  tet.each do |t|
+  tets.each do |t|
    t.create_dual(segment_finder, node_finder, triangle, poly)
   end
 
-  Dual.new(poly,triangle,grid)
+  Dual.new(poly,triangle,tets,grid)
  end
 
- def initialize(poly=Array.new, triangles=Array.new, grid=nil)
+ def initialize(poly=Array.new, triangles=Array.new, tets=Array.new, grid=nil)
   @poly      = poly
   @cut_poly  = Array.new
   @triangles = triangles
+  @tets      = tets
   @grid      = grid
  end
 
