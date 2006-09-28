@@ -74,6 +74,7 @@ class Triangle
   @cuts.each do |cut|
    subnode0 = add_unique_subnode(cut.intersection0)
    subnode1 = add_unique_subnode(cut.intersection1)
+   swap!
    unless find_subtri_with(subnode0,subnode1)
     raise "cut is not subtriangle side" unless recover_edge(subnode0,subnode1)
    end
