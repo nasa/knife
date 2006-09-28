@@ -100,17 +100,22 @@ class Polyhedron
   # activate triangles next to active subtris
   @triangles.each do |triangle|
    if 0 == triangle.cuts.size && !triangle.active?(triangle.subtris[0])
-    @triangles.each do |other|
-     subtri = nil
-     subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node1)
-     subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node0)
-     subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node2)
-     subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node1)
-     subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node0)
-     subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node2)
-     if other.active?(subtri)
-      triangle.activate_all_subtri
-      requires_another_coat_of_paint = true
+    triangle.segments.each do |segment|
+     segment.triangles.each do |other_triangle|
+      other = triangle_mask(other_triangle)
+      next if other.nil?
+      next if (other.equal?(triangle))
+      subtri = nil
+      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node1)
+      subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node0)
+      subtri ||= other.find_subtri_with_parents(triangle.node1,triangle.node2)
+      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node1)
+      subtri ||= other.find_subtri_with_parents(triangle.node2,triangle.node0)
+      subtri ||= other.find_subtri_with_parents(triangle.node0,triangle.node2)
+      if other.active?(subtri)
+       triangle.activate_all_subtri
+       requires_another_coat_of_paint = true
+      end
      end
     end
    end
