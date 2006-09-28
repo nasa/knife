@@ -83,6 +83,8 @@ class Subtri
    @n0 = newnode
    set_side(newnode,@n2)
    subtri.set_side(newnode,subtri.n2)
+   raise "split self" if 0 >= area
+   raise "split subt" if 0 >= subtri.area
    return subtri
   end
   if ( (node0 == n1 && node1 == n2) || (node1 == n1 && node0 == n2) )
@@ -91,6 +93,8 @@ class Subtri
    @n1 = newnode
    set_side(newnode,@n0)
    subtri.set_side(newnode,subtri.n0)
+   raise "split self" if 0 >= area
+   raise "split subt" if 0 >= subtri.area
    return subtri
   end
   if ( (node0 == n2 && node1 == n0) || (node1 == n2 && node0 == n0) )
@@ -99,6 +103,8 @@ class Subtri
    @n2 = newnode
    set_side(newnode,@n1)
    subtri.set_side(newnode,subtri.n1)
+   raise "split self" if 0 >= area
+   raise "split subt" if 0 >= subtri.area
    return subtri
   end
   return nil
