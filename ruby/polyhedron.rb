@@ -371,6 +371,24 @@ class Polyhedron
   geom
  end
 
+ def volume
+  vol = 0
+  (@triangles+@cutters).each do |triangle|
+   triangle.subtris.each do |subtri|
+    subtri.physical_quadrature_rule.each do |point|
+     xyz = point.slice(0,3)
+     norm = point.slice(4,3)
+     weight = point[3]
+     xyz[0] -= @primal_node[0]
+     xyz[1] -= @primal_node[1]
+     xyz[2] -= @primal_node[2]
+     vol += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])
+    end
+   end
+  end
+  vol
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
