@@ -15,6 +15,7 @@ class Polyhedron
  attr_accessor :original_node_indexes
  attr_accessor :element_group
  attr_accessor :indx
+ attr_accessor :primal_node
 
  def initialize
   @triangles = Array.new
