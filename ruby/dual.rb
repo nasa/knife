@@ -44,6 +44,8 @@ end
 
 class Tet
 
+ attr_reader :poly
+
  def initialize(nodes,poly,center,edge_center)
   @nodes = nodes
   @poly = poly
@@ -437,13 +439,22 @@ class Dual
    end
 
    ntet = 0
-   @tets.each_with_index do |tet,node|
+   @tets.each do |tet|
     if tet.all_poly_active?
      ntet += 1
     end
    end
 
-   
+   f.puts ntet
+   @tets.each do |tet|
+    if tet.all_poly_active?
+     f.printf( "%d %d %d %d\n",
+               tet.poly[0].primal_node.indx+1,
+               tet.poly[1].primal_node.indx+1,
+               tet.poly[2].primal_node.indx+1,
+               tet.poly[3].primal_node.indx+1)
+    end
+   end
 
   end
 
