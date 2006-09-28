@@ -183,15 +183,18 @@ class Triangle
   newtri.set_side(subtri.n1,subtri.n0)
   newtri.set_side(subtri.n1,subtri.n2)
   newtri.n1 = subnode
+  raise "newtri 1" if 0 >= Subtri.area(newtri.n0, newtri.n1, newtri.n2)
   @subtris << newtri
   newtri = subtri.dup
   newtri.set_side(subtri.n2,subtri.n0)
   newtri.set_side(subtri.n2,subtri.n1)
   newtri.n2 = subnode
+  raise "newtri 2" if 0 >= Subtri.area(newtri.n0, newtri.n1, newtri.n2)
   @subtris << newtri
   subtri.set_side(subtri.n0,subtri.n1)
   subtri.set_side(subtri.n0,subtri.n2)
   subtri.n0 = subnode
+  raise "subtri  " if 0 >= Subtri.area(subtri.n0, subtri.n1, subtri.n2)
   self
  end
 
