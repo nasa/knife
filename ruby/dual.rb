@@ -427,6 +427,7 @@ class Dual
    @poly.each_with_index do |poly,node|
     if poly.active
      xyz = @grid.nodeXYZ(node)
+     xyz = poly.centroid(xyz) if poly.cut?
      poly.primal_node = Node.new( xyz[0], xyz[1], xyz[2], nnode )
      nnode += 1
     end
@@ -442,7 +443,7 @@ class Dual
 
    @poly.each do |poly|
     unless poly.primal_node.nil?
-     f.puts poly.volume
+     f.puts poly.volume(poly.primal_node)
     end 
    end
 

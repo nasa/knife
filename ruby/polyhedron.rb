@@ -371,7 +371,7 @@ class Polyhedron
   geom
  end
 
- def volume
+ def volume(origin=[0.0,0.0,0.0])
   vol = 0
   (@triangles+@cutters).each do |triangle|
    triangle.subtris.each do |subtri|
@@ -379,9 +379,9 @@ class Polyhedron
      xyz = point.slice(0,3)
      norm = point.slice(4,3)
      weight = point[3]
-     xyz[0] -= @primal_node[0]
-     xyz[1] -= @primal_node[1]
-     xyz[2] -= @primal_node[2]
+     xyz[0] -= origin[0]
+     xyz[1] -= origin[1]
+     xyz[2] -= origin[2]
      if triangle.reversed
       vol += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])/3.0
      else
@@ -393,7 +393,7 @@ class Polyhedron
   vol
  end
 
- def centroid
+ def centroid(origin=[0.0,0.0,0.0])
   cent=[0.0,0.0,0.0]
   vol = 0.0
   (@triangles+@cutters).each do |triangle|
@@ -402,9 +402,9 @@ class Polyhedron
      xyz = point.slice(0,3)
      norm = point.slice(4,3)
      weight = point[3]
-     xyz[0] -= @primal_node[0]
-     xyz[1] -= @primal_node[1]
-     xyz[2] -= @primal_node[2]
+     xyz[0] -= origin[0]
+     xyz[1] -= origin[1]
+     xyz[2] -= origin[2]
      if triangle.reversed
       vol     += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])/3.0
       cent[0] += 0.5*weight*(xyz[0]*xyz[0]*norm[0])/2.0
@@ -419,9 +419,9 @@ class Polyhedron
     end
    end
   end
-  cent[0] = cent[0]/vol + @primal_node[0]
-  cent[1] = cent[1]/vol + @primal_node[1]
-  cent[2] = cent[2]/vol + @primal_node[2]
+  cent[0] = cent[0]/vol + origin[0]
+  cent[1] = cent[1]/vol + origin[1]
+  cent[2] = cent[2]/vol + origin[2]
   cent
  end
 
