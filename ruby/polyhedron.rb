@@ -382,7 +382,11 @@ class Polyhedron
      xyz[0] -= @primal_node[0]
      xyz[1] -= @primal_node[1]
      xyz[2] -= @primal_node[2]
-     vol += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])
+     if triangle.reversed
+      vol += 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])
+     else
+      vol -= 0.5*weight*(xyz[0]*norm[0]+xyz[1]*norm[1]+xyz[2]*norm[2])
+     end
     end
    end
   end
