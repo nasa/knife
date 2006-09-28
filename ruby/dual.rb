@@ -150,13 +150,61 @@ class Tet
 
   @boundary.each_with_index do |faceid, face_index|
    unless faceid.nil?
+
     face_nodes = face_index2face_nodes(face_index)
-    n0 = node_finder.get(face_nodes[0])
-    n1 = node_finder.get(face_nodes[1])
-    n2 = node_finder.get(face_nodes[2])
-   end
+    n0 = @face_center[face_index]
+
+    [[face_nodes[0], face_nodes[1]],
+     [face_nodes[1], face_nodes[2]],
+     [face_nodes[2], face_nodes[0]] ].each do |triangle_side|
+
+     node0 = triangle_side[0]
+     node1 = triangle_side[1]
+
+     n1, dummy = node_finder.get(node0)
+     n2 = triangle_side2edge_center(node0,node1)
+
+     s0 = segment_finder.between(n1,n2)
+     s1 = segment_finder.between(n0,n2)
+     s2 = segment_finder.between(n0,n1)
+     tri = Triangle.new(s0,s1,s2)
+
+     triangle << tri
+     poly[node0].add_triangle tri
+    
+     n1 = triangle_side2edge_center(node0,node1)
+     n2, dummy = node_finder.get(node1)
+     
+     s0 = segment_finder.between(n1,n2)
+     s1 = segment_finder.between(n0,n2)
+     s2 = segment_finder.between(n0,n1)
+     tri = Triangle.new(s0,s1,s2)
+
+     triangle << tri
+     poly[node1].add_triangle tri
+    end # triangle side
+   end # !faceid.nil?
   end
 
+ end
+
+ def node2index(node)
+  index = @nodes.index(node)
+  raise "cell node not found" if index.nil?
+  index
+ end
+
+ def triangle_side2edge_center(node0, node1)
+  i0 = node2index(node0)
+  i1 = node2index(node1)
+  index0=[i0,i1].min
+  index1=[i0,i1].max
+  6.times do |edge_index|
+   if index0==EDGE2NODE0[edge_index] && index1==EDGE2NODE1[edge_index]
+    return @edge_center [edge_index]
+   end
+  end
+  raise "edge_node not found"
  end
 
 end
