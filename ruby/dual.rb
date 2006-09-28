@@ -435,7 +435,9 @@ class Dual
    f.puts nnode
 
    @poly.each do |poly|
-    f.puts poly.primal_node.join(' ') unless poly.primal_node.nil?
+    unless poly.primal_node.nil?
+     f.puts poly.primal_node.join(' ')+" #{poly.volume}"
+    end 
    end
 
    ntet = 0
