@@ -428,7 +428,7 @@ class Dual
    f.puts nnode
 
    @poly.each do |poly|
-    f.puts poly.primal_node.join(' ')
+    f.puts poly.primal_node.join(' ') unless poly.primal_node.nil?
    end
 
   end
