@@ -254,6 +254,10 @@ class Triangle
   subtri1.s1 = side02
   subtri1.s2 = side03
 
+  area0 = Subtri.area(subtri0.n0, subtri0.n1, subtri0.n2)
+  area1 = Subtri.area(subtri1.n0, subtri1.n1, subtri1.n2)
+  raise "subtri #{area0} #{area1}" if area0 <= 0.0 || area1 <= 0.0
+
   self
  end
 
