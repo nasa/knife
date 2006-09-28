@@ -30,7 +30,7 @@ class Subtri
  end
 
  def Subtri.right_handed?(n0,n1,n2)
-  area(n0,n1,n2) > 1.0e-15
+  area(n0,n1,n2) > 1.0e-13
  end
 
  def initialize(n0, n1, n2, s0=nil, s1=nil, s2=nil)
