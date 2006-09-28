@@ -512,7 +512,15 @@ class Dual
     end
    end
 
-   puts "DUMP OUT all the little faces for storage"
+   puts "DUMP OUT all the little faces for exact integration"
+
+   puts "NBOUND"
+
+   puts "UNCUT IBNODE"
+
+   puts "UNCUT FACE2NODE"
+
+   puts "All the little faces for boundary integraion"
 
   end
 
