@@ -158,10 +158,7 @@ class CutSurface
  end
 
  def triangulate
-  count = 0
   @triangles.each do |triangle|
-   count+=1
-   puts count
    triangle.triangulate_cuts
    if triangle.min_subtri_area < 1.0e-15
     raise "negative cut surface subtri area #{triangle.min_subtri_area}"
