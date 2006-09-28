@@ -5,6 +5,8 @@ require 'subtri'
 
 class Triangle
 
+ @@debug_area = false
+
  attr_reader :node0, :node1, :node2
 
  attr_reader :segments
@@ -184,18 +186,18 @@ class Triangle
   newtri.set_side(subtri.n1,subtri.n0)
   newtri.set_side(subtri.n1,subtri.n2)
   newtri.n1 = subnode
-  raise "newtri 1" if 0 >= newtri.area
+  raise "newtri 1" if @@debug_area && 0 >= newtri.area
   @subtris << newtri
   newtri = subtri.dup
   newtri.set_side(subtri.n2,subtri.n0)
   newtri.set_side(subtri.n2,subtri.n1)
   newtri.n2 = subnode
-  raise "newtri 2" if 0 >= newtri.area
+  raise "newtri 2" if @@debug_area && 0 >= newtri.area
   @subtris << newtri
   subtri.set_side(subtri.n0,subtri.n1)
   subtri.set_side(subtri.n0,subtri.n2)
   subtri.n0 = subnode
-  raise "subtri  " if 0 >= subtri.area
+  raise "subtri  " if @@debug_area && 0 >= subtri.area
   self
  end
 
@@ -258,9 +260,11 @@ class Triangle
   subtri1.s1 = side02
   subtri1.s2 = side03
 
-  area0 = subtri0.area
-  area1 = subtri1.area
-  raise "subtri #{area0} #{area1}" if area0 <= 0.0 || area1 <= 0.0
+  if @@debug_area
+   area0 = subtri0.area
+   area1 = subtri1.area
+   raise "subtri #{area0} #{area1}" if area0 <= 0.0 || area1 <= 0.0
+  end
 
   self
  end
