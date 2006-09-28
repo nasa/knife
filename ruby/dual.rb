@@ -322,6 +322,14 @@ class Dual
   puts "the volume triangulation required #{Time.now-start_time} sec"
 
   start_time = Time.now
+  gather_cuts
+  puts "the gather_cuts required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  trim_external
+  puts "the trim_external required #{Time.now-start_time} sec"
+
+  start_time = Time.now
   paint
   puts "the painting required #{Time.now-start_time} sec"
 
@@ -361,14 +369,26 @@ class Dual
   self
  end
 
- def paint
+ def gather_cuts
   @poly.each do |poly|
    poly.gather_cutters
    if poly.cutters.size > 0
-    poly.trim_external_subtri
-    poly.paint
     @cut_poly << poly
    end
+  end
+  self
+ end
+
+ def trim_external
+  @cut_poly.each do |poly|
+   poly.trim_external_subtri
+  end
+  self
+ end
+
+ def paint
+  @cut_poly.each do |poly|
+   poly.paint
   end
   self
  end
