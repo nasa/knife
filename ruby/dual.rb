@@ -465,6 +465,24 @@ class Dual
     end
    end
 
+   nedge = 0
+   @grid.nconn.times do |conn_index|
+    conn_nodes = @grid.conn2Node(conn_index)
+    nedge +=1 if @poly[conn_nodes[0]].active && @poly[conn_nodes[1]].active
+   end
+
+   f.puts nedge
+   @grid.nconn.times do |conn_index|
+    conn_nodes = @grid.conn2Node(conn_index)
+    if @poly[conn_nodes[0]].active && @poly[conn_nodes[1]].active
+     f.printf( "%d %d\n",
+               @poly[conn_nodes[0]].primal_node.indx+1,
+               @poly[conn_nodes[1]].primal_node.indx+1)
+               
+    end
+   end
+   
+
   end
 
  end
