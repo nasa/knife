@@ -5,7 +5,6 @@ require 'triangle'
 require 'polyhedron'
 require 'cut'
 
-
 class NodeFinder
 
  def initialize(grid)
