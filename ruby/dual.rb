@@ -414,8 +414,24 @@ class Dual
 
  def dump_grid_for_fun3d
 
-  File.open('postslice.fun','w') do |f|
+  File.open('postslice.fun3d','w') do |f|
+   nnode = 0
+   @poly.each_with_index do |poly,node|
+    if poly.active
+     xyz = @grid.nodeXYZ(node)
+     poly.primal_node = Node.new( xyz[0], xyz[1], xyz[2], nnode )
+     nnode += 1
+    end
+   end
+   
+   f.puts nnode
+
+   @poly.each do |poly|
+    f.puts poly.primal_node.join(' ')
+   end
+
   end
+
  end
 
  def write_tecplot(filename='dual.t')
