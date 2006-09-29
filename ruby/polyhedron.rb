@@ -425,6 +425,27 @@ class Polyhedron
   cent
  end
 
+ def directed_area_to(other)
+  dir_area = [0.0,0.0,0.0]
+  @triangles.each do |triangle|
+   if triangle.polyhedra.include?(other)
+    triangle.subtris.each do |subtri|
+     directed_area2 = subtri.directed_area2
+     if triangle.reversed
+      dir_area[0] += 0.5*directed_area2[0]
+      dir_area[1] += 0.5*directed_area2[1]
+      dir_area[2] += 0.5*directed_area2[2]
+     else
+      dir_area[0] -= 0.5*directed_area2[0]
+      dir_area[1] -= 0.5*directed_area2[1]
+      dir_area[2] -= 0.5*directed_area2[2]
+     end
+    end
+   end
+  end
+  dir_area
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
