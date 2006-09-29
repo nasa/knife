@@ -536,7 +536,27 @@ class Dual
    end
 
    f.puts ncut
-   puts "DUMP OUT all the little faces for exact integration"
+   @grid.nconn.times do |conn_index|
+    conn_nodes = @grid.conn2Node(conn_index)
+    poly0 = @poly[conn_nodes[0]]
+    poly1 = @poly[conn_nodes[1]]
+    if poly0.active && poly1.active
+     if poly0.cut? || poly1.cut?
+      node0 = poly0.primal_node.indx
+      node1 = poly1.primal_node.indx
+      geom = if (node0<node1) # reverse edge to enforce node0 < node1
+              poly0.face_geometry_to(poly1)
+             else
+              poly1.face_geometry_to(poly0)
+             end
+      f.puts geom.size
+      geom.each do |tri|
+       f.puts tri.join(' ')
+      end
+     end
+    end
+   end
+
 
   end
   
