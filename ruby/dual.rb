@@ -186,6 +186,7 @@ class Tet
    end # !faceid.nil?
   end
 
+  self
  end
 
  def node2index(node)
@@ -597,8 +598,17 @@ class Dual
   end
 
   File.open('postslice.surf','w') do |f|
-   puts "All the little faces for boundary integration"
-
+   @grid.nface.times do |face_index|
+    face = @grid.face(face_index)
+    active = ( @poly[face[0]].active ||
+               @poly[face[1]].active ||
+               @poly[face[1]].active )
+    orginal = ( @poly[face[0]].original? &&
+                @poly[face[1]].original? &&
+                @poly[face[2]].original? )
+    if (active || !original)
+     # do stuff
+    end
   end
 
  end
