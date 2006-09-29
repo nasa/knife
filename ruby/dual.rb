@@ -422,7 +422,7 @@ class Dual
 
  def dump_grid_for_fun3d
 
-  File.open('postslice.fun3d','w') do |f|
+  File.open('postslice.nodes','w') do |f|
    nnode = 0
    @poly.each_with_index do |poly,node|
     if poly.active
@@ -446,7 +446,9 @@ class Dual
      f.puts poly.volume(poly.primal_node)
     end 
    end
+  end
 
+  File.open('postslice.tets','w') do |f|
    ntet = 0
    @tets.each do |tet|
     if tet.all_poly_active?
@@ -464,7 +466,9 @@ class Dual
                tet.poly[3].primal_node.indx+1)
     end
    end
+  end
 
+  File.open('postslice.edges','w') do |f|
    puts "MAKE SURE of EDGE DIR"
 
    nedge = 0
@@ -501,7 +505,9 @@ class Dual
      nedge += 1
     end
    end
+  end
 
+  File.open('postslice.faces','w') do |f|
    puts "DUMP OUT directed areas for uncut edges"
 
    ncut = 0
@@ -512,14 +518,20 @@ class Dual
     end
    end
 
+   f.puts ncut
    puts "DUMP OUT all the little faces for exact integration"
 
+  end
+  
+  File.open('postslice.bound','w') do |f|
    puts "NBOUND"
 
    puts "UNCUT IBNODE"
 
    puts "UNCUT FACE2NODE"
+  end
 
+  File.open('postslice.surf','w') do |f|
    puts "All the little faces for boundary integraion"
 
   end
