@@ -168,6 +168,7 @@ class Tet
      s1 = segment_finder.between(n0,n2)
      s2 = segment_finder.between(n0,n1)
      tri = Triangle.new(s0,s1,s2)
+     tri.boundary_group = faceid
 
      triangle << tri
      @poly[node2index(node0)].add_triangle tri
@@ -179,6 +180,7 @@ class Tet
      s1 = segment_finder.between(n0,n2)
      s2 = segment_finder.between(n0,n1)
      tri = Triangle.new(s0,s1,s2)
+     tri.boundary_group = faceid
 
      triangle << tri
      @poly[node2index(node1)].add_triangle tri
