@@ -509,10 +509,26 @@ class Dual
      nedge += 1
     end
    end
+
+   @grid.nconn.times do |conn_index|
+    conn_nodes = @grid.conn2Node(conn_index)
+    if @poly[conn_nodes[0]].active && @poly[conn_nodes[1]].active
+     poly0 = @poly[conn_nodes[0]]
+     poly1 = @poly[conn_nodes[1]]
+     node0 = poly0.primal_node.indx
+     node1 = poly1.primal_node.indx
+     if (node0<node1) # reverse edge to enforce node0 < node1
+      f.puts poly0.directed_area_to(poly1).join(' ')
+     else
+      f.puts poly1.directed_area_to(poly0).join(' ')
+     end
+    end
+   end
+
+
   end
 
   File.open('postslice.faces','w') do |f|
-   puts "DUMP OUT directed areas for uncut edges"
 
    ncut = 0
    @grid.nconn.times do |conn_index|
