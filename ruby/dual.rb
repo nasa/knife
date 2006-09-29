@@ -549,7 +549,7 @@ class Dual
   end
 
   File.open('postslice.surf','w') do |f|
-   puts "All the little faces for boundary integraion"
+   puts "All the little faces for boundary integration"
 
   end
 
