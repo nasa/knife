@@ -600,6 +600,7 @@ class Dual
   end
 
   File.open('postslice.surf','w') do |f|
+   closures = Array.new
    @grid.nface.times do |face_index|
     face = @grid.face(face_index)
     active = ( @poly[face[0]].active ||
@@ -609,8 +610,22 @@ class Dual
                 @poly[face[1]].original? &&
                 @poly[face[2]].original? )
     if (active || !original)
-     # do stuff
+     closures << [ @poly[face[0]], face_index ]
     end
+   end
+
+   f.puts closures.size
+   closures.each do |closure|
+    poly = closure[0]
+    faceid = closure[1]
+    geom = poly.boundary_face_geometry(faceid)
+    f.puts(poly.primal_node.indx+1)
+    f.puts geom.size
+    geom.each do |tri|
+     f.puts tri.join(' ')
+    end
+   end
+
   end
 
  end
