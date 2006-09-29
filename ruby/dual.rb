@@ -481,9 +481,13 @@ class Dual
    @grid.nconn.times do |conn_index|
     conn_nodes = @grid.conn2Node(conn_index)
     if @poly[conn_nodes[0]].active && @poly[conn_nodes[1]].active
-     f.printf( "%d %d\n",
-               @poly[conn_nodes[0]].primal_node.indx+1,
-               @poly[conn_nodes[1]].primal_node.indx+1)            
+     node0 = @poly[conn_nodes[0]].primal_node.indx
+     node1 = @poly[conn_nodes[1]].primal_node.indx
+     if (node0<node1) # reverse edge to enforce node0 < node1
+      f.printf( "%d %d\n",node0+1,node1+1)
+     else
+      f.printf( "%d %d\n",node1+1,node0+1)
+     end
     end
    end
    
