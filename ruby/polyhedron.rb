@@ -153,7 +153,7 @@ class Polyhedron
   (!@cutters.empty?)
  end
 
- def origninal?
+ def original?
   (@active && !cut?)
  end
 
