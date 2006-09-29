@@ -545,8 +545,10 @@ class Dual
       node0 = poly0.primal_node.indx
       node1 = poly1.primal_node.indx
       geom = if (node0<node1) # reverse edge to enforce node0 < node1
+              f.printf( "%d %d\n",node0+1,node1+1)
               poly0.face_geometry_to(poly1)
              else
+              f.printf( "%d %d\n",node1+1,node0+1)
               poly1.face_geometry_to(poly0)
              end
       f.puts geom.size
