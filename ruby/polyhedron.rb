@@ -488,6 +488,23 @@ class Polyhedron
   geometry
  end
 
+ def cut_surface_geometry
+  geometry = Array.new
+  @cutters.each do |triangle|
+   triangle.subtris.each do |subtri|
+    subtri_geom = subtri.physical_geometry
+    if triangle.reversed
+     geometry << subtri_geom
+    else
+     geometry << [ subtri_geom[3], subtri_geom[4], subtri_geom[5], 
+                   subtri_geom[0], subtri_geom[1], subtri_geom[2], 
+                   subtri_geom[6], subtri_geom[7], subtri_geom[8] ] 
+    end
+   end
+  end
+  geometry
+ end
+
  def tecplot_zone(title='surf')
   subnodes = parent_nodes
   subtris = all_subtris
