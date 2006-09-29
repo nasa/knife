@@ -559,8 +559,7 @@ class Dual
     end
    end
 
-
-  end
+  end # postslice.faces
   
   File.open('postslice.bound','w') do |f|
    puts "NBOUND"
