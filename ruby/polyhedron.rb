@@ -153,6 +153,10 @@ class Polyhedron
   (!@cutters.empty?)
  end
 
+ def origninal?
+  (@active && !cut?)
+ end
+
  def single_section
   (@triangles+@cutters).each do |triangle|
    triangle.static_mark(0)
