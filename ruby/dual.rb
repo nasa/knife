@@ -524,8 +524,6 @@ class Dual
      end
     end
    end
-
-
   end
 
   File.open('postslice.faces','w') do |f|
