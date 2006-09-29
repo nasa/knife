@@ -617,9 +617,24 @@ class Dual
    f.puts closures.size
    closures.each do |closure|
     poly = closure[0]
+    f.puts(poly.primal_node.indx+1)
     faceid = closure[1]
     geom = poly.boundary_face_geometry(faceid)
+    f.puts geom.size
+    geom.each do |tri|
+     f.puts tri.join(' ')
+    end
+   end
+
+   ncut = 0
+   @poly.each do |poly|
+    ncut += 1 if poly.cut?
+   end
+  
+   f.puts ncut
+   @poly.each do |poly|
     f.puts(poly.primal_node.indx+1)
+    geom = poly.cut_surface_geometry
     f.puts geom.size
     geom.each do |tri|
      f.puts tri.join(' ')
