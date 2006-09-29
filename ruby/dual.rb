@@ -562,11 +562,38 @@ class Dual
   end # postslice.faces
   
   File.open('postslice.bound','w') do |f|
-   puts "NBOUND"
+   raise "where da face?" if 0 == @grid.nface
+   max_face_id = @grid.face(0)[3]
+   @grid.nface.times do |face_index|
+    max_face_id = [max_face_id, @grid.face(face_index)[3]].max
+   end
+   f.puts max_face_id
 
-   puts "UNCUT IBNODE"
+   1.upto(max_face_id) do |faceid|
+    faces = Array.new
+    @grid.nface.times do |face_index|
+     face = @grid.face(face_index)
+     if ( faceid == face[3] &&
+          @poly[face[0]].original? &&
+          @poly[face[1]].original? &&
+          @poly[face[2]].original? )
+      faces << face.slice(0,3) 
+     end
+    end
 
-   puts "UNCUT FACE2NODE"
+    l2g = faces.flatten.uniq.sort
+    f.puts l2g.size
+    l2g.each do |node|
+     f.puts node+1
+    end
+    f.puts faces.size
+    faces.each do |face|
+     f.printf( "%d %d %d\n",
+               l2g.index(face[0])+1,
+               l2g.index(face[1])+1,
+               l2g.index(face[2])+1)
+    end
+   end
   end
 
   File.open('postslice.surf','w') do |f|
