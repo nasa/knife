@@ -635,11 +635,13 @@ class Dual
   
    f.puts ncut
    @poly.each do |poly|
-    f.puts(poly.primal_node.indx+1)
-    geom = poly.cut_surface_geometry
-    f.puts geom.size
-    geom.each do |tri|
-     f.puts tri.join(' ')
+    if poly.cut?
+     f.puts(poly.primal_node.indx+1)
+     geom = poly.cut_surface_geometry
+     f.puts geom.size
+     geom.each do |tri|
+      f.puts tri.join(' ')
+     end
     end
    end
 
