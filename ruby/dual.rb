@@ -610,7 +610,9 @@ class Dual
                 @poly[face[1]].original? &&
                 @poly[face[2]].original? )
     if (active || !original)
-     closures << [ @poly[face[0]], face_index ]
+     closures << [ @poly[face[0]], face_index ] if @poly[face[0]].active
+     closures << [ @poly[face[1]], face_index ] if @poly[face[1]].active
+     closures << [ @poly[face[2]], face_index ] if @poly[face[2]].active
     end
    end
 
