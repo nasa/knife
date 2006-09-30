@@ -580,7 +580,9 @@ class Dual
           @poly[face[0]].original? &&
           @poly[face[1]].original? &&
           @poly[face[2]].original? )
-      faces << face.slice(0,3) 
+      faces << [ @poly[face[0]].primal_node.indx, 
+                 @poly[face[1]].primal_node.indx, 
+                 @poly[face[2]].primal_node.indx ]
      end
     end
 
