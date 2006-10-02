@@ -28,13 +28,13 @@ class SegmentFinder
 
  def initialize(nnode)
   @segment = Array.new(nnode)
-  @segment.collect! { Array.new(nnode) }
+  @segment.collect! { Hash.new }
  end
 
  def between(n0,n1)
   i0 = [n0.indx,n1.indx].min
   i1 = [n0.indx,n1.indx].max
-  if @segment[i0][i1].nil?
+  unless @segment[i0].has_key?(i1)
    @segment[i0][i1] = Segment.new(n0,n1)
   end
   @segment[i0][i1]
@@ -311,6 +311,8 @@ class Dual
   tets.each do |t|
    t.create_dual(segment_finder, node_finder, triangle)
   end
+
+  puts "dual complete"
 
   Dual.new(poly,triangle,tets,grid)
  end
