@@ -308,7 +308,13 @@ class Dual
 
   puts "explicitly creating dual"
 
-  tets.each do |t|
+  count = 0
+  tets.each_with_index do |t,i|
+   count += 1
+   if (count >= 1000)
+    count = 0
+    printf "%10d of %10d\n", i+1, grid.ncell
+   end
    t.create_dual(segment_finder, node_finder, triangle)
   end
 
