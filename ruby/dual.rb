@@ -309,11 +309,13 @@ class Dual
   puts "explicitly creating dual"
 
   count = 0
+  start_time = Time.now
   tets.each_with_index do |t,i|
    count += 1
    if (count >= 1000)
+    printf "%10d of %10d in %f sec\n", i+1, grid.ncell, Time.now-start_time
     count = 0
-    printf "%10d of %10d\n", i+1, grid.ncell
+    start_time = Time.now
    end
    t.create_dual(segment_finder, node_finder, triangle)
   end
