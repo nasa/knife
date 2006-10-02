@@ -221,6 +221,9 @@ class Dual
  EMPTY = -1
 
  def Dual.from_grid(grid)
+
+  puts "dual has #{grid.nnode} polyhedra"
+
   poly = Array.new(grid.nnode)
   grid.nnode.times do |node|
    poly[node] = Polyhedron.new
@@ -228,6 +231,8 @@ class Dual
 
   #make volume segments
   grid.createConn
+
+  puts "primal has #{grid.nconn} edges"
 
   edge_center = Array.new(grid.nconn)
   
@@ -242,6 +247,8 @@ class Dual
                                        node_index )
    node_index += 1
   end
+
+  puts "create node finder"
 
   node_finder = NodeFinder.new(grid)
 
@@ -268,6 +275,8 @@ class Dual
                                               grid.cell2Conn(cell,5)))
   end
 
+  puts "primal has #{grid.ncell} tets"
+
   tets.each_with_index do |t,cell|
    4.times do |face_index|
     face_nodes = t.face_index2face_nodes(face_index)
@@ -291,9 +300,13 @@ class Dual
    end
   end
 
+  puts "create segment finder"
+
   segment_finder = SegmentFinder.new(node_index)
 
   triangle = Array.new
+
+  puts "explicitly creating dual"
 
   tets.each do |t|
    t.create_dual(segment_finder, node_finder, triangle)
