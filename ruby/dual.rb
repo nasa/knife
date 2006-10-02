@@ -313,7 +313,7 @@ class Dual
   tets.each_with_index do |t,i|
    count += 1
    if (count >= 1000)
-    printf "%10d of %10d in %f sec\n", i+1, grid.ncell, Time.now-start_time
+    printf "%10d of %10d in %6.2f sec\n", i+1, grid.ncell, Time.now-start_time
     count = 0
     start_time = Time.now
    end
