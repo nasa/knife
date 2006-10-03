@@ -306,6 +306,11 @@ class Dual
 
   triangle = Array.new
 
+  puts "GC off"
+
+  GC.start
+  GC.disable
+
   puts "explicitly creating dual"
 
   count = 0
@@ -321,6 +326,11 @@ class Dual
   end
 
   puts "dual complete"
+
+  GC.enable
+  GC.start
+
+  puts "GC on"
 
   Dual.new(poly,triangle,tets,grid)
  end
