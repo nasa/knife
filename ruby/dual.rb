@@ -222,6 +222,10 @@ class Dual
 
  def Dual.from_grid(grid)
 
+  puts "GC off"
+  GC.start
+  GC.disable
+
   puts "dual has #{grid.nnode} polyhedra"
 
   poly = Array.new(grid.nnode)
@@ -306,11 +310,6 @@ class Dual
 
   triangle = Array.new
 
-  puts "GC off"
-
-  GC.start
-  GC.disable
-
   puts "explicitly creating dual"
 
   count = 0
@@ -327,11 +326,6 @@ class Dual
 
   puts "dual complete"
 
-  GC.enable
-  GC.start
-
-  puts "GC on"
-
   Dual.new(poly,triangle,tets,grid)
  end
 
@@ -341,6 +335,15 @@ class Dual
   @triangles = triangles
   @tets      = tets
   @grid      = grid
+ end
+
+ def gc_pulse
+  start_time = Time.now
+  print "GC pulse "
+  GC.enable
+  GC.start
+  GC.disable
+  puts "required #{Time.now-start_time} sec"
  end
 
  def boolean_subtract(cut_surface)
@@ -357,13 +360,19 @@ class Dual
   end
   puts "the cuts required #{Time.now-start_time} sec"
 
+  gc_pulse
+
   start_time = Time.now
   cut_surface.triangulate
   puts "the cut triangulation required #{Time.now-start_time} sec"
 
+  gc_pulse
+
   start_time = Time.now
   triangulate
   puts "the volume triangulation required #{Time.now-start_time} sec"
+
+  gc_pulse
 
   start_time = Time.now
   gather_cuts
@@ -391,6 +400,8 @@ class Dual
   start_time = Time.now
   mark_exterior
   puts "the exterior determination required #{Time.now-start_time} sec"
+
+  gc_pulse
 
   self
  end
@@ -458,6 +469,9 @@ class Dual
 
  def dump_grid_for_fun3d
 
+  puts "nodes, GC on"
+  GC.enable
+
   File.open('postslice.nodes','w') do |f|
    nnode = 0
    @poly.each_with_index do |poly,node|
@@ -484,6 +498,9 @@ class Dual
    end
   end
 
+  gc_pulse
+  puts "tets"
+
   File.open('postslice.tets','w') do |f|
    ntet = 0
    @tets.each do |tet|
@@ -503,6 +520,8 @@ class Dual
     end
    end
   end
+
+  puts "edges"
 
   File.open('postslice.edges','w') do |f|
 
@@ -561,6 +580,8 @@ class Dual
    end
   end
 
+  puts "faces"
+
   File.open('postslice.faces','w') do |f|
 
    ncut = 0
@@ -597,6 +618,8 @@ class Dual
 
   end # postslice.faces
   
+  puts "bound"
+
   File.open('postslice.bound','w') do |f|
    raise "where da face?" if 0 == @grid.nface
    max_face_id = @grid.face(0)[3]
@@ -633,6 +656,8 @@ class Dual
     end
    end
   end
+
+  puts "surf"
 
   File.open('postslice.surf','w') do |f|
    closures = Array.new
