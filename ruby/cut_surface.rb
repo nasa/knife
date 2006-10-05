@@ -13,7 +13,8 @@ class CutSurface
 
  attr_reader :triangles
  attr_reader :grid
- attr_reader :near_tree
+ attr_reader :triangle_near_tree
+ attr_reader :segment_near_tree
 
  def CutSurface.from_grid(surface_grid,cut_bcs,reversed=false)
 
@@ -53,11 +54,9 @@ class CutSurface
    end
   end
  
-  puts "Change segment array to hash"
-
   # count unique segments
   segment = Array.new(node)
-  node.times { |i| segment[i] = Array.new(node) }
+  node.times { |i| segment[i] = Hash.new }
 
   segments = 0
   surface_grid.nface.times do |face_index|
@@ -134,19 +133,32 @@ class CutSurface
     triangles += 1
    end
   end
+  
+  cut_segments = Array.new(segments)
+  segments = 0
+  segment.each do |node0_segments|
+   node0_segments.each_value do |node0_node1_segment|
+    cut_segments[segments] = node0_node1_segment
+    segments += 1
+   end
+  end
 
-  CutSurface.new(cut_triangles,surface_grid)
+  puts "cut surface has #{segments} segments"
+
+  CutSurface.new(cut_triangles,cut_segments,surface_grid)
  end
 
- def initialize(triangles,grid=nil)
+ def initialize(triangles,segments,grid=nil)
   @triangles = triangles
+  @segments  = segments
   @grid = grid
   
-  @near_tree = build_tree
+  @triangle_near_tree = build_triangle_near_list
+  @segment_near_tree = build_segment_near_list
  end
 
  #build a near tree to speed up searches
- def build_tree
+ def build_triangle_near_list
   near_list = Array.new(@triangles.size)
   @triangles.each_with_index do |triangle, index|
    center = triangle.center
@@ -158,6 +170,27 @@ class CutSurface
   end
   near_list
  end
+
+ def build_segment_near_list
+  near_list = Array.new(@segments.size)
+  @segments.each_with_index do |segment, index|
+   xyz0 = segment.node0
+   xyz1 = segment.node1
+   center = [ 0.5*(xyz0[0]+xyz1[0]), 
+              0.5*(xyz0[1]+xyz1[1]), 
+              0.5*(xyz0[2]+xyz1[2])]
+   dx = xyz0[0]-xyz1[0]
+   dy = xyz0[1]-xyz1[1]
+   dz = xyz0[2]-xyz1[2]
+   diameter = 0.5000001*Math.sqrt(dx*dx+dy*dy+dz*dz)
+   near_list[index] = Near.new(index,center[0],center[1],center[2],diameter)
+  end
+  near_list.each_index do |index|
+   near_list.first.insert(near_list[index]) if index > 0
+  end
+  near_list
+ end
+
 
  def triangulate
   @triangles.each do |triangle|
