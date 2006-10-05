@@ -21,6 +21,14 @@ class Intersection
   s0 = segment.node0
   s1 = segment.node1
 
+  t,u,v,w = Intersection.core(t0,t1,t2,s0,s1)
+  
+  return nil if t.nil?
+
+  new(triangle, segment, t, u, v, w)
+ end
+
+ def Intersection.core(t0,t1,t2,s0,s1)
   singular_tol = 1.0e-12
 
   # these tetradedral volumes are made of 3 triangle vertexes 
@@ -61,7 +69,7 @@ class Intersection
   v = volume_side1/total_volume
   w = volume_side2/total_volume
 
-  new(triangle, segment, t, u, v, w)
+  return t,u,v,w
  end
 
  def Intersection.volume6(a,b,c,d)
