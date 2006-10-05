@@ -113,9 +113,11 @@ class Tet
 
   6.times do |edge_index|
    edge_node = @edge_center[edge_index]
+   next if edge_node.nil?
 
    poly_rev = @poly[EDGE2NODE0[edge_index]]
    poly_fwd = @poly[EDGE2NODE1[edge_index]]
+   next if ( poly_rev.nil? && poly_fwd.nil? )
    
    n0 = edge_node
    n1 = @center
@@ -128,8 +130,8 @@ class Tet
    tri = Triangle.new(s0,s1,s2)
 
    triangle << tri
-   poly_fwd.add_triangle tri
-   poly_rev.add_reversed_triangle tri
+   poly_fwd.add_triangle tri unless poly_fwd.nil?
+   poly_rev.add_reversed_triangle tri unless poly_rev.nil?
 
    n0 = edge_node
    n1 = @face_center[EDGE2FACE1[edge_index]]
@@ -142,8 +144,8 @@ class Tet
    tri = Triangle.new(s0,s1,s2)
 
    triangle << tri
-   poly_fwd.add_triangle tri
-   poly_rev.add_reversed_triangle tri
+   poly_fwd.add_triangle tri unless poly_fwd.nil?
+   poly_rev.add_reversed_triangle tri unless poly_rev.nil?
 
   end
 
@@ -160,29 +162,35 @@ class Tet
      node0 = triangle_side[0]
      node1 = triangle_side[1]
 
-     n1, dummy = node_finder.get(node0)
-     n2 = triangle_side2edge_center(node0,node1)
+     poly = @poly[node2index(node0)]
+     unless poly.nil?
+      n1, dummy = node_finder.get(node0)
+      n2 = triangle_side2edge_center(node0,node1)
 
-     s0 = segment_finder.between(n1,n2)
-     s1 = segment_finder.between(n0,n2)
-     s2 = segment_finder.between(n0,n1)
-     tri = Triangle.new(s0,s1,s2)
-     tri.boundary_group = faceid
+      s0 = segment_finder.between(n1,n2)
+      s1 = segment_finder.between(n0,n2)
+      s2 = segment_finder.between(n0,n1)
+      tri = Triangle.new(s0,s1,s2)
+      tri.boundary_group = faceid
 
-     triangle << tri
-     @poly[node2index(node0)].add_triangle tri
-    
-     n1 = triangle_side2edge_center(node0,node1)
-     n2, dummy = node_finder.get(node1)
+      triangle << tri
+      poly.add_triangle tri
+     end
+
+     poly = @poly[node2index(node1)]
+     unless poly.nil?
+      n1 = triangle_side2edge_center(node0,node1)
+      n2, dummy = node_finder.get(node1)
      
-     s0 = segment_finder.between(n1,n2)
-     s1 = segment_finder.between(n0,n2)
-     s2 = segment_finder.between(n0,n1)
-     tri = Triangle.new(s0,s1,s2)
-     tri.boundary_group = faceid
+      s0 = segment_finder.between(n1,n2)
+      s1 = segment_finder.between(n0,n2)
+      s2 = segment_finder.between(n0,n1)
+      tri = Triangle.new(s0,s1,s2)
+      tri.boundary_group = faceid
 
-     triangle << tri
-     @poly[node2index(node1)].add_triangle tri
+      triangle << tri
+      poly.add_triangle tri
+     end
     end # triangle side
    end # !faceid.nil?
   end
