@@ -5,7 +5,9 @@ require 'subtri'
 
 class Triangle
 
- @@debug_area = false
+ @@debug_area = true
+
+ @@frame=0
 
  attr_reader :node0, :node1, :node2
 
@@ -301,7 +303,8 @@ class Triangle
   false
  end
 
- def eps(eps_filename = 'triangle.eps')
+ def eps(eps_filename = sprintf("triangle%04d.eps",@@frame))
+  @@frame += 1
   temp_file_name = 'gnuplot_mesh_command'
   File.open(temp_file_name,'w') do |f|
    f.puts gnuplot_command(eps_filename)
@@ -411,12 +414,15 @@ class Triangle
   node2 = [nodes[2].v, nodes[2].w, nodes[2].v*nodes[2].v+nodes[2].w*nodes[2].w]
   node3 = [other_nodes[2].v, other_nodes[2].w,
            other_nodes[2].v*other_nodes[2].v+other_nodes[2].w*other_nodes[2].w]
-  if Intersection.volume6(node0,node1,node2,node3) > 0.0
+  vol = Intersection.volume6(node0,node1,node2,node3)
+  if ( (vol < 0.0) && 
+       Subtri.right_handed?(nodes[0], nodes[1], other_nodes[2] ) &&
+       Subtri.right_handed?(nodes[0], other_nodes[2], nodes[2] ) )
    swap_side(nodes[1],nodes[2])
-   st0 = find_subtri_with(nodes[0],other_nodes[2])
-   st1 = find_subtri_with(other_nodes[2],nodes[0])
-   delaunay_suspect_edge(subnode,st0)
-   delaunay_suspect_edge(subnode,st1)
+   st0 = find_subtri_with(nodes[1],other_nodes[2])
+   delaunay_suspect_edge(subnode,st0) unless st0.nil?
+   st1 = find_subtri_with(other_nodes[2],nodes[2])
+   delaunay_suspect_edge(subnode,st1) unless st1.nil?
   end
 
   self
