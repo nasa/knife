@@ -1,4 +1,6 @@
 
+require 'dual_helper'
+
 refine_path = File.expand_path("~/GRIDEX/refine/src")
 
 $:.push refine_path
@@ -110,12 +112,115 @@ class Dual
 
   puts "duals #{touched_nodes} of #{grid.nnode} required"
 
+  touched
  end
-
 
  def Dual.from_grid_and_cut_surface(grid,cut_surface)
 
   touched = grid_duals_touched_by(grid,cut_surface)
+
+  puts "dual has #{grid.nnode} polyhedra"
+
+  poly = Array.new(grid.nnode)
+  touched.each_with_index do |required, node_index|
+   poly[node_index] = Polyhedron.new if required
+  end
+
+  puts "create primal edge centers for dual"
+
+  edge_center = Array.new(grid.nconn)
+  
+  node_count = 0
+  grid.nconn.times do |conn_index|
+   conn_nodes = grid.conn2Node(conn_index)
+   if touched[conn_nodes[0]] || touched[conn_nodes[1]]
+    xyz0 = grid.nodeXYZ(conn_nodes[0])
+    xyz1 = grid.nodeXYZ(conn_nodes[1])
+    edge_center[conn_index] = Node.new( 0.5*(xyz0[0]+xyz1[0]),
+                                        0.5*(xyz0[1]+xyz1[1]),
+                                        0.5*(xyz0[2]+xyz1[2]), 
+                                        node_count )
+    node_count += 1
+   end
+  end
+
+  puts "create node finder"
+
+  node_finder = NodeFinder.new(grid)
+
+  ntets = 0
+  tets = Array.new(grid.ncell)
+  grid.ncell.times do |cell|
+   nodes = grid.cell(cell)
+   if  ( touched[nodes[0]] || touched[nodes[1]] || 
+         touched[nodes[2]] || touched[nodes[3]] )
+    xyz0 = grid.nodeXYZ(nodes[0])
+    xyz1 = grid.nodeXYZ(nodes[1])
+    xyz2 = grid.nodeXYZ(nodes[2])
+    xyz3 = grid.nodeXYZ(nodes[3])
+    center = Node.new( 0.25*(xyz0[0]+xyz1[0]+xyz2[0]+xyz3[0]),
+                       0.25*(xyz0[1]+xyz1[1]+xyz2[1]+xyz3[1]),
+                       0.25*(xyz0[2]+xyz1[2]+xyz2[2]+xyz3[2]), 
+                       node_count )
+    node_count += 1
+    ntets += 1
+    tets[cell] = Tet.new(nodes,
+                         poly.values_at(nodes[0],nodes[1],nodes[2],nodes[3]),
+                         center,
+                         edge_center.values_at(grid.cell2Conn(cell,0),
+                                               grid.cell2Conn(cell,1),
+                                               grid.cell2Conn(cell,2),
+                                               grid.cell2Conn(cell,3),
+                                               grid.cell2Conn(cell,4),
+                                               grid.cell2Conn(cell,5)))
+   end
+  end
+
+  puts "primal has #{ntets} of #{grid.ncell} tets touched"
+
+  tets.each_with_index do |t,cell|
+   next if t.nil?
+   4.times do |face_index|
+    face_nodes = t.face_index2face_nodes(face_index)
+    next unless ( touched[face_nodes[0]] || 
+                  touched[face_nodes[1]] || 
+                  touched[face_nodes[2]] )
+    other_cell = grid.findOtherCellWith3Nodes(face_nodes[0], 
+                                              face_nodes[1], 
+                                              face_nodes[2], 
+                                              cell)
+    xyz0 = grid.nodeXYZ(face_nodes[0])
+    xyz1 = grid.nodeXYZ(face_nodes[1])
+    xyz2 = grid.nodeXYZ(face_nodes[2])
+    xyz = [ (xyz0[0]+xyz1[0]+xyz2[0])/3.0,
+            (xyz0[1]+xyz1[1]+xyz2[1])/3.0,
+            (xyz0[2]+xyz1[2]+xyz2[2])/3.0 ]
+    if EMPTY==other_cell
+     faceid = grid.findFace(face_nodes[0],face_nodes[1],face_nodes[2])
+     raise "boundary missing" if faceid.nil?
+     node_count = t.boundary_face(face_index,faceid,xyz,node_count,node_finder)
+    else
+     raise "tet missing" if tets[other_cell].nil?
+     node_count = t.shares_face_with(face_index,tets[other_cell],xyz,node_count)
+    end
+   end
+  end
+
+  puts "create segment finder"
+
+  segment_finder = SegmentFinder.new(node_count)
+
+  puts "explicitly creating dual"
+
+  triangle = Array.new
+
+  count = 0
+  start_time = Time.now
+  tets.each_with_index do |t,i|
+   t.create_dual(segment_finder, node_finder, triangle) unless t.nil?
+  end
+
+  puts "the dual construction required #{Time.now-start_time} sec"
 
 
   Dual.new(poly,triangle,tets,grid)
