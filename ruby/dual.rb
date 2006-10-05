@@ -222,8 +222,6 @@ class Dual
 
   puts "the dual construction required #{Time.now-start_time} sec"
 
-  GC.disable
-
   Dual.new(poly,triangle,tets,grid,cut_surface)
  end
 
