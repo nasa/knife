@@ -53,6 +53,8 @@ class CutSurface
    end
   end
  
+  puts "Change segment array to hash"
+
   # count unique segments
   segment = Array.new(node)
   node.times { |i| segment[i] = Array.new(node) }
