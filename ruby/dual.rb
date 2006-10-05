@@ -117,6 +117,8 @@ class Dual
 
  def Dual.from_grid_and_cut_surface(grid,cut_surface)
 
+  GC.disable
+
   touched = grid_duals_touched_by(grid,cut_surface)
 
   puts "dual has #{grid.nnode} polyhedra"
@@ -233,6 +235,16 @@ class Dual
   @tets        = tets
   @grid        = grid
   @cut_surface = cut_surface
+  gc_pulse
+ end
+
+ def gc_pulse
+  start_time = Time.now
+  print "GC pulse "
+  GC.enable
+  GC.start
+  GC.disable
+  puts "required #{Time.now-start_time} sec"
  end
 
  def boolean_subtract
@@ -249,9 +261,13 @@ class Dual
   end
   puts "the cuts required #{Time.now-start_time} sec"
 
+  gc_pulse
+
   start_time = Time.now
   @cut_surface.triangulate
   puts "the cut triangulation required #{Time.now-start_time} sec"
+
+  gc_pulse
 
   start_time = Time.now
   triangulate
@@ -264,6 +280,8 @@ class Dual
   start_time = Time.now
   trim_external
   puts "the trim_external required #{Time.now-start_time} sec"
+
+  gc_pulse
 
   start_time = Time.now
   paint
@@ -283,6 +301,8 @@ class Dual
   start_time = Time.now
   mark_exterior
   puts "the exterior determination required #{Time.now-start_time} sec"
+
+  gc_pulse
 
   self
  end
