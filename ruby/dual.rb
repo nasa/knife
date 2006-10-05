@@ -15,8 +15,8 @@ class Dual
   puts "primal has #{grid.nconn} edges"
 
   puts "interrogate primal edges"
-
   start_time = Time.now
+
   grid.nconn.times do |conn_index|
    conn_nodes = grid.conn2Node(conn_index)
    xyz0 = grid.nodeXYZ(conn_nodes[0])
