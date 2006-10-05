@@ -1,4 +1,10 @@
 
+refine_path = File.expand_path("~/GRIDEX/refine/src")
+
+$:.push refine_path
+
+require 'Near/Near'
+
 class Dual
 
  EMPTY = -1
@@ -29,7 +35,7 @@ class Dual
    dz = xyz0[2]-xyz1[2]
    diameter = 0.5000001*Math.sqrt(dx*dx+dy*dy+dz*dz)
    probe = Near.new(-1,center[0],center[1],center[2],diameter)
-   cut_surface.near_tree.first.touched(probe).each do |index|
+   cut_surface.triangle_near_tree.first.touched(probe).each do |index|
     tool = cut_surface.triangles[index]
     t = Intersection.core(tool.node0,tool.node1,tool.node2,xyz0,xyz1)
     unless t.nil?
@@ -41,8 +47,32 @@ class Dual
   end
 
   puts "the primal edge interrogation required #{Time.now-start_time} sec"
+  start_time = Time.now
 
-
+  grid.ncell.times do |cell_index|
+   cell_nodes = grid.cell(cell_index)
+   xyz0 = grid.nodeXYZ(cell_nodes[0])
+   xyz1 = grid.nodeXYZ(cell_nodes[1])
+   xyz2 = grid.nodeXYZ(cell_nodes[2])
+   xyz3 = grid.nodeXYZ(cell_nodes[3])
+   center = [ 0.5*(xyz0[0]+xyz1[0]), 
+              0.5*(xyz0[1]+xyz1[1]), 
+              0.5*(xyz0[2]+xyz1[2])]
+   dx = xyz0[0]-xyz1[0]
+   dy = xyz0[1]-xyz1[1]
+   dz = xyz0[2]-xyz1[2]
+   diameter = 0.5000001*Math.sqrt(dx*dx+dy*dy+dz*dz)
+   probe = Near.new(-1,center[0],center[1],center[2],diameter)
+   cut_surface.triangle_near_tree.first.touched(probe).each do |index|
+    tool = cut_surface.triangles[index]
+    t = Intersection.core(tool.node0,tool.node1,tool.node2,xyz0,xyz1)
+    unless t.nil?
+     touched[conn_nodes[0]] = true
+     touched[conn_nodes[1]] = true
+     break
+    end
+   end
+  end
   Dual.new(poly,triangle,tets,grid)
  end
 
