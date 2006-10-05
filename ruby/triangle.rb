@@ -72,7 +72,7 @@ class Triangle
   (0.5*area2)
  end
 
- def triangulate_cuts
+ def triangulate_cuts_orig
   @cuts.each do |cut|
    subnode0 = add_unique_subnode(cut.intersection0)
    subnode1 = add_unique_subnode(cut.intersection1)
@@ -369,6 +369,57 @@ class Triangle
    area = [area, subtri.area].min
   end
   area
+ end
+
+ def triangulate_cuts
+  to_recover = Array.new
+  @cuts.each do |cut|
+   subnode0 = add_unique_subnode(cut.intersection0)
+   delaunayness(subnode0)
+   subnode1 = add_unique_subnode(cut.intersection1)
+   delaunayness(subnode1)
+   to_recover << [subnode0, subnode1, cut]
+  end
+
+  to_recover.each do |recover|
+   unless find_subtri_with(recover[0],recover[1])
+    raise "cut is not subtri side" unless recover_edge(recover[0],recover[1])
+   end
+   set_subtri_side(recover[0], recover[1], recover[2])
+  end
+
+  self
+ end
+
+ def delaunayness(subnode)
+  sts = Array.new
+  @subtris.each do |subtri|
+   sts << subtri if subtri.has?(subnode)
+  end
+  sts.each do |st|
+   delaunay_suspect_edge(subnode,st)
+  end
+ end
+
+ def delaunay_suspect_edge(subnode,st)
+  nodes = st.orient(subnode)
+  other = find_subtri_with(nodes[2],nodes[1])
+  return self if other.nil?
+  other_nodes = other.orient(nodes[2])
+  node0 = [nodes[0].v, nodes[0].w, nodes[0].v*nodes[0].v+nodes[0].w*nodes[0].w]
+  node1 = [nodes[1].v, nodes[1].w, nodes[1].v*nodes[1].v+nodes[1].w*nodes[1].w]
+  node2 = [nodes[2].v, nodes[2].w, nodes[2].v*nodes[2].v+nodes[2].w*nodes[2].w]
+  node3 = [other_nodes[2].v, other_nodes[2].w,
+           other_nodes[2].v*other_nodes[2].v+other_nodes[2].w*other_nodes[2].w]
+  if Intersection.volume6(node0,node1,node2,node3) > 0.0
+   swap_side(nodes[1],nodes[2])
+   st0 = find_subtri_with(nodes[0],other_nodes[2])
+   st1 = find_subtri_with(other_nodes[2],nodes[0])
+   delaunay_suspect_edge(subnode,st0)
+   delaunay_suspect_edge(subnode,st1)
+  end
+
+  self
  end
 
 end
