@@ -9,7 +9,7 @@ class Dual
 
  EMPTY = -1
 
- def Dual.from_grid_and_cut_surface(grid,cut_surface)
+ def Dual.grid_duals_touched_by(grid,cut_surface)
 
   puts "primal has #{grid.nnode} nodes"
 
@@ -110,6 +110,12 @@ class Dual
 
   puts "duals #{touched_nodes} of #{grid.nnode} required"
 
+ end
+
+
+ def Dual.from_grid_and_cut_surface(grid,cut_surface)
+
+  touched = grid_duals_touched_by(grid,cut_surface)
 
 
   Dual.new(poly,triangle,tets,grid)
