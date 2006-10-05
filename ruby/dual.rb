@@ -222,23 +222,146 @@ class Dual
 
   puts "the dual construction required #{Time.now-start_time} sec"
 
+  GC.disable
 
-  Dual.new(poly,triangle,tets,grid)
+  Dual.new(poly,triangle,tets,grid,cut_surface)
  end
 
- def initialize(poly=Array.new, triangles=Array.new, tets=Array.new, grid=nil)
-  @poly      = poly
-  @cut_poly  = Array.new
-  @triangles = triangles
-  @tets      = tets
-  @grid      = grid
+ def initialize(poly=Array.new, triangles=Array.new, tets=Array.new, 
+                grid=nil, cut_surface=nil)
+  @poly        = poly
+  @cut_poly    = Array.new
+  @triangles   = triangles
+  @tets        = tets
+  @grid        = grid
+  @cut_surface = cut_surface
+ end
+
+ def boolean_subtract
+
+  start_time = Time.now
+  @triangles.each do |triangle|
+   center = triangle.center
+   diameter = triangle.diameter
+   probe = Near.new(-1,center[0],center[1],center[2],diameter)
+   @cut_surface.triangle_near_tree.first.touched(probe).each do |index|
+    tool = @cut_surface.triangles[index]
+    Cut.between(triangle,tool)
+   end
+  end
+  puts "the cuts required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  @cut_surface.triangulate
+  puts "the cut triangulation required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  triangulate
+  puts "the volume triangulation required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  gather_cuts
+  puts "the gather_cuts required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  trim_external
+  puts "the trim_external required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  paint
+  puts "the painting required #{Time.now-start_time} sec"
+
+  puts "#{@cut_poly.size} of #{@poly.size} polyhedra cut"
+
+  if false
+   start_time = Time.now
+   section
+   puts "the sectioning required #{Time.now-start_time} sec"
+  else
+   single_section
+   puts "SKIP SECTIONING"
+  end 
+
+  start_time = Time.now
+  mark_exterior
+  puts "the exterior determination required #{Time.now-start_time} sec"
+
+  self
+ end
+
+ def triangulate
+  @triangles.each do |triangle|
+   begin
+    triangle.triangulate_cuts
+   rescue RuntimeError
+    triangle.eps( sprintf('vol%04d.eps',count))
+    triangle.dump(sprintf('vol%04d.t',  count))
+    puts "#{count} raised `#$!' at "+triangle.center.join(',')
+   end
+   if triangle.min_subtri_area < 1.0e-15
+    triangle.eps( sprintf('vol%04d.eps',count))
+    triangle.dump(sprintf('vol%04d.t',  count))
+    raise "negative domain subtri area #{triangle.min_subtri_area}"
+   end
+  end
+  self
+ end
+
+ def gather_cuts
+  @poly.each do |poly|
+   unless poly.nil?
+    poly.gather_cutters
+    if poly.cutters.size > 0
+     @cut_poly << poly
+    end
+   end
+  end
+  self
+ end
+
+ def trim_external
+  @cut_poly.each do |poly|
+   poly.trim_external_subtri
+  end
+  self
+ end
+
+ def paint
+  @cut_poly.each do |poly|
+   poly.paint
+  end
+  self
+ end
+
+ def single_section
+  @cut_poly.each do |poly|
+   poly.single_section
+  end
+ end
+
+ def section
+  @cut_poly.each do |poly|
+   poly.section
+  end
+ end
+
+ def mark_exterior
+  @cut_poly.each do |poly|
+   poly.mark_exterior
+  end
+  self
+ end
+
+ def dump_grid_for_fun3d
  end
 
  def write_tecplot(filename='dual.t')
   File.open(filename,'w') do |f|
    f.puts 'title="dual geometry"'+"\n"+'variables="x","y","z"'+"\n"
    @poly.each do |poly|
-    f.print poly.tecplot_zone if poly.active
+    if !poly.nil? && poly.active
+     f.print poly.tecplot_zone
+    end
    end
   end
   self
