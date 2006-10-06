@@ -18,20 +18,25 @@
 
 BEGIN_C_DECLORATION
 
+typedef void * ArrayItem;
+
 typedef struct ArrayStruct ArrayStruct;
 struct ArrayStruct {
-  int size, allocated, chunk;
-  void **data
+  int actual, allocated, chunk;
+  ArrayItem *data;
 };
 typedef ArrayStruct * Array;
+
 
 Array array_create( int guess, int chunk );
 void array_free( Array );
 
-#define array_size(array) (array->size)
+#define array_size(array) (array->actual)
 
-KNIFE_STATUS array_add( Array, void * );
-void * array_item( Array, int index );
+KNIFE_STATUS array_add( Array, ArrayItem );
+
+#define array_item( array,indx ) \
+  ((indx>=0 && indx < array->actual)?array->data[idex]:NULL)
 
 END_C_DECLORATION
 

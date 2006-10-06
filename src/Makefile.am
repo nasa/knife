@@ -8,19 +8,23 @@ libknife_a_CFLAGS=$(warning_flags)
 libknife_a_SOURCES = \
 	knife_definitions.h \
 	adj.h adj.c \
+	array.h array.c \
 	primal.h primal.c \
 	node.h node.c \
 	segment.h segment.c \
-	triangle.h triangle.c
+	triangle.h triangle.c \
+	poly.h poly.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
 	knife_definitions.h \
 	adj.h \
+	array.h \
 	primal.h \
 	node.h \
 	segment.h \
-	triangle.h
+	triangle.h \
+	poly.h
 
 bin_PROGRAMS = knife
 
