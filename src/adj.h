@@ -1,3 +1,4 @@
+
 /* adjacency tool for assoicated objects */
 
 /* $Id$ */
@@ -18,47 +19,44 @@
 BEGIN_C_DECLORATION
 
 typedef struct Adj Adj;
-typedef struct NodeItem NodeItem;
-typedef NodeItem * AdjIterator;
+typedef struct AdjItem AdjItem;
+typedef AdjItem * AdjIterator;
 
-struct NodeItem {
+struct AdjItem {
   int item;
-  NodeItem *next;
+  AdjItem *next;
 };
 
 struct Adj {
-  int nnode, nadj, chunkSize;
-  NodeItem *node2item;
-  NodeItem **first;
-  NodeItem *current;
-  NodeItem *blank;
+  int nnode, nadj, chunk_size;
+  AdjItem *node2item;
+  AdjItem **first;
+  AdjItem *current;
+  AdjItem *blank;
 };
 
-Adj *adjCreate( int nnode, int nadj, int chunkSize );
-void adjFree( Adj *adj );
+Adj *adj_create( int nnode, int nadj, int chunkSize );
+void adj_free( Adj *adj );
 
-int adjNNode( Adj *adj );
-int adjNAdj( Adj *adj );
-int adjChunkSize( Adj *adj );
+#define adj_nnode(adj) (adj->nnode)
+#define adj_nadj(adj) (adj->nadj)
+#define adj_chunk_size(adj) (adj->chunk_size)
 
-Adj *adjRealloc( Adj *adj, int nnode );
+Adj *adj_resize( Adj *adj, int nnode );
 
-Adj *adjRegister( Adj *adj, int node, int item );
-Adj *adjRemove( Adj *adj, int node, int item );
+Adj *adj_register( Adj *adj, int node, int item );
+Adj *adj_remove( Adj *adj, int node, int item );
 
-#define adjValid(iterator) (iterator!=NULL)
-#define adjMore(iterator) ((iterator!=NULL)&&(iterator->next != NULL))
-#define adjFirst(adj,node) \
+#define adj_valid(iterator) (iterator!=NULL)
+#define adj_more(iterator) ((iterator!=NULL)&&(iterator->next != NULL))
+#define adj_first(adj,node) \
 ((node < 0 || node >= adj->nnode)?NULL:adj->first[node])
 
-#define adjItem(iterator) (iterator==NULL?EMPTY:iterator->item)
-#define adjNext(iterator) (iterator==NULL?NULL:iterator->next)
+#define adj_item(iterator) (iterator==NULL?EMPTY:iterator->item)
+#define adj_next(iterator) (iterator==NULL?NULL:iterator->next)
 
-AdjIterator adjGetCurrent( Adj *adj );
-Adj *adjSetCurrent( Adj *adj, AdjIterator iterator );
-
-GridBool adjExists( Adj *adj, int node, int item );
-int adjDegree( Adj *adj, int node );
+KnifeBool adj_exists( Adj *adj, int node, int item );
+int adj_degree( Adj *adj, int node );
 
 END_C_DECLORATION
 

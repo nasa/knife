@@ -12,75 +12,75 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "adj.h"
 
-static void adj_allocate_and_init_node_item(Adj *adj)
+static KNIFE_STATUS adj_allocate_and_init_node2item(Adj *adj);
+
+static KNIFE_STATUS adj_allocate_and_init_node2item(Adj *adj)
 {
   int i;
-  adj->node2item = (NodeItem *)malloc( adj->nadj * sizeof(NodeItem));
-
+  adj->node2item = (AdjItem *)malloc( adj->nadj * sizeof(AdjItem));
+  if (NULL == adj->node2item) {
+    printf("%s: %d: malloc failed in adj_allocate_and_init_node_item\n",
+	   __FILE__,__LINE__);
+    return(KNIFE_MEMORY);
+  }
+  
   for ( i=0 ; i < (adj->nadj-1) ; i++ ) {
     adj->node2item[i].item = EMPTY;
     adj->node2item[i].next = &adj->node2item[i+1];
   }
   adj->node2item[adj->nadj-1].item = EMPTY;
   adj->node2item[adj->nadj-1].next = NULL;
-
+  
   adj->blank = adj->node2item;
+  return(KNIFE_SUCCESS);
 }
 
-Adj* adjCreate( int nnode, int nadj, int chunkSize )
+Adj* adj_create( int nnode, int nadj, int chunk_size )
 {
   int node;
   Adj *adj;
-
+  
   adj = malloc( sizeof(Adj) );
 
-  adj->nnode     = MAX(nnode,1);
-  adj->nadj      = MAX(nadj,1);
-  adj->chunkSize = MAX(chunkSize,1);
-
-  adjAllocateAndInitNode2Item(adj);
-
+  adj->nnode      = MAX(nnode,1);
+  adj->nadj       = MAX(nadj,1);
+  adj->chunk_size = MAX(chunk_size,1);
+  
+  adj_allocate_and_init_node2item(adj);
+       
   adj->current = NULL;
-
-  adj->first = malloc( adj->nnode * sizeof(NodeItem*) );
+       
+  adj->first = (AdjItem **) malloc( adj->nnode * sizeof(AdjItem*) );
+  if (NULL == adj->first) {
+    printf("%s: %d: malloc failed in adj_create\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
 
   for ( node=0 ; node<adj->nnode; node++ ) adj->first[node] = NULL; 
 
   return adj;
 }
 
-void adjFree( Adj *adj )
+void adj_free( Adj *adj )
 {
   free( adj->node2item );
   free( adj->first );
   free( adj );
 }
 
-int adjNNode( Adj *adj )
+Adj *adj_resize( Adj *adj, int nnode )
 {
-  return adj->nnode;
-}
-
-int adjNAdj( Adj *adj )
-{
-  return adj->nadj;
-}
-
-int adjChunkSize( Adj *adj )
-{
-  return adj->chunkSize;
-}
-
-Adj *adjRealloc( Adj *adj, int nnode )
-{
-  NodeItem *remove;
-  int node, oldSize, newSize;
-  oldSize = adj->nnode;
-  newSize = MAX(nnode,1);
-  if ( oldSize > newSize) {
-    for ( node=newSize ; node<oldSize; node++ ) {
+  AdjItem *remove;
+  AdjItem **new_mem;
+  int node, old_size, new_size;
+  old_size = adj->nnode;
+  new_size = MAX(nnode,1);
+  if ( old_size > new_size) {
+    for ( node=new_size ; node<old_size; node++ ) {
       while ( NULL != adj->first[node] ) {
 	remove = adj->first[node];
 	adj->first[node] = remove->next;
@@ -90,25 +90,30 @@ Adj *adjRealloc( Adj *adj, int nnode )
       }
     }
   }
-  adj->nnode = newSize;
-  adj->first = realloc( adj->first, adj->nnode * sizeof(NodeItem*) );
-  for ( node=oldSize ; node<adj->nnode; node++ ) adj->first[node] = NULL; 
+  adj->nnode = new_size;
+  new_mem = (AdjItem **) realloc( adj->first, adj->nnode * sizeof(AdjItem*) );
+  if (NULL == new_mem) {
+    printf("%s: %d: realloc failed in adj_resize\n",__FILE__,__LINE__);
+    return NULL;
+  }
+  adj->first = new_mem;
+  for ( node=old_size ; node<adj->nnode; node++ ) adj->first[node] = NULL; 
   return adj;
 }
 
-Adj *adjRegister( Adj *adj, int node, int item )
+Adj *adj_register( Adj *adj, int node, int item )
 {
-  NodeItem *oldnode2item;
-  NodeItem *oldfirst;
-  NodeItem *new;
+  AdjItem *oldnode2item;
+  AdjItem *oldfirst;
+  AdjItem *new;
   int copynode;
 
   if (node>=adj->nnode || node<0) return NULL;
 
   if (NULL == adj->blank) {
-    adj->nadj += adj->chunkSize;
+    adj->nadj += adj->chunk_size;
     oldnode2item = adj->node2item;
-    adjAllocateAndInitNode2Item(adj);
+    adj_allocate_and_init_node2item(adj);
     for ( copynode = 0 ; copynode < adj->nnode ; copynode++ ) {
       oldfirst = adj->first[copynode];
       adj->first[copynode] = NULL;
@@ -134,16 +139,16 @@ Adj *adjRegister( Adj *adj, int node, int item )
   return adj;
 }
 
-Adj* adjRemove(Adj *adj, int node, int item)
+Adj* adj_remove(Adj *adj, int node, int item)
 {
   AdjIterator it;
-  NodeItem  *remove, *previous;
+  AdjItem  *remove, *previous;
 
   remove = NULL;
   previous = NULL;
 
-  for ( it = adjFirst(adj,node); adjValid(it); it = adjNext(it) ) {
-    if (adjItem(it)==item) {
+  for ( it = adj_first(adj,node); adj_valid(it); it = adj_next(it) ) {
+    if (adj_item(it)==item) {
       remove = it;
       break;
     }else{
@@ -166,32 +171,23 @@ Adj* adjRemove(Adj *adj, int node, int item)
   return adj;
 }
 
-AdjIterator adjGetCurrent( Adj *adj ){
-  return adj->current;
-}
-
-Adj *adjSetCurrent( Adj *adj, AdjIterator iterator ){
-  adj->current = iterator;
-  return adj;
-}
-
-GridBool adjExists( Adj *adj, int node, int item )
+KnifeBool adj_exists( Adj *adj, int node, int item )
 {
   AdjIterator it;
-  GridBool exist;
+  KnifeBool exist;
   exist = FALSE;
-  for ( it = adjFirst(adj,node); 
-	!exist && adjValid(it); 
-	it = adjNext(it)) 
-    exist = (item == adjItem(it));
+  for ( it = adj_first(adj,node); 
+	!exist && adj_valid(it); 
+	it = adj_next(it)) 
+    exist = (item == adj_item(it));
   return exist;
 }
 
-int adjDegree(Adj *adj, int node )
+int adj_degree(Adj *adj, int node )
 {
   AdjIterator it;
   int degree;
   degree =0;
-  for ( it = adjFirst(adj,node) ; adjValid(it); it = adjNext(it)) degree++;
+  for ( it = adj_first(adj,node) ; adj_valid(it); it = adj_next(it)) degree++;
   return degree;
 }

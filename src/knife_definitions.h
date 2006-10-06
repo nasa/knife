@@ -43,6 +43,13 @@ typedef short KnifeBool;
 #if !defined(MAX)
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #endif
+
+typedef int KNIFE_STATUS;
+
+#define KNIFE_SUCCESS (0)
+#define KNIFE_FAILURE (1)
+#define KNIFE_MEMORY  (2)
+
 END_C_DECLORATION
 
 #endif /* KNIFE_DEFINITIONS_H */
