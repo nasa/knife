@@ -4,6 +4,7 @@ class Mask
  
  attr_reader :triangle, :reversed
  attr_reader :mark
+ attr_reader :trimmed
 
  def initialize(triangle,reversed=false)
   @triangle = triangle
@@ -25,6 +26,10 @@ class Mask
   else
    @trimmed.collect! { false }
   end
+ end
+
+ def is_entirely_inactive?
+  !@trimmed.include?(false)
  end
 
  def subtris
