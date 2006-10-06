@@ -26,6 +26,7 @@ struct SegmentStruct {
 typedef SegmentStruct * Segment;
 
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 );
+Node segment_common_node( Segment segment0, Segment segment1 );
 
 END_C_DECLORATION
 

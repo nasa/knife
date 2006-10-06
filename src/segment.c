@@ -21,3 +21,14 @@ KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 )
   segment->node1 = node1;
   return(KNIFE_SUCCESS);
 }
+
+Node segment_common_node( Segment segment0, Segment segment1 )
+{
+  Node node;
+  node = NULL;
+  if ( segment0->node0 == segment1->node0 ) node = segment0->node0;
+  if ( segment0->node0 == segment1->node1 ) node = segment0->node0;
+  if ( segment0->node1 == segment1->node0 ) node = segment0->node1;
+  if ( segment0->node1 == segment1->node1 ) node = segment0->node1;
+  return node;
+}
