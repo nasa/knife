@@ -8,12 +8,14 @@ libknife_a_CFLAGS=$(warning_flags)
 libknife_a_SOURCES = \
 	knife_definitions.h \
 	adj.h adj.c \
-	primal.h primal.c
+	primal.h primal.c \
+	node.h
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
 	knife_definitions.h \
 	adj.h \
-	primal.h
+	primal.h \
+	node.h
 
 bin_PROGRAMS = knife
 
