@@ -5,6 +5,16 @@ require 'node'
 
 class Polyhedron
 
+ @@time0 = 0.0
+ @@time1 = 0.0
+ @@time2 = 0.0
+
+ def Polyhedron.stats
+  puts "0 #{@@time0}"
+  puts "1 #{@@time1}"
+  puts "2 #{@@time2}"
+ end
+
  PXE_TetQ1  = 5
  PXE_TetCut = 11
 
@@ -91,13 +101,17 @@ class Polyhedron
  end
 
  def paint
+
+  start_time = Time.now
   # paint individuals
   (@triangles+@cutters).each do |triangle|
    triangle.paint
   end
+  @@time0 += Time.now-start_time
 
   requires_another_coat_of_paint = false
 
+  start_time = Time.now
   # activate triangles next to active subtris
   @triangles.each do |triangle|
    if 0 == triangle.cuts.size && !triangle.active?(triangle.subtris[0])
@@ -121,7 +135,9 @@ class Polyhedron
     end
    end
   end
+  @@time1 += Time.now-start_time
   
+  start_time = Time.now
   # activate cutters next to active subtris
   @cutters.each do |triangle|
    triangle.segments.each do |segment|
@@ -143,6 +159,7 @@ class Polyhedron
     end
    end
   end
+  @@time2 += Time.now-start_time
 
   return paint if requires_another_coat_of_paint
 
