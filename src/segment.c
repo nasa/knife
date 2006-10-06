@@ -13,12 +13,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "adj.h"
-
+#include "segment.h"
 
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 )
 {
   segment->node0 = node0;
   segment->node1 = node1;
-  return KNIFE_SUCCESS;
+  return(KNIFE_SUCCESS);
 }

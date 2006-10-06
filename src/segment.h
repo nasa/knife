@@ -15,6 +15,7 @@
 #define SEGMENT_H
 
 #include "knife_definitions.h"
+#include "node.h"
 
 BEGIN_C_DECLORATION
 
