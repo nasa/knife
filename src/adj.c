@@ -67,6 +67,7 @@ Adj* adj_create( int nnode, int nadj, int chunk_size )
 
 void adj_free( Adj *adj )
 {
+  if ( NULL == adj ) return;
   free( adj->node2item );
   free( adj->first );
   free( adj );
