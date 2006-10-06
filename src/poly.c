@@ -19,14 +19,14 @@ Poly poly_create( void )
 {
   Poly poly;
   
-  poly = (Poly)malloc( sizeof(PolyStruct) );
+  poly = (Poly) malloc( sizeof(PolyStruct) );
   if (NULL == poly) {
     printf("%s: %d: malloc failed in poly_create\n",
 	   __FILE__,__LINE__);
     return NULL; 
   }
 
-  poly->triangles = array_new(4,40);
+  poly->triangles = array_create(4,40);
 
   return poly;
 }

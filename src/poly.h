@@ -15,7 +15,7 @@
 #define POLY_H
 
 #include "knife_definitions.h"
-#include "triangle.h"
+#include "array.h"
 
 BEGIN_C_DECLORATION
 
