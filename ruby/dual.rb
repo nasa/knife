@@ -99,11 +99,40 @@ class Dual
      touched[cell_nodes[3]] = true
      break
     end
-
    end
+
   end
 
   puts "the primal face interrogation required #{Time.now-start_time} sec"
+
+  touched_nodes = 0
+  touched.each do |node|
+   touched_nodes += 1 if node
+  end
+
+  puts "duals #{touched_nodes} of #{grid.nnode} required"
+
+  touched
+ end
+
+ def Dual.expand_touched(orig_touched,grid)
+  touched = Array.new(grid.nnode)
+
+  start_time = Time.now
+  grid.ncell.times do |cell_index|
+   cell_nodes = grid.cell(cell_index)
+   if ( orig_touched[cell_nodes[0]] ||
+        orig_touched[cell_nodes[1]] ||
+        orig_touched[cell_nodes[2]] ||
+        orig_touched[cell_nodes[3]] )
+     touched[cell_nodes[0]] = true
+     touched[cell_nodes[1]] = true
+     touched[cell_nodes[2]] = true
+     touched[cell_nodes[3]] = true
+   end
+  end
+  
+  puts "the touch expansion required #{Time.now-start_time} sec"
 
   touched_nodes = 0
   touched.each do |node|
@@ -120,6 +149,7 @@ class Dual
   GC.disable
 
   touched = grid_duals_touched_by(grid,cut_surface)
+  touched = expand_touched(touched,grid)
 
   puts "dual has #{grid.nnode} polyhedra"
 
