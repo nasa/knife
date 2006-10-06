@@ -176,9 +176,25 @@ class Triangle
  def insert_subnode_into_subtri_side(subnode,node0,node1)
   raise "subtri side missing for ins" unless ( find_subtri_with(node0,node1) || 
                                                find_subtri_with(node1,node0) )
+  added = 0
   @subtris.each do |subtri|
    newtri = subtri.split_side_with(subnode,node0,node1)
-   @subtris << newtri if newtri
+   if newtri
+    @subtris << newtri
+    added += 1
+   end 
+  end
+  raise "#{added} added" unless ( 1 == added || 2 == added )
+  if 2 == added
+   subtri0 = find_subtri_with(node0,subnode)
+   subtri1 = find_subtri_with(subnode,node0)
+   subtri0.set_side(node0,subnode,subtri1)
+   subtri1.set_side(subnode,node0,subtri0)
+
+   subtri0 = find_subtri_with(node1,subnode)
+   subtri1 = find_subtri_with(subnode,node1)
+   subtri0.set_side(node1,subnode,subtri1)
+   subtri1.set_side(subnode,node1,subtri0)
   end
   self
  end
@@ -201,12 +217,24 @@ class Triangle
 
   raise unless newtri0.set_side(newtri0.n0,newtri0.n1,newtri2)
   raise unless newtri0.set_side(newtri0.n0,newtri0.n2,newtri1)
+  neighbor = newtri0.side_with_nodes(newtri0.n1,newtri0.n2)
+  if neighbor.respond_to? :set_side
+   neighbor.set_side(newtri0.n2,newtri0.n1,newtri0)
+  end
 
   raise unless newtri1.set_side(newtri1.n1,newtri1.n0,newtri2)
   raise unless newtri1.set_side(newtri1.n1,newtri1.n2,newtri0)
+  neighbor = newtri1.side_with_nodes(newtri1.n2,newtri1.n0)
+  if neighbor.respond_to? :set_side
+   neighbor.set_side(newtri1.n0,newtri1.n2,newtri1)
+  end
 
   raise unless newtri2.set_side(newtri2.n2,newtri2.n0,newtri1)
   raise unless newtri2.set_side(newtri2.n2,newtri2.n1,newtri0)
+  neighbor = newtri2.side_with_nodes(newtri2.n0,newtri2.n1)
+  if neighbor.respond_to? :set_side
+   neighbor.set_side(newtri2.n1,newtri2.n0,newtri2)
+  end
 
   self
  end
@@ -242,41 +270,16 @@ class Triangle
  def swap_side(node0,node1)
   subtri0 = find_subtri_with( node0, node1)
   subtri1 = find_subtri_with( node1, node0)
-  
+
+  unless subtri0 == subtri1.side_with_nodes(node1,node0)
+   puts "#{node0.v} #{node0.w}"
+   puts "#{node1.v} #{node1.w}"
    eps
-
-  unless  ( subtri1 == subtri0.side_with_nodes(node0,node1) &&
-            subtri0 == subtri1.side_with_nodes(node1,node0) )
-   puts
-   puts node0.v,node0.w
-   puts node1.v,node1.w
-puts
-   puts subtri0
-   puts subtri1
-   puts subtri1.side_with_nodes(node1,node0)
-   puts subtri0.side_with_nodes(node0,node1)
-puts
-   puts @subtris
-puts
-   puts subtri0.physical_geometry
-puts
-   puts subtri1.physical_geometry
-puts
-   puts subtri1.side_with_nodes(node1,node0).physical_geometry
-puts
-   puts subtri0.side_with_nodes(node0,node1).physical_geometry
-puts
-   @subtris.each do |s|
-    puts
-    puts s.s0
-    puts s.s1
-    puts s.s2
-   end
   end
-
 
   raise "no swap side0" unless subtri1 == subtri0.side_with_nodes(node0,node1)
   raise "no swap side1" unless subtri0 == subtri1.side_with_nodes(node1,node0)
+
   n0, n1, n2 = subtri0.orient(node0)
   node2 = n2
   n0, n1, n2 = subtri1.orient(node1)

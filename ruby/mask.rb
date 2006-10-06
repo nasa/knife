@@ -61,18 +61,11 @@ class Mask
  end
 
  def paint_subtri(subtri)
-  return self if subtri.nil?
   activate(subtri)
-  paint_edge(subtri.n2,subtri.n1) if subtri.s0.nil?
-  paint_edge(subtri.n0,subtri.n2) if subtri.s1.nil?
-  paint_edge(subtri.n1,subtri.n0) if subtri.s2.nil?
+  paint_subtri(subtri.s0) if ( subtri.s0.is_a?(Subtri) && !active?(subtri.s0) )
+  paint_subtri(subtri.s1) if ( subtri.s1.is_a?(Subtri) && !active?(subtri.s1) )
+  paint_subtri(subtri.s2) if ( subtri.s2.is_a?(Subtri) && !active?(subtri.s2) )
   self
- end
-
- def paint_edge(n0,n1)
-  subtri = find_subtri_with(n0,n1)
-  return self if active?(subtri)
-  paint_subtri(subtri)
  end
 
  def uniquely_mark(starting_index)

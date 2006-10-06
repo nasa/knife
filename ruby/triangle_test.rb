@@ -194,6 +194,28 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal @segment2,            @triangle.subtris[2].s2
  end
 
+ def test_add_subnode_into_subtri_side_and_interior
+  sidenode = Node.new(0.5,0.0,0.0)
+  sidesubnode = Subnode.new(0.5,0.5,0.0,sidenode)
+  @triangle.insert_subnode_into_subtri_side(sidesubnode,
+                                            @triangle.subnodes[0],
+                                            @triangle.subnodes[1])
+
+  centernode = Node.new(0.5,0.0,0.0)
+  centersubnode = Subnode.new(0.2,0.6,0.2,centernode)
+  target = @triangle.enclosing_subtri(centersubnode)[0]
+  @triangle.insert_subnode_into_subtri_interior(centersubnode,target)
+
+  locatornode = Node.new(0.5,0.0,0.0)
+  locatorsubnode = Subnode.new(0.6,0.2,0.2,locatornode)
+  locator0 = @triangle.enclosing_subtri(locatorsubnode)[0]
+
+  locatornode = Node.new(0.5,0.0,0.0)
+  locatorsubnode = Subnode.new(0.3,0.5,0.2,locatornode)
+  locator1 = @triangle.enclosing_subtri(locatorsubnode)[0]
+
+  assert_equal locator1, locator0.s0
+ end
 
  def test_find_subtri_with
   assert_nil @triangle.find_subtri_with(@triangle.subnodes[1],

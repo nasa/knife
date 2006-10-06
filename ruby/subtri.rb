@@ -77,36 +77,66 @@ class Subtri
  end
 
  def split_side_with(newnode,node0,node1)
+
   if ( (node0 == n0 && node1 == n1) || (node1 == n0 && node0 == n1) )
    subtri = dup
+
    subtri.n1 = newnode
-   @n0 = newnode
-   set_side(newnode,@n2,subtri)
-   subtri.set_side(@n2,newnode,self)
+   self.n0 = newnode
+
+   set_side(newnode,self.n2,subtri)
+   subtri.set_side(self.n2,newnode,self)
+
+   neighbor = subtri.side_with_nodes(subtri.n0,subtri.n2)
+   if neighbor.respond_to? :set_side
+    neighbor.set_side(subtri.n0,subtri.n2,subtri)
+   end
+
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
+
    return subtri
   end
+
   if ( (node0 == n1 && node1 == n2) || (node1 == n1 && node0 == n2) )
    subtri = dup
+
    subtri.n2 = newnode
-   @n1 = newnode
-   set_side(newnode,@n0,subtri)
-   subtri.set_side(@n0,newnode,self)
+   self.n1 = newnode
+
+   set_side(newnode,self.n0,subtri)
+   subtri.set_side(self.n0,newnode,self)
+
+   neighbor = subtri.side_with_nodes(subtri.n1,subtri.n0)
+   if neighbor.respond_to? :set_side
+    neighbor.set_side(subtri.n1,subtri.n0,subtri) 
+   end
+
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
+
    return subtri
   end
+
   if ( (node0 == n2 && node1 == n0) || (node1 == n2 && node0 == n0) )
    subtri = dup
+
    subtri.n0 = newnode
-   @n2 = newnode
-   set_side(newnode,@n1,subtri)
-   subtri.set_side(newnode,@n1,self)
+   self.n2 = newnode
+
+   set_side(newnode,self.n1,subtri)
+   subtri.set_side(newnode,self.n1,self)
+
+   neighbor = subtri.side_with_nodes(subtri.n2,subtri.n1)
+   if neighbor.respond_to? :set_side
+    neighbor.set_side(subtri.n2,subtri.n1,subtri)
+   end
+
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
    return subtri
   end
+
   return nil
  end
 
