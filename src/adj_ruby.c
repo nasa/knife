@@ -4,98 +4,66 @@
 
 #define GET_ADJ_FROM_SELF Adj *adj; Data_Get_Struct( self, Adj, adj );
 
-static void adj_free( void *adj )
+static void this_free( void *adj )
 {
-  adjFree( adj );
+  adj_free( adj );
 }
 
-VALUE adj_new( VALUE class, VALUE nnode, VALUE nadj, VALUE chunkSize )
+static VALUE new( VALUE class, VALUE nnode, VALUE nadj, VALUE chunk_size )
 {
   Adj *adj;
   VALUE obj;
-  adj = adjCreate( NUM2INT(nnode), NUM2INT(nadj), NUM2INT(chunkSize) );
-  obj = Data_Wrap_Struct( class, 0, adj_free, adj );
+  adj = adj_create( NUM2INT(nnode), NUM2INT(nadj), NUM2INT(chunk_size) );
+  obj = Data_Wrap_Struct( class, 0, this_free, adj );
   return obj;
 }
 
-VALUE adj_nnode( VALUE self )
+static VALUE nnode( VALUE self )
 {
   GET_ADJ_FROM_SELF;
-  return INT2NUM( adjNNode(adj) );
+  return INT2NUM( adj_nnode(adj) );
 }
 
-VALUE adj_nadj( VALUE self )
+static VALUE nadj( VALUE self )
 {
   GET_ADJ_FROM_SELF;
-  return INT2NUM( adjNAdj(adj) );
+  return INT2NUM( adj_nadj(adj) );
 }
 
-VALUE adj_chunkSize( VALUE self )
+static VALUE chunk_size( VALUE self )
 {
   GET_ADJ_FROM_SELF;
-  return INT2NUM( adjChunkSize(adj) );
+  return INT2NUM( adj_chunk_size(adj) );
 }
 
-VALUE adj_realloc( VALUE self, VALUE nnode )
+static VALUE resize( VALUE self, VALUE nnode )
 {
   GET_ADJ_FROM_SELF;
-  return (adjRealloc( adj, NUM2INT(nnode) )==NULL?Qnil:self);
+  return (adj_resize( adj, NUM2INT(nnode) )==NULL?Qnil:self);
 }
 
-VALUE adj_register( VALUE self, VALUE node, VALUE item )
+static VALUE add( VALUE self, VALUE node, VALUE item )
 {
   GET_ADJ_FROM_SELF;
-  return (adjRegister( adj, NUM2INT(node), NUM2INT(item) )==NULL?Qnil:self);
+  return (adj_add( adj, NUM2INT(node), NUM2INT(item) )==NULL?Qnil:self);
 }
 
-VALUE adj_remove( VALUE self, VALUE node, VALUE item )
+static VALUE this_remove( VALUE self, VALUE node, VALUE item )
 {
   GET_ADJ_FROM_SELF;
-  return ( adjRemove( adj, NUM2INT(node), NUM2INT(item) )==NULL?Qnil:self );
+  return ( adj_remove( adj, NUM2INT(node), NUM2INT(item) )==NULL?Qnil:self );
 }
 
-VALUE adj_valid( VALUE self )
+static VALUE exists( VALUE self, VALUE node, VALUE item )
 {
   GET_ADJ_FROM_SELF;
-  return (adjValid(adjGetCurrent(adj))?Qtrue:Qfalse);
+  return( adj_exists( adj, NUM2INT(node), NUM2INT(item) )?Qtrue:Qfalse );
 }
 
-VALUE adj_more( VALUE self )
+static VALUE degree( VALUE self, VALUE node )
 {
   GET_ADJ_FROM_SELF;
-  return (adjMore(adjGetCurrent(adj))?Qtrue:Qfalse);
-}
-
-VALUE adj_first( VALUE self, VALUE node )
-{
-  GET_ADJ_FROM_SELF;
-  adjSetCurrent( adj, adjFirst(adj, NUM2INT(node)) );
-  return self;
-}
-
-VALUE adj_item( VALUE self )
-{
-  GET_ADJ_FROM_SELF;
-  return INT2NUM( adjItem(adjGetCurrent(adj)) );
-}
-
-VALUE adj_next( VALUE self )
-{
-  GET_ADJ_FROM_SELF;
-  adjSetCurrent(adj,adjNext(adjGetCurrent(adj)));
-  return self;
-}
-
-VALUE adj_exists( VALUE self, VALUE node, VALUE item )
-{
-  GET_ADJ_FROM_SELF;
-  return( adjExists( adj, NUM2INT(node), NUM2INT(item) )?Qtrue:Qfalse );
-}
-
-VALUE adj_degree( VALUE self, VALUE node )
-{
-  GET_ADJ_FROM_SELF;
-  return INT2NUM( adjDegree(adj, NUM2INT(node) ) );
+  return INT2NUM( adj_degree(adj, NUM2INT(node) ) );
 }
 
 VALUE cAdj;
@@ -103,18 +71,13 @@ VALUE cAdj;
 void Init_Adj() 
 {
   cAdj = rb_define_class( "Adj", rb_cObject );
-  rb_define_singleton_method( cAdj, "new", adj_new, 3 );
-  rb_define_method( cAdj, "nnode", adj_nnode, 0 );
-  rb_define_method( cAdj, "nadj", adj_nadj, 0 );
-  rb_define_method( cAdj, "chunkSize", adj_chunkSize, 0 );
-  rb_define_method( cAdj, "realloc", adj_realloc, 1 );
-  rb_define_method( cAdj, "register", adj_register, 2 );
-  rb_define_method( cAdj, "remove", adj_remove, 2 );
-  rb_define_method( cAdj, "valid", adj_valid, 0 );
-  rb_define_method( cAdj, "more", adj_more, 0 );
-  rb_define_method( cAdj, "first", adj_first, 1 );
-  rb_define_method( cAdj, "item", adj_item, 0);
-  rb_define_method( cAdj, "next", adj_next, 0);
-  rb_define_method( cAdj, "exists", adj_exists, 2 );
-  rb_define_method( cAdj, "degree", adj_degree, 1 );
+  rb_define_singleton_method( cAdj, "new", new, 3 );
+  rb_define_method( cAdj, "nnode", nnode, 0 );
+  rb_define_method( cAdj, "nadj", nadj, 0 );
+  rb_define_method( cAdj, "chunk_size", chunk_size, 0 );
+  rb_define_method( cAdj, "resize", resize, 1 );
+  rb_define_method( cAdj, "add", add, 2 );
+  rb_define_method( cAdj, "remove", this_remove, 2 );
+  rb_define_method( cAdj, "exists", exists, 2 );
+  rb_define_method( cAdj, "degree", degree, 1 );
 }

@@ -44,7 +44,7 @@ void adj_free( Adj *adj );
 
 Adj *adj_resize( Adj *adj, int nnode );
 
-Adj *adj_register( Adj *adj, int node, int item );
+Adj *adj_add( Adj *adj, int node, int item );
 Adj *adj_remove( Adj *adj, int node, int item );
 
 #define adj_valid(iterator) (iterator!=NULL)

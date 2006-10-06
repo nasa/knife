@@ -101,7 +101,7 @@ Adj *adj_resize( Adj *adj, int nnode )
   return adj;
 }
 
-Adj *adj_register( Adj *adj, int node, int item )
+Adj *adj_add( Adj *adj, int node, int item )
 {
   AdjItem *oldnode2item;
   AdjItem *oldfirst;
