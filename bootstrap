@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -x
+
+aclocal $ACLOCAL_FLAGS \
+&& automake --copy --gnu --add-missing \
+&& autoconf 

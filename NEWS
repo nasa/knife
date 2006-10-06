@@ -1,0 +1,214 @@
+
+Wed Jul 5, 2006: Released Refine 1.2.13
+
+For Tin-Chee. Fixed up INSTALL directions.
+
+Tue Jun 27, 2006: Released Refine 1.2.12
+
+For Pawel MSL RCS work on Columbia.  To include parallel bug fixes
+(prevent hanging nodes) while removing cells that can cause projection
+failures.
+
+Tue Mar 28, 2006: Released Refine 1.2.11
+
+FUN3D interface change: provides new gridparallelpreproject_
+to extract the distributed pre projection topology checks to
+a single function call to be called just before projection
+
+Rewound the aggressive adaptation to the old method that would only
+change one edge incident to a node per adaptation sweep. The aggressive
+method (use_a_plan) caused trouble for the sle case.
+
+Thu Feb 16, 2006: Released Refine 1.2.10
+
+Can now cache the current grid and map for linear interpolation of
+original map function. Continued with a Phased approach to
+adaptation, where the second phase is modify CAD faces only. A direct
+approach is tried with gridfacer. Made the production parallel
+adaptation use a plan to attack ever edge longer than one in metric
+(longest edge first) Created a tableau implementation of simplex
+method for linear programming to untangle mesh via Freitag untangling.
+Added methods to eradicate wedge and sliver cells. 
+Able to run le case 0.01 easily, 0.002 harder, 0.001 (250:1) with
+difficulty.
+
+Tue Nov 22, 2005: Released Refine 1.2.9
+
+Tried inserting boundary surface directly into grid to split domain
+into interior and exterior portions. (The exterior is discarded.) This
+line of resreach was discontuied after complexities with curved
+boundaries overwhelmed attempts.
+
+For curvilinear grids, started a main driver to make quadradic,
+meshes. Work extend to high-order still ongoing.
+
+Added a sorted priority to address worst elements first durring
+adpation (nicknamed a plan).
+
+Started a Phased approch to adaptation, where the first phase is
+modify CAD edges only. A direct approach is tried with gridedger.
+
+Thu Jul 28, 2005: Released Refine 1.2.8
+
+The grid insert methods gridSplitEdgeRatio and gridCollapseEdge
+interpolate and evaluate edge t, face uv, and xyz in a consistent
+manner. Modified gridcad simplex volume searches to use min jacobian
+determinates when gridCOST_CNST_VALID cost constraint active.
+gridCostValid gridmetric method consistantly checks cost constraints.
+Added logic to unit_main to make an invalid curved element mesh valid.
+Modifies the gridSwap, gridSmooth, gridAdaptLongShort to priorities
+operation to do ops on worst thing first.  With an update in the SDK
+(tagged version 1.1.5) modifed gridfiller gridSavePart to set
+consistant uvs to aviod projection issues.  Added tecplot cell and
+equator outputs to debug grid.  Worked on Valid curved quad element
+meshing.
+
+Tagging to test new direction for linear elements.
+
+FUN3D API change: gridsetcostconstraint_ and gridconstrainsurfacenode_
+added for valid meshing with flow solver (not parallelized yet)
+
+Thu Jun  2, 2005: Released Refine 1.2.7
+
+Snapshot after Toronto AIAA paper, before `valid' adaptation research.
+Improved the logic involved with smoothing on surface to allow its
+use in parallel.
+Included a check of geometry face parameter orientation of surface
+to fix a bug that scrambled surface nodes durring adaptation.
+Added a Face UV area constraint bit to cost constraints.
+Uses CADGeom_ResolveOnFace and CADGeom_ResolveOnEdge calls to safely update
+CAD parameters on the boundaries of faces and edges.
+Created a plan.c object to store list of entities to adapt.
+The plan list is created in parallel (during FUN3D runs) to
+reduce the time of seqential ghost updates.
+Allow border opertations in colors to speed up large 100+ processor runs.
+CAPRI verson 2 compatability added as #define's
+Reduced execution time of removing unused global nodes
+and cells by replacing order n^2 operation.
+Started work on validating invalid method.
+Changed edge split to use a ratio of two node locations not an explicit
+new node location.
+
+Tue Jan 31, 2005: Released Refine 1.2.6
+
+Split and collapse only project when the validity cost constraint is
+activated. Face swapping was added to parallel partition interiors.
+The OM6 example case runs.
+
+Tue Jan 31, 2005: Released Refine 1.2.5
+
+The -DSURFACE_VALIDITY path has been merged into the mainline code.
+Node smoothing hierarchy: edge nodes move to improve geometry edge
+lengths, surface nodes more to increase face mean ratio, and volume
+nodes move to improve volume.  Cost constraints (volume,validity) can
+be turned on and off with bitwise switches.  Adapted nodes are
+projected and new faces are added to correctly evaluate surface
+validity.  Fixed a parallel geom edge memory bug in
+gridSortNodeGridEx.  The OM6 example case runs two iterations, but
+generates surface grid cliffs due to projection durring adaptation.
+
+Tue Jan 25, 2005: Released Refine 1.2.4
+
+To save stable snapshot before merging the -DSURFACE_VALIDITY path
+into the mainline code.
+Continued unit mesh research into edge based adaptation and
+curved boundary Jacobian validity checks.
+
+Mon Oct 18, 2004: Released Refine 1.2.3
+
+Added a texinfo refine manual, refine/doc/refine.texi.
+Added extra check on collapse edge to prevent invalid connectivities.
+Added CAPRI2 compatibility to current CAPRI (CADGeom) routines (run
+./configure with --enable_CAPRI2 to activate).  Imposed limits on the
+minimum element quality allowed after a edge split or collapse.  Added
+functionality to untangle surfaces triangles in UV space.  Correctly
+handle adaptation on geometry that has been transformed in the
+SDK. Various FORTRAN API changes that require a compatible version
+of FUN3D. 
+
+Started on research into edge-based operator adaptation. Cost function
+for grid improvement is selectable with gridSetCostFunction.
+
+Wed Aug 17, 2004: Released Refine 1.2.2
+
+Fixed FAKEGeom.
+
+Wed Aug 17, 2004: Released Refine 1.2.1
+
+Removed all references to SDK UG_API and Goolache from the refine lib;
+you will only need to link to GEOLAB SDK CADGeom and MeatLib.  Added
+static versions of SGI n32 CADGeom+CAPRINative and MeatLib in
+geomSGIn32; see INSTALL for usage. Silenced reporting of CAD parameter
+mismatches on restart. Note that there is a bug in the recreation of
+CAPRI restarts that still needs to be fixed, but projecting points
+works for all geometries tested so far.  Limited the range of R
+(aspect ratio) to reduce the number of cases that the linear elasticity
+system goes unstable with Gauss-Seidel. Use springs if the linear
+elasticity system goes unstable. I have noticed an extra node or cell
+reported by the load balancing routine in FUN3D on rare occasions for
+large grids on may processors. I have not been able to isolate
+problem.
+
+Wed Aug  9, 2004: Released Refine 1.2.0
+
+Replaced obsolete SDK/Goolache/MeshMgr with SDK/UG_API methods.  The
+combination of removing cells from the mesh with two boundary triangles
+(gridRemoveTwoFaceCell), Simplex optimization of volume
+(gridRelaxNegativeCells), and existing edge swapping has been able to
+fix the few negative elements that result from linear elasticity grid
+movement to perform surface projection.
+
+Wed Jul 16, 2004: Released Refine 1.1.0
+
+Added linear elasticity grid movement
+SDK tagged DynLoader_MeshMgr_Used
+
+Wed Jul 13, 2004: Released Refine 1.0.0
+
+First public release. Use with FUN3D version 3.3.0
+
+Wed Jun 29, 2004: Released Refine 0.7.5
+
+Tag before going to new GeoSDK UG_API implementation.
+Continued work on parallel rebuild of GeoSDK restart info.
+
+Wed Jun  2, 2004: Released Refine 0.7.4
+
+gridmove and CAPRI(CADGeom) read work in parallel. Parallel node
+smoothing works for CAD and fake geometry. Fixed off-by-one numbering
+bug in FORTRAN interface gridfreezenode.
+
+Mon May  3, 2004: Released Refine 0.7.3
+
+Tagging before gridmpi:gridParallelEdgeCollapse extension.
+
+Thu Apr 20, 2004: Released Refine 0.7.2
+
+Tagging before queue refactor and gridmpi:gridApplayQueue speedup.
+
+Thu Apr 15, 2004: Released Refine 0.7.1
+
+Last version to use old pre-GeoBool tag on the SDK. Fixed more bugs in
+multiple normals for BWB case.
+
+Thu Apr 11, 2004: Released Refine 0.7.0
+
+refine now has parallel FORTRAN bindings for FUN3D(HEFSS) see
+HEFSS.rps/LibF90/refine_interface.f90 and refine/src/gridfortran.c.
+Added collision detection, variable normals, and multiple normals to
+advancing fronts. Harold Atkins added code to generate an Synthetic
+Jet Grid. Multiple normals (blends) are more general.
+
+Thu Jan 30, 2003: Released Refine 0.6
+
+MesherX makes viscous grids on a box, plate, and om6
+
+Thu Jan 15, 2003: Released Refine 0.5
+
+New MesherX library structure
+
+Thu Jan  9, 2003: Released Refine 0.4
+
+Now have advancing layers with inflation and can insert non-manifold
+edges on faces
+
