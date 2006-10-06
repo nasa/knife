@@ -15,9 +15,9 @@
 #include <stdio.h>
 #include "adj.h"
 
-static KNIFE_STATUS adj_allocate_and_init_node2item(Adj *adj);
+static KNIFE_STATUS adj_allocate_and_init_node2item(Adj);
 
-static KNIFE_STATUS adj_allocate_and_init_node2item(Adj *adj)
+static KNIFE_STATUS adj_allocate_and_init_node2item(Adj adj)
 {
   int i;
   adj->node2item = (AdjItem *)malloc( adj->nadj * sizeof(AdjItem));
@@ -38,12 +38,12 @@ static KNIFE_STATUS adj_allocate_and_init_node2item(Adj *adj)
   return(KNIFE_SUCCESS);
 }
 
-Adj* adj_create( int nnode, int nadj, int chunk_size )
+Adj adj_create( int nnode, int nadj, int chunk_size )
 {
   int node;
-  Adj *adj;
+  Adj adj;
   
-  adj = (Adj *)malloc( sizeof(Adj) );
+  adj = (Adj)malloc( sizeof(AdjStruct) );
   if (NULL == adj) {
     printf("%s: %d: malloc failed in adj_create\n",
 	   __FILE__,__LINE__);
@@ -70,7 +70,7 @@ Adj* adj_create( int nnode, int nadj, int chunk_size )
   return adj;
 }
 
-void adj_free( Adj *adj )
+void adj_free( Adj adj )
 {
   if ( NULL == adj ) return;
   free( adj->node2item );
@@ -78,7 +78,7 @@ void adj_free( Adj *adj )
   free( adj );
 }
 
-Adj *adj_resize( Adj *adj, int nnode )
+Adj adj_resize( Adj adj, int nnode )
 {
   AdjItem *remove;
   AdjItem **new_mem;
@@ -107,7 +107,7 @@ Adj *adj_resize( Adj *adj, int nnode )
   return adj;
 }
 
-Adj *adj_add( Adj *adj, int node, int item )
+Adj adj_add( Adj adj, int node, int item )
 {
   AdjItem *oldnode2item;
   AdjItem *oldfirst;
@@ -145,7 +145,7 @@ Adj *adj_add( Adj *adj, int node, int item )
   return adj;
 }
 
-Adj* adj_remove(Adj *adj, int node, int item)
+Adj adj_remove(Adj adj, int node, int item)
 {
   AdjIterator it;
   AdjItem  *remove, *previous;
@@ -177,7 +177,7 @@ Adj* adj_remove(Adj *adj, int node, int item)
   return adj;
 }
 
-KnifeBool adj_exists( Adj *adj, int node, int item )
+KnifeBool adj_exists( Adj adj, int node, int item )
 {
   AdjIterator it;
   KnifeBool exist;
@@ -189,7 +189,7 @@ KnifeBool adj_exists( Adj *adj, int node, int item )
   return exist;
 }
 
-int adj_degree(Adj *adj, int node )
+int adj_degree(Adj adj, int node )
 {
   AdjIterator it;
   int degree;
