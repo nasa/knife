@@ -81,8 +81,8 @@ class Subtri
    subtri = dup
    subtri.n1 = newnode
    @n0 = newnode
-   set_side(newnode,@n2)
-   subtri.set_side(newnode,subtri.n2)
+   set_side(newnode,@n2,subtri)
+   subtri.set_side(@n2,newnode,self)
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
    return subtri
@@ -91,8 +91,8 @@ class Subtri
    subtri = dup
    subtri.n2 = newnode
    @n1 = newnode
-   set_side(newnode,@n0)
-   subtri.set_side(newnode,subtri.n0)
+   set_side(newnode,@n0,subtri)
+   subtri.set_side(@n0,newnode,self)
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
    return subtri
@@ -101,8 +101,8 @@ class Subtri
    subtri = dup
    subtri.n0 = newnode
    @n2 = newnode
-   set_side(newnode,@n1)
-   subtri.set_side(newnode,subtri.n1)
+   set_side(newnode,@n1,subtri)
+   subtri.set_side(newnode,@n1,self)
    raise "split self" if 0 >= area
    raise "split subt" if 0 >= subtri.area
    return subtri

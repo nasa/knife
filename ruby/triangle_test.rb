@@ -113,16 +113,17 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal sidesubnode,           @triangle.subtris[0].n0
   assert_equal @triangle.subnodes[1], @triangle.subtris[0].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[0].n2
+
   assert_equal @triangle.subnodes[0], @triangle.subtris[1].n0
   assert_equal sidesubnode,           @triangle.subtris[1].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[1].n2
 
-  assert_equal @segment0, @triangle.subtris[0].s0
-  assert_nil              @triangle.subtris[0].s1
-  assert_equal @segment2, @triangle.subtris[0].s2
-  assert_nil              @triangle.subtris[1].s0
-  assert_equal @segment1, @triangle.subtris[1].s1
-  assert_equal @segment2, @triangle.subtris[1].s2
+  assert_equal @segment0,            @triangle.subtris[0].s0
+  assert_equal @triangle.subtris[1], @triangle.subtris[0].s1
+  assert_equal @segment2,            @triangle.subtris[0].s2
+  assert_equal @triangle.subtris[0], @triangle.subtris[1].s0
+  assert_equal @segment1,            @triangle.subtris[1].s1
+  assert_equal @segment2,            @triangle.subtris[1].s2
  end
 
  def test_add_subnode_into_subtri_side_twice
@@ -171,24 +172,26 @@ class TestTriangle < Test::Unit::TestCase
   assert_equal newsubnode,            @triangle.subtris[0].n0
   assert_equal @triangle.subnodes[1], @triangle.subtris[0].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[0].n2
+
   assert_equal @triangle.subnodes[0], @triangle.subtris[1].n0
   assert_equal newsubnode,            @triangle.subtris[1].n1
   assert_equal @triangle.subnodes[2], @triangle.subtris[1].n2
+
   assert_equal @triangle.subnodes[0], @triangle.subtris[2].n0
   assert_equal @triangle.subnodes[1], @triangle.subtris[2].n1
   assert_equal newsubnode,            @triangle.subtris[2].n2
 
-  assert_equal @segment0, @triangle.subtris[0].s0
-  assert_nil              @triangle.subtris[0].s1
-  assert_nil              @triangle.subtris[0].s2
+  assert_equal @segment0,            @triangle.subtris[0].s0
+  assert_equal @triangle.subtris[1], @triangle.subtris[0].s1
+  assert_equal @triangle.subtris[2], @triangle.subtris[0].s2
 
-  assert_nil              @triangle.subtris[1].s0
-  assert_equal @segment1, @triangle.subtris[1].s1
-  assert_nil              @triangle.subtris[1].s2
+  assert_equal @triangle.subtris[0], @triangle.subtris[1].s0
+  assert_equal @segment1,            @triangle.subtris[1].s1
+  assert_equal @triangle.subtris[2], @triangle.subtris[1].s2
 
-  assert_nil              @triangle.subtris[2].s0
-  assert_nil              @triangle.subtris[2].s1
-  assert_equal @segment2, @triangle.subtris[2].s2
+  assert_equal @triangle.subtris[0], @triangle.subtris[2].s0
+  assert_equal @triangle.subtris[1], @triangle.subtris[2].s1
+  assert_equal @segment2,            @triangle.subtris[2].s2
  end
 
 
