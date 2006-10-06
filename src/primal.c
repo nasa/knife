@@ -48,6 +48,51 @@ Primal primal_create(int nnode, int nface, int ncell)
   return primal;
 }
 
+Primal primal_from_FAST( char *filename )
+{
+  Primal primal;
+  int nnode, nface, ncell;
+  int i;
+  FILE *file;
+
+  file = fopen(filename,"r");
+  fscanf(file,"%d %d %d",&nnode,&nface,&ncell);
+  primal = primal_create( nnode, nface, ncell );
+
+  for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[0+3*i]));
+  for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[1+3*i]));
+  for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[2+3*i]));
+
+  for( i=0; i<nface ; i++ ) {
+    fscanf(file,"%d",&(primal->f2n[0+4*i]));
+    fscanf(file,"%d",&(primal->f2n[1+4*i]));
+    fscanf(file,"%d",&(primal->f2n[2+4*i]));
+    primal->f2n[0+4*i]--;
+    primal->f2n[1+4*i]--;
+    primal->f2n[2+4*i]--;
+  }
+
+  for( i=0; i<nface ; i++ ) {
+    fscanf(file,"%d",&(primal->f2n[3+4*i]));
+  }
+
+  for( i=0; i<ncell ; i++ ) {
+    fscanf(file,"%d",&(primal->c2n[0+4*i]));
+    fscanf(file,"%d",&(primal->c2n[1+4*i]));
+    fscanf(file,"%d",&(primal->c2n[2+4*i]));
+    fscanf(file,"%d",&(primal->c2n[3+4*i]));
+    primal->c2n[0+4*i]--;
+    primal->c2n[1+4*i]--;
+    primal->c2n[2+4*i]--;
+    primal->c2n[3+4*i]--;
+  }
+
+  fclose(file);
+
+  return primal;
+}
+
+
 void primal_free( Primal primal )
 {
   if ( NULL == primal ) return;
