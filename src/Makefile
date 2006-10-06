@@ -11,7 +11,7 @@ install:
 	( cd ../`uname` && $(MAKE) install )
 
 clean:
-	rm -rf Adj
+	rm -rf Adj Primal
 
 bu:
 	( cd .. && $(MAKE) bu )
