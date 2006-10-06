@@ -15,11 +15,12 @@
 #define PRIMAL_H
 
 #include "knife_definitions.h"
+#include "adj.h"
 
 BEGIN_C_DECLORATION
 
-typedef struct Primal Primal;
-struct Primal {
+typedef struct PrimalStruct PrimalStruct;
+struct PrimalStruct {
 
   int nnode;
   double *xyz;
@@ -30,8 +31,8 @@ struct Primal {
   int nface;
   int *f2n;
 
-  Adj *cellAdj;
-  Adj *faceAdj;
+  Adj cellAdj;
+  Adj faceAdj;
 
   int nedge;
   int *c2e;
@@ -42,12 +43,20 @@ struct Primal {
   int *t2n;
 
 };
+typedef PrimalStruct * Primal;
 
-Primal *primal_create( int nnode, int ncell, int nface );
+#define primal_test_malloc(ptr,fcn)		       \
+  if (NULL == (ptr)) {				       \
+    printf("%s: %d: malloc failed in %s\n",	       \
+	   __FILE__,__LINE__,(fcn));		       \
+    return NULL;				       \
+  }
+
+Primal primal_create( int nnode, int ncell, int nface );
 
 /* Primal *primal_from_FAST_file( char *filename ); */
 
-Primal *primal_free( Primal * );
+void primal_free( Primal );
 
 END_C_DECLORATION
 
