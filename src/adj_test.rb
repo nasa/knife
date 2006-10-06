@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 #
-# $Id$
-#
 # Mobility test for adj c lib
+#
+# $Id$
 
 Dir.chdir ENV['srcdir'] if ENV['srcdir']
 
 require 'RubyExtensionBuilder'
 
-RubyExtensionBuilder.new('Adj').build
+RubyExtensionBuilder.build('Adj')
 
 require 'test/unit'
 require 'Adj/Adj'
