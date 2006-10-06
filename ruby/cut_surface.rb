@@ -196,8 +196,15 @@ class CutSurface
   @triangles.each do |triangle|
    triangle.triangulate_cuts
    if triangle.min_subtri_area < 1.0e-15
+    puts "neg subtri area detected #{triangle.min_subtri_area}"
     triangle.eps
-    raise "negative cut surface subtri area #{triangle.min_subtri_area}"
+    triangle.swap!
+    triangle.eps
+    if triangle.min_subtri_area < 1.0e-15
+     raise "negative cut surface subtri area #{triangle.min_subtri_area}"
+    else
+     puts "corrected"
+    end
    end
   end
   self
