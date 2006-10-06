@@ -25,11 +25,11 @@ struct PrimalStruct {
   int nnode;
   double *xyz;
 
-  int ncell;
-  int *c2n;
-
   int nface;
   int *f2n;
+
+  int ncell;
+  int *c2n;
 
   Adj cell_adj;
   Adj face_adj;
@@ -52,11 +52,15 @@ typedef PrimalStruct * Primal;
     return NULL;				       \
   }
 
-Primal primal_create( int nnode, int ncell, int nface );
+Primal primal_create( int nnode, int nface, int ncell );
 
 /* Primal *primal_from_FAST_file( char *filename ); */
 
 void primal_free( Primal );
+
+#define primal_nnode(primal) (primal->nnode)
+#define primal_nface(primal) (primal->nface)
+#define primal_ncell(primal) (primal->ncell)
 
 END_C_DECLORATION
 
