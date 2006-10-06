@@ -18,11 +18,12 @@
 
 BEGIN_C_DECLORATION
 
-typedef struct Node Node;
-struct Node {
+typedef struct NodeStruct NodeStruct;
+struct NodeStruct {
   double x,y,z;
   int indx;
 };
+typedef NodeStruct * Node;
 
 END_C_DECLORATION
 
