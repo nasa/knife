@@ -9,7 +9,7 @@ libknife_a_SOURCES = \
 	knife_definitions.h \
 	adj.h adj.c \
 	primal.h primal.c \
-	node.h \
+	node.h node.c \
 	segment.h segment.c \
 	triangle.h triangle.c
 
