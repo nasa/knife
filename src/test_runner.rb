@@ -18,8 +18,10 @@ puts bar
 
 if failed.empty?
  puts "All tests passed." 
+ exit 0
 else
  puts "Failed tests:" 
  puts failed
+ exit 1
 end
 
