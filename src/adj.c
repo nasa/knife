@@ -43,7 +43,7 @@ Adj* adj_create( int nnode, int nadj, int chunk_size )
   int node;
   Adj *adj;
   
-  adj = malloc( sizeof(Adj) );
+  adj = (Adj *)malloc( sizeof(Adj) );
   if (NULL == adj) {
     printf("%s: %d: malloc failed in adj_create\n",
 	   __FILE__,__LINE__);

@@ -20,15 +20,17 @@ BEGIN_C_DECLORATION
 
 typedef struct Primal Primal;
 struct Primal {
+
   int nnode;
   double *xyz;
 
   int ncell;
   int *c2n;
-  Adj *cellAdj;
 
   int nface;
   int *f2n;
+
+  Adj *cellAdj;
   Adj *faceAdj;
 
   int nedge;
@@ -38,13 +40,14 @@ struct Primal {
   int ntri;
   int *c2t;
   int *t2n;
+
 };
 
-Primal *primal_create(int nnode, int ncell, int nface);
+Primal *primal_create( int nnode, int ncell, int nface );
 
 /* Primal *primal_from_FAST_file( char *filename ); */
 
-Primal *primal_free(Grid *g);
+Primal *primal_free( Primal * );
 
 END_C_DECLORATION
 
