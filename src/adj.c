@@ -44,6 +44,11 @@ Adj* adj_create( int nnode, int nadj, int chunk_size )
   Adj *adj;
   
   adj = malloc( sizeof(Adj) );
+  if (NULL == adj) {
+    printf("%s: %d: malloc failed in adj_create\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
 
   adj->nnode      = MAX(nnode,1);
   adj->nadj       = MAX(nadj,1);
