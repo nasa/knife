@@ -283,6 +283,16 @@ class Triangle
   side03 = subtri1.side_with_nodes(node0,node3)
   side13 = subtri1.side_with_nodes(node1,node3)
 
+  neighbor = subtri0.side_with_nodes(node2,node0)
+  if neighbor.respond_to? :set_side
+   neighbor.set_side(node0,node2,subtri1)
+  end
+
+  neighbor = subtri1.side_with_nodes(node3,node1)
+  if neighbor.respond_to? :set_side
+   neighbor.set_side(node1,node3,subtri0)
+  end
+
   subtri0.n0 = node1
   subtri0.n1 = node2
   subtri0.n2 = node3
