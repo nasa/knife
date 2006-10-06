@@ -31,8 +31,8 @@ struct PrimalStruct {
   int nface;
   int *f2n;
 
-  Adj cellAdj;
-  Adj faceAdj;
+  Adj cell_adj;
+  Adj face_adj;
 
   int nedge;
   int *c2e;
