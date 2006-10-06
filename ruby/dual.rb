@@ -301,6 +301,7 @@ class Dual
   start_time = Time.now
   mark_exterior
   puts "the exterior determination required #{Time.now-start_time} sec"
+  
 
   gc_pulse
 
@@ -367,6 +368,20 @@ class Dual
   @cut_poly.each do |poly|
    poly.mark_exterior
   end
+
+  present = 0
+  active = 0
+  @poly.each do |poly|
+   if !poly.nil?
+    present += 1
+    if poly.active
+     active += 1
+    end
+   end
+  end
+  inactive = present-active
+  puts "poly: present #{present} active #{active} inactive #{inactive} cut #{@cut_poly.size}"
+
   self
  end
 
