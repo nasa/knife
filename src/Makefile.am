@@ -10,7 +10,8 @@ libknife_a_SOURCES = \
 	adj.h adj.c \
 	primal.h primal.c \
 	node.h \
-	segment.h segment.c
+	segment.h segment.c \
+	triangle.h triangle.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -18,7 +19,8 @@ libknife_a_include_HEADERS = \
 	adj.h \
 	primal.h \
 	node.h \
-	segment.h
+	segment.h \
+	triangle.h
 
 bin_PROGRAMS = knife
 
