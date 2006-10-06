@@ -165,27 +165,32 @@ class Triangle
  end
 
  def set_subtri_side(node0, node1, new_side = nil)
-  raise "subtri side missing for set" unless ( find_subtri_with(node0,node1) || 
-                                               find_subtri_with(node1,node0) )
-  @subtris.each do |subtri|
-   subtri.set_side(node0,node1,new_side)
-  end
+  subtri0 = find_subtri_with(node0,node1)
+  subtri1 = find_subtri_with(node1,node0)
+  raise "subtri side missing for set" unless ( subtri0 || subtri1 )
+  subtri0.set_side(node0,node1,new_side) unless subtri0.nil?
+  subtri1.set_side(node1,node0,new_side) unless subtri1.nil?
   self
  end
 
  def insert_subnode_into_subtri_side(subnode,node0,node1)
-  raise "subtri side missing for ins" unless ( find_subtri_with(node0,node1) || 
-                                               find_subtri_with(node1,node0) )
-  added = 0
-  @subtris.each do |subtri|
-   newtri = subtri.split_side_with(subnode,node0,node1)
-   if newtri
-    @subtris << newtri
-    added += 1
-   end 
+  subtri0 = find_subtri_with(node0,node1)
+  subtri1 = find_subtri_with(node1,node0)
+  raise "subtri side missing for ins" unless ( subtri0 || subtri1  )
+  newtri0 = nil
+  unless subtri0.nil?
+   newtri0 = subtri0.split_side_with(subnode,node0,node1)
+   raise "split side0" if newtri0.nil?
+   @subtris << newtri0
   end
-  raise "#{added} added" unless ( 1 == added || 2 == added )
-  if 2 == added
+  newtri1 = nil
+  unless subtri1.nil?
+   newtri1 = subtri1.split_side_with(subnode,node1,node0)
+   raise "split side1" if newtri1.nil?
+   @subtris << newtri1
+  end
+
+  if ( newtri0 && newtri1 )
    subtri0 = find_subtri_with(node0,subnode)
    subtri1 = find_subtri_with(subnode,node0)
    subtri0.set_side(node0,subnode,subtri1)
