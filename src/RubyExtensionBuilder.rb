@@ -10,6 +10,7 @@ class RubyExtensionBuilder
  end
 
  def RubyExtensionBuilder.build extension
+  actual_build_of 'Adj' if 'Primal' == extension
   actual_build_of extension
  end
 
