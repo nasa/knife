@@ -24,3 +24,6 @@ knife_LDADD = libknife.a
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
 	adj_ruby.c adj_test.rb \
 	primal_ruby.c primal_test.rb
+
+TESTS = test_runner.rb
+
