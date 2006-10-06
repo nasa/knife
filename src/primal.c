@@ -15,31 +15,24 @@
 #include <stdio.h>
 #include "primal.h"
 
-#define primal_test_malloc(ptr,fcn)		       \
-  if (NULL == (void)(ptr)) {			       \
-    printf("%s: %d: malloc failed in %s\n",	       \
-	   __FILE__,__LINE__,(fcn));		       \
-    return NULL;				       \
-  }
-
-Primal primal_create(int nnode, int ncell, int nface);
+Primal primal_create(int nnode, int ncell, int nface)
 {
   Primal primal;
 
-  primal = malloc( sizeof(Adj) );
-  primal_test_malloc(primal,"primal_create");
+  primal = (Primal) malloc( sizeof(PrimalStruct) );
+  primal_test_malloc(primal->xyz,"primal_create primal");
 
   primal->nnode = nnode;
   primal->xyz = (double *)malloc(3 * MAX(primal->nnode,1) * sizeof(double));
   primal_test_malloc(primal->xyz,"primal_create xyz");
 
   primal->ncell = ncell;
-  primal->c2n = (int *)malloc(4 * MAX(grid->ncell,1) * sizeof(int));
+  primal->c2n = (int *)malloc(4 * MAX(primal->ncell,1) * sizeof(int));
   primal_test_malloc(primal->c2n,"primal_create c2n");
 
   primal->nface = nface;
-  primal->n2f = (int *)malloc(4 * MAX(grid->nface,1) * sizeof(int));
-  primal_test_malloc(primal->n2f,"primal_create f2n");
+  primal->f2n = (int *)malloc(4 * MAX(primal->nface,1) * sizeof(int));
+  primal_test_malloc(primal->f2n,"primal_create f2n");
 
   primal->cell_adj = adj_create( primal->nnode, primal->ncell, 1000 );
   primal->face_adj = adj_create( primal->nnode, primal->nface, 1000 );
@@ -47,7 +40,7 @@ Primal primal_create(int nnode, int ncell, int nface);
   return primal;
 }
 
-void primal_free( Primal *primal )
+void primal_free( Primal primal )
 {
   if ( NULL == primal ) return;
 
