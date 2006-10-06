@@ -270,12 +270,6 @@ class Triangle
   subtri0 = find_subtri_with( node0, node1)
   subtri1 = find_subtri_with( node1, node0)
 
-  unless subtri0 == subtri1.side_with_nodes(node1,node0)
-   puts "#{node0.v} #{node0.w}"
-   puts "#{node1.v} #{node1.w}"
-   eps
-  end
-
   raise "no swap side0" unless subtri1 == subtri0.side_with_nodes(node0,node1)
   raise "no swap side1" unless subtri0 == subtri1.side_with_nodes(node1,node0)
 
