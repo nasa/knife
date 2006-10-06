@@ -92,9 +92,6 @@ class Subtri
     neighbor.set_side(subtri.n0,subtri.n2,subtri)
    end
 
-   raise "split self" if 0 >= area
-   raise "split subt" if 0 >= subtri.area
-
    return subtri
   end
 
@@ -111,9 +108,6 @@ class Subtri
    if neighbor.respond_to? :set_side
     neighbor.set_side(subtri.n1,subtri.n0,subtri) 
    end
-
-   raise "split self" if 0 >= area
-   raise "split subt" if 0 >= subtri.area
 
    return subtri
   end
@@ -132,8 +126,6 @@ class Subtri
     neighbor.set_side(subtri.n2,subtri.n1,subtri)
    end
 
-   raise "split self" if 0 >= area
-   raise "split subt" if 0 >= subtri.area
    return subtri
   end
 
