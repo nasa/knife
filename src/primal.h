@@ -78,11 +78,11 @@ KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1,
 #define primal_face_side_node1(side) ((0==side)?2:(1==side)?0:(2==side)?1:EMPTY)
 
 /* 0, 0, 0, 1, 1, 2 */
-#define primal_cell_side_node0(side) \
-  ((3>side)?0:(5>side)?1:2)
+#define primal_cell_edge_node0(edge) \
+  ((3>edge)?0:(5>edge)?1:2)
 /* 1, 2, 3, 2, 3, 3 */
-#define primal_cell_side_node1(side) \
-  ((0==side)?1:(1==side)?2:(3==side)?2:3)
+#define primal_cell_edge_node1(edge) \
+  ((0==edge)?1:(1==edge)?2:(3==edge)?2:3)
 
 END_C_DECLORATION
 
