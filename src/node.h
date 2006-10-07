@@ -26,6 +26,7 @@ struct NodeStruct {
 typedef NodeStruct * Node;
 
 Node node_create( double x, double y, double z, int indx );
+void node_initialize( Node, double *xyz, int indx );
 
 #define node_x(node) ((node)->x)
 #define node_y(node) ((node)->y)

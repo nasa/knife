@@ -34,6 +34,14 @@ Node node_create(double x, double y, double z, int indx)
   return node;
 }
 
+void node_initialize( Node node, double *xyz, int indx )
+{  
+  node->x = xyz[0];
+  node->y = xyz[1];
+  node->z = xyz[2];
+  node->indx=indx;
+}
+
 void node_free( Node node )
 {
   if ( NULL == node ) return;
