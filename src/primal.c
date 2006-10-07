@@ -148,6 +148,7 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
 {
   int cell, edge;
   int nodes[4];
+  int edge_index, node0, node1;
 
   primal->c2e = (int *)malloc(6*primal_ncell(primal)*sizeof(int));
   for(cell=0;cell<6*primal_ncell(primal);cell++) primal->c2e[cell]= EMPTY;
@@ -167,6 +168,20 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
 	  }
     }
 
+  primal->e2n = (int *)malloc(2*primal->nedge*sizeof(int));
+  for(cell=0;cell<primal_ncell(primal);cell++)
+    {
+      primal_cell(primal, cell, nodes);
+      for(edge=0;edge<6;edge++)
+	{
+	  edge_index = primal->c2e[edge+6*cell];
+	  node0 = nodes[primal_cell_edge_node0(edge)];
+	  node1 = nodes[primal_cell_edge_node1(edge)];
+	  primal->e2n[0+2*edge_index] = MIN(node0,node1);
+	  primal->e2n[1+2*edge_index] = MAX(node0,node1);
+	}
+    }
+ 
   return KNIFE_SUCCESS;
 }
 
