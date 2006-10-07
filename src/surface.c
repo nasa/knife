@@ -23,7 +23,7 @@ Surface surface_from( Primal primal, Array bcs )
   int face[4], iface;
   KnifeBool include_face;
   int ibc, *bc;
-  int ntrinagle;
+  int ntriangle;
 
   surface = surface_create( );
   ntriangle = 0;
@@ -33,7 +33,7 @@ Surface surface_from( Primal primal, Array bcs )
       include_face = FALSE;
       for ( ibc = 0 ; ibc < array_size(bcs) ; ibc++ )
 	{
-	  bc = (int *)array_item(array, ibc);
+	  bc = (int *)array_item(bcs, ibc);
 	  if (face[3] == *bc) {
 	    include_face = TRUE;
 	  }

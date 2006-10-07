@@ -36,7 +36,7 @@ void array_free( Array );
 KNIFE_STATUS array_add( Array, ArrayItem );
 
 #define array_item( array,indx ) \
-  ((indx>=0 && indx < array->actual)?array->data[idex]:NULL)
+  ((indx>=0 && indx < array->actual)?array->data[indx]:NULL)
 
 END_C_DECLORATION
 
