@@ -123,13 +123,6 @@ Surface surface_from( Primal primal, Array bcs )
 
   printf("number of nodes in the surface %d\n",nnode);
 
-  surface = (Surface)malloc( sizeof(SurfaceStruct) );
-  if (NULL == surface) {
-    printf("%s: %d: malloc failed in surface_from\n",
-	   __FILE__,__LINE__);
-    return NULL; 
-  }
-
   nodes = (NodeStruct *) malloc( nnode * sizeof(NodeStruct));
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
     {
