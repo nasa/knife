@@ -24,15 +24,19 @@ Surface surface_from( Primal primal, Array bcs )
   int local_iface, global_iface;
   int local_nface;
   int other_global, other_local, other_side;
-  int *g2l, *l2g, *f2f;
+  int *face_g2l, *face_l2g, *f2f;
   int side, node0, node1;
   int nseg;
+  int nnode;
+  int *node_g2l;
+  int global_node;
+  int i;
 
   surface = surface_create( );
 
-  g2l = (int *)malloc( primal_nface(primal)*sizeof(int) );
+  face_g2l = (int *)malloc( primal_nface(primal)*sizeof(int) );
   for (global_iface=0;global_iface<primal_nface(primal);global_iface++) 
-    g2l[global_iface] = EMPTY;
+    face_g2l[global_iface] = EMPTY;
 
   local_nface = 0;
   for ( global_iface = 0 ; 
@@ -42,20 +46,20 @@ Surface surface_from( Primal primal, Array bcs )
       primal_face(primal, global_iface, face);
       if (array_contains_int(bcs,face[3])) 
 	{
-	  g2l[global_iface] = local_nface;
+	  face_g2l[global_iface] = local_nface;
 	  local_nface++;
 	}
     }
 
   printf("number of triangular faces in the surface %d\n",local_nface);
 
-  l2g = (int *)malloc( local_nface*sizeof(int) );
+  face_l2g = (int *)malloc( local_nface*sizeof(int) );
   for (global_iface=0;
        global_iface<primal_nface(primal);
        global_iface++)
     { 
-      local_iface = g2l[global_iface];
-      if (EMPTY != local_iface) l2g[local_iface] = global_iface;
+      local_iface = face_g2l[global_iface];
+      if (EMPTY != local_iface) face_l2g[local_iface] = global_iface;
     }
   
   f2f = (int *)malloc( 3*local_nface*sizeof(int) );
@@ -70,7 +74,7 @@ Surface surface_from( Primal primal, Array bcs )
   nseg = 0;
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
-      global_iface = l2g[local_iface]; 
+      global_iface = face_l2g[local_iface]; 
       primal_face(primal, global_iface, face);
       for ( side = 0 ; side<3; side++ )
 	if (EMPTY == f2f[side+3*local_iface])
@@ -83,7 +87,7 @@ Surface surface_from( Primal primal, Array bcs )
 						       &other_global, 
 						       &other_side)) 
 	      {
-		other_local = g2l[other_global];
+		other_local = face_g2l[other_global];
 		if (EMPTY != other_local)
 		  f2f[other_side+3*other_local] = nseg;
 	      }
@@ -94,9 +98,29 @@ Surface surface_from( Primal primal, Array bcs )
 
   printf("number of segments in the surface %d\n",nseg);
 
-  free(l2g);
-  free(g2l);
+  node_g2l = (int *)malloc( primal_nnode(primal)*sizeof(int) );
+  for (global_node=0;global_node<primal_nnode(primal);global_node++) 
+    node_g2l[global_node] = EMPTY;
+
+  nnode = 0;
+  for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
+    {
+      global_iface = face_l2g[local_iface];
+      primal_face(primal, global_iface, face);
+      for (i=0;i<3;i++)
+	if (EMPTY == node_g2l[face[i]]) 
+	  {
+	    node_g2l[face[i]] = nnode;
+	    nnode++;
+	  }
+    }
+
+  printf("number of nodes in the surface %d\n",nnode);
+
+  free(face_l2g);
+  free(face_g2l);
   free(f2f);
+  free(node_g2l);
 
   return surface;
 }
