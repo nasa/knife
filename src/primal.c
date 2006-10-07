@@ -96,6 +96,9 @@ Primal primal_from_FAST( char *filename )
 
   fclose(file);
 
+  primal_establish_c2e(primal);
+  primal_establish_c2t(primal);
+
   return primal;
 }
 
@@ -135,11 +138,11 @@ static void primal_set_cell_edge( Primal primal,
     {
       primal_cell(primal, adj_item(it), nodes);
       for ( edge = 0 ; edge < 6; edge++ )
-	if ( ( node0 == nodes[primal_face_side_node0(edge)] &&
-	       node1 == nodes[primal_face_side_node1(edge)] )  ||
-	     ( node1 == nodes[primal_face_side_node0(edge)] &&
-	       node0 == nodes[primal_face_side_node1(edge)] ) )
-	  primal->c2e[adj_item(it)] = indx;
+	if ( ( node0 == nodes[primal_cell_edge_node0(edge)] &&
+	       node1 == nodes[primal_cell_edge_node1(edge)] )  ||
+	     ( node1 == nodes[primal_cell_edge_node0(edge)] &&
+	       node0 == nodes[primal_cell_edge_node1(edge)] ) )
+	  primal->c2e[edge+6*adj_item(it)] = indx;
     }
 
 }
@@ -273,10 +276,10 @@ KNIFE_STATUS primal_cell( Primal primal, int cell_index, int *cell)
   if (cell_index < 0 || cell_index >= primal_ncell(primal) ) 
     return KNIFE_ARRAY_BOUND;
 
-  cell[0] = primal->f2n[0+4*cell_index];
-  cell[1] = primal->f2n[1+4*cell_index];
-  cell[2] = primal->f2n[2+4*cell_index];
-  cell[3] = primal->f2n[3+4*cell_index];
+  cell[0] = primal->c2n[0+4*cell_index];
+  cell[1] = primal->c2n[1+4*cell_index];
+  cell[2] = primal->c2n[2+4*cell_index];
+  cell[3] = primal->c2n[3+4*cell_index];
 
   return KNIFE_SUCCESS;
 }
