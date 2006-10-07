@@ -71,6 +71,8 @@ KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz);
 /* face[4] : face[0-2] face node indexes, face[3] boundary group id  */
 KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
 
+KNIFE_STATUS primal_cell( Primal, int cell_index, int *nodes); 
+
 KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1, 
 				    int *other_face_index, int *other_side ); 
 

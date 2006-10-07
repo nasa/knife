@@ -119,9 +119,37 @@ void primal_free( Primal primal )
   free( primal );
 }
 
-KNIFE_STATUS primal_establish_c2e( Primal primal )
+static void primal_set_edge( Primal primal, int node0, int node1, int indx);
+
+static void primal_set_edge( Primal primal, int node0, int node1, int indx)
 {
   
+}
+
+KNIFE_STATUS primal_establish_c2e( Primal primal )
+{
+  int cell, edge;
+  int nodes[4];
+
+  primal->c2e = (int *)malloc(6*primal_ncell(primal)*sizeof(int));
+  for(cell=0;cell<6*primal_ncell(primal);cell++) primal->c2e[cell]= EMPTY;
+
+  primal->nedge = 0;
+  for(cell=0;cell<primal_ncell(primal);cell++) 
+    {
+      primal_cell(primal, cell, nodes);
+      for(edge=0;edge<6;edge++)
+	if (EMPTY == primal->c2e[edge+6*cell])
+	  {
+	    primal_set_edge(primal, 
+			    nodes[primal_cell_edge_node0(edge)],
+			    nodes[primal_cell_edge_node1(edge)],
+			    primal->nedge);
+	    primal->nedge++;
+      
+	  }
+    }
+
   return KNIFE_SUCCESS;
 }
 
@@ -147,6 +175,19 @@ KNIFE_STATUS primal_face( Primal primal, int face_index, int *face)
   face[1] = primal->f2n[1+4*face_index];
   face[2] = primal->f2n[2+4*face_index];
   face[3] = primal->f2n[3+4*face_index];
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_cell( Primal primal, int cell_index, int *cell)
+{
+  if (cell_index < 0 || cell_index >= primal_ncell(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  cell[0] = primal->f2n[0+4*cell_index];
+  cell[1] = primal->f2n[1+4*cell_index];
+  cell[2] = primal->f2n[2+4*cell_index];
+  cell[3] = primal->f2n[3+4*cell_index];
 
   return KNIFE_SUCCESS;
 }
