@@ -3,6 +3,7 @@
 
 test: all
 	( cd ../cases/om6box && ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 )
+	( cd ../cases/big3d && ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
