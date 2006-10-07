@@ -21,17 +21,17 @@ Surface surface_from( Primal primal, Array bcs )
 {
   Surface surface;
   int face[4], iface;
-  int ntriangle;
+  int nface;
 
   surface = surface_create( );
-  ntriangle = 0;
+  nface = 0;
   for ( iface = 0 ; iface < primal_nface(primal) ; iface ++ )
     {
       primal_face(primal, iface, face);
-      if (array_contains_int(bcs,face[3])) ntriangle++;
+      if (array_contains_int(bcs,face[3])) nface++;
     }
 
-  printf("number of triangles in the surface %d\n",ntriangle);
+  printf("number of triangular faces in the surface %d\n",nface);
 
   return surface;
 }
