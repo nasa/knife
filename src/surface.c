@@ -30,6 +30,7 @@ Surface surface_from( Primal primal, Array bcs )
   for ( iface = 0 ; iface < primal_nface(primal) ; iface ++ )
     {
       primal_face(primal, iface, face);
+
       include_face = FALSE;
       for ( ibc = 0 ; ibc < array_size(bcs) ; ibc++ )
 	{
