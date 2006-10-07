@@ -112,3 +112,16 @@ void primal_free( Primal primal )
 
   free( primal );
 }
+
+KNIFE_STATUS primal_face( Primal primal, int face_index, int *face)
+{
+  if (face_index < 0 || face_index >= primal_nface(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  face[0] = primal->f2n[0+4*face_index];
+  face[1] = primal->f2n[1+4*face_index];
+  face[2] = primal->f2n[2+4*face_index];
+  face[3] = primal->f2n[3+4*face_index];
+
+  return KNIFE_SUCCESS;
+}

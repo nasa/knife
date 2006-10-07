@@ -63,6 +63,9 @@ void primal_free( Primal );
 #define primal_nface(primal) (primal->nface)
 #define primal_ncell(primal) (primal->ncell)
 
+/* face[4] : face[0-2] face node indexes, face[3] boundary group id  */
+KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
+
 END_C_DECLORATION
 
 #endif /* PRIMAL_H */

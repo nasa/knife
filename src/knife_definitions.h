@@ -46,9 +46,10 @@ typedef short KnifeBool;
 
 typedef int KNIFE_STATUS;
 
-#define KNIFE_SUCCESS (0)
-#define KNIFE_FAILURE (1)
-#define KNIFE_MEMORY  (2)
+#define KNIFE_SUCCESS     (0)
+#define KNIFE_FAILURE     (1)
+#define KNIFE_MEMORY      (2)
+#define KNIFE_ARRAY_BOUND (3)
 
 END_C_DECLORATION
 
