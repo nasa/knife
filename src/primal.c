@@ -185,6 +185,63 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_establish_c2t( Primal primal )
+{
+  int cell, side;
+  int nodes[4];
+  int tri_index;
+  int node0, node1, node2;
+  int other_cell, other_side;
+  int n0,n1,n2;
+
+  primal->c2t = (int *)malloc(4*primal_ncell(primal)*sizeof(int));
+  for(cell=0;cell<4*primal_ncell(primal);cell++) primal->c2t[cell]= EMPTY;
+
+  primal->ntri = 0;
+  for(cell=0;cell<primal_ncell(primal);cell++) 
+    {
+      primal_cell(primal, cell, nodes);
+      for(side=0;side<4;side++)
+	if (EMPTY == primal->c2t[side+4*cell])
+	  {
+	    primal->c2t[side+4*cell] = primal->ntri;
+	    node0 = nodes[primal_cell_side_node0(side)];
+            node1 = nodes[primal_cell_side_node1(side)];
+            node2 = nodes[primal_cell_side_node2(side)];
+            if (KNIFE_SUCCESS == primal_find_cell_side(primal,
+                                                       node1, node0, node2,
+                                                       &other_cell,
+                                                       &other_side))
+              {
+                if (EMPTY != other_cell)
+                  primal->c2t[other_side+4*other_cell] = primal->ntri;
+              }
+
+	    primal->ntri++;
+	  }
+    }
+
+  primal->t2n = (int *)malloc(3*primal->ntri*sizeof(int));
+  for(cell=0;cell<primal_ncell(primal);cell++)
+    {
+      primal_cell(primal, cell, nodes);
+      for(side=0;side<4;side++)
+	{
+	  tri_index = primal->c2t[side+4*cell];
+	  n0 = nodes[primal_cell_side_node0(side)];
+	  n1 = nodes[primal_cell_side_node1(side)];
+	  n2 = nodes[primal_cell_side_node1(side)];
+	  node0 = MIN(MIN(n0,n1),n2);
+	  node2 = MAX(MAX(n0,n1),n2);
+	  node1 = n0+n1+n2-node0-node2;
+	  primal->t2n[0+3*tri_index] = node0;
+	  primal->t2n[1+3*tri_index] = node1;
+	  primal->t2n[2+3*tri_index] = node2;
+	}
+    }
+ 
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS primal_xyz( Primal primal, int node_index, double *xyz)
 {
