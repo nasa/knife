@@ -36,6 +36,7 @@ Surface surface_from( Primal primal, Array bcs )
   int *s2n;
   SegmentStruct * segments;
   int segment_index;
+  TriangleStruct * triangles;
 
   face_g2l = (int *)malloc( primal_nface(primal)*sizeof(int) );
   for (global_iface=0;global_iface<primal_nface(primal);global_iface++) 
@@ -163,6 +164,15 @@ Surface surface_from( Primal primal, Array bcs )
 
   free(s2n);
   
+  triangles = (TriangleStruct *) malloc( local_nface * sizeof(TriangleStruct));
+  for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
+    {
+      triangle_initialize( &(triangles[local_iface]),
+			   &(segments[f2s[0+3*local_iface]]),
+			   &(segments[f2s[1+3*local_iface]]),
+			   &(segments[f2s[2+3*local_iface]]) );
+    }
+
   free(face_l2g);
   free(face_g2l);
   free(f2s);
