@@ -28,6 +28,10 @@ struct TriangleStruct {
 typedef TriangleStruct * Triangle;
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2);
+KNIFE_STATUS triangle_initialize(Triangle,
+				 Segment segment0, 
+				 Segment segment1, 
+				 Segment segment2);
 void triangle_free( Triangle );
 
 END_C_DECLORATION
