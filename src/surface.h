@@ -1,5 +1,5 @@
 
-/* collection of segments and triangles to define a surface */
+/* collection of segments and triangles defining a surface */
 
 /* $Id$ */
 
@@ -15,9 +15,8 @@
 #define SURFACE_H
 
 #include "knife_definitions.h"
+#include "array.h"
 #include "primal.h"
-#include "segment.h"
-#include "triangle.h"
 
 BEGIN_C_DECLORATION
 
@@ -28,7 +27,10 @@ struct SurfaceStruct {
 };
 typedef SurfaceStruct * Surface;
 
-Surface surface_from( Primal primal );
+Surface surface_from( Primal, Array of_bcs );
+
+Surface surface_create( void );
+void surface_free( Surface );
 
 END_C_DECLORATION
 
