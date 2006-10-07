@@ -16,11 +16,11 @@
 #include "array.h"
 
 
-Array array_from( ArrayItem *data, int size );
+Array array_from( ArrayItem *data, int size )
 {
   Array array;
   
-  array = (Array)malloc( sizeof(ArrayStruct) );
+  array = (Array) malloc( sizeof(ArrayStruct) );
   if (NULL == array) {
     printf("%s: %d: malloc failed in array_from\n",
 	   __FILE__,__LINE__);
@@ -31,7 +31,7 @@ Array array_from( ArrayItem *data, int size );
   array->allocated  = size;
   array->chunk      = 1000;
        
-  array->data = data
+  array->data = data;
 
   return array;
 }

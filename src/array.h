@@ -28,6 +28,7 @@ struct ArrayStruct {
 typedef ArrayStruct * Array;
 
 
+Array array_from( ArrayItem *data, int size );
 Array array_create( int guess, int chunk );
 void array_free( Array );
 
