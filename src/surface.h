@@ -17,19 +17,22 @@
 #include "knife_definitions.h"
 #include "array.h"
 #include "primal.h"
+#include "segment.h"
+#include "triangle.h"
 
 BEGIN_C_DECLORATION
 
 typedef struct SurfaceStruct SurfaceStruct;
 struct SurfaceStruct {
-  Array segments;
-  Array triangles;
+  int nsegment;
+  SegmentStruct *segments;
+  int ntriangle;
+  TriangleStruct *triangles;
 };
 typedef SurfaceStruct * Surface;
 
 Surface surface_from( Primal, Array of_bcs );
 
-Surface surface_create( void );
 void surface_free( Surface );
 
 END_C_DECLORATION

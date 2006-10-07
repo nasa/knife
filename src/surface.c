@@ -14,8 +14,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "surface.h"
-#include "segment.h"
-#include "triangle.h"
 
 Surface surface_from( Primal primal, Array bcs )
 {
@@ -26,7 +24,6 @@ Surface surface_from( Primal primal, Array bcs )
   int other_global, other_local, other_side;
   int *face_g2l, *face_l2g, *f2s;
   int side, node0, node1;
-  int nseg;
   int nnode;
   int *node_g2l;
   int local_node, global_node;
@@ -34,9 +31,14 @@ Surface surface_from( Primal primal, Array bcs )
   double xyz[3];
   NodeStruct *nodes;
   int *s2n;
-  SegmentStruct * segments;
   int segment_index;
-  TriangleStruct * triangles;
+
+  surface = (Surface)malloc( sizeof(SurfaceStruct) );
+  if (NULL == surface) {
+    printf("%s: %d: malloc failed in surface_from\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
 
   face_g2l = (int *)malloc( primal_nface(primal)*sizeof(int) );
   for (global_iface=0;global_iface<primal_nface(primal);global_iface++) 
@@ -75,7 +77,7 @@ Surface surface_from( Primal primal, Array bcs )
       f2s[2+3*local_iface] = EMPTY;
     }
 
-  nseg = 0;
+  surface->nsegment = 0;
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
       global_iface = face_l2g[local_iface]; 
@@ -83,7 +85,7 @@ Surface surface_from( Primal primal, Array bcs )
       for ( side = 0 ; side<3; side++ )
 	if (EMPTY == f2s[side+3*local_iface])
 	  {
-	    f2s[side+3*local_iface] = nseg;
+	    f2s[side+3*local_iface] = surface->nsegment;
 	    node0 = face[primal_face_side_node0(side)];
 	    node1 = face[primal_face_side_node1(side)];
 	    if (KNIFE_SUCCESS == primal_find_face_side(primal, 
@@ -93,14 +95,14 @@ Surface surface_from( Primal primal, Array bcs )
 	      {
 		other_local = face_g2l[other_global];
 		if (EMPTY != other_local)
-		  f2s[other_side+3*other_local] = nseg;
+		  f2s[other_side+3*other_local] = surface->nsegment;
 	      }
 
-	    nseg++;
+	    surface->nsegment++;
 	  }
     }
 
-  printf("number of segments in the surface %d\n",nseg);
+  printf("number of segments in the surface %d\n",surface->nsegment);
 
   node_g2l = (int *)malloc( primal_nnode(primal)*sizeof(int) );
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
@@ -139,7 +141,7 @@ Surface surface_from( Primal primal, Array bcs )
 	}
     }
 
-  s2n = (int *) malloc( 2 * nseg * sizeof(int));
+  s2n = (int *) malloc( 2 * surface->nsegment * sizeof(int));
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
       global_iface = face_l2g[local_iface]; 
@@ -156,21 +158,24 @@ Surface surface_from( Primal primal, Array bcs )
 	}
     }
 
-  segments = (SegmentStruct *) malloc( nseg * sizeof(SegmentStruct));
-  for (segment_index=0;segment_index<nseg;segment_index++) 
-    segment_initialize( &(segments[segment_index]),
+  surface->segments = (SegmentStruct *) malloc( surface->nsegment * 
+				       sizeof(SegmentStruct) );
+  for (segment_index=0;segment_index<surface->nsegment;segment_index++) 
+    segment_initialize( &(surface->segments[segment_index]),
 			&(nodes[s2n[0+2*segment_index]]),
 			&(nodes[s2n[1+2*segment_index]]) );
 
   free(s2n);
   
-  triangles = (TriangleStruct *) malloc( local_nface * sizeof(TriangleStruct));
+  surface->ntriangle = local_nface;
+  surface->triangles = (TriangleStruct *) malloc( local_nface * 
+						  sizeof(TriangleStruct));
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
-      triangle_initialize( &(triangles[local_iface]),
-			   &(segments[f2s[0+3*local_iface]]),
-			   &(segments[f2s[1+3*local_iface]]),
-			   &(segments[f2s[2+3*local_iface]]) );
+      triangle_initialize( &(surface->triangles[local_iface]),
+			   &(surface->segments[f2s[0+3*local_iface]]),
+			   &(surface->segments[f2s[1+3*local_iface]]),
+			   &(surface->segments[f2s[2+3*local_iface]]) );
     }
 
   free(face_l2g);
@@ -181,27 +186,10 @@ Surface surface_from( Primal primal, Array bcs )
   return surface;
 }
 
-Surface surface_create( void )
-{
-  Surface surface;
-  
-  surface = (Surface)malloc( sizeof(SurfaceStruct) );
-  if (NULL == surface) {
-    printf("%s: %d: malloc failed in surface_create\n",
-	   __FILE__,__LINE__);
-    return NULL; 
-  }
-
-  surface->segments  = array_create( 50000, 50000);
-  surface->triangles = array_create( 50000, 50000);
-  
-  return surface;
-}
-
 void surface_free( Surface surface )
 {
   if ( NULL == surface ) return;
-  array_free( surface->segments );
-  array_free( surface->triangles );
+  free( surface->segments );
+  free( surface->triangles );
   free( surface );
 }
