@@ -70,6 +70,9 @@ Primal primal_from_FAST( char *filename )
     primal->f2n[0+4*i]--;
     primal->f2n[1+4*i]--;
     primal->f2n[2+4*i]--;
+    adj_add( primal->face_adj, primal->f2n[0+4*i], i);
+    adj_add( primal->face_adj, primal->f2n[1+4*i], i);
+    adj_add( primal->face_adj, primal->f2n[2+4*i], i);
   }
 
   for( i=0; i<nface ; i++ ) {
@@ -85,6 +88,10 @@ Primal primal_from_FAST( char *filename )
     primal->c2n[1+4*i]--;
     primal->c2n[2+4*i]--;
     primal->c2n[3+4*i]--;
+    adj_add( primal->cell_adj, primal->c2n[0+4*i], i);
+    adj_add( primal->cell_adj, primal->c2n[1+4*i], i);
+    adj_add( primal->cell_adj, primal->c2n[2+4*i], i);
+    adj_add( primal->cell_adj, primal->c2n[3+4*i], i);
   }
 
   fclose(file);
