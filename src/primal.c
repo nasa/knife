@@ -120,6 +120,18 @@ void primal_free( Primal primal )
   free( primal );
 }
 
+KNIFE_STATUS primal_xyz( Primal primal, int node_index, double *xyz)
+{
+  if (node_index < 0 || node_index >= primal_nnode(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  xyz[0] = primal->xyz[0+3*node_index];
+  xyz[1] = primal->xyz[1+3*node_index];
+  xyz[2] = primal->xyz[2+3*node_index];
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_face( Primal primal, int face_index, int *face)
 {
   if (face_index < 0 || face_index >= primal_nface(primal) ) 

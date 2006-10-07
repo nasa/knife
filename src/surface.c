@@ -29,10 +29,10 @@ Surface surface_from( Primal primal, Array bcs )
   int nseg;
   int nnode;
   int *node_g2l;
-  int global_node;
+  int local_node, global_node;
   int i;
-
-  surface = surface_create( );
+  double xyz[3];
+  NodeStruct *nodes;
 
   face_g2l = (int *)malloc( primal_nface(primal)*sizeof(int) );
   for (global_iface=0;global_iface<primal_nface(primal);global_iface++) 
@@ -116,6 +116,27 @@ Surface surface_from( Primal primal, Array bcs )
     }
 
   printf("number of nodes in the surface %d\n",nnode);
+
+  surface = (Surface)malloc( sizeof(SurfaceStruct) );
+  if (NULL == surface) {
+    printf("%s: %d: malloc failed in surface_from\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
+
+  surface->segments  = array_create( nseg, 1000);
+  surface->triangles = array_create( local_nface, 1000);
+
+  nodes = (NodeStruct *) malloc( nnode * sizeof(NodeStruct));
+  for (global_node=0;global_node<primal_nnode(primal);global_node++) 
+    {
+      local_node = node_g2l[global_node]; 
+      if ( EMPTY != local_node )
+	{
+	  primal_xyz(primal, global_node, xyz);
+	  node_initialize( &(nodes[local_node]), xyz, local_node );
+	}
+    }
 
   free(face_l2g);
   free(face_g2l);
