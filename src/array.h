@@ -38,6 +38,8 @@ KNIFE_STATUS array_add( Array, ArrayItem );
 #define array_item( array,indx ) \
   ((indx>=0 && indx < array->actual)?array->data[indx]:NULL)
 
+KnifeBool array_contains_int( Array, int traget );
+
 END_C_DECLORATION
 
 #endif /* ARRAY_H */

@@ -69,3 +69,13 @@ KNIFE_STATUS array_add( Array array, ArrayItem item )
   array->actual++;
   return KNIFE_SUCCESS;
 }
+
+KnifeBool array_contains_int( Array array, int target )
+{
+  int indx;
+
+  for ( indx = 0 ; indx < array_size(array) ; indx++ )
+    if (target == *((int *)array_item(array, indx))) return TRUE;
+ 
+  return FALSE;
+}

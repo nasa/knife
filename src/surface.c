@@ -21,8 +21,6 @@ Surface surface_from( Primal primal, Array bcs )
 {
   Surface surface;
   int face[4], iface;
-  KnifeBool include_face;
-  int ibc, *bc;
   int ntriangle;
 
   surface = surface_create( );
@@ -30,16 +28,7 @@ Surface surface_from( Primal primal, Array bcs )
   for ( iface = 0 ; iface < primal_nface(primal) ; iface ++ )
     {
       primal_face(primal, iface, face);
-
-      include_face = FALSE;
-      for ( ibc = 0 ; ibc < array_size(bcs) ; ibc++ )
-	{
-	  bc = (int *)array_item(bcs, ibc);
-	  if (face[3] == *bc) {
-	    include_face = TRUE;
-	  }
-	}
-      if (include_face) ntriangle++;
+      if (array_contains_int(bcs,face[3])) ntriangle++;
     }
 
   printf("number of triangles in the surface %d\n",ntriangle);
