@@ -99,7 +99,6 @@ Primal primal_from_FAST( char *filename )
   return primal;
 }
 
-
 void primal_free( Primal primal )
 {
   if ( NULL == primal ) return;
@@ -119,6 +118,13 @@ void primal_free( Primal primal )
 
   free( primal );
 }
+
+KNIFE_STATUS primal_establish_c2e( Primal primal )
+{
+  
+  return KNIFE_SUCCESS;
+}
+
 
 KNIFE_STATUS primal_xyz( Primal primal, int node_index, double *xyz)
 {
