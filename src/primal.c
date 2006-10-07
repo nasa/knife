@@ -119,11 +119,29 @@ void primal_free( Primal primal )
   free( primal );
 }
 
-static void primal_set_edge( Primal primal, int node0, int node1, int indx);
+static void primal_set_cell_edge( Primal primal, 
+				  int node0, int node1, int indx);
 
-static void primal_set_edge( Primal primal, int node0, int node1, int indx)
+static void primal_set_cell_edge( Primal primal, 
+				  int node0, int node1, int indx)
 {
-  
+  AdjIterator it;
+  int edge;
+  int nodes[4];
+
+  for ( it = adj_first(primal->cell_adj, node0);
+	adj_valid(it);
+	it = adj_next(it) )
+    {
+      primal_cell(primal, adj_item(it), nodes);
+      for ( edge = 0 ; edge < 6; edge++ )
+	if ( ( node0 == nodes[primal_face_side_node0(edge)] &&
+	       node1 == nodes[primal_face_side_node1(edge)] )  ||
+	     ( node1 == nodes[primal_face_side_node0(edge)] &&
+	       node0 == nodes[primal_face_side_node1(edge)] ) )
+	  primal->c2e[adj_item(it)] = indx;
+    }
+
 }
 
 KNIFE_STATUS primal_establish_c2e( Primal primal )
@@ -141,12 +159,11 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
       for(edge=0;edge<6;edge++)
 	if (EMPTY == primal->c2e[edge+6*cell])
 	  {
-	    primal_set_edge(primal, 
-			    nodes[primal_cell_edge_node0(edge)],
-			    nodes[primal_cell_edge_node1(edge)],
-			    primal->nedge);
+	    primal_set_cell_edge(primal, 
+				 nodes[primal_cell_edge_node0(edge)],
+				 nodes[primal_cell_edge_node1(edge)],
+				 primal->nedge);
 	    primal->nedge++;
-      
 	  }
     }
 
