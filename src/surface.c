@@ -20,7 +20,7 @@
 Surface surface_from( Primal primal, Array bcs )
 {
   Surface surface;
-  int face[4], iface;
+  int face[4];
   int local_iface, global_iface;
   int local_nface;
   int global_other, local_other, side;
@@ -38,7 +38,7 @@ Surface surface_from( Primal primal, Array bcs )
 	global_iface < primal_nface(primal) ; 
 	global_iface++ )
     {
-      primal_face(primal, iface, face);
+      primal_face(primal, global_iface, face);
       if (array_contains_int(bcs,face[3])) 
 	{
 	  g2l[global_iface] = local_nface;

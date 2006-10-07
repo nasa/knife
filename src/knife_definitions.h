@@ -50,6 +50,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_FAILURE     (1)
 #define KNIFE_MEMORY      (2)
 #define KNIFE_ARRAY_BOUND (3)
+#define KNIFE_NOT_FOUND   (4)
 
 END_C_DECLORATION
 

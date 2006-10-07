@@ -132,3 +132,28 @@ KNIFE_STATUS primal_face( Primal primal, int face_index, int *face)
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS primal_find_face_side( Primal primal, int node0, int node1,
+                                    int *other_face_index, int *other_side ) {
+  AdjIterator it;
+  int side;
+  int face[4];
+
+  for ( it = adj_first(primal->face_adj, node0);
+	adj_valid(it);
+	it = adj_next(it) )
+    {
+      primal_face(primal, adj_item(it), face);
+      for ( side = 0 ; side < 3; side++ )
+	{
+	  if ( node0 == face[primal_face_side_node0(side)] &&
+	       node1 == face[primal_face_side_node1(side)] )
+	    {
+	      *other_face_index = adj_item(it);
+	      *other_side = side;
+	      return KNIFE_SUCCESS;
+	    }
+	}
+    }
+  return KNIFE_NOT_FOUND;
+}

@@ -66,6 +66,12 @@ void primal_free( Primal );
 /* face[4] : face[0-2] face node indexes, face[3] boundary group id  */
 KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
 
+KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1, 
+				    int *other_face_index, int *other_side ); 
+
+#define primal_face_side_node0(side) ((0==side)?1:(1==side)?2:(2==side)?0:EMPTY)
+#define primal_face_side_node1(side) ((0==side)?2:(1==side)?0:(2==side)?1:EMPTY)
+
 END_C_DECLORATION
 
 #endif /* PRIMAL_H */
