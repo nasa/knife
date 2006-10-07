@@ -13,7 +13,8 @@ libknife_a_SOURCES = \
 	node.h node.c \
 	segment.h segment.c \
 	triangle.h triangle.c \
-	poly.h poly.c
+	poly.h poly.c \
+	surface.h surface.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -24,7 +25,8 @@ libknife_a_include_HEADERS = \
 	node.h \
 	segment.h \
 	triangle.h \
-	poly.h
+	poly.h \
+	surface.h
 
 bin_PROGRAMS = knife
 
