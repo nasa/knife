@@ -161,10 +161,8 @@ Surface surface_from( Primal primal, Array bcs )
 			&(nodes[s2n[0+2*segment_index]]),
 			&(nodes[s2n[1+2*segment_index]]) );
 
-
-      free(s2n);
+  free(s2n);
   
-
   free(face_l2g);
   free(face_g2l);
   free(f2s);
