@@ -14,14 +14,18 @@
 #include <stdio.h>
 #include <string.h>
 #include "knife_definitions.h"
+#include "array.h"
 
 int main( int argc, char *argv[] )
 {
   int argument;
 
   char surface_filename[1025];
+  Array active_bcs;
+  int *bc;
 
   sprintf( surface_filename, "not_set" );
+  active_bcs = array_create(10,10);
 
   argument = 1;
   while ( argument < argc )
@@ -30,6 +34,14 @@ int main( int argc, char *argv[] )
 	argument++; 
 	sprintf( surface_filename, "%s", argv[argument] );
 	printf("-s %s\n", surface_filename);
+      }
+
+      if( strcmp(argv[argument],"-b") == 0 ) {
+	argument++;
+	bc = (int *) malloc( sizeof(int) );
+	*bc = atoi(argv[argument]);
+	array_add( active_bcs, bc );
+	printf("-b %d\n", *bc );
       }
 
       argument++;
