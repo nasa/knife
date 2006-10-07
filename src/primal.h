@@ -64,6 +64,7 @@ void primal_free( Primal );
 #define primal_ncell(primal) (primal->ncell)
 
 KNIFE_STATUS primal_establish_c2e( Primal );
+KNIFE_STATUS primal_establish_c2t( Primal );
 
 /* xyz[3] */
 KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz); 
@@ -76,6 +77,9 @@ KNIFE_STATUS primal_cell( Primal, int cell_index, int *nodes);
 KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1, 
 				    int *other_face_index, int *other_side ); 
 
+KNIFE_STATUS primal_find_cell_side( Primal, int node0, int node1, int node2, 
+				    int *other_cell_index, int *other_side ); 
+
 #define primal_face_side_node0(side) ((0==side)?1:(1==side)?2:(2==side)?0:EMPTY)
 #define primal_face_side_node1(side) ((0==side)?2:(1==side)?0:(2==side)?1:EMPTY)
 
@@ -85,6 +89,10 @@ KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1,
 /* 1, 2, 3, 2, 3, 3 */
 #define primal_cell_edge_node1(edge) \
   ((0==edge)?1:(1==edge)?2:(3==edge)?2:3)
+
+#define primal_cell_side_node0(side) ((0==side)?1:(1==side)?0:(2==side)?0:0)
+#define primal_cell_side_node1(side) ((0==side)?3:(1==side)?2:(2==side)?3:1)
+#define primal_cell_side_node2(side) ((0==side)?2:(1==side)?3:(2==side)?1:2)
 
 END_C_DECLORATION
 
