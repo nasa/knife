@@ -15,6 +15,8 @@
 #include <string.h>
 #include "knife_definitions.h"
 #include "array.h"
+#include "primal.h"
+#include "surface.h"
 
 int main( int argc, char *argv[] )
 {
@@ -23,6 +25,8 @@ int main( int argc, char *argv[] )
   char surface_filename[1025];
   Array active_bcs;
   int *bc;
+  Primal primal;
+  Surface surface;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -46,6 +50,10 @@ int main( int argc, char *argv[] )
 
       argument++;
     }
+
+  primal = primal_from_FAST( surface_filename );
+  surface = surface_from( primal, active_bcs );
+
   return 0;
 }
 
