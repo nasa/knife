@@ -15,3 +15,7 @@ clean:
 
 bu:
 	( cd .. && $(MAKE) bu )
+
+test: all
+	( cd ../cases/om6box && ../../`uname`/src/knife -s om6.fastbc -b 1 -b 2 )
+
