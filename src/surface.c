@@ -23,8 +23,9 @@ Surface surface_from( Primal primal, Array bcs )
   int face[4];
   int local_iface, global_iface;
   int local_nface;
-  int global_other, local_other, side;
+  int other_global, other_local, other_side;
   int *g2l, *l2g, *f2f;
+  int side, node0, node1;
   int nseg;
 
   surface = surface_create( );
@@ -59,33 +60,39 @@ Surface surface_from( Primal primal, Array bcs )
   
   f2f = (int *)malloc( 3*local_nface*sizeof(int) );
 
-  for (local_iface=0;local_iface<3*local_nface;local_iface++) 
-    f2f[local_iface] = EMPTY;
+  for (local_iface=0;local_iface<local_nface;local_iface++) 
+    {
+      f2f[0+3*local_iface] = EMPTY;
+      f2f[1+3*local_iface] = EMPTY;
+      f2f[2+3*local_iface] = EMPTY;
+    }
 
   nseg = 0;
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
       global_iface = l2g[local_iface]; 
       primal_face(primal, global_iface, face);
-      if (EMPTY == f2f[0+3*local_iface])
-	{
-	  f2f[0+3*local_iface] = nseg;
-	  
-	  if (KNIFE_SUCCESS == primal_find_face_side(primal, 
-						     face[2], face[1], 
-						     &global_other, &side)) 
-	    {
-	      local_other = g2l[global_other];
-	      if (EMPTY == local_other) {
-		printf("%s: %d: surface_from f2f failure\n",__FILE__,__LINE__);
-		return NULL;
+      for ( side = 0 ; side<3; side++ )
+	if (EMPTY == f2f[side+3*local_iface])
+	  {
+	    f2f[side+3*local_iface] = nseg;
+	    node0 = face[primal_face_side_node0(side)];
+	    node1 = face[primal_face_side_node1(side)];
+	    if (KNIFE_SUCCESS == primal_find_face_side(primal, 
+						       node1, node0, 
+						       &other_global, 
+						       &other_side)) 
+	      {
+		other_local = g2l[other_global];
+		if (EMPTY != other_local)
+		  f2f[other_side+3*other_local] = nseg;
 	      }
-	      f2f[side+3*local_iface] = nseg;
-	    }
 
-	  nseg++;
-	}
+	    nseg++;
+	  }
     }
+
+  printf("number of segments in the surface %d\n",nseg);
 
   free(l2g);
   free(g2l);
