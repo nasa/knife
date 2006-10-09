@@ -38,6 +38,9 @@ void triangle_free( Triangle );
 #define triangle_xyz1(triangle) (node_xyz((triangle)->node1))
 #define triangle_xyz2(triangle) (node_xyz((triangle)->node2))
 
+#define triangle_segment(triangle,segment_index)	\
+  ((triangle)->segment[segment_index])
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */
