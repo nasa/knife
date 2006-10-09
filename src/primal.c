@@ -300,9 +300,9 @@ KNIFE_STATUS primal_tri( Primal primal, int tri_index, int *tri)
   if (tri_index < 0 || tri_index >= primal_ntri(primal) ) 
     return KNIFE_ARRAY_BOUND;
 
-  tri[0] = primal->e2n[0+3*tri_index];
-  tri[1] = primal->e2n[1+3*tri_index];
-  tri[2] = primal->e2n[2+3*tri_index];
+  tri[0] = primal->t2n[0+3*tri_index];
+  tri[1] = primal->t2n[1+3*tri_index];
+  tri[2] = primal->t2n[2+3*tri_index];
 
   return KNIFE_SUCCESS;
 }

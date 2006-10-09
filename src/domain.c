@@ -74,7 +74,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
       node_initialize( domain_node(domain,node), xyz, node);
     }
 
-  domain->nsegment = primal_ntri(domain->primal);
+  domain->nsegment = primal_nedge(domain->primal);
   domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
 					       sizeof(SegmentStruct));
   domain_test_malloc(domain->segment,
