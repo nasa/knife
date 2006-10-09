@@ -284,6 +284,29 @@ KNIFE_STATUS primal_cell( Primal primal, int cell_index, int *cell)
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_edge( Primal primal, int edge_index, int *edge)
+{
+  if (edge_index < 0 || edge_index >= primal_nedge(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  edge[0] = primal->e2n[0+2*edge_index];
+  edge[1] = primal->e2n[1+2*edge_index];
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_tri( Primal primal, int tri_index, int *tri)
+{
+  if (tri_index < 0 || tri_index >= primal_ntri(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  tri[0] = primal->e2n[0+3*tri_index];
+  tri[1] = primal->e2n[1+3*tri_index];
+  tri[2] = primal->e2n[2+3*tri_index];
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_find_face_side( Primal primal, int node0, int node1,
                                     int *other_face_index, int *other_side ) {
   AdjIterator it;

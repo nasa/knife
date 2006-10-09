@@ -18,6 +18,8 @@
 #include "primal.h"
 #include "surface.h"
 #include "poly.h"
+#include "node.h"
+#include "segment.h"
 #include "triangle.h"
 
 BEGIN_C_DECLORATION
@@ -31,6 +33,12 @@ struct DomainStruct {
 
   int npoly;
   PolyStruct *poly;
+
+  int nnode;
+  NodeStruct *node;
+
+  int nsegment;
+  SegmentStruct *segment;
 
   int ntriangle;
   TriangleStruct *triangle;
@@ -47,6 +55,14 @@ typedef DomainStruct * Domain;
 
 Domain domain_create( Primal, Surface );
 void domain_free( Domain );
+
+#define domain_nnode(domain) ((domain)->nnode)
+#define domain_node(domain,node_index) \
+  (&((domain)->node[(node_index)]))
+
+#define domain_nsegment(domain) ((domain)->nsegment)
+#define domain_segment(domain,segment_index) \
+  (&((domain)->segment[(segment_index)]))
 
 #define domain_ntriangle(domain) ((domain)->ntriangle)
 #define domain_triangle(domain,triangle_index) \

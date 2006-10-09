@@ -50,16 +50,46 @@ void domain_free( Domain domain )
 
 KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 {
+  int node;
+  double xyz[3];
+  int edge;
+  int edge_nodes[2];
+
   domain->npoly = primal_ncell(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,
 		     "domain_tetrahedral_elements poly");
+
+  domain->nnode = primal_nnode(domain->primal);
+  domain->node = (NodeStruct *)malloc( domain->nnode * 
+				       sizeof(NodeStruct));
+  domain_test_malloc(domain->node,
+		     "domain_tetrahedral_elements node");
+  for (node = 0 ; node < primal_nnode(domain->primal) ; node++)
+    {
+      primal_xyz( domain->primal, node, xyz);
+      node_initialize( domain_node(domain,node), xyz, node);
+    }
+
+  domain->nsegment = primal_ntri(domain->primal);
+  domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
+					       sizeof(SegmentStruct));
+  domain_test_malloc(domain->segment,
+		     "domain_tetrahedral_elements segment");
+  for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge( domain->primal, edge, edge_nodes);
+      segment_initialize( domain_segment(domain,edge),
+			  domain_node(domain,edge_nodes[0]),
+			  domain_node(domain,edge_nodes[1]));
+    }
 
   domain->ntriangle = primal_ntri(domain->primal);
   domain->triangle = (TriangleStruct *)malloc( domain->ntriangle * 
 					       sizeof(TriangleStruct));
   domain_test_malloc(domain->triangle,
 		     "domain_tetrahedral_elements triangle");
+
   return (KNIFE_SUCCESS);
 }
 

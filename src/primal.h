@@ -63,6 +63,7 @@ void primal_free( Primal );
 #define primal_nface(primal) (primal->nface)
 #define primal_ncell(primal) (primal->ncell)
 
+#define primal_nedge(primal) (primal->nedge)
 #define primal_ntri(primal) (primal->ntri)
 
 KNIFE_STATUS primal_establish_c2e( Primal );
@@ -75,6 +76,9 @@ KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz);
 KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
 
 KNIFE_STATUS primal_cell( Primal, int cell_index, int *nodes); 
+
+KNIFE_STATUS primal_edge( Primal, int edge_index, int *nodes); 
+KNIFE_STATUS primal_tri( Primal, int tri_index, int *nodes); 
 
 KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1, 
 				    int *other_face_index, int *other_side ); 
