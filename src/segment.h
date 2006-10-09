@@ -28,6 +28,9 @@ typedef SegmentStruct * Segment;
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 );
 Node segment_common_node( Segment segment0, Segment segment1 );
 
+#define segment_xyz0(segment) (node_xyz((segment)->node0))
+#define segment_xyz1(segment) (node_xyz((segment)->node1))
+
 END_C_DECLORATION
 
 #endif /* SEGMENT_H */

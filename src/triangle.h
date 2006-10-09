@@ -34,6 +34,10 @@ KNIFE_STATUS triangle_initialize(Triangle,
 				 Segment segment2);
 void triangle_free( Triangle );
 
+#define triangle_xyz0(triangle) (node_xyz((triangle)->node0))
+#define triangle_xyz1(triangle) (node_xyz((triangle)->node1))
+#define triangle_xyz2(triangle) (node_xyz((triangle)->node2))
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

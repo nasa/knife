@@ -62,7 +62,7 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
                                 double *t,
                                 double *uvw )
 {
-  double singual_tol;
+  double singular_tol;
   double top_volume, bot_volume;
   double side0_volume, side1_volume, side2_volume;
 
