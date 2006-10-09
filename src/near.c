@@ -19,7 +19,7 @@
 
 Near near_create( int index, double x, double y, double z, double radius )
 {
-  Near *near;
+  Near near;
 
   near = malloc( sizeof(Near) );
 
@@ -38,13 +38,13 @@ KNIFE_STATUS near_initialize( Near near,
   near->z = z;
   near->radius = radius;
 
-  near->leftChild = NULL;
-  near->rightChild = NULL;
+  near->left_child = NULL;
+  near->right_child = NULL;
 
-  near->leftRadius = 0;
-  near->rightRadius = 0;
+  near->left_radius = 0;
+  near->right_radius = 0;
 
-  return near;
+  return KNIFE_SUCCESS;
 }
 
 void near_free( Near near )
@@ -52,7 +52,7 @@ void near_free( Near near )
   free( near );
 }
 
-KNIFE_STATUS near_insert( Near near, Near child )
+Near near_insert( Near near, Near child )
 {
   double child_radius;
   double left_distance, right_distance;
@@ -116,7 +116,7 @@ int near_collisions(Near near, Near target)
   return collisions;
 }
 
-NEAR_STATUS near_touched(Near near, Near target, 
+KNIFE_STATUS near_touched(Near near, Near target, 
 			 int *found, int maxfound, int *list)
 {
   double distance, safe_zone;

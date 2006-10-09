@@ -21,7 +21,7 @@ BEGIN_C_DECLORATION
 
 typedef struct NearStruct NearStruct;
 typedef NearStruct * Near;
-struct Near {
+struct NearStruct {
   int index;
   double x, y, z;
   double radius;
@@ -42,7 +42,7 @@ void near_free( Near );
           (near->y - other->y)*(near->y - other->y) +	\
           (near->z - other->z)*(near->z - other->z) ) )
 #define near_clearance( near , other) \
-  (near_distance(near,other)-(near)->raduis-(other)->radius)
+  (near_distance(near,other)-(near)->radius-(other)->radius)
 
 Near near_insert( Near , Near child );
 #define near_left_radius(near) (near->left_radius)
