@@ -25,14 +25,14 @@ BEGIN_C_DECLORATION
 typedef struct DomainStruct DomainStruct;
 struct DomainStruct {
 
-  Primal* primal;
+  Primal primal;
 
-  Surface* surface;
+  Surface surface;
 
   int npoly;
   PolyStruct *poly;
 
-  int ntriangles;
+  int ntriangle;
   TriangleStruct *triangles;
 
 };

@@ -27,12 +27,12 @@ Domain domain_create( Primal primal, Surface surface)
 
   domain->npoly = primal_ncell(primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
-  domain_test_malloc(domain->npoly,"domain_create poly");
+  domain_test_malloc(domain->poly,"domain_create poly");
 
   domain->ntriangle = primal_ncell(primal);
   domain->triangles = (TriangleStruct *)malloc( domain->ntriangle * 
 					      sizeof(TriangleStruct));
-  domain_test_malloc(domain->ntriangle,"domain_create triangles");
+  domain_test_malloc(domain->triangles,"domain_create triangles");
 
   return domain;
 }
