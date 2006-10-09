@@ -33,7 +33,7 @@ struct DomainStruct {
   PolyStruct *poly;
 
   int ntriangle;
-  TriangleStruct *triangles;
+  TriangleStruct *triangle;
 
 };
 typedef DomainStruct * Domain;
@@ -46,11 +46,16 @@ typedef DomainStruct * Domain;
   }
 
 Domain domain_create( Primal, Surface );
+void domain_free( Domain );
+
+#define domain_ntriangle(domain) ((domain)->ntriangle)
+#define domain_triangle(domain,triangle_index) \
+  (&((domain)->triangle[(triangle_index)]))
 
 KNIFE_STATUS domain_tetrahedral_elements( Domain );
 KNIFE_STATUS domain_dual_elements( Domain );
 
-void domain_free( Domain );
+KNIFE_STATUS domain_boolean_subtract( Domain );
 
 END_C_DECLORATION
 

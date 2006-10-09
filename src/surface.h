@@ -17,6 +17,7 @@
 #include "knife_definitions.h"
 #include "array.h"
 #include "primal.h"
+#include "node.h"
 #include "segment.h"
 #include "triangle.h"
 
@@ -24,16 +25,30 @@ BEGIN_C_DECLORATION
 
 typedef struct SurfaceStruct SurfaceStruct;
 struct SurfaceStruct {
+  int nnode;
+  NodeStruct *node;
   int nsegment;
-  SegmentStruct *segments;
+  SegmentStruct *segment;
   int ntriangle;
-  TriangleStruct *triangles;
+  TriangleStruct *triangle;
 };
 typedef SurfaceStruct * Surface;
 
 Surface surface_from( Primal, Array of_bcs );
 
 void surface_free( Surface );
+
+#define surface_nnode(surface) ((surface)->nnode)
+#define surface_node(surface,node_index) \
+  (&((surface)->node[(node_index)]))
+
+#define surface_nsegment(surface) ((surface)->nsegment)
+#define surface_segment(surface,segment_index) \
+  (&((surface)->segment[(segment_index)]))
+
+#define surface_ntriangle(surface) ((surface)->ntriangle)
+#define surface_triangle(surface,triangle_index) \
+  (&((surface)->triangle[(triangle_index)]))
 
 END_C_DECLORATION
 

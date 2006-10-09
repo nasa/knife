@@ -24,12 +24,10 @@ Surface surface_from( Primal primal, Array bcs )
   int other_global, other_local, other_side;
   int *face_g2l, *face_l2g, *f2s;
   int side, node0, node1;
-  int nnode;
   int *node_g2l;
   int local_node, global_node;
   int i;
   double xyz[3];
-  NodeStruct *nodes;
   int *s2n;
   int segment_index;
 
@@ -108,7 +106,7 @@ Surface surface_from( Primal primal, Array bcs )
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
     node_g2l[global_node] = EMPTY;
 
-  nnode = 0;
+  surface->nnode = 0;
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
       global_iface = face_l2g[local_iface];
@@ -116,21 +114,22 @@ Surface surface_from( Primal primal, Array bcs )
       for (i=0;i<3;i++)
 	if (EMPTY == node_g2l[face[i]]) 
 	  {
-	    node_g2l[face[i]] = nnode;
-	    nnode++;
+	    node_g2l[face[i]] = surface_nnode(surface);
+	    (surface->nnode)++;
 	  }
     }
 
-  printf("number of nodes in the surface %d\n",nnode);
+  printf("number of nodes in the surface %d\n",surface_nnode(surface));
 
-  nodes = (NodeStruct *) malloc( nnode * sizeof(NodeStruct));
+  surface->node = (NodeStruct *) malloc( surface_nnode(surface) * 
+					 sizeof(NodeStruct) );
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
     {
       local_node = node_g2l[global_node]; 
       if ( EMPTY != local_node )
 	{
 	  primal_xyz(primal, global_node, xyz);
-	  node_initialize( &(nodes[local_node]), xyz, local_node );
+	  node_initialize( surface_node(surface,local_node), xyz, local_node );
 	}
     }
 
@@ -151,24 +150,24 @@ Surface surface_from( Primal primal, Array bcs )
 	}
     }
 
-  surface->segments = (SegmentStruct *) malloc( surface->nsegment * 
-				       sizeof(SegmentStruct) );
+  surface->segment = (SegmentStruct *) malloc( surface->nsegment * 
+					       sizeof(SegmentStruct) );
   for (segment_index=0;segment_index<surface->nsegment;segment_index++) 
-    segment_initialize( &(surface->segments[segment_index]),
-			&(nodes[s2n[0+2*segment_index]]),
-			&(nodes[s2n[1+2*segment_index]]) );
+    segment_initialize( surface_segment(surface,segment_index),
+			surface_node(surface,s2n[0+2*segment_index]),
+			surface_node(surface,s2n[1+2*segment_index]) );
 
   free(s2n);
   
   surface->ntriangle = local_nface;
-  surface->triangles = (TriangleStruct *) malloc( local_nface * 
-						  sizeof(TriangleStruct));
+  surface->triangle = (TriangleStruct *) malloc( local_nface * 
+						 sizeof(TriangleStruct));
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
-      triangle_initialize( &(surface->triangles[local_iface]),
-			   &(surface->segments[f2s[0+3*local_iface]]),
-			   &(surface->segments[f2s[1+3*local_iface]]),
-			   &(surface->segments[f2s[2+3*local_iface]]) );
+      triangle_initialize( surface_triangle(surface,local_iface),
+			   surface_segment(surface,f2s[0+3*local_iface]),
+			   surface_segment(surface,f2s[1+3*local_iface]),
+			   surface_segment(surface,f2s[2+3*local_iface]) );
     }
 
   free(face_l2g);
@@ -182,7 +181,8 @@ Surface surface_from( Primal primal, Array bcs )
 void surface_free( Surface surface )
 {
   if ( NULL == surface ) return;
-  free( surface->segments );
-  free( surface->triangles );
+  free( surface->node );
+  free( surface->segment );
+  free( surface->triangle );
   free( surface );
 }
