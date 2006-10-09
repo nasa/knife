@@ -74,6 +74,8 @@ int main( int argc, char *argv[] )
   dual_domain = domain_create( volume_primal, surface );
   domain_dual_elements( dual_domain );
 
+  domain_boolean_subtract( tet_domain );
+
   /* sleep(2); */
 
   return 0;
