@@ -12,21 +12,27 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h> /* for sleep */
 #include <string.h>
 #include "knife_definitions.h"
 #include "array.h"
 #include "primal.h"
 #include "surface.h"
+#include "domain.h"
 
 int main( int argc, char *argv[] )
 {
   int argument;
 
   char surface_filename[1025];
+  Primal surface_primal;
   Array active_bcs;
   int *bc;
-  Primal primal;
   Surface surface;
+
+  char volume_filename[1025];
+  Primal volume_primal;
+  Domain tet_domain, dual_domain;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -40,6 +46,12 @@ int main( int argc, char *argv[] )
 	printf("-s %s\n", surface_filename);
       }
 
+      if( strcmp(argv[argument],"-v") == 0 ) {
+	argument++; 
+	sprintf( volume_filename, "%s", argv[argument] );
+	printf("-v %s\n", volume_filename);
+      }
+
       if( strcmp(argv[argument],"-b") == 0 ) {
 	argument++;
 	bc = (int *) malloc( sizeof(int) );
@@ -51,8 +63,18 @@ int main( int argc, char *argv[] )
       argument++;
     }
 
-  primal = primal_from_FAST( surface_filename );
-  surface = surface_from( primal, active_bcs );
+  surface_primal = primal_from_FAST( surface_filename );
+  surface = surface_from( surface_primal, active_bcs );
+
+  volume_primal = primal_from_FAST( volume_filename );
+
+  tet_domain = domain_create( volume_primal, surface );
+  domain_tetrahedral_elements( tet_domain );
+
+  dual_domain = domain_create( volume_primal, surface );
+  domain_dual_elements( dual_domain );
+
+  /* sleep(2); */
 
   return 0;
 }
