@@ -15,7 +15,8 @@ libknife_a_SOURCES = \
 	triangle.h triangle.c \
 	poly.h poly.c \
 	surface.h surface.c \
-	domain.h domain.c
+	domain.h domain.c \
+	intersection.h intersection.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -28,7 +29,8 @@ libknife_a_include_HEADERS = \
 	triangle.h \
 	poly.h \
 	surface.h \
-	domain.h
+	domain.h \
+	intersection.h
 
 bin_PROGRAMS = knife
 
