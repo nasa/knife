@@ -362,3 +362,32 @@ KNIFE_STATUS primal_find_cell_side( Primal primal,
     }
   return KNIFE_NOT_FOUND;
 }
+
+KNIFE_STATUS primal_find_edge( Primal primal, 
+			       int node0, int node1,
+			       int *edge_index ) {
+  AdjIterator it;
+  int edge;
+  int cell[4];
+  int n0, n1;
+
+  for ( it = adj_first(primal->cell_adj, node0);
+	adj_valid(it);
+	it = adj_next(it) )
+    {
+      primal_cell(primal, adj_item(it), cell);
+      for ( edge = 0 ; edge < 6; edge++ )
+	{
+	  n0 = cell[primal_cell_edge_node0(edge)];
+	  n1 = cell[primal_cell_edge_node1(edge)];
+	  if ( (n0 == node0 && n1 == node1 ) ||
+	       (n1 == node0 && n0 == node1 ) )
+	    {
+	      *edge_index = primal->c2e[edge+6*adj_item(it)];
+	      return KNIFE_SUCCESS;
+	    }
+	}
+    }
+  return KNIFE_NOT_FOUND;
+}
+
