@@ -53,6 +53,8 @@ typedef int KNIFE_STATUS;
 #define KNIFE_NOT_FOUND   (4)
 #define KNIFE_SINGULAR    (5)
 #define KNIFE_NO_INT      (6)
+#define KNIFE_NULL        (7)
+#define KNIFE_BIGGER      (8)
 
 END_C_DECLORATION
 
