@@ -48,6 +48,16 @@ void domain_free( Domain domain )
   free(domain);
 }
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
 KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 {
   int node;
@@ -70,7 +80,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 		     "domain_tetrahedral_elements node");
   for (node = 0 ; node < primal_nnode(domain->primal) ; node++)
     {
-      primal_xyz( domain->primal, node, xyz);
+      TRY( primal_xyz( domain->primal, node, xyz), "xyz" );
       node_initialize( domain_node(domain,node), xyz, node);
     }
 
@@ -81,10 +91,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 		     "domain_tetrahedral_elements segment");
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
-      if (KNIFE_SUCCESS != primal_edge( domain->primal, edge, edge_nodes) )
-	{
-	  printf("failed\n");
-	}
+      TRY( primal_edge( domain->primal, edge, edge_nodes), "primal_edge" );
       segment_initialize( domain_segment(domain,edge),
 			  domain_node(domain,edge_nodes[0]),
 			  domain_node(domain,edge_nodes[1]));
@@ -97,27 +104,16 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 		     "domain_tetrahedral_elements triangle");
   for (tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
     {
-      if (KNIFE_SUCCESS != primal_tri( domain->primal, tri, tri_nodes) )
-	{
-	  printf("tri failed\n");
-	}
-      
-      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[0], tri_nodes[1],
-					     &edge2 ) )
-	{
-	  printf("edge2 failed\n");
-	}
-      
-      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[1], tri_nodes[2],
-			&edge0 ) )
-	{
-	  printf("edge0 failed\n");
-	}
-      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[2], tri_nodes[0],
-			&edge1 ) )
-	{
-	  printf("edge1 failed\n");
-	}
+      TRY( primal_tri( domain->primal, tri, tri_nodes), "tri" );
+      TRY( primal_find_edge( domain->primal, 
+			     tri_nodes[0], tri_nodes[1],
+			     &edge2 ), "edge2" );
+      TRY( primal_find_edge( domain->primal, 
+			     tri_nodes[1], tri_nodes[2],
+			     &edge0 ), "edge0" );
+      TRY( primal_find_edge( domain->primal, 
+			     tri_nodes[2], tri_nodes[0],
+			     &edge1 ), "edge1" );
       triangle_initialize( domain_triangle(domain,tri),
 			   domain_segment(domain,edge0),
 			   domain_segment(domain,edge1),
