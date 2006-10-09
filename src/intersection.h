@@ -36,7 +36,7 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
 				double *s0, double *s1,
 				double *t,
 				double *uvw );
-double knife_volume6( double *a, double *b, double *c, double *d);
+double intersection_volume6( double *a, double *b, double *c, double *d);
 
 END_C_DECLORATION
 
