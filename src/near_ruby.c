@@ -24,8 +24,8 @@ static VALUE this_index( VALUE self )
 static VALUE clearance( VALUE rb_self, VALUE rb_other )
 {
   Near self, other; 
-  Data_Get_Struct( rb_self,  Near, self );
-  Data_Get_Struct( rb_other, Near, other );
+  Data_Get_Struct( rb_self,  NearStruct, self );
+  Data_Get_Struct( rb_other, NearStruct, other );
   return(rb_float_new(near_clearance(self, other)));
 }
 
@@ -44,8 +44,8 @@ static VALUE right_index( VALUE self )
 static VALUE insert( VALUE rb_self, VALUE rb_child )
 {
   Near self, child; 
-  Data_Get_Struct( rb_self,  Near, self );
-  Data_Get_Struct( rb_child, Near, child );
+  Data_Get_Struct( rb_self,  NearStruct, self );
+  Data_Get_Struct( rb_child, NearStruct, child );
   return (self==near_insert(self,child)?rb_self:Qnil);
 }
 
@@ -64,14 +64,14 @@ static VALUE right_radius( VALUE self )
 static VALUE visualize( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return (near==near_visualize(near)?self:Qnil);
+  return (KNIFE_SUCCESS==near_visualize(near)?self:Qnil);
 }
 
 static VALUE collisions( VALUE self, VALUE rb_target )
 {
   Near tree, target;
-  Data_Get_Struct( self,      Near, tree );
-  Data_Get_Struct( rb_target, Near, target );
+  Data_Get_Struct( self,      NearStruct, tree );
+  Data_Get_Struct( rb_target, NearStruct, target );
 
   return INT2NUM(near_collisions(tree,target));
 }
@@ -81,15 +81,15 @@ static VALUE touched( VALUE self, VALUE rb_target )
   Near tree, target;
   int i, collisions, found, maxfound, *list;
   VALUE array;
-  Data_Get_Struct( self,      Near, tree );
-  Data_Get_Struct( rb_target, Near, target );
+  Data_Get_Struct( self,      NearStruct, tree );
+  Data_Get_Struct( rb_target, NearStruct, target );
 
   collisions = near_collisions(tree,target);
   list = malloc(MAX(1,collisions)*sizeof(int));
 
   maxfound = collisions;
   found = 0;
-  if (tree != near_nouched(tree,target,&found,maxfound,list)) {
+  if (KNIFE_SUCCESS != near_touched(tree,target,&found,maxfound,list)) {
     free(list);
     return Qnil;
   }

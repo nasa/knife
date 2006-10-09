@@ -21,7 +21,7 @@ Near near_create( int index, double x, double y, double z, double radius )
 {
   Near near;
 
-  near = malloc( sizeof(Near) );
+  near = malloc( sizeof(NearStruct) );
 
   near_initialize( near, index, x, y, z, radius );
 
