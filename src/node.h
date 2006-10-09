@@ -20,7 +20,7 @@ BEGIN_C_DECLORATION
 
 typedef struct NodeStruct NodeStruct;
 struct NodeStruct {
-  double x,y,z;
+  double xyz[3];
   int indx;
 };
 typedef NodeStruct * Node;
@@ -28,9 +28,10 @@ typedef NodeStruct * Node;
 Node node_create( double x, double y, double z, int indx );
 void node_initialize( Node, double *xyz, int indx );
 
-#define node_x(node) ((node)->x)
-#define node_y(node) ((node)->y)
-#define node_z(node) ((node)->z)
+#define node_xyz(node) ((node)->xyz)
+#define node_x(node) ((node)->xyz[0])
+#define node_y(node) ((node)->xyz[1])
+#define node_z(node) ((node)->xyz[2])
 #define node_indx(node) ((node)->indx)
 
 void node_free( Node );

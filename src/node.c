@@ -26,9 +26,9 @@ Node node_create(double x, double y, double z, int indx)
     return NULL; 
   }
 
-  node->x = x;
-  node->y = y;
-  node->z = z;
+  node->xyz[0] = x;
+  node->xyz[1] = y;
+  node->xyz[2] = z;
   node->indx=indx;
   
   return node;
@@ -36,9 +36,9 @@ Node node_create(double x, double y, double z, int indx)
 
 void node_initialize( Node node, double *xyz, int indx )
 {  
-  node->x = xyz[0];
-  node->y = xyz[1];
-  node->z = xyz[2];
+  node->xyz[0] = xyz[0];
+  node->xyz[1] = xyz[1];
+  node->xyz[2] = xyz[2];
   node->indx=indx;
 }
 
