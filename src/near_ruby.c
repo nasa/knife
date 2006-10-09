@@ -2,99 +2,94 @@
 #include "ruby.h"
 #include "near.h"
 
-#define GET_NEAR_FROM_SELF Near *near; Data_Get_Struct( self, Near, near );
+#define GET_NEAR_FROM_SELF Near near; Data_Get_Struct( self, NearStruct, near );
 
-static void near_free( void *near )
+static VALUE new( VALUE class, 
+		  VALUE index, VALUE x, VALUE y, VALUE z, VALUE radius )
 {
-  nearFree( near );
-}
-
-VALUE near_new( VALUE class, 
-		VALUE index, VALUE x, VALUE y, VALUE z, VALUE radius )
-{
-  Near *near;
+  Near near;
   VALUE obj;
-  near = nearCreate( NUM2INT(index), 
-		     NUM2DBL(x), NUM2DBL(y), NUM2DBL(z), NUM2DBL(radius) );
+  near = near_create( NUM2INT(index), 
+		      NUM2DBL(x), NUM2DBL(y), NUM2DBL(z), NUM2DBL(radius) );
   obj = Data_Wrap_Struct( class, 0, near_free, near );
   return obj;
 }
 
-VALUE near_index( VALUE self )
+static VALUE this_index( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return INT2NUM(nearIndex(near));
+  return INT2NUM(near_index(near));
 }
 
-VALUE near_clearance( VALUE rb_self, VALUE rb_other )
+static VALUE clearance( VALUE rb_self, VALUE rb_other )
 {
-  Near *self, *other; 
+  Near self, other; 
   Data_Get_Struct( rb_self,  Near, self );
   Data_Get_Struct( rb_other, Near, other );
-  return(rb_float_new(nearClearance(self, other)));
+  return(rb_float_new(near_clearance(self, other)));
 }
 
-VALUE near_leftIndex( VALUE self )
+static VALUE left_index( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return INT2NUM(nearLeftIndex(near));
+  return INT2NUM(near_left_index(near));
 }
 
-VALUE near_rightIndex( VALUE self )
+static VALUE right_index( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return INT2NUM(nearRightIndex(near));
+  return INT2NUM(near_right_index(near));
 }
 
-VALUE near_insert( VALUE rb_self, VALUE rb_child )
+static VALUE insert( VALUE rb_self, VALUE rb_child )
 {
-  Near *self, *child; 
+  Near self, child; 
   Data_Get_Struct( rb_self,  Near, self );
   Data_Get_Struct( rb_child, Near, child );
-  return (self==nearInsert(self,child)?rb_self:Qnil);
+  return (self==near_insert(self,child)?rb_self:Qnil);
 }
 
-VALUE near_leftRadius( VALUE self )
+static VALUE left_radius( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return rb_float_new(nearLeftRadius(near));
+  return rb_float_new(near_left_radius(near));
 }
 
-VALUE near_rightRadius( VALUE self )
+static VALUE right_radius( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return rb_float_new(nearRightRadius(near));
+  return rb_float_new(near_right_radius(near));
 }
 
-VALUE near_visualize( VALUE self )
+static VALUE visualize( VALUE self )
 {
   GET_NEAR_FROM_SELF;
-  return (near==nearVisualize(near)?self:Qnil);
+  return (near==near_visualize(near)?self:Qnil);
 }
 
-VALUE near_collisions( VALUE self, VALUE rb_target )
+static VALUE collisions( VALUE self, VALUE rb_target )
 {
-  Near *tree, *target;
+  Near tree, target;
   Data_Get_Struct( self,      Near, tree );
   Data_Get_Struct( rb_target, Near, target );
 
-  return INT2NUM(nearCollisions(tree,target));
+  return INT2NUM(near_collisions(tree,target));
 }
 
-VALUE near_touched( VALUE self, VALUE rb_target )
+static VALUE touched( VALUE self, VALUE rb_target )
 {
-  Near *tree, *target;
+  Near tree, target;
   int i, collisions, found, maxfound, *list;
   VALUE array;
   Data_Get_Struct( self,      Near, tree );
   Data_Get_Struct( rb_target, Near, target );
 
-  collisions = nearCollisions(tree,target);
+  collisions = near_collisions(tree,target);
   list = malloc(MAX(1,collisions)*sizeof(int));
 
   maxfound = collisions;
   found = 0;
-  if (tree != nearTouched(tree,target,&found,maxfound,list)) {
+  if (tree != near_nouched(tree,target,&found,maxfound,list)) {
     free(list);
     return Qnil;
   }
@@ -106,51 +101,20 @@ VALUE near_touched( VALUE self, VALUE rb_target )
   return array;
 }
 
-VALUE near_nearestIndex( VALUE rb_root, VALUE rb_key )
-{
-  Near *root, *key;
-  Data_Get_Struct( rb_root, Near, root );
-  Data_Get_Struct( rb_key,  Near, key );
-
-  return INT2NUM(nearNearestIndex(root,key));
-}
-
-VALUE near_nearestIndexAndDistance( VALUE rb_root, VALUE rb_key )
-{
-  Near *root, *key;
-  int index;
-  double distance;
-  VALUE answer;
-  Data_Get_Struct( rb_root, Near, root );
-  Data_Get_Struct( rb_key,  Near, key );
-  
-  if (NULL == nearNearestIndexAndDistance(root,key,&index,&distance)) 
-    return Qnil;
-
-  answer = rb_ary_new2(2);
-  rb_ary_store(answer, 0, INT2NUM(index));
-  rb_ary_store(answer, 1, rb_float_new(distance));
-
-  return answer;
-}
-
 VALUE cNear;
 
 void Init_Near() 
 {
   cNear = rb_define_class( "Near", rb_cObject );
-  rb_define_singleton_method( cNear, "new", near_new, 5 );
-  rb_define_method( cNear, "index", near_index, 0 );
-  rb_define_method( cNear, "clearance", near_clearance, 1 );
-  rb_define_method( cNear, "leftIndex", near_leftIndex, 0 );
-  rb_define_method( cNear, "rightIndex", near_rightIndex, 0 );
-  rb_define_method( cNear, "insert", near_insert, 1 );
-  rb_define_method( cNear, "leftRadius", near_leftRadius, 0 );
-  rb_define_method( cNear, "rightRadius", near_rightRadius, 0 );
-  rb_define_method( cNear, "visualize", near_visualize, 0 );
-  rb_define_method( cNear, "collisions", near_collisions, 1 );
-  rb_define_method( cNear, "touched", near_touched, 1 );
-  rb_define_method( cNear, "nearestIndex", near_nearestIndex, 1 );
-  rb_define_method( cNear, "nearestIndexAndDistance", 
-		    near_nearestIndexAndDistance, 1 );
+  rb_define_singleton_method( cNear, "new", new, 5 );
+  rb_define_method( cNear, "index", this_index, 0 );
+  rb_define_method( cNear, "clearance", clearance, 1 );
+  rb_define_method( cNear, "left_index", left_index, 0 );
+  rb_define_method( cNear, "right_index", right_index, 0 );
+  rb_define_method( cNear, "insert", insert, 1 );
+  rb_define_method( cNear, "left_radius", left_radius, 0 );
+  rb_define_method( cNear, "right_radius", right_radius, 0 );
+  rb_define_method( cNear, "visualize", visualize, 0 );
+  rb_define_method( cNear, "collisions", collisions, 1 );
+  rb_define_method( cNear, "touched", touched, 1 );
 }

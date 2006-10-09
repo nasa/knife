@@ -4,17 +4,12 @@
 
 #define GET_ADJ_FROM_SELF Adj adj; Data_Get_Struct( self, AdjStruct, adj );
 
-static void this_free( void *adj )
-{
-  adj_free( adj );
-}
-
 static VALUE new( VALUE class, VALUE nnode, VALUE nadj, VALUE chunk_size )
 {
   Adj adj;
   VALUE obj;
   adj = adj_create( NUM2INT(nnode), NUM2INT(nadj), NUM2INT(chunk_size) );
-  obj = Data_Wrap_Struct( class, 0, this_free, adj );
+  obj = Data_Wrap_Struct( class, 0, adj_free, adj );
   return obj;
 }
 
