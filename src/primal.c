@@ -233,7 +233,7 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
 	  tri_index = primal->c2t[side+4*cell];
 	  n0 = nodes[primal_cell_side_node0(side)];
 	  n1 = nodes[primal_cell_side_node1(side)];
-	  n2 = nodes[primal_cell_side_node1(side)];
+	  n2 = nodes[primal_cell_side_node2(side)];
 	  node0 = MIN(MIN(n0,n1),n2);
 	  node2 = MAX(MAX(n0,n1),n2);
 	  node1 = n0+n1+n2-node0-node2;
