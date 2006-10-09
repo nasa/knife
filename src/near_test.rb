@@ -106,10 +106,10 @@ class TestNear < Test::Unit::TestCase
   child7 = Near.new(7,2,0,0,0)
   assert_equal near, near.insert(child6)
   assert_equal 1, near.left_radius
-  assert_equal 0, near.rightRadius
+  assert_equal 0, near.right_radius
   assert_equal near, near.insert(child7)
   assert_equal 1, near.left_radius
-  assert_equal 2, near.rightRadius
+  assert_equal 2, near.right_radius
  end
 
  def test_compute_sphere_child_radius
@@ -119,7 +119,7 @@ class TestNear < Test::Unit::TestCase
   assert_equal near, near.insert(child6)
   assert_equal 3, near.left_radius
   assert_equal near, near.insert(child7)
-  assert_equal 5, near.rightRadius
+  assert_equal 5, near.right_radius
  end
 
  def test_compute_point_child_radius_in_tree
