@@ -137,6 +137,6 @@ KNIFE_STATUS near_touched(Near near, Near target,
     (*found)++;
   }
 
-  return near;
+  return KNIFE_SUCCESS;
 }
 
