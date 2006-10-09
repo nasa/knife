@@ -54,6 +54,9 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
   double xyz[3];
   int edge;
   int edge_nodes[2];
+  int tri;
+  int tri_nodes[3];
+  int edge0, edge1, edge2;
 
   domain->npoly = primal_ncell(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
@@ -89,6 +92,20 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 					       sizeof(TriangleStruct));
   domain_test_malloc(domain->triangle,
 		     "domain_tetrahedral_elements triangle");
+  for (tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
+    {
+      primal_tri( domain->primal, tri, tri_nodes);
+      primal_find_edge( domain->primal, tri_nodes[0], tri_nodes[1],
+			&edge2 );
+      primal_find_edge( domain->primal, tri_nodes[1], tri_nodes[2],
+			&edge0 );
+      primal_find_edge( domain->primal, tri_nodes[2], tri_nodes[0],
+			&edge1 );
+      triangle_initialize( domain_triangle(domain,tri),
+			   domain_segment(domain,edge0),
+			   domain_segment(domain,edge1),
+			   domain_segment(domain,edge2) );
+    }
 
   return (KNIFE_SUCCESS);
 }
