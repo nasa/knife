@@ -81,7 +81,10 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 		     "domain_tetrahedral_elements segment");
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
-      primal_edge( domain->primal, edge, edge_nodes);
+      if (KNIFE_SUCCESS != primal_edge( domain->primal, edge, edge_nodes) )
+	{
+	  printf("failed\n");
+	}
       segment_initialize( domain_segment(domain,edge),
 			  domain_node(domain,edge_nodes[0]),
 			  domain_node(domain,edge_nodes[1]));
@@ -94,13 +97,27 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 		     "domain_tetrahedral_elements triangle");
   for (tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
     {
-      primal_tri( domain->primal, tri, tri_nodes);
-      primal_find_edge( domain->primal, tri_nodes[0], tri_nodes[1],
-			&edge2 );
-      primal_find_edge( domain->primal, tri_nodes[1], tri_nodes[2],
-			&edge0 );
-      primal_find_edge( domain->primal, tri_nodes[2], tri_nodes[0],
-			&edge1 );
+      if (KNIFE_SUCCESS != primal_tri( domain->primal, tri, tri_nodes) )
+	{
+	  printf("tri failed\n");
+	}
+      
+      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[0], tri_nodes[1],
+					     &edge2 ) )
+	{
+	  printf("edge2 failed\n");
+	}
+      
+      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[1], tri_nodes[2],
+			&edge0 ) )
+	{
+	  printf("edge0 failed\n");
+	}
+      if (KNIFE_SUCCESS != primal_find_edge( domain->primal, tri_nodes[2], tri_nodes[0],
+			&edge1 ) )
+	{
+	  printf("edge1 failed\n");
+	}
       triangle_initialize( domain_triangle(domain,tri),
 			   domain_segment(domain,edge0),
 			   domain_segment(domain,edge1),
