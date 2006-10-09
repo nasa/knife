@@ -17,10 +17,11 @@
 
 
 #define cut_gather_intersection						\
-  if ( NULL == intersection0 ) { intersection0 = intersection; }	\
-  else { if ( NULL == intersection1 ) { intersection1 = intersection; } \
-    else { printf("%s: %d: cut_between improper intersection\n",	\
-		  __FILE__,__LINE__); return NULL; } }
+  if ( NULL != intersection ) {						\
+    if ( NULL == intersection0 ) { intersection0 = intersection; }	\
+    else { if ( NULL == intersection1 ) { intersection1 = intersection; } \
+      else { printf("%s: %d: cut_between improper intersection\n",	\
+		    __FILE__,__LINE__); return NULL; } } }
 
 Cut cut_between( Triangle triangle0, Triangle triangle1 )
 {
