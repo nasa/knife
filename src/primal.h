@@ -63,6 +63,8 @@ void primal_free( Primal );
 #define primal_nface(primal) (primal->nface)
 #define primal_ncell(primal) (primal->ncell)
 
+#define primal_ntri(primal) (primal->ntri)
+
 KNIFE_STATUS primal_establish_c2e( Primal );
 KNIFE_STATUS primal_establish_c2t( Primal );
 

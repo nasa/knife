@@ -42,10 +42,13 @@ typedef DomainStruct * Domain;
   if (NULL == (ptr)) {				       \
     printf("%s: %d: malloc failed in %s\n",	       \
 	   __FILE__,__LINE__,(fcn));		       \
-    return NULL;				       \
+    return KNIFE_MEMORY;			       \
   }
 
 Domain domain_create( Primal, Surface );
+
+KNIFE_STATUS domain_tetrahedral_elements( Domain );
+KNIFE_STATUS domain_dual_elements( Domain );
 
 void domain_free( Domain );
 
