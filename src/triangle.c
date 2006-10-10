@@ -16,6 +16,7 @@
 #include <math.h>
 #include "triangle.h"
 #include "subnode.h"
+#include "subtri.h"
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
@@ -38,6 +39,7 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
 				 Segment segment1, 
 				 Segment segment2)
 {
+  Subnode subnode0, subnode1, subnode2;
   triangle->segment[0] = segment0;
   triangle->segment[1] = segment1;
   triangle->segment[2] = segment2;
@@ -50,16 +52,19 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->node1 = segment_common_node( segment0, segment2 );
   triangle->node2 = segment_common_node( segment0, segment1 );
 
-  triangle->subnode = array_create( 20, 50 );
 
-  array_add( triangle->subnode, subnode_create( 1.0, 0.0, 0.0, 
-						triangle->node0, NULL ) );
-  array_add( triangle->subnode, subnode_create( 0.0, 1.0, 0.0, 
-						triangle->node1, NULL ) );
-  array_add( triangle->subnode, subnode_create( 0.0, 0.0, 1.0, 
-						triangle->node2, NULL ) );
+  subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
+  subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
+  subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
+
+  triangle->subnode = array_create( 20, 50 );
+  array_add( triangle->subnode, subnode0 );
+  array_add( triangle->subnode, subnode1 );
+  array_add( triangle->subnode, subnode2 );
 
   triangle->subtri  = array_create( 20, 50 );
+  array_add( triangle->subtri, subtri_create( subnode0, subnode1, subnode2,
+					      segment0, segment1, segment2 ) );
 
   triangle->cut = array_create( 10, 50 );
 
