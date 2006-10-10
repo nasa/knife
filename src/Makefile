@@ -9,8 +9,8 @@ test: all
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
 	                               -v gbumpn.fgrid  )
 	( cd ../cases/om6box && \
-	time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
-	                             -v om6box.fgrid )
+	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
+	                               -v om6box.fgrid )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
