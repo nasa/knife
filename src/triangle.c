@@ -217,10 +217,44 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
 {
   Subtri subtri;
   double bary[3];
+  double min_bary;
+  double side_tolerence;
+  int insert_side;
 
   subtri = NULL;  
   TRY( triangle_enclosing_subtri( triangle, subnode, subtri, bary ), 
        "triangle_enclosing_subtri not found" );
+
+  side_tolerence = 1.0e-12;
+  min_bary = MIN3(bary);
+
+  if ( min_bary < side_tolerence )
+    {
+      insert_side = EMPTY;
+      if (bary[0] <= bary[1] && bary[0] <= bary[2]) insert_side = 0;
+      if (bary[1] <= bary[0] && bary[1] <= bary[2]) insert_side = 1;
+      if (bary[2] <= bary[0] && bary[2] <= bary[1]) insert_side = 2;
+      switch (insert_side) {
+      case 0:
+	TRY( triangle_insert_into_side(triangle, subnode,
+				       subtri_n1(subtri),
+				       subtri_n2(subtri) ), "side0" ); 
+	break;
+      case 1:
+	TRY( triangle_insert_into_side(triangle, subnode,
+				       subtri_n2(subtri),
+				       subtri_n0(subtri) ), "side1" ); 
+	break;
+      case 2:
+	TRY( triangle_insert_into_side(triangle, subnode,
+				       subtri_n0(subtri),
+				       subtri_n1(subtri) ), "side2" ); 
+	break;
+      default:
+	printf("%s: %d: EMPTY insert side\n",__FILE__,__LINE__);
+	return KNIFE_FAILURE;
+      }
+    }
 
   return KNIFE_SUCCESS;
 }

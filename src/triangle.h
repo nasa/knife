@@ -85,6 +85,8 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle, Subnode,
 					Subtri, double *bary );
 
 KNIFE_STATUS triangle_insert( Triangle, Subnode );
+KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode, 
+					Subnode n0, Subnode n1 );
 
 END_C_DECLORATION
 
