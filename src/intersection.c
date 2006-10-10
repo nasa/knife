@@ -137,3 +137,44 @@ double intersection_volume6( double *a, double *b, double *c, double *d )
 
   return(-det);
 }
+
+KNIFE_STATUS intersection_uvw( Intersection intersection, Triangle triangle, 
+			       double *uvw)
+{
+  if (NULL == intersection) return KNIFE_NULL;
+
+  if ( triangle == intersection_triangle(intersection) )
+    {
+      uvw[0] = intersection->uvw[0];
+      uvw[1] = intersection->uvw[1];
+      uvw[2] = intersection->uvw[2];
+    }
+  else
+    {
+      uvw[0] = 0.0;
+      uvw[1] = 0.0;
+      uvw[2] = 0.0;
+
+      if (intersection->segment->node1 == triangle->node0) 
+	uvw[0] = intersection->t;
+
+      if (intersection->segment->node1 == triangle->node1) 
+	uvw[1] = intersection->t;
+
+      if (intersection->segment->node1 == triangle->node2) 
+	uvw[2] = intersection->t;
+
+      if (intersection->segment->node0 == triangle->node0) 
+	uvw[0] = 1.0 - intersection->t;
+
+      if (intersection->segment->node0 == triangle->node1) 
+	uvw[1] = 1.0 - intersection->t;
+
+      if (intersection->segment->node0 == triangle->node2) 
+	uvw[2] = 1.0 - intersection->t;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+
