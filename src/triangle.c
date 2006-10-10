@@ -17,7 +17,7 @@
 #include "triangle.h"
 #include "cut.h"
 
-int triangle_frame = 0;
+static int triangle_frame = 0;
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
