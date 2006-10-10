@@ -30,6 +30,9 @@ typedef CutStruct * Cut;
 Cut cut_between( Triangle, Triangle );
 void cut_free( Cut );
 
+#define cut_intersection0(cut) ((cut)->intersection0);
+#define cut_intersection1(cut) ((cut)->intersection1);
+
 END_C_DECLORATION
 
 #endif /* CUT_H */
