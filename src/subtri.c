@@ -15,8 +15,7 @@
 #include <stdio.h>
 #include "subtri.h"
 
-Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2,
-		      Side s0, Side s1, Side s2 )
+Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2 )
 {
   Subtri subtri;
   
@@ -30,10 +29,6 @@ Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2,
   subtri->n0 = n0;
   subtri->n1 = n1;
   subtri->n2 = n2;
-
-  subtri->s0 = s0;
-  subtri->s1 = s1;
-  subtri->s2 = s2;
 
   return subtri;
 }

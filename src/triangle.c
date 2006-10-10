@@ -52,7 +52,6 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->node1 = segment_common_node( segment0, segment2 );
   triangle->node2 = segment_common_node( segment0, segment1 );
 
-
   subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
   subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
   subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
@@ -63,8 +62,7 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   array_add( triangle->subnode, subnode2 );
 
   triangle->subtri  = array_create( 20, 50 );
-  array_add( triangle->subtri, subtri_create( subnode0, subnode1, subnode2,
-					      segment0, segment1, segment2 ) );
+  array_add( triangle->subtri, subtri_create( subnode0, subnode1, subnode2 ) );
 
   triangle->cut = array_create( 10, 50 );
 
