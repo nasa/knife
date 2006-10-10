@@ -192,10 +192,11 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 	}
     }
 
-  if ( -1.0e-14 > best_min_bary ) 
+  if ( -1.0e-12 > best_min_bary ) 
     {
-      printf("subnode u %f v %f w %f\n",
-	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2]);
+      printf("subnode u %f v %f w %f frame %d\n",
+	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2],triangle_frame);
+      triangle_eps(triangle);
       printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
 	     __FILE__,__LINE__,best_min_bary);
       return KNIFE_NOT_FOUND;
@@ -280,6 +281,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 						 &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
+      triangle_add_subtri(triangle,new_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
     }
@@ -288,6 +290,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 						 &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
+      triangle_add_subtri(triangle,new_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
     }
