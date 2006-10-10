@@ -25,6 +25,8 @@ typedef struct TriangleStruct TriangleStruct;
 struct TriangleStruct {
   Segment segment[3];
   Node node0, node1, node2;
+  Array subnode;
+  Array subtri;
   Array cut;
 };
 typedef TriangleStruct * Triangle;
