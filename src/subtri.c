@@ -38,3 +38,19 @@ void subtri_free( Subtri subtri )
   if ( NULL == subtri ) return;
   free( subtri );
 }
+
+KNIFE_STATUS subtri_bary( Subtri subtri, Subnode node, double *bary )
+{
+  double area0,area1,area2,total;
+
+  area0 = subnode_area(node,       subtri->n1, subtri->n2);
+  area1 = subnode_area(subtri->n0, node,       subtri->n2);
+  area2 = subnode_area(subtri->n0, subtri->n1, node);
+  total = area0+area1+area2;
+  bary[0] = area0/total;
+  bary[1] = area1/total;
+  bary[2] = area2/total;
+
+  return KNIFE_SUCCESS;
+}
+

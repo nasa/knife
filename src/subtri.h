@@ -32,6 +32,8 @@ struct SubtriStruct {
 Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2 );
 void subtri_free( Subtri );
 
+KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
+
 END_C_DECLORATION
 
 #endif /* SUBTRI_H */

@@ -25,6 +25,7 @@ END_C_DECLORATION
 #include "segment.h"
 #include "node.h"
 #include "subnode.h"
+#include "subtri.h"
 #include "intersection.h"
 
 BEGIN_C_DECLORATION
@@ -53,21 +54,24 @@ void triangle_free( Triangle );
 
 #define triangle_add_cut( triangle, new_cut )		\
   array_add( (triangle)->cut, (ArrayItem)(new_cut) )
-
 #define triangle_ncut( triangle )  		\
   array_size( (triangle)->cut )
-
 #define triangle_cut( triangle, cut_index )		\
   ((Cut)array_item( (triangle)->cut, (cut_index) ))
 
 #define triangle_add_subnode( triangle, new_subnode )		\
   array_add( (triangle)->subnode, (ArrayItem)(new_subnode) )
-
 #define triangle_nsubnode( triangle )		\
   array_size( (triangle)->subnode )
-
 #define triangle_subnode( triangle, subnode_index )		\
   ((Subnode)array_item( (triangle)->subnode, (subnode_index) ))
+
+#define triangle_add_subtri( triangle, new_subtri )		\
+  array_add( (triangle)->subtri, (ArrayItem)(new_subtri) )
+#define triangle_nsubtri( triangle )		\
+  array_size( (triangle)->subtri )
+#define triangle_subtri( triangle, subtri_index )		\
+  ((Subtri)array_item( (triangle)->subtri, (subtri_index) ))
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 
@@ -76,6 +80,10 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle );
 Subnode triangle_unique_subnode( Triangle, Intersection );
 
 Subnode triangle_subnode_with_intersection( Triangle, Intersection );
+
+KNIFE_STATUS triangle_enclosing_subtri( Triangle, Subnode,
+					Subtri, double *bary );
+
 
 END_C_DECLORATION
 

@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "triangle.h"
-#include "subtri.h"
 #include "cut.h"
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
@@ -62,7 +61,8 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle_add_subnode( triangle, subnode2 );
 
   triangle->subtri  = array_create( 20, 50 );
-  array_add( triangle->subtri, subtri_create( subnode0, subnode1, subnode2 ) );
+  triangle_add_subtri( triangle, 
+		       subtri_create( subnode0, subnode1, subnode2 ) );
 
   triangle->cut = array_create( 10, 50 );
 
@@ -154,4 +154,45 @@ Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
     }
 
   return subnode;
+}
+
+KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
+					Subtri enclosing_subtri, 
+					double *enclosing_bary )
+{
+  int subtri_index;
+
+  Subtri subtri;
+  double bary[3];
+  double min_bary;
+  
+  Subtri best_subtri;
+  double best_min_bary;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  best_subtri = triangle_subtri(triangle, 0);
+  subtri_bary(best_subtri, subnode, bary);
+  best_min_bary = MIN3(bary);
+
+  for ( subtri_index = 1;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      subtri_bary(subtri, subnode, bary);
+      min_bary = MIN3(bary);
+      if (min_bary > best_min_bary)
+	{
+	  best_min_bary = min_bary;
+	  best_subtri = subtri;
+	}
+    }
+
+  if ( 0.0 > best_min_bary ) return KNIFE_NOT_FOUND;
+
+  enclosing_subtri = best_subtri;
+  subtri_bary(enclosing_subtri, subnode, enclosing_bary);
+
+  return KNIFE_SUCCESS;
 }
