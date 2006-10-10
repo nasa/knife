@@ -476,3 +476,25 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
 
   return KNIFE_SUCCESS;
 }
+
+double triangle_min_subtri_area( Triangle triangle )
+{
+  Subtri subtri;
+  int subtri_index;
+  double min_area;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  subtri = triangle_subtri(triangle, 0);
+  min_area = subtri_area( subtri );
+
+  for ( subtri_index = 1;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      min_area = MIN(min_area,subtri_area( subtri ));
+    }
+
+  return min_area;
+}

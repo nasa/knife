@@ -100,6 +100,8 @@ KNIFE_STATUS triangle_delaunay( Triangle, Subnode );
 KNIFE_STATUS triangle_suspect_edge( Triangle, Subnode, Subtri );
 KNIFE_STATUS triangle_swap_side( Triangle, Subnode node0, Subnode node1 );
 
+double triangle_min_subtri_area( Triangle );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

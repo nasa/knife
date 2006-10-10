@@ -128,3 +128,7 @@ KNIFE_STATUS subtri_bary( Subtri subtri, Subnode node, double *bary )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_area( Subtri subtri )
+{
+  return subnode_area(subtri_n0(subtri), subtri_n1(subtri), subtri_n2(subtri));
+}
