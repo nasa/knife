@@ -84,6 +84,7 @@ Subnode triangle_subnode_with_intersection( Triangle, Intersection );
 KNIFE_STATUS triangle_enclosing_subtri( Triangle, Subnode,
 					Subtri, double *bary );
 
+KNIFE_STATUS triangle_insert( Triangle, Subnode );
 
 END_C_DECLORATION
 

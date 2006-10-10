@@ -151,6 +151,7 @@ Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
       intersection_uvw(intersection,triangle,uvw);
       subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
       triangle_add_subnode( triangle, subnode );
+      triangle_insert( triangle, subnode);
     }
 
   return subnode;
@@ -193,6 +194,28 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 
   enclosing_subtri = best_subtri;
   subtri_bary(enclosing_subtri, subnode, enclosing_bary);
+
+  return KNIFE_SUCCESS;
+}
+
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
+KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
+{
+  Subtri subtri;
+  double bary[3];
+
+  subtri = NULL;  
+  TRY( triangle_enclosing_subtri( triangle, subnode, subtri, bary ), 
+       "triangle_enclosing_subtri not found" );
 
   return KNIFE_SUCCESS;
 }
