@@ -81,6 +81,36 @@ KNIFE_STATUS subtri_replace_node( Subtri subtri,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS subtri_orient( Subtri subtri, Subnode subnode, 
+			    Subnode *n0, Subnode *n1, Subnode *n2 );
+{
+  if (NULL == subtri) return KNIFE_NULL;
+
+  if ( subnode == subtri->n0 )
+    {
+      *n0 = subtri->n0;
+      *n1 = subtri->n1;
+      *n2 = subtri->n2;
+      return KNIFE_SUCCESS;
+    }
+  if ( subnode == subtri->n1 )
+    {
+      *n0 = subtri->n1;
+      *n1 = subtri->n2;
+      *n2 = subtri->n0;
+      return KNIFE_SUCCESS;
+    }
+  if ( subnode == subtri->n2 )
+    {
+      *n0 = subtri->n2;
+      *n1 = subtri->n0;
+      *n2 = subtri->n1;
+      return KNIFE_SUCCESS;
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS subtri_bary( Subtri subtri, Subnode node, double *bary )
 {
   double area0,area1,area2,total;

@@ -37,12 +37,18 @@ void subtri_free( Subtri );
 #define subtri_n1(subtri) ((subtri)->n1)
 #define subtri_n2(subtri) ((subtri)->n2)
 
-#define subtri_has(subtri,n0,n1)		    \
-  ( ( ((subtri)->n0==n0) && ((subtri)->n1==n1) ) || \
-    ( ((subtri)->n1==n0) && ((subtri)->n2==n1) ) || \
-    ( ((subtri)->n2==n0) && ((subtri)->n0==n1) ) )
+#define subtri_has2(subtri,node0,node1)		    \
+  ( ( ((subtri)->n0==(node0)) && ((subtri)->n1==(node1)) ) ||	\
+    ( ((subtri)->n1==(node0)) && ((subtri)->n2==(node1)) ) ||	\
+    ( ((subtri)->n2==(node0)) && ((subtri)->n0==(node1)) ) )
+
+#define subtri_has1(subtri,n)						\
+  ( ((subtri)->n0==(n)) || ((subtri)->n1==(n)) || ((subtri)->n2==(n)) )
 
 KNIFE_STATUS subtri_replace_node( Subtri, Subnode old_node, Subnode new_node );
+
+KNIFE_STATUS subtri_orient( Subtri, Subnode, 
+			    Subnode *n0, Subnode *n1, Subnode *n2 );
 
 KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
 
