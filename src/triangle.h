@@ -82,7 +82,7 @@ Subnode triangle_unique_subnode( Triangle, Intersection );
 Subnode triangle_subnode_with_intersection( Triangle, Intersection );
 
 KNIFE_STATUS triangle_enclosing_subtri( Triangle, Subnode,
-					Subtri, double *bary );
+					Subtri *enclosing, double *bary );
 
 KNIFE_STATUS triangle_insert( Triangle, Subnode );
 KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode, 
@@ -90,7 +90,7 @@ KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode,
 
 KNIFE_STATUS triangle_find_subtri_with( Triangle, 
 					Subnode n0, Subnode n1,
-					Subtri found_subtri );
+					Subtri *found_subtri );
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

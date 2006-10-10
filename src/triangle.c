@@ -158,7 +158,7 @@ Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
 }
 
 KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
-					Subtri enclosing_subtri, 
+					Subtri *enclosing_subtri, 
 					double *enclosing_bary )
 {
   int subtri_index;
@@ -197,8 +197,8 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
       return KNIFE_NOT_FOUND;
     }
 
-  enclosing_subtri = best_subtri;
-  subtri_bary(enclosing_subtri, subnode, enclosing_bary);
+  *enclosing_subtri = best_subtri;
+  subtri_bary(*enclosing_subtri, subnode, enclosing_bary);
 
   return KNIFE_SUCCESS;
 }
@@ -225,7 +225,7 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
 
   subtri = NULL;  
 
-  TRY( triangle_enclosing_subtri( triangle, subnode, subtri, bary ), 
+  TRY( triangle_enclosing_subtri( triangle, subnode, &subtri, bary ), 
        "triangle_enclosing_subtri not found" );
 
   side_tolerence = 1.0e-12;
@@ -273,7 +273,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
   existing_subtri = NULL;
 
   if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n0, n1, 
-						 existing_subtri))
+						 &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
@@ -281,7 +281,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
     }
 
   if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n1, n0, 
-						 existing_subtri))
+						 &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
@@ -293,7 +293,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 
 KNIFE_STATUS triangle_find_subtri_with( Triangle triangle, 
 					Subnode n0, Subnode n1,
-					Subtri found_subtri )
+					Subtri *found_subtri )
 {
   Subtri subtri;
   int subtri_index;
@@ -307,7 +307,7 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle triangle,
       subtri = triangle_subtri(triangle, subtri_index);
       if ( subtri_has(subtri,n0,n1) )
 	{
-	  found_subtri = subtri;
+	  *found_subtri = subtri;
 	  return KNIFE_SUCCESS;
 	}
     }
