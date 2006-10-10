@@ -15,6 +15,12 @@
 #define DOMAIN_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct DomainStruct DomainStruct;
+typedef DomainStruct * Domain;
+END_C_DECLORATION
+
 #include "primal.h"
 #include "surface.h"
 #include "poly.h"
@@ -24,9 +30,7 @@
 
 BEGIN_C_DECLORATION
 
-typedef struct DomainStruct DomainStruct;
 struct DomainStruct {
-
   Primal primal;
 
   Surface surface;
@@ -42,9 +46,7 @@ struct DomainStruct {
 
   int ntriangle;
   TriangleStruct *triangle;
-
 };
-typedef DomainStruct * Domain;
 
 #define domain_test_malloc(ptr,fcn)		       \
   if (NULL == (ptr)) {				       \

@@ -15,11 +15,18 @@
 #define PRIMAL_H
 
 #include "knife_definitions.h"
-#include "adj.h"
 
 BEGIN_C_DECLORATION
 
 typedef struct PrimalStruct PrimalStruct;
+typedef PrimalStruct * Primal;
+
+END_C_DECLORATION
+
+#include "adj.h"
+
+BEGIN_C_DECLORATION
+
 struct PrimalStruct {
 
   int nnode;
@@ -43,7 +50,6 @@ struct PrimalStruct {
   int *t2n;
 
 };
-typedef PrimalStruct * Primal;
 
 #define primal_test_malloc(ptr,fcn)		       \
   if (NULL == (ptr)) {				       \

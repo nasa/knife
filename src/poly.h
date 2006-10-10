@@ -15,15 +15,19 @@
 #define POLY_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct PolyStruct PolyStruct;
+typedef PolyStruct * Poly;
+END_C_DECLORATION
+
 #include "array.h"
 
 BEGIN_C_DECLORATION
 
-typedef struct PolyStruct PolyStruct;
 struct PolyStruct {
   Array triangles;
 };
-typedef PolyStruct * Poly;
 
 Poly poly_create( void );
 void poly_free( Poly );

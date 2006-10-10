@@ -15,12 +15,15 @@
 #define SUBTRI_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct SubtriStruct SubtriStruct;
+typedef SubtriStruct * Subtri;
+END_C_DECLORATION
+
 #include "subnode.h"
 
 BEGIN_C_DECLORATION
-
-typedef struct SubtriStruct SubtriStruct;
-typedef SubtriStruct * Subtri;
 
 struct SubtriStruct {
   Subnode n0, n1, n2;

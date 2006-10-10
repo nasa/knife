@@ -15,13 +15,16 @@
 #define SEGMENT_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct SegmentStruct SegmentStruct;
+typedef SegmentStruct * Segment;
+END_C_DECLORATION
+
 #include "array.h"
 #include "node.h"
 
 BEGIN_C_DECLORATION
-
-typedef struct SegmentStruct SegmentStruct;
-typedef SegmentStruct * Segment;
 
 struct SegmentStruct {
   Node node0, node1;

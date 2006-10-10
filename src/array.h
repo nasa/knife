@@ -19,13 +19,13 @@
 BEGIN_C_DECLORATION
 
 typedef void * ArrayItem;
-
 typedef struct ArrayStruct ArrayStruct;
+typedef ArrayStruct * Array;
+
 struct ArrayStruct {
   int actual, allocated, chunk;
   ArrayItem *data;
 };
-typedef ArrayStruct * Array;
 
 Array array_from( ArrayItem *data, int size );
 Array array_create( int guess, int chunk );

@@ -15,6 +15,12 @@
 #define SURFACE_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct SurfaceStruct SurfaceStruct;
+typedef SurfaceStruct * Surface;
+END_C_DECLORATION
+
 #include "array.h"
 #include "primal.h"
 #include "node.h"
@@ -23,7 +29,6 @@
 
 BEGIN_C_DECLORATION
 
-typedef struct SurfaceStruct SurfaceStruct;
 struct SurfaceStruct {
   int nnode;
   NodeStruct *node;
@@ -32,7 +37,6 @@ struct SurfaceStruct {
   int ntriangle;
   TriangleStruct *triangle;
 };
-typedef SurfaceStruct * Surface;
 
 Surface surface_from( Primal, Array of_bcs );
 

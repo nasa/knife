@@ -15,6 +15,12 @@
 #define TRIANGLE_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct TriangleStruct TriangleStruct;
+typedef TriangleStruct * Triangle;
+END_C_DECLORATION
+
 #include "array.h"
 #include "segment.h"
 #include "node.h"
@@ -23,7 +29,6 @@
 
 BEGIN_C_DECLORATION
 
-typedef struct TriangleStruct TriangleStruct;
 struct TriangleStruct {
   Segment segment[3];
   Node node0, node1, node2;
@@ -31,7 +36,6 @@ struct TriangleStruct {
   Array subtri;
   Array cut;
 };
-typedef TriangleStruct * Triangle;
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2);
 KNIFE_STATUS triangle_initialize(Triangle,

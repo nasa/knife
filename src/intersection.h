@@ -15,13 +15,16 @@
 #define INTERSECTION_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct IntersectionStruct IntersectionStruct;
+typedef IntersectionStruct * Intersection;
+END_C_DECLORATION
+
 #include "triangle.h"
 #include "segment.h"
 
 BEGIN_C_DECLORATION
-
-typedef struct IntersectionStruct IntersectionStruct;
-typedef IntersectionStruct * Intersection;
 
 struct IntersectionStruct {
   Triangle triangle;

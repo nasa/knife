@@ -15,17 +15,21 @@
 #define CUT_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct CutStruct CutStruct;
+typedef CutStruct * Cut;
+END_C_DECLORATION
+
 #include "triangle.h"
 #include "intersection.h"
 
 BEGIN_C_DECLORATION
 
-typedef struct CutStruct CutStruct;
 struct CutStruct {
   Triangle triangle0, triangle1;
   Intersection intersection0, intersection1;
 };
-typedef CutStruct * Cut;
 
 Cut cut_between( Triangle, Triangle );
 void cut_free( Cut );

@@ -19,13 +19,15 @@
 BEGIN_C_DECLORATION
 
 typedef struct AdjItem AdjItem;
+typedef AdjItem * AdjIterator;
+typedef struct AdjStruct AdjStruct;
+typedef AdjStruct * Adj;
+
 struct AdjItem {
   int item;
   AdjItem *next;
 };
-typedef AdjItem * AdjIterator;
 
-typedef struct AdjStruct AdjStruct;
 struct AdjStruct {
   int nnode, nadj, chunk_size;
   AdjItem *node2item;
@@ -33,7 +35,6 @@ struct AdjStruct {
   AdjItem *current;
   AdjItem *blank;
 };
-typedef AdjStruct * Adj;
 
 Adj adj_create( int nnode, int nadj, int chunkSize );
 void adj_free( Adj );

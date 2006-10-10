@@ -15,13 +15,16 @@
 #define SUBNODE_H
 
 #include "knife_definitions.h"
+
+BEGIN_C_DECLORATION
+typedef struct SubnodeStruct SubnodeStruct;
+typedef SubnodeStruct * Subnode;
+END_C_DECLORATION
+
 #include "node.h"
 #include "intersection.h"
 
 BEGIN_C_DECLORATION
-
-typedef struct SubnodeStruct SubnodeStruct;
-typedef SubnodeStruct * Subnode;
 
 struct SubnodeStruct {
   double uvw[3];
