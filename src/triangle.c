@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "triangle.h"
-#include "subnode.h"
 #include "subtri.h"
+#include "cut.h"
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
@@ -105,8 +105,15 @@ KNIFE_STATUS triangle_extent( Triangle triangle, double *center, double *diamete
 
 KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
-      printf("%s: %d: implement triangle_triangulate_cuts\n",
-	     __FILE__,__LINE__);
-  triangle = NULL;
-  return KNIFE_IMPLEMENT;
+  int cut_index;
+  Cut cut;
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    triangle_unique_subnode(triangle, cut_intersection0(cut) );
+    triangle_unique_subnode(triangle, cut_intersection1(cut) );
+  }
+
+  return KNIFE_SUCCESS;
 }
