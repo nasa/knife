@@ -33,7 +33,8 @@ struct SubnodeStruct {
   Intersection intersection;
 };
 
-Subnode subnode_create( double *uvw, Node, Intersection );
+Subnode subnode_create( double u, double v, double w,
+			Node, Intersection );
 void subnode_free( Subnode );
 
 END_C_DECLORATION

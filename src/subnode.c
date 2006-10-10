@@ -15,7 +15,8 @@
 #include <stdio.h>
 #include "subnode.h"
 
-Subnode subnode_create( double *uvw, Node node, Intersection intersection)
+Subnode subnode_create( double u, double v, double w, 
+			Node node, Intersection intersection)
 {
   Subnode subnode;
   
