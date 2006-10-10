@@ -34,14 +34,21 @@ Node segment_common_node( Segment segment0, Segment segment1 );
 #define segment_part_of( segment, triangle ) \
   array_add( (segment)->triangle, (ArrayItem)(triangle) )
 
+#define segment_ntriangle( segment ) \
+  array_size( (segment)->triangle )
+
+#define segment_triangle( segment, triangle_index )	\
+  ((Triangle)array_item( (segment)->triangle, (triangle_index) ))
+
+#define segment_add_intersection( segment, intersection )	\
+  array_add( (segment)->intersection, (ArrayItem)(intersection) )
+
 #define segment_nintersection( segment ) \
   array_size( (segment)->intersection )
 
 #define segment_intersection( segment, intersection_index )	\
   ((Intersection)array_item( (segment)->intersection, (intersection_index) ))
 
-#define segment_add_intersection( segment, intersection )	\
-  array_add( (segment)->intersection, (ArrayItem)(intersection) )
 
 #define segment_xyz0(segment) (node_xyz((segment)->node0))
 #define segment_xyz1(segment) (node_xyz((segment)->node1))
