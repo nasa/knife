@@ -214,6 +214,7 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      triangle_eps(triangle);				      \
       return code;					      \
     }							      \
   }
@@ -458,7 +459,7 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   Subnode n0, n1, n2;
 
   TRY( triangle_find_subtri_with( triangle, node0, node1, &subtri0 ), "s0" );
-  TRY( triangle_find_subtri_with( triangle, node0, node1, &subtri1 ), "s1" );
+  TRY( triangle_find_subtri_with( triangle, node1, node0, &subtri1 ), "s1" );
 
   TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
   node2 = n2;
