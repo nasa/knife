@@ -44,6 +44,10 @@ typedef short KnifeBool;
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #endif
 
+#if !defined(MIN3)
+#define MIN3(a) (MIN((a)[0],MIN((a)[1],(a)[2]))) 
+#endif
+
 typedef int KNIFE_STATUS;
 
 #define KNIFE_SUCCESS     (0)
