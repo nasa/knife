@@ -190,7 +190,12 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 	}
     }
 
-  if ( 0.0 > best_min_bary ) return KNIFE_NOT_FOUND;
+  if ( -1.0e-14 > best_min_bary ) 
+    {
+      printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
+	     __FILE__,__LINE__,best_min_bary);
+      return KNIFE_NOT_FOUND;
+    }
 
   enclosing_subtri = best_subtri;
   subtri_bary(enclosing_subtri, subnode, enclosing_bary);
