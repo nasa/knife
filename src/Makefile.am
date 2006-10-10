@@ -18,7 +18,8 @@ libknife_a_SOURCES = \
 	domain.h domain.c \
 	intersection.h intersection.c \
 	cut.h cut.c \
-	near.h near.c
+	near.h near.c \
+	subnode.h subnode.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -34,7 +35,8 @@ libknife_a_include_HEADERS = \
 	domain.h \
 	intersection.h \
 	cut.h \
-	near.h
+	near.h \
+	subnode.h
 
 bin_PROGRAMS = knife
 
