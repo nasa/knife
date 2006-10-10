@@ -21,13 +21,14 @@
 BEGIN_C_DECLORATION
 
 typedef struct IntersectionStruct IntersectionStruct;
+typedef IntersectionStruct * Intersection;
+
 struct IntersectionStruct {
   Triangle triangle;
   Segment segment;
   double t;
   double uvw[3];
 };
-typedef IntersectionStruct * Intersection;
 
 Intersection intersection_of( Triangle, Segment );
 void intersection_free( Intersection );
