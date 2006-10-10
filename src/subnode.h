@@ -36,6 +36,7 @@ Subnode subnode_create( double u, double v, double w,
 			Node, Intersection );
 void subnode_free( Subnode );
 
+#define subnode_intersection( subnode ) ((subnode)->intersection) 
 END_C_DECLORATION
 
 #endif /* SUBNODE_H */

@@ -44,6 +44,8 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
 				double *uvw );
 double intersection_volume6( double *a, double *b, double *c, double *d);
 
+KNIFE_STATUS intersection_uvw( Intersection, Triangle, double *uvw);
+
 END_C_DECLORATION
 
 #endif /* INTERSECTION_H */

@@ -51,20 +51,31 @@ void triangle_free( Triangle );
 #define triangle_xyz1(triangle) (node_xyz((triangle)->node1))
 #define triangle_xyz2(triangle) (node_xyz((triangle)->node2))
 
-#define triangle_add_cut( triangle, cut )		\
-  array_add( (triangle)->cut, (ArrayItem)(cut) )
+#define triangle_add_cut( triangle, new_cut )		\
+  array_add( (triangle)->cut, (ArrayItem)(new_cut) )
 
-#define triangle_ncut( triangle )			\
+#define triangle_ncut( triangle )  		\
   array_size( (triangle)->cut )
 
 #define triangle_cut( triangle, cut_index )		\
   ((Cut)array_item( (triangle)->cut, (cut_index) ))
+
+#define triangle_add_subnode( triangle, new_subnode )		\
+  array_add( (triangle)->subnode, (ArrayItem)(new_subnode) )
+
+#define triangle_nsubnode( triangle )		\
+  array_size( (triangle)->subnode )
+
+#define triangle_subnode( triangle, subnode_index )		\
+  ((Subnode)array_item( (triangle)->subnode, (subnode_index) ))
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 
 KNIFE_STATUS triangle_triangulate_cuts( Triangle );
 
 Subnode triangle_unique_subnode( Triangle, Intersection );
+
+Subnode triangle_subnode_with_intersection( Triangle, Intersection );
 
 END_C_DECLORATION
 

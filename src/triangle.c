@@ -57,9 +57,9 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
 
   triangle->subnode = array_create( 20, 50 );
-  array_add( triangle->subnode, subnode0 );
-  array_add( triangle->subnode, subnode1 );
-  array_add( triangle->subnode, subnode2 );
+  triangle_add_subnode( triangle, subnode0 );
+  triangle_add_subnode( triangle, subnode1 );
+  triangle_add_subnode( triangle, subnode2 );
 
   triangle->subtri  = array_create( 20, 50 );
   array_add( triangle->subtri, subtri_create( subnode0, subnode1, subnode2 ) );
@@ -78,7 +78,8 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
-KNIFE_STATUS triangle_extent( Triangle triangle, double *center, double *diameter )
+KNIFE_STATUS triangle_extent( Triangle triangle, 
+			      double *center, double *diameter )
 {
   double dx, dy, dz;
   int i;
@@ -116,4 +117,41 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   }
 
   return KNIFE_SUCCESS;
+}
+
+
+Subnode triangle_subnode_with_intersection( Triangle triangle, 
+					    Intersection intersection)
+{
+  int subnode_index;
+  Subnode subnode;
+
+  if( NULL == triangle || NULL == intersection ) return NULL;
+
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
+    {
+      subnode = triangle_subnode(triangle, subnode_index);
+      if ( intersection == subnode_intersection(subnode) ) return subnode;
+    }
+  return NULL;
+}
+
+Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
+{
+  Subnode subnode;
+  double uvw[3];
+
+  subnode = triangle_subnode_with_intersection( triangle, 
+						intersection);
+
+  if ( NULL == subnode )
+    {
+      intersection_uvw(intersection,triangle,uvw);
+      subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
+      triangle_add_subnode( triangle, subnode );
+    }
+
+  return subnode;
 }
