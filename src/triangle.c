@@ -440,7 +440,7 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
       volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
       if ( volume < 0.0 )
 	{
-	  TRY( triangle_swap_side(triangle,n0,n1), "swap");
+	  TRY( triangle_swap_side(triangle,n1,n2), "swap");
 	  TRY( triangle_find_subtri_with( triangle, n1, o2, &other ), "on1" );
 	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn1" );
 	  TRY( triangle_find_subtri_with( triangle, o2, n2, &other ), "on2" );
