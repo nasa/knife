@@ -27,9 +27,9 @@ Subnode subnode_create( double u, double v, double w,
     return NULL;
   }
 
-  subnode->uvw[0] = uvw[0];
-  subnode->uvw[1] = uvw[1];
-  subnode->uvw[2] = uvw[2];
+  subnode->uvw[0] = u;
+  subnode->uvw[1] = v;
+  subnode->uvw[2] = w;
   subnode->node = node;
   subnode->intersection = intersection;
   

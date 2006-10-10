@@ -11,18 +11,14 @@
  * Email: Mike.Park@NASA.Gov
  */
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef SUBNODE_H
+#define SUBNODE_H
 
 #include "knife_definitions.h"
+#include "node.h"
+#include "intersection.h"
 
 BEGIN_C_DECLORATION
-
-typedef struct NodeStruct NodeStruct;
-typedef NodeStruct * Node;
-
-typedef struct IntersectionStruct IntersectionStruct;
-typedef IntersectionStruct * Intersection;
 
 typedef struct SubnodeStruct SubnodeStruct;
 typedef SubnodeStruct * Subnode;
