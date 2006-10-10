@@ -19,6 +19,20 @@ Intersection intersection_of( Triangle triangle, Segment segment )
 {
   double t, uvw[3];
   Intersection intersection;
+  int intersection_index;
+  
+  /* if this triangle and segment have meet before the outcome will be the
+   * same, so return the previously computed intersection */
+  for ( intersection_index=0;
+	intersection_index < segment_nintersection(segment);
+	intersection_index++ )
+    {
+      intersection = segment_intersection(segment,intersection_index);
+      if ( triangle == intersection_triangle(intersection) )
+	return intersection;
+    }
+
+  intersection = NULL;
 
   if ( KNIFE_SUCCESS == intersection_core( triangle_xyz0(triangle), 
 					   triangle_xyz1(triangle), 
@@ -38,17 +52,17 @@ Intersection intersection_of( Triangle triangle, Segment segment )
       intersection->triangle = triangle;
       intersection->segment = segment;
 
+      segment_add_intersection( segment, intersection );
+
       intersection->t = t;
       intersection->uvw[0] = uvw[0];
       intersection->uvw[1] = uvw[1];
       intersection->uvw[2] = uvw[2];
   
-      return intersection;
     } 
-  else 
-    {
-      return NULL;
-    }
+
+  return intersection;
+
 }
 
 void intersection_free( Intersection intersection )

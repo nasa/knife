@@ -32,6 +32,8 @@ typedef IntersectionStruct * Intersection;
 Intersection intersection_of( Triangle, Segment );
 void intersection_free( Intersection );
 
+#define intersection_triangle( intersection ) ((intersection)->triangle)
+
 KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2, 
 				double *s0, double *s1,
 				double *t,

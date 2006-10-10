@@ -23,8 +23,8 @@ BEGIN_C_DECLORATION
 typedef struct SegmentStruct SegmentStruct;
 struct SegmentStruct {
   Node node0, node1;
-  Array triangles;
-  Array intersections;
+  Array triangle;
+  Array intersection;
 };
 typedef SegmentStruct * Segment;
 
@@ -32,7 +32,16 @@ KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 );
 Node segment_common_node( Segment segment0, Segment segment1 );
 
 #define segment_part_of( segment, triangle ) \
-  array_add( segment->triangles, (ArrayItem)(triangle) )
+  array_add( (segment)->triangle, (ArrayItem)(triangle) )
+
+#define segment_nintersection( segment ) \
+  array_size( (segment)->intersection )
+
+#define segment_intersection( segment, intersection_index )	\
+  ((Intersection)array_item( (segment)->intersection, (intersection_index) ))
+
+#define segment_add_intersection( segment, intersection )	\
+  array_add( (segment)->intersection, (ArrayItem)(intersection) )
 
 #define segment_xyz0(segment) (node_xyz((segment)->node0))
 #define segment_xyz1(segment) (node_xyz((segment)->node1))
