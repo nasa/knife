@@ -16,7 +16,7 @@ install:
 	( cd ../`uname` && $(MAKE) install )
 
 clean:
-	rm -rf Adj Primal Node
+	rm -rf Adj Primal Near Node
 
 bu:
 	( cd .. && $(MAKE) bu )
