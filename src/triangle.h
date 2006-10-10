@@ -91,6 +91,9 @@ KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode,
 KNIFE_STATUS triangle_find_subtri_with( Triangle, 
 					Subnode n0, Subnode n1,
 					Subtri *found_subtri );
+
+KNIFE_STATUS triangle_eps( Triangle );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

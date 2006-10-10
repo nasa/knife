@@ -17,6 +17,8 @@
 #include "triangle.h"
 #include "cut.h"
 
+int triangle_frame = 0;
+
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
   Triangle triangle;
@@ -317,3 +319,43 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle triangle,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS triangle_eps( Triangle triangle)
+{
+  int subtri_index;
+  Subtri subtri;
+  Subnode node;
+  FILE *f;
+  f = fopen("gnuplot_mesh_command","w");
+  fprintf(f,"reset\n");
+  fprintf(f,"set term postscript eps\n");
+  fprintf(f,"set output 'frame%04d.eps'\n",triangle_frame);
+
+  triangle_frame++;
+
+  fprintf(f,"set size ratio -1\n");
+  fprintf(f,"set xlabel 'V'\n");
+  fprintf(f,"set ylabel 'W'\n");
+  fprintf(f,"plot [-0.1:1.1] [-0.1:1.1] '-' title '' with lines lw 0.5\n");
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      node = subtri->n0;
+      fprintf(f,"%25.15f %25.15f\n",node->uvw[1],node->uvw[2]);
+      node = subtri->n1;
+      fprintf(f,"%25.15f %25.15f\n",node->uvw[1],node->uvw[2]);
+      node = subtri->n2;
+      fprintf(f,"%25.15f %25.15f\n",node->uvw[1],node->uvw[2]);
+      node = subtri->n0;
+      fprintf(f,"%25.15f %25.15f\n",node->uvw[1],node->uvw[2]);
+      fprintf(f,"\n\n");
+    }
+
+  fprintf(f,"e\n");
+
+  fclose(f);
+  system("gnuplot gnuplot_mesh_command");
+  return KNIFE_SUCCESS;
+}
