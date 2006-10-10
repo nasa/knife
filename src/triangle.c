@@ -192,6 +192,8 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 
   if ( -1.0e-14 > best_min_bary ) 
     {
+      printf("subnode u %f v %f w %f\n",
+	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2]);
       printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
 	     __FILE__,__LINE__,best_min_bary);
       return KNIFE_NOT_FOUND;
