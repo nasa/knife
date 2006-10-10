@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include "array.h"
 
-
 Array array_from( ArrayItem *data, int size )
 {
   Array array;
