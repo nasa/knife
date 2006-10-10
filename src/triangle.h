@@ -15,6 +15,7 @@
 #define TRIANGLE_H
 
 #include "knife_definitions.h"
+#include "array.h"
 #include "segment.h"
 #include "node.h"
 
@@ -24,6 +25,7 @@ typedef struct TriangleStruct TriangleStruct;
 struct TriangleStruct {
   Segment segment[3];
   Node node0, node1, node2;
+  Array cut;
 };
 typedef TriangleStruct * Triangle;
 
@@ -34,12 +36,21 @@ KNIFE_STATUS triangle_initialize(Triangle,
 				 Segment segment2);
 void triangle_free( Triangle );
 
+#define triangle_segment(triangle,segment_index)	\
+  ((triangle)->segment[segment_index])
+
 #define triangle_xyz0(triangle) (node_xyz((triangle)->node0))
 #define triangle_xyz1(triangle) (node_xyz((triangle)->node1))
 #define triangle_xyz2(triangle) (node_xyz((triangle)->node2))
 
-#define triangle_segment(triangle,segment_index)	\
-  ((triangle)->segment[segment_index])
+#define triangle_add_cut( triangle, cut )		\
+  array_add( (triangle)->cut, (ArrayItem)(cut) )
+
+#define triangle_ncut( triangle )			\
+  array_size( (triangle)->cut )
+
+#define triangle_cut( triangle, cut_index )		\
+  ((Cut)array_item( (triangle)->cut, (cut_index) ))
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 

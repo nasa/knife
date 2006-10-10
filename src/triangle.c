@@ -50,12 +50,15 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->node1 = segment_common_node( segment0, segment2 );
   triangle->node2 = segment_common_node( segment0, segment1 );
 
+  triangle->cut = array_create( 10, 50 );
+
   return KNIFE_SUCCESS;
 }
 
 void triangle_free( Triangle triangle )
 {
   if ( NULL == triangle ) return;
+  array_free( triangle->cut );
   free( triangle );
 }
 

@@ -69,6 +69,9 @@ Cut cut_between( Triangle triangle0, Triangle triangle1 )
       cut->triangle0 = triangle0;
       cut->triangle1 = triangle1;
 
+      triangle_add_cut( triangle0, cut );
+      triangle_add_cut( triangle1, cut );
+
       cut->intersection0 = intersection0;
       cut->intersection1 = intersection1;
   
