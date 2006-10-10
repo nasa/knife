@@ -30,11 +30,19 @@ struct SubtriStruct {
 };
 
 Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2 );
+Subtri subtri_shallow_copy( Subtri );
 void subtri_free( Subtri );
 
 #define subtri_n0(subtri) ((subtri)->n0)
 #define subtri_n1(subtri) ((subtri)->n1)
 #define subtri_n2(subtri) ((subtri)->n2)
+
+#define subtri_has(subtri,n0,n1)		    \
+  ( ( ((subtri)->n0==n0) && ((subtri)->n1==n1) ) || \
+    ( ((subtri)->n1==n0) && ((subtri)->n2==n1) ) || \
+    ( ((subtri)->n2==n0) && ((subtri)->n0==n1) ) )
+
+KNIFE_STATUS subtri_replace_node( Subtri, Subnode old_node, Subnode new_node );
 
 KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
 
