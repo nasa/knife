@@ -18,14 +18,14 @@
 
 BEGIN_C_DECLORATION
 
-typedef struct SubnodeStruct SubnodeStruct;
-typedef SubnodeStruct * Subnode;
-
 typedef struct NodeStruct NodeStruct;
 typedef NodeStruct * Node;
 
 typedef struct IntersectionStruct IntersectionStruct;
 typedef IntersectionStruct * Intersection;
+
+typedef struct SubnodeStruct SubnodeStruct;
+typedef SubnodeStruct * Subnode;
 
 struct SubnodeStruct {
   double uvw[3];
