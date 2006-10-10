@@ -178,6 +178,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 		       EMPTY, 
 		       center[0], center[1], center[2], 
 		       diameter );
+      ntouched = 0;
       near_touched(near_tree, &target, &ntouched, max_touched, touched);
       for (i=0;i<ntouched;i++)
 	{
