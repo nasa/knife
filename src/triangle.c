@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "triangle.h"
+#include "subnode.h"
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
@@ -37,7 +38,6 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
 				 Segment segment1, 
 				 Segment segment2)
 {
-
   triangle->segment[0] = segment0;
   triangle->segment[1] = segment1;
   triangle->segment[2] = segment2;
@@ -51,6 +51,13 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->node2 = segment_common_node( segment0, segment1 );
 
   triangle->subnode = array_create( 20, 50 );
+
+  array_add( triangle->subnode, subnode_create( 1.0, 0.0, 0.0, 
+						triangle->node0, NULL ) );
+  array_add( triangle->subnode, subnode_create( 0.0, 1.0, 0.0, 
+						triangle->node1, NULL ) );
+  array_add( triangle->subnode, subnode_create( 0.0, 0.0, 1.0, 
+						triangle->node2, NULL ) );
 
   triangle->subtri  = array_create( 20, 50 );
 
