@@ -36,6 +36,10 @@ Subnode subnode_create( double u, double v, double w,
 			Node, Intersection );
 void subnode_free( Subnode );
 
+#define subnode_u( subnode ) ((subnode)->uvw[0]) 
+#define subnode_v( subnode ) ((subnode)->uvw[1]) 
+#define subnode_w( subnode ) ((subnode)->uvw[2]) 
+
 #define subnode_intersection( subnode ) ((subnode)->intersection) 
 
 double subnode_area( Subnode node0, Subnode node1, Subnode node2 );

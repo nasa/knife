@@ -96,6 +96,10 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle,
 
 KNIFE_STATUS triangle_eps( Triangle );
 
+KNIFE_STATUS triangle_delaunay( Triangle, Subnode );
+KNIFE_STATUS triangle_suspect_edge( Triangle, Subnode, Subtri );
+KNIFE_STATUS triangle_swap_side( Triangle, Subnode node0, Subnode node1 );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

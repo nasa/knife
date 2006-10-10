@@ -267,6 +267,8 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
     {
       TRY( triangle_insert_into_center(triangle, subnode, subtri), "center" );  
     }
+  
+  TRY( triangle_delaunay(triangle, subnode ), "delaunay" );  
 
   return KNIFE_SUCCESS;
 }
@@ -336,7 +338,7 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle triangle,
 	subtri_index++)
     {
       subtri = triangle_subtri(triangle, subtri_index);
-      if ( subtri_has(subtri,n0,n1) )
+      if ( subtri_has2(subtri,n0,n1) )
 	{
 	  *found_subtri = subtri;
 	  return KNIFE_SUCCESS;
@@ -383,6 +385,93 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
   fprintf(f,"e\n");
 
   fclose(f);
-  system("gnuplot gnuplot_mesh_command");
+  system("gnuplot gnuplot_mesh_command; rm gnuplot_mesh_command");
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_delaunay( Triangle triangle, Subnode subnode )
+{
+   Subtri subtri;
+  int subtri_index;
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      if ( subtri_has1(subtri,subnode) )
+	{
+	  TRY( triangle_suspect_edge( triangle, subnode, subtri), "suspect");
+	}
+    }
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_suspect_edge( Triangle triangle, 
+				    Subnode subnode, Subtri subtri )
+{
+  Subnode n0,n1,n2;
+  Subtri other;
+  Subnode o0,o1,o2;
+  double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
+  double volume;
+
+  TRY( subtri_orient( subtri, subnode, &n0, &n1, &n2 ), "orient");
+  if ( KNIFE_SUCCESS == triangle_find_subtri_with( triangle, n2, n1, &other ) )
+    {
+      subtri_orient( other, n2, &o0, &o1, &o2 );
+      xyz0[0] = subnode_v(n0);
+      xyz0[1] = subnode_w(n0);
+ 
+      xyz1[0] = subnode_v(n1);
+      xyz1[1] = subnode_w(n1);
+
+      xyz2[0] = subnode_v(n2);
+      xyz2[1] = subnode_w(n2);
+
+      xyz3[0] = subnode_v(o2);
+      xyz3[1] = subnode_w(o2);
+
+      xyz0[2] = xyz0[0]*xyz0[0]+xyz0[1]*xyz0[1];
+      xyz1[2] = xyz1[0]*xyz1[0]+xyz1[1]*xyz1[1];
+      xyz2[2] = xyz2[0]*xyz2[0]+xyz2[1]*xyz2[1];
+      xyz3[2] = xyz3[0]*xyz3[0]+xyz3[1]*xyz3[1];
+
+      volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
+      if ( volume < 0.0 )
+	{
+	  TRY( triangle_swap_side(triangle,n0,n1), "swap");
+	  TRY( triangle_find_subtri_with( triangle, n1, o2, &other ), "on1" );
+	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn1" );
+	  TRY( triangle_find_subtri_with( triangle, o2, n2, &other ), "on2" );
+	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn2" );
+	}
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_swap_side( Triangle triangle, 
+				 Subnode node0, Subnode node1 )
+{
+  Subtri subtri0, subtri1;
+  Subnode node2, node3;
+  Subnode n0, n1, n2;
+
+  TRY( triangle_find_subtri_with( triangle, node0, node1, &subtri0 ), "s0" );
+  TRY( triangle_find_subtri_with( triangle, node0, node1, &subtri1 ), "s1" );
+
+  TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
+  node2 = n2;
+  TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
+  node3 = n2;
+
+  subtri0->n0 = node1;
+  subtri0->n1 = node2;
+  subtri0->n2 = node3;
+
+  subtri1->n0 = node0;
+  subtri1->n1 = node3;
+  subtri1->n2 = node2;
+
   return KNIFE_SUCCESS;
 }

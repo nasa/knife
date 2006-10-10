@@ -82,7 +82,7 @@ KNIFE_STATUS subtri_replace_node( Subtri subtri,
 }
 
 KNIFE_STATUS subtri_orient( Subtri subtri, Subnode subnode, 
-			    Subnode *n0, Subnode *n1, Subnode *n2 );
+			    Subnode *n0, Subnode *n1, Subnode *n2 )
 {
   if (NULL == subtri) return KNIFE_NULL;
 
