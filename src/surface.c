@@ -186,3 +186,25 @@ void surface_free( Surface surface )
   free( surface->triangle );
   free( surface );
 }
+
+KNIFE_STATUS surface_triangulate( Surface surface )
+{
+  KNIFE_STATUS code;
+  int triangle_index;
+
+  for ( triangle_index = 0;
+	triangle_index < surface_ntriangle(surface); 
+	triangle_index++)
+    {
+      code = triangle_triangulate_cuts( surface_triangle(surface,
+							 triangle_index) );
+      if (KNIFE_SUCCESS != code)
+	{
+	  printf("%s: %d: triangle_triangulate_cuts returned %d\n",
+		 __FILE__,__LINE__,code);
+	  return code;
+	}
+    }
+
+  return KNIFE_SUCCESS;
+}

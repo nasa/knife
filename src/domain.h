@@ -73,6 +73,8 @@ KNIFE_STATUS domain_dual_elements( Domain );
 
 KNIFE_STATUS domain_boolean_subtract( Domain );
 
+KNIFE_STATUS domain_triangulate( Domain );
+
 END_C_DECLORATION
 
 #endif /* DOMAIN_H */

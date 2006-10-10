@@ -43,6 +43,8 @@ void triangle_free( Triangle );
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 
+KNIFE_STATUS triangle_triangulate_cuts( Triangle );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

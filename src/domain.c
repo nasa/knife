@@ -147,6 +147,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   int max_touched, ntouched;
   int *touched;
   NearStruct target;
+  KNIFE_STATUS code;
 
   near_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 				    sizeof(NearStruct));
@@ -169,7 +170,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   touched = (int *) malloc( max_touched * sizeof(int) );
 
   for ( triangle_index = 0;
-	triangle_index < domain->ntriangle; 
+	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
     {
       triangle_extent(domain_triangle(domain,triangle_index),
@@ -189,6 +190,43 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   free(touched);
 
+  code = domain_triangulate(domain);
+  if (KNIFE_SUCCESS != code)
+    {
+      printf("%s: %d: domain_triangulate returned %d\n",
+	     __FILE__,__LINE__,code);
+      return code;
+    }
+
   return (KNIFE_SUCCESS);
 }
 
+KNIFE_STATUS domain_triangulate( Domain domain )
+{
+  KNIFE_STATUS code;
+  int triangle_index;
+
+  code = surface_triangulate(domain->surface);
+  if (KNIFE_SUCCESS != code)
+    {
+      printf("%s: %d: surface_triangulate returned %d\n",
+	     __FILE__,__LINE__,code);
+      return code;
+    }
+
+  for ( triangle_index = 0;
+	triangle_index < domain_ntriangle(domain); 
+	triangle_index++)
+    {
+      code = triangle_triangulate_cuts( domain_triangle(domain,
+							triangle_index) );
+      if (KNIFE_SUCCESS != code)
+	{
+	  printf("%s: %d: triangle_triangulate_cuts returned %d\n",
+		 __FILE__,__LINE__,code);
+	  return code;
+	}
+    }
+
+  return KNIFE_SUCCESS;
+}

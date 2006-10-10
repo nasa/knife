@@ -50,6 +50,8 @@ void surface_free( Surface );
 #define surface_triangle(surface,triangle_index) \
   (&((surface)->triangle[(triangle_index)]))
 
+KNIFE_STATUS surface_triangulate( Surface );
+
 END_C_DECLORATION
 
 #endif /* SURFACE_H */

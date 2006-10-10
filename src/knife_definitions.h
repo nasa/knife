@@ -55,6 +55,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_NO_INT      (6)
 #define KNIFE_NULL        (7)
 #define KNIFE_BIGGER      (8)
+#define KNIFE_IMPLEMENT   (9)
 
 END_C_DECLORATION
 

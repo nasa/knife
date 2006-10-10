@@ -83,3 +83,11 @@ KNIFE_STATUS triangle_extent( Triangle triangle, double *center, double *diamete
   
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
+{
+      printf("%s: %d: implement triangle_triangulate_cuts\n",
+	     __FILE__,__LINE__);
+  triangle = NULL;
+  return KNIFE_IMPLEMENT;
+}
