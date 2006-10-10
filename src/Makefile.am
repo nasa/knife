@@ -17,7 +17,8 @@ libknife_a_SOURCES = \
 	surface.h surface.c \
 	domain.h domain.c \
 	intersection.h intersection.c \
-	cut.h cut.c
+	cut.h cut.c \
+	near.h near.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -32,13 +33,14 @@ libknife_a_include_HEADERS = \
 	surface.h \
 	domain.h \
 	intersection.h \
-	cut.h
+	cut.h \
+	near.h
 
 bin_PROGRAMS = knife
 
 knife_CFLAGS=$(warning_flags)
 knife_SOURCES = knife_main.c
-knife_LDADD = libknife.a
+knife_LDADD = libknife.a -lm
 
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
 	adj_ruby.c adj_test.rb \

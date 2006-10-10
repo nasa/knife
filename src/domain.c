@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include "domain.h"
 #include "cut.h"
+#include "near.h"
 
 Domain domain_create( Primal primal, Surface surface)
 {
@@ -141,17 +142,51 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 {
   int triangle_index;
   int i;
+  NearStruct *near_tree;
+  double center[3], diameter;
+  int max_touched, ntouched;
+  int *touched;
+  NearStruct target;
+
+  near_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
+				    sizeof(NearStruct));
+  for (triangle_index=0;
+       triangle_index<surface_ntriangle(domain->surface);
+       triangle_index++)
+    {
+      triangle_extent(surface_triangle(domain->surface,triangle_index),
+		      center, &diameter);
+      near_initialize( &(near_tree[triangle_index]), 
+		       triangle_index, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      if (triangle_index > 0) near_insert( near_tree,
+					   &(near_tree[triangle_index]) );
+    }
+
+  max_touched = surface_ntriangle(domain->surface);
+
+  touched = (int *) malloc( max_touched * sizeof(int) );
 
   for ( triangle_index = 0;
 	triangle_index < domain->ntriangle; 
 	triangle_index++)
     {
-      for (i=0;i<surface_ntriangle(domain->surface);i++)
+      triangle_extent(domain_triangle(domain,triangle_index),
+		      center, &diameter);
+      near_initialize( &target, 
+		       EMPTY, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      near_touched(near_tree, &target, &ntouched, max_touched, touched);
+      for (i=0;i<ntouched;i++)
 	{
 	  cut_between( domain_triangle(domain,triangle_index),
-		       surface_triangle(domain->surface,i) );
+		       surface_triangle(domain->surface,touched[i]) );
 	}
     }
+
+  free(touched);
 
   return (KNIFE_SUCCESS);
 }

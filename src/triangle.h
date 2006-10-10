@@ -41,6 +41,8 @@ void triangle_free( Triangle );
 #define triangle_segment(triangle,segment_index)	\
   ((triangle)->segment[segment_index])
 
+KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */
