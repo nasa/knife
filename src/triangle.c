@@ -263,6 +263,10 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
 	return KNIFE_FAILURE;
       }
     }
+  else
+    {
+      TRY( triangle_insert_into_center(triangle, subnode, subtri), "center" );  
+    }
 
   return KNIFE_SUCCESS;
 }
@@ -294,6 +298,26 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
     }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_insert_into_center( Triangle triangle, 
+					  Subnode new_node, Subtri subtri0 )
+{
+  Subtri subtri1, subtri2;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  subtri1 = subtri_shallow_copy( subtri0 );
+  subtri2 = subtri_shallow_copy( subtri0 );
+
+  triangle_add_subtri(triangle,subtri1);
+  triangle_add_subtri(triangle,subtri2);
+      
+  subtri_replace_node(subtri0, subtri_n0(subtri0), new_node);
+  subtri_replace_node(subtri1, subtri_n1(subtri1), new_node);
+  subtri_replace_node(subtri2, subtri_n2(subtri2), new_node);
 
   return KNIFE_SUCCESS;
 }
