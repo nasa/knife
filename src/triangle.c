@@ -41,6 +41,10 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->segment[0] = segment0;
   triangle->segment[1] = segment1;
   triangle->segment[2] = segment2;
+
+  segment_part_of( segment0, triangle );
+  segment_part_of( segment1, triangle );
+  segment_part_of( segment2, triangle );
   
   triangle->node0 = segment_common_node( segment1, segment2 );
   triangle->node1 = segment_common_node( segment0, segment2 );
