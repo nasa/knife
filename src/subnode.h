@@ -15,18 +15,23 @@
 #define NODE_H
 
 #include "knife_definitions.h"
-#include "node.h"
-#include "intersection.h"
 
 BEGIN_C_DECLORATION
 
 typedef struct SubnodeStruct SubnodeStruct;
+typedef SubnodeStruct * Subnode;
+
+typedef struct NodeStruct NodeStruct;
+typedef NodeStruct * Node;
+
+typedef struct IntersectionStruct IntersectionStruct;
+typedef IntersectionStruct * Intersection;
+
 struct SubnodeStruct {
   double uvw[3];
   Node node;
   Intersection intersection;
 };
-typedef SubnodeStruct * Subnode;
 
 Subnode subnode_create( double *uvw, Node, Intersection );
 void subnode_free( Subnode );

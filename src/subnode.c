@@ -13,7 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "subsubnode.h"
+#include "subnode.h"
 
 Subnode subnode_create( double *uvw, Node node, Intersection intersection)
 {

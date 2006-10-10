@@ -21,12 +21,13 @@
 BEGIN_C_DECLORATION
 
 typedef struct SegmentStruct SegmentStruct;
+typedef SegmentStruct * Segment;
+
 struct SegmentStruct {
   Node node0, node1;
   Array triangle;
   Array intersection;
 };
-typedef SegmentStruct * Segment;
 
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 );
 Node segment_common_node( Segment segment0, Segment segment1 );

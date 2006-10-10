@@ -19,11 +19,12 @@
 BEGIN_C_DECLORATION
 
 typedef struct NodeStruct NodeStruct;
+typedef NodeStruct * Node;
+
 struct NodeStruct {
   double xyz[3];
   int indx;
 };
-typedef NodeStruct * Node;
 
 Node node_create( double x, double y, double z, int indx );
 void node_initialize( Node, double *xyz, int indx );
