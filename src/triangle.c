@@ -125,6 +125,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   if (min_area < 0.0) 
     {
       printf("%s: %d: area %30.20e\n",__FILE__,__LINE__,min_area);
+      return KNIFE_NEG_AREA;
     }
 
   return KNIFE_SUCCESS;

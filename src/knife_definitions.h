@@ -60,6 +60,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_NULL        (7)
 #define KNIFE_BIGGER      (8)
 #define KNIFE_IMPLEMENT   (9)
+#define KNIFE_NEG_AREA   (10)
 
 END_C_DECLORATION
 
