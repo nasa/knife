@@ -110,6 +110,9 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
   int cut_index;
   Cut cut;
+
+  double min_area;
+
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
@@ -117,6 +120,12 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
     triangle_unique_subnode(triangle, cut_intersection0(cut) );
     triangle_unique_subnode(triangle, cut_intersection1(cut) );
   }
+
+  min_area = triangle_min_subtri_area( triangle );
+  if (min_area < 0.0) 
+    {
+      printf("%s: %d: area %30.20e\n",__FILE__,__LINE__,min_area);
+    }
 
   return KNIFE_SUCCESS;
 }
