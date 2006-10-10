@@ -221,7 +221,10 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
   double side_tolerence;
   int insert_side;
 
+  if( NULL == triangle ) return KNIFE_NULL;
+
   subtri = NULL;  
+
   TRY( triangle_enclosing_subtri( triangle, subnode, subtri, bary ), 
        "triangle_enclosing_subtri not found" );
 
@@ -258,3 +261,57 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
+				       Subnode n0, Subnode n1)
+{
+  Subtri existing_subtri;
+  Subtri new_subtri;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  existing_subtri = NULL;
+
+  if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n0, n1, 
+						 existing_subtri))
+    {
+      new_subtri = subtri_shallow_copy(existing_subtri);
+      subtri_replace_node(existing_subtri, n0, new_node);
+      subtri_replace_node(new_subtri,      n1, new_node);
+    }
+
+  if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n1, n0, 
+						 existing_subtri))
+    {
+      new_subtri = subtri_shallow_copy(existing_subtri);
+      subtri_replace_node(existing_subtri, n0, new_node);
+      subtri_replace_node(new_subtri,      n1, new_node);
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_find_subtri_with( Triangle triangle, 
+					Subnode n0, Subnode n1,
+					Subtri found_subtri )
+{
+  Subtri subtri;
+  int subtri_index;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      if ( subtri_has(subtri,n0,n1) )
+	{
+	  found_subtri = subtri;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
