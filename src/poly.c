@@ -31,7 +31,7 @@ Poly poly_create( void )
   return poly;
 }
 
-KNIFE_STATUS poly_initialize( Poly );
+KNIFE_STATUS poly_initialize( Poly poly )
 {
 
   poly->triangle = array_create(4,40);

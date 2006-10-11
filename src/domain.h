@@ -58,6 +58,10 @@ struct DomainStruct {
 Domain domain_create( Primal, Surface );
 void domain_free( Domain );
 
+#define domain_npoly(domain) ((domain)->npoly)
+#define domain_poly(domain,poly_index) \
+  (&((domain)->poly[(poly_index)]))
+
 #define domain_nnode(domain) ((domain)->nnode)
 #define domain_node(domain,node_index) \
   (&((domain)->node[(node_index)]))

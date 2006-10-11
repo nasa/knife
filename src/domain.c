@@ -68,11 +68,14 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
   int tri;
   int tri_nodes[3];
   int edge0, edge1, edge2;
+  int poly;
 
   domain->npoly = primal_ncell(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,
 		     "domain_tetrahedral_elements poly");
+  for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
+    poly_initialize(domain_poly(domain,poly));
 
   domain->nnode = primal_nnode(domain->primal);
   domain->node = (NodeStruct *)malloc( domain->nnode * 
@@ -135,6 +138,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   double xyz[3];
   int cell_edge;
   int segment0, segment1, segment2;
+  int node0, node1;
+  int poly;
   
   printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
 	 primal_nnode(domain->primal),
@@ -146,6 +151,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,"domain_dual_elements poly");
+  for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
+    poly_initialize(domain_poly(domain,poly));
   
   domain->nnode = 
     primal_ncell(domain->primal) +
@@ -243,9 +250,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  for ( edge = 0 ; edge < 3 ; edge++)
 	    {
 	      segment1 = edge + 3 * tri + 10 * primal_ncell(domain->primal);
-	      TRY( primal_find_edge( domain->primal, 
-				     tri_nodes[primal_face_side_node0(edge)], 
-				     tri_nodes[primal_face_side_node1(edge)], 
+	      node0 = tri_nodes[primal_face_side_node0(edge)];
+	      node1 = tri_nodes[primal_face_side_node1(edge)];
+	      TRY( primal_find_edge( domain->primal, node0, node1, 
 				     &edge_index ), "dual int tri find edge" );
 	      TRY( primal_find_cell_edge( domain->primal, cell, edge_index,
 					  &cell_edge ), "dual int tri ce");
@@ -255,6 +262,10 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				   domain_segment(domain,segment0),
 				   domain_segment(domain,segment1),
 				   domain_segment(domain,segment2));
+	      poly_add_triangle( domain_poly(domain,node0),
+				 domain_triangle(domain,triangle_index) );
+	      poly_add_triangle( domain_poly(domain,node1),
+				 domain_triangle(domain,triangle_index) );
 	    }
 	}
     }
