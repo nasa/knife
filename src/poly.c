@@ -26,9 +26,17 @@ Poly poly_create( void )
     return NULL; 
   }
 
-  poly->triangle = array_create(4,40);
+  poly_initialize( poly );
 
   return poly;
+}
+
+KNIFE_STATUS poly_initialize( Poly );
+{
+
+  poly->triangle = array_create(4,40);
+
+  return KNIFE_SUCCESS;
 }
 
 void poly_free( Poly poly )

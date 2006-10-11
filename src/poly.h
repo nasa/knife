@@ -30,6 +30,7 @@ struct PolyStruct {
 };
 
 Poly poly_create( void );
+KNIFE_STATUS poly_initialize( Poly );
 void poly_free( Poly );
 
 #define poly_add_triangle( poly, new_triangle )		\
