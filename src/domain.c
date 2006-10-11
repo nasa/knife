@@ -130,10 +130,12 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int cell, edge, tri, face;
   int side;
   int cell_center, tri_center, edge_center, face_center;
-  int edge_index, segment_index;
+  int edge_index, segment_index, triangle_index;
   int tri_nodes[3];
   int face_nodes[3];
   double xyz[3];
+  int cell_edge;
+  int segment0, segment1, segment2;
   
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
@@ -248,6 +250,35 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 					       sizeof(TriangleStruct));
   domain_test_malloc(domain->triangle,"domain_dual_elements triangle");
   printf("number of dual triangles in the volume %d\n",domain->ntriangle);
+
+  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
+    {
+      for ( side = 0 ; side < 4 ; side++)
+	{
+	  segment0 = side + 10 * cell;
+	  tri = primal_c2t(domain->primal,cell,side);
+	  primal_tri(domain->primal,tri,tri_nodes);
+	  for ( edge = 0 ; edge < 3 ; edge++)
+	    {
+	      segment1 = edge + 3 * tri + 10 * primal_ncell(domain->primal);
+	      primal_find_edge( domain->primal, 
+				face_nodes[primal_face_side_node0(edge)], 
+				face_nodes[primal_face_side_node1(edge)], 
+				&edge_index );
+	      primal_find_cell_edge( domain->primal, cell, edge_index,
+				     &cell_edge );
+	      segment2 = cell_edge + 4 + 10 * cell;
+	      triangle_index = edge + 4 * side + 12 * cell;
+	      triangle_initialize( domain_triangle(domain,triangle_index),
+				   domain_segment(domain,segment0),
+				   domain_segment(domain,segment1),
+				   domain_segment(domain,segment2));
+	    }
+	}
+    }
+
+
+
   return (KNIFE_SUCCESS);
 }
 
