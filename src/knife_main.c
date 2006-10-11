@@ -32,7 +32,7 @@ int main( int argc, char *argv[] )
 
   char volume_filename[1025];
   Primal volume_primal;
-  Domain tet_domain;
+  Domain dual_domain;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -68,10 +68,10 @@ int main( int argc, char *argv[] )
 
   volume_primal = primal_from_FAST( volume_filename );
 
-  tet_domain = domain_create( volume_primal, surface );
-  domain_tetrahedral_elements( tet_domain );
+  dual_domain = domain_create( volume_primal, surface );
+  domain_dual_elements( tet_domain );
 
-  domain_boolean_subtract( tet_domain );
+  domain_boolean_subtract( dual_domain );
 
   /* sleep(2); */
 
