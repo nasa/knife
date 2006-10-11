@@ -214,10 +214,10 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       primal_tri(domain->primal,tri,tri_nodes);
       for ( side = 0 ; side < 3 ; side++)
 	{
-	  primal_find_edge( domain->primal, 
-			    tri_nodes[primal_face_side_node0(side)], 
-			    tri_nodes[primal_face_side_node1(side)], 
-			    &edge_index );
+	  TRY( primal_find_edge( domain->primal, 
+				 tri_nodes[primal_face_side_node0(side)], 
+				 tri_nodes[primal_face_side_node1(side)], 
+				 &edge_index ), "tri seg find edge" );
 	  edge_center = edge_index + primal_ntri(domain->primal) 
 	                           + primal_ncell(domain->primal);
 	  segment_index = side + 3 * tri + 10 * primal_ncell(domain->primal);
