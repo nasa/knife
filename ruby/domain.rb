@@ -135,6 +135,34 @@ class Domain
   @verbose = true
  end
 
+ def boolean_subtract_compare(cut_surface)
+  start_time = Time.now
+  count = 0
+  @triangles.each do |triangle|
+   count += 1
+   if @verbose && (Time.now-@report_time) > 5.0
+    puts "#{count} of #{@triangles.size} cut in #{Time.now-start_time} sec"
+    @report_time = Time.now
+   end 
+   center = triangle.center
+   diameter = triangle.diameter
+   probe = Near.new(-1,center[0],center[1],center[2],diameter)
+   cut_surface.triangle_near_tree.first.touched(probe).each do |index|
+    tool = cut_surface.triangles[index]
+    Cut.between(triangle,tool)
+   end
+  end
+  puts "the cuts required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  cut_surface.triangulate
+  puts "the cut triangulation required #{Time.now-start_time} sec"
+
+  start_time = Time.now
+  triangulate
+  puts "the volume triangulation required #{Time.now-start_time} sec"
+ end
+
  def boolean_subtract(cut_surface)
 
   start_time = Time.now
