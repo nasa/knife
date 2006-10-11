@@ -128,6 +128,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 {
   int node;
   int cell, edge, tri;
+  int side;
+  int cell_center, tri_center, edge_center;
+  int edge_index, segment_index;
   double xyz[3];
   
   domain->npoly = primal_nnode(domain->primal);
@@ -161,6 +164,38 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       node_initialize( domain_node(domain,node), xyz, node);
     }
 
+  domain->nsegment = 
+    10 * primal_ncell(domain->primal) +
+    3  * primal_ntri(domain->primal) +
+    3  * primal_nface(domain->primal);
+  domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
+					       sizeof(SegmentStruct));
+  domain_test_malloc(domain->segment,
+		     "domain_tetrahedral_elements segment");
+
+  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
+    {
+      cell_center = cell;
+      for ( side = 0 ; side < 4 ; side++)
+	{
+	  tri = primal_c2t(domain->primal,cell,side);
+	  tri_center = tri + primal_ncell(domain->primal);
+	  segment_index = side + 10 * cell;
+	  segment_initialize( domain_segment(domain,segment_index),
+			      domain_node(domain,cell_center),
+			      domain_node(domain,tri_center));
+	}
+      for ( edge = 0 ; edge < 6 ; edge++)
+	{
+	  edge_index = primal_c2e(domain->primal,cell,edge);
+	  edge_center = edge_index + primal_ntri(domain->primal) 
+	                           + primal_ncell(domain->primal);
+	  segment_index = edge + 4 + 10 * cell;
+	  segment_initialize( domain_segment(domain,segment_index),
+			      domain_node(domain,cell_center),
+			      domain_node(domain,edge_center));
+	}
+    }
 
 
   domain->ntriangle = 12*primal_ncell(domain->primal) + 
