@@ -19,6 +19,17 @@
 
 static int triangle_frame = 0;
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      triangle_eps(triangle);				      \
+      return code;					      \
+    }							      \
+  }
+
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
   Triangle triangle;
@@ -110,6 +121,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
   int cut_index;
   Cut cut;
+  Subnode subnode0, subnode1;
 
   double min_area;
 
@@ -119,6 +131,17 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
     cut = triangle_cut(triangle,cut_index);
     triangle_unique_subnode(triangle, cut_intersection0(cut) );
     triangle_unique_subnode(triangle, cut_intersection1(cut) );
+  }
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    subnode0 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection0(cut));
+    subnode1 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection1(cut));
+    TRY( triangle_recover_side(triangle, subnode0, subnode1 ), "recover edge ");
   }
 
   min_area = triangle_min_subtri_area( triangle );
@@ -217,17 +240,6 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 
   return KNIFE_SUCCESS;
 }
-
-#define TRY(fcn,msg)					      \
-  {							      \
-    int code;						      \
-    code = (fcn);					      \
-    if (KNIFE_SUCCESS != code){				      \
-      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
-      triangle_eps(triangle);				      \
-      return code;					      \
-    }							      \
-  }
 
 KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
 {
@@ -485,6 +497,21 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   subtri1->n2 = node2;
 
   return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_recover_side( Triangle triangle, 
+				    Subnode node0, Subnode node1 )
+{
+  Subtri subtri;
+
+  if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
+
+  /* return successfully if the subtriangle already exsits */
+  if (KNIFE_SUCCESS == triangle_find_subtri_with( triangle, node0, node1, 
+						  &subtri ) ) 
+    return KNIFE_SUCCESS;
+
+  return KNIFE_MISSING;
 }
 
 double triangle_min_subtri_area( Triangle triangle )
