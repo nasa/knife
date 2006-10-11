@@ -126,10 +126,43 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 
 KNIFE_STATUS domain_dual_elements( Domain domain )
 {
+  int node;
+  int cell, edge, tri;
+  double xyz[3];
+  
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,"domain_dual_elements poly");
   
+  domain->nnode = 
+    primal_ncell(domain->primal) +
+    primal_ntri(domain->primal) +
+    primal_nedge(domain->primal);
+  domain->node = (NodeStruct *)malloc( domain->nnode * 
+				       sizeof(NodeStruct));
+  domain_test_malloc(domain->node,
+		     "domain_tetrahedral_elements node");
+  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
+    {
+      node = cell;
+      primal_cell_center( domain->primal, cell, xyz);
+      node_initialize( domain_node(domain,node), xyz, node);
+    }
+  for ( tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
+    {
+      node = tri + primal_ncell(domain->primal);
+      primal_tri_center( domain->primal, tri, xyz);
+      node_initialize( domain_node(domain,node), xyz, node);
+    }
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      node = edge + primal_ntri(domain->primal) + primal_ncell(domain->primal);
+      primal_edge_center( domain->primal, edge, xyz);
+      node_initialize( domain_node(domain,node), xyz, node);
+    }
+
+
+
   domain->ntriangle = 12*primal_ncell(domain->primal) + 
                        6*primal_nface(domain->primal);
   domain->triangle = (TriangleStruct *)malloc( domain->ntriangle * 

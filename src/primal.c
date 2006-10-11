@@ -284,6 +284,25 @@ KNIFE_STATUS primal_cell( Primal primal, int cell_index, int *cell)
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_cell_center( Primal primal, int cell_index, double *xyz)
+{
+  double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
+
+  if (cell_index < 0 || cell_index >= primal_ncell(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  primal_xyz( primal, primal->c2n[0+4*cell_index], xyz0);
+  primal_xyz( primal, primal->c2n[1+4*cell_index], xyz1);
+  primal_xyz( primal, primal->c2n[2+4*cell_index], xyz2);
+  primal_xyz( primal, primal->c2n[3+4*cell_index], xyz3);
+
+  xyz[1] = 0.25*(xyz0[1] + xyz1[1] + xyz2[1] + xyz3[1]);
+  xyz[2] = 0.25*(xyz0[2] + xyz1[2] + xyz2[2] + xyz3[2]);
+  xyz[3] = 0.25*(xyz0[3] + xyz1[3] + xyz2[3] + xyz3[3]);
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_edge( Primal primal, int edge_index, int *edge)
 {
   if (edge_index < 0 || edge_index >= primal_nedge(primal) ) 
@@ -291,6 +310,23 @@ KNIFE_STATUS primal_edge( Primal primal, int edge_index, int *edge)
 
   edge[0] = primal->e2n[0+2*edge_index];
   edge[1] = primal->e2n[1+2*edge_index];
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_edge_center( Primal primal, int edge_index, double *xyz)
+{
+  double xyz0[3], xyz1[3];
+
+  if (edge_index < 0 || edge_index >= primal_nedge(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  primal_xyz( primal, primal->e2n[0+2*edge_index], xyz0);
+  primal_xyz( primal, primal->e2n[1+2*edge_index], xyz1);
+
+  xyz[1] = 0.5*(xyz0[1] + xyz1[1]);
+  xyz[2] = 0.5*(xyz0[2] + xyz1[2]);
+  xyz[3] = 0.5*(xyz0[3] + xyz1[3]);
 
   return KNIFE_SUCCESS;
 }
@@ -303,6 +339,24 @@ KNIFE_STATUS primal_tri( Primal primal, int tri_index, int *tri)
   tri[0] = primal->t2n[0+3*tri_index];
   tri[1] = primal->t2n[1+3*tri_index];
   tri[2] = primal->t2n[2+3*tri_index];
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_tri_center( Primal primal, int tri_index, double *xyz)
+{
+  double xyz0[3], xyz1[3], xyz2[3];
+
+  if (tri_index < 0 || tri_index >= primal_ntri(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  primal_xyz( primal, primal->t2n[0+3*tri_index], xyz0);
+  primal_xyz( primal, primal->t2n[1+3*tri_index], xyz1);
+  primal_xyz( primal, primal->t2n[2+3*tri_index], xyz2);
+
+  xyz[1] = (1.0/3.0)*(xyz0[1] + xyz1[1] + xyz2[1]);
+  xyz[2] = (1.0/3.0)*(xyz0[2] + xyz1[2] + xyz2[2]);
+  xyz[3] = (1.0/3.0)*(xyz0[3] + xyz1[3] + xyz2[3]);
 
   return KNIFE_SUCCESS;
 }
