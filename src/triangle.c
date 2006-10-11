@@ -398,11 +398,13 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
   int subtri_index;
   Subnode n0, n1, n2;
   double right_area, left_area;
-  double tolerence;
+  double best_area;
+  Subnode best_s0, best_s1;
+  double min_area;
 
   if( NULL == triangle ) return KNIFE_NULL;
 
-  tolerence = 1.0e-14;
+  best_area = -999.0;
 
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
@@ -415,16 +417,23 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
 	  subtri_orient( subtri, node0, &n0, &n1, &n2 );
 	  right_area = subnode_area( n0, n1, node1 );
 	  left_area = subnode_area( n0, node1, n2 );
-	  if ( right_area > tolerence && left_area > tolerence )
+	  min_area = MIN(right_area, left_area);
+	  if ( min_area > best_area )
 	    { 
-	      *s0 = n2;
-	      *s1 = n1;
-	      return KNIFE_SUCCESS;
+	      best_area = min_area;
+	      best_s0 = n2;
+	      best_s1 = n1;
 	    }
 	}
     }
 
-  return KNIFE_NOT_FOUND;
+  if ( best_area < 1.0e-14 )
+    return KNIFE_NOT_FOUND;
+
+  *s0 = best_s0;
+  *s1 = best_s1;
+
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS triangle_eps( Triangle triangle)
