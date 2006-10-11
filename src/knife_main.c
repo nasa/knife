@@ -20,6 +20,16 @@
 #include "surface.h"
 #include "domain.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
 int main( int argc, char *argv[] )
 {
   int argument;
@@ -69,9 +79,9 @@ int main( int argc, char *argv[] )
   volume_primal = primal_from_FAST( volume_filename );
 
   domain = domain_create( volume_primal, surface );
-  domain_dual_elements( domain );
+  TRY( domain_dual_elements( domain ), "dual creation" );
 
-  domain_boolean_subtract( domain );
+  TRY( domain_boolean_subtract( domain ), "dual creation" );
 
   /* sleep(2); */
 
