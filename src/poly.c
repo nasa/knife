@@ -26,7 +26,7 @@ Poly poly_create( void )
     return NULL; 
   }
 
-  poly->triangles = array_create(4,40);
+  poly->triangle = array_create(4,40);
 
   return poly;
 }
@@ -34,6 +34,6 @@ Poly poly_create( void )
 void poly_free( Poly poly )
 {
   if ( NULL == poly ) return;
-  array_free( poly->triangles );
+  array_free( poly->triangle );
   free( poly );
 }

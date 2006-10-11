@@ -26,11 +26,20 @@ END_C_DECLORATION
 BEGIN_C_DECLORATION
 
 struct PolyStruct {
-  Array triangles;
+  Array triangle;
 };
 
 Poly poly_create( void );
 void poly_free( Poly );
+
+#define poly_add_triangle( poly, new_triangle )		\
+  array_add( (poly)->triangle, (ArrayItem)(new_triangle) )
+#define poly_ntriangle( poly )		\
+  array_size( (poly)->triangle )
+#define poly_triangle( poly, triangle_index )		\
+  ((Triangle)array_item( (poly)->triangle, (triangle_index) ))
+
+
 
 END_C_DECLORATION
 
