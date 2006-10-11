@@ -367,3 +367,25 @@ KNIFE_STATUS domain_triangulate( Domain domain )
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
+{
+  FILE *f;
+  int poly;
+
+  if (NULL == filename) 
+    {
+      f = fopen("domain.t", "w");
+    }
+  else
+    {
+      f = fopen(filename, "w");
+    }
+
+  for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
+    poly_tecplot_zone(domain_poly(domain,poly), f );
+
+  fclose(f);
+  
+  return KNIFE_SUCCESS;
+}

@@ -80,6 +80,7 @@ int main( int argc, char *argv[] )
 
   domain = domain_create( volume_primal, surface );
   TRY( domain_dual_elements( domain ), "dual creation" );
+  domain_tecplot( domain, NULL );
 
   TRY( domain_boolean_subtract( domain ), "dual creation" );
 

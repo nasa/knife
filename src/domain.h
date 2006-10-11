@@ -81,6 +81,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain );
 
 KNIFE_STATUS domain_triangulate( Domain );
 
+KNIFE_STATUS domain_tecplot( Domain, char *filename );
+
 END_C_DECLORATION
 
 #endif /* DOMAIN_H */
