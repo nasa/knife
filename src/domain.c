@@ -260,14 +260,14 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  for ( edge = 0 ; edge < 3 ; edge++)
 	    {
 	      segment1 = edge + 3 * tri + 10 * primal_ncell(domain->primal);
-	      primal_find_edge( domain->primal, 
-				face_nodes[primal_face_side_node0(edge)], 
-				face_nodes[primal_face_side_node1(edge)], 
-				&edge_index );
-	      primal_find_cell_edge( domain->primal, cell, edge_index,
-				     &cell_edge );
+	      TRY( primal_find_edge( domain->primal, 
+				     tri_nodes[primal_face_side_node0(edge)], 
+				     tri_nodes[primal_face_side_node1(edge)], 
+				     &edge_index ), "dual int tri find edge" );
+	      TRY( primal_find_cell_edge( domain->primal, cell, edge_index,
+					  &cell_edge ), "dual int tri ce");
 	      segment2 = cell_edge + 4 + 10 * cell;
-	      triangle_index = edge + 4 * side + 12 * cell;
+	      triangle_index = edge + 3 * side + 12 * cell;
 	      triangle_initialize( domain_triangle(domain,triangle_index),
 				   domain_segment(domain,segment0),
 				   domain_segment(domain,segment1),
@@ -275,6 +275,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    }
 	}
     }
+
+  printf("dual completed\n");
 
   return (KNIFE_SUCCESS);
 }
