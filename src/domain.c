@@ -244,8 +244,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     }
 
 
-  domain->ntriangle = 12*primal_ncell(domain->primal) + 
-                       6*primal_nface(domain->primal);
+  domain->ntriangle = 12*primal_ncell(domain->primal);
   domain->triangle = (TriangleStruct *)malloc( domain->ntriangle * 
 					       sizeof(TriangleStruct));
   domain_test_malloc(domain->triangle,"domain_dual_elements triangle");
@@ -276,8 +275,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    }
 	}
     }
-
-
 
   return (KNIFE_SUCCESS);
 }
