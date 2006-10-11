@@ -30,6 +30,18 @@ static int triangle_frame = 0;
     }							      \
   }
 
+#define TRYN(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      triangle_eps(triangle);				      \
+      return NULL;					      \
+    }							      \
+  }
+
+
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
   Triangle triangle;
@@ -117,6 +129,10 @@ KNIFE_STATUS triangle_extent( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+#define NOT_NULL(fcn) if ( NULL == (fcn) ) {		  \
+    printf("%s: %d: NULL subnode\n",__FILE__,__LINE__);	  \
+    return KNIFE_FAILURE; }
+
 KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
   int cut_index;
@@ -132,8 +148,8 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    triangle_unique_subnode(triangle, cut_intersection0(cut) );
-    triangle_unique_subnode(triangle, cut_intersection1(cut) );
+    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection0(cut) ) );
+    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection1(cut) ) );
   }
 
   /* recover all cuts as subtriangle sides */
@@ -204,8 +220,8 @@ Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
     {
       intersection_uvw(intersection,triangle,uvw);
       subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
-      triangle_add_subnode( triangle, subnode );
-      triangle_insert( triangle, subnode);
+      TRYN( triangle_add_subnode( triangle, subnode ), "add subnode" );
+      TRYN( triangle_insert( triangle, subnode), "insert" );
     }
 
   return subnode;
