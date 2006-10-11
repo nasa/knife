@@ -11,8 +11,6 @@
  * Email: Mike.Park@NASA.Gov
  */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "poly.h"
 
 Poly poly_create( void )
@@ -44,4 +42,30 @@ void poly_free( Poly poly )
   if ( NULL == poly ) return;
   array_free( poly->triangle );
   free( poly );
+}
+
+KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
+{
+  Triangle triangle;
+  int triangle_index;
+
+  fprintf(f, "zone t='poly', i=%d, j=%d, f=fepoint, et=triangle\n",
+	  3*poly_ntriangle(poly), poly_ntriangle(poly) );
+
+  for ( triangle_index = 0;
+	triangle_index < poly_ntriangle(poly); 
+	triangle_index++)
+    {
+      triangle = poly_triangle(poly, triangle_index);
+      triangle_dump_geom(triangle,f);
+    } 
+  for ( triangle_index = 0;
+	triangle_index < poly_ntriangle(poly); 
+	triangle_index++)
+  fprintf(f, "%6d %6d %6d\n",
+	  1+3*triangle_index,
+	  2+3*triangle_index,
+	  3+3*triangle_index );
+
+ return KNIFE_SUCCESS;
 }

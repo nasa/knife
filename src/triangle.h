@@ -15,6 +15,8 @@
 #define TRIANGLE_H
 
 #include "knife_definitions.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 BEGIN_C_DECLORATION
 typedef struct TriangleStruct TriangleStruct;
@@ -107,6 +109,8 @@ KNIFE_STATUS triangle_swap_side( Triangle, Subnode node0, Subnode node1 );
 KNIFE_STATUS triangle_recover_side( Triangle, Subnode node0, Subnode node1 );
 
 double triangle_min_subtri_area( Triangle );
+
+KNIFE_STATUS triangle_dump_geom( Triangle, FILE *);
 
 END_C_DECLORATION
 

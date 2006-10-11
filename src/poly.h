@@ -14,6 +14,8 @@
 #ifndef POLY_H
 #define POLY_H
 
+#include <stdlib.h>
+#include <stdio.h>
 #include "knife_definitions.h"
 
 BEGIN_C_DECLORATION
@@ -22,6 +24,7 @@ typedef PolyStruct * Poly;
 END_C_DECLORATION
 
 #include "array.h"
+#include "triangle.h"
 
 BEGIN_C_DECLORATION
 
@@ -40,6 +43,7 @@ void poly_free( Poly );
 #define poly_triangle( poly, triangle_index )		\
   ((Triangle)array_item( (poly)->triangle, (triangle_index) ))
 
+KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 
 
 END_C_DECLORATION

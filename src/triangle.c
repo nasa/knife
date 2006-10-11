@@ -11,8 +11,6 @@
  * Email: Mike.Park@NASA.Gov
  */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
 #include "triangle.h"
 #include "cut.h"
@@ -626,4 +624,22 @@ double triangle_min_subtri_area( Triangle triangle )
     }
 
   return min_area;
+}
+
+KNIFE_STATUS triangle_dump_geom( Triangle triangle, FILE *f )
+{
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  triangle->node0->xyz[0],
+	  triangle->node0->xyz[1],
+	  triangle->node0->xyz[2]);
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  triangle->node1->xyz[0],
+	  triangle->node1->xyz[1],
+	  triangle->node1->xyz[2]);
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  triangle->node2->xyz[0],
+	  triangle->node2->xyz[1],
+	  triangle->node2->xyz[2]);
+
+  return KNIFE_SUCCESS;
 }
