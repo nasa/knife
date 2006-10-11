@@ -417,6 +417,22 @@ KNIFE_STATUS primal_find_cell_side( Primal primal,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS primal_find_cell_edge( Primal primal, int cell, int edge, 
+				    int *cell_edge ) {
+  int canidate;
+  
+  for ( canidate = 0 ; canidate < 6 ; canidate++ )
+    {
+      if (primal_c2e(primal,cell,canidate) == edge)
+	{
+	  *cell_edge = canidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+  return KNIFE_NOT_FOUND;
+}
+
+
 KNIFE_STATUS primal_find_edge( Primal primal, 
 			       int node0, int node1,
 			       int *edge_index ) {

@@ -99,6 +99,8 @@ KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1,
 KNIFE_STATUS primal_find_cell_side( Primal, int node0, int node1, int node2, 
 				    int *other_cell_index, int *other_side ); 
 
+KNIFE_STATUS primal_find_cell_edge( Primal, int cell, int edge, int *cell_edge);
+
 KNIFE_STATUS primal_find_edge ( Primal, int node0, int node1,
 				int *edge_index ); 
 
