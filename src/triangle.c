@@ -390,6 +390,43 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle triangle,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS triangle_first_blocking_side( Triangle triangle, 
+					   Subnode node0, Subnode node1,
+					   Subnode *s0, Subnode *s1 )
+{
+  Subtri subtri;
+  int subtri_index;
+  Subnode n0, n1, n2;
+  double right_area, left_area;
+  double tolerence;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  tolerence = 1.0e-14;
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      if ( subtri_has1(subtri,node0) )
+	{
+	  if ( subtri_has1(subtri,node1) ) return KNIFE_RECOVERED;
+	  subtri_orient( subtri, node0, &n0, &n1, &n2 );
+	  right_area = subnode_area( n0, n1, node1 );
+	  left_area = subnode_area( n0, node1, n2 );
+	  if ( right_area > tolerence && left_area > tolerence )
+	    { 
+	      *s0 = n2;
+	      *s1 = n1;
+	      return KNIFE_SUCCESS;
+	    }
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS triangle_eps( Triangle triangle)
 {
   int subtri_index;
@@ -521,16 +558,19 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
 KNIFE_STATUS triangle_recover_side( Triangle triangle, 
 				    Subnode node0, Subnode node1 )
 {
-  Subtri subtri;
+
+  Subnode side0, side1;
 
   if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
 
   /* return successfully if the subtriangle already exsits */
-  if (KNIFE_SUCCESS == triangle_find_subtri_with( triangle, node0, node1, 
-						  &subtri ) ) 
+  if (KNIFE_RECOVERED == triangle_first_blocking_side( triangle, node0, node1, 
+						       &side0, &side1 ) ) 
     return KNIFE_SUCCESS;
 
-  return KNIFE_MISSING;
+  TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
+
+  return triangle_recover_side(triangle, node0, node1);
 }
 
 double triangle_min_subtri_area( Triangle triangle )
