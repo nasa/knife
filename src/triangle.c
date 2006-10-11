@@ -122,9 +122,12 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   int cut_index;
   Cut cut;
   Subnode subnode0, subnode1;
+  Subtri subtri;
 
   double min_area;
 
+  /* insert all nodes once (uniquely) */
+  /* Delaunay poroperty is maintained with swaps after each insert */
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
@@ -133,6 +136,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
     triangle_unique_subnode(triangle, cut_intersection1(cut) );
   }
 
+  /* recover all cuts as subtriangle sides */
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
@@ -141,9 +145,24 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						  cut_intersection0(cut));
     subnode1 = triangle_subnode_with_intersection(triangle, 
 						  cut_intersection1(cut));
-    TRY( triangle_recover_side(triangle, subnode0, subnode1 ), "recover edge ");
+    TRY( triangle_recover_side(triangle, subnode0, subnode1 ), "edge recovery");
   }
 
+  /* verify that all cuts are now subtriangle sides (redundant) */
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    subnode0 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection0(cut));
+    subnode1 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection1(cut));
+    TRY( triangle_find_subtri_with(triangle, 
+				   subnode0, subnode1, 
+				   &subtri ), "edge was not recovered" );
+  }
+
+  /* verify that all subtriangle have a positive area in uvw space */
   min_area = triangle_min_subtri_area( triangle );
   if (min_area < 0.0) 
     {
