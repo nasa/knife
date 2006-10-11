@@ -75,6 +75,9 @@ void primal_free( Primal );
 KNIFE_STATUS primal_establish_c2e( Primal );
 KNIFE_STATUS primal_establish_c2t( Primal );
 
+#define primal_c2e(primal,cell,edge) ((primal)->c2e[(edge)+6*(cell)])
+#define primal_c2t(primal,cell,tri)  ((primal)->c2t[(tri) +4*(cell)])
+
 /* xyz[3] */
 KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz); 
 
