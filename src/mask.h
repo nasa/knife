@@ -14,6 +14,8 @@
 #ifndef MASK_H
 #define MASK_H
 
+#include <stdlib.h>
+#include <stdio.h>
 #include "knife_definitions.h"
 
 BEGIN_C_DECLORATION
@@ -35,7 +37,11 @@ void mask_free( Mask );
 
 #define mask_triangle( mask )((mask)->triangle)
 
+int mask_nsubtri( Mask );
+
 KNIFE_STATUS mask_deactivate_all_subtri( Mask );
+
+KNIFE_STATUS mask_dump_geom( Mask, FILE * );
 
 END_C_DECLORATION
 

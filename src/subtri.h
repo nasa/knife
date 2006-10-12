@@ -14,6 +14,8 @@
 #ifndef SUBTRI_H
 #define SUBTRI_H
 
+#include <stdlib.h>
+#include <stdio.h>
 #include "knife_definitions.h"
 
 BEGIN_C_DECLORATION
@@ -52,6 +54,8 @@ KNIFE_STATUS subtri_orient( Subtri, Subnode,
 
 KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
 KNIFE_STATUS subtri_area( Subtri );
+
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f );
 
 END_C_DECLORATION
 

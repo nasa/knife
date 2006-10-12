@@ -14,9 +14,9 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-#include "knife_definitions.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "knife_definitions.h"
 
 BEGIN_C_DECLORATION
 typedef struct TriangleStruct TriangleStruct;

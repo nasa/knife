@@ -630,27 +630,12 @@ double triangle_min_subtri_area( Triangle triangle )
 
 KNIFE_STATUS triangle_dump_geom( Triangle triangle, FILE *f )
 {
-  Subtri subtri;
   int subtri_index;
 
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
-    {
-      subtri = triangle_subtri(triangle, subtri_index);
-      fprintf(f,"%30.20e%30.20e%30.20e\n",
-	      subnode_x(subtri_n0(subtri)),
-	      subnode_y(subtri_n0(subtri)),
-	      subnode_z(subtri_n0(subtri)));
-      fprintf(f,"%30.20e%30.20e%30.20e\n",
-	      subnode_x(subtri_n1(subtri)),
-	      subnode_y(subtri_n1(subtri)),
-	      subnode_z(subtri_n1(subtri)));
-      fprintf(f,"%30.20e%30.20e%30.20e\n",
-	      subnode_x(subtri_n2(subtri)),
-	      subnode_y(subtri_n2(subtri)),
-	      subnode_z(subtri_n2(subtri)));
-    }
+    subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
 
   return KNIFE_SUCCESS;
 }

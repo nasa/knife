@@ -40,6 +40,19 @@ void mask_free( Mask mask )
   free( mask );
 }
 
+int mask_nsubtri( Mask mask )
+{
+  int nsubtri;
+  int subtri_index;
+  if ( NULL == mask->active ) return triangle_nsubtri(mask_triangle(mask));
+
+  nsubtri = 0;
+  for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
+    if (mask->active[subtri_index]) nsubtri++;
+
+  return nsubtri;
+}
+
 KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
 {
   int nsubtri;
@@ -57,5 +70,23 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
   for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
     mask->active[subtri_index] = FALSE;
   
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
+{
+  Triangle triangle;
+  int subtri_index;
+
+  if ( NULL == mask->active ) return triangle_dump_geom(mask_triangle(mask),f);
+
+  triangle = mask_triangle(mask);
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    if ( mask->active[subtri_index]) 
+      subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
+
   return KNIFE_SUCCESS;
 }

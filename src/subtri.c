@@ -132,3 +132,22 @@ KNIFE_STATUS subtri_area( Subtri subtri )
 {
   return subnode_area(subtri_n0(subtri), subtri_n1(subtri), subtri_n2(subtri));
 }
+
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
+{
+  if (NULL == subtri) return KNIFE_NULL;
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  subnode_x(subtri_n0(subtri)),
+	  subnode_y(subtri_n0(subtri)),
+	  subnode_z(subtri_n0(subtri)));
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  subnode_x(subtri_n1(subtri)),
+	  subnode_y(subtri_n1(subtri)),
+	  subnode_z(subtri_n1(subtri)));
+  fprintf(f,"%30.20e%30.20e%30.20e\n",
+	  subnode_x(subtri_n2(subtri)),
+	  subnode_y(subtri_n2(subtri)),
+	  subnode_z(subtri_n2(subtri)));
+  return KNIFE_SUCCESS;
+}
+
