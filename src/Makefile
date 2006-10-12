@@ -8,12 +8,14 @@ test: all
 	( cd ../cases/tiny3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
 	                               -v gbumpn.fgrid )
-	( cd ../cases/big3d && \
-	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
-	                               -v gbumpn.fgrid  )
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
 	                               -v om6box.fgrid )
+
+big: all
+	( cd ../cases/big3d && \
+	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
+	                               -v gbumpn.fgrid  )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
