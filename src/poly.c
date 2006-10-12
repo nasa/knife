@@ -197,7 +197,6 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	}
     }
 
-
   return KNIFE_SUCCESS;
 }
 
