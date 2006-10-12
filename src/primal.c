@@ -362,7 +362,8 @@ KNIFE_STATUS primal_tri_center( Primal primal, int tri_index, double *xyz)
 }
 
 KNIFE_STATUS primal_find_face_side( Primal primal, int node0, int node1,
-                                    int *other_face_index, int *other_side ) {
+                                    int *other_face_index, int *other_side ) 
+{
   AdjIterator it;
   int side;
   int face[4];
@@ -388,7 +389,8 @@ KNIFE_STATUS primal_find_face_side( Primal primal, int node0, int node1,
 
 KNIFE_STATUS primal_find_cell_side( Primal primal, 
 				    int node0, int node1, int node2,
-                                    int *other_cell_index, int *other_side ) {
+                                    int *other_cell_index, int *other_side ) 
+{
   AdjIterator it;
   int side;
   int cell[4];
@@ -418,7 +420,8 @@ KNIFE_STATUS primal_find_cell_side( Primal primal,
 }
 
 KNIFE_STATUS primal_find_cell_edge( Primal primal, int cell, int edge, 
-				    int *cell_edge ) {
+				    int *cell_edge ) 
+{
   int canidate;
   
   for ( canidate = 0 ; canidate < 6 ; canidate++ )
@@ -432,10 +435,10 @@ KNIFE_STATUS primal_find_cell_edge( Primal primal, int cell, int edge,
   return KNIFE_NOT_FOUND;
 }
 
-
 KNIFE_STATUS primal_find_edge( Primal primal, 
 			       int node0, int node1,
-			       int *edge_index ) {
+			       int *edge_index ) 
+{
   AdjIterator it;
   int edge;
   int cell[4];
@@ -461,3 +464,27 @@ KNIFE_STATUS primal_find_edge( Primal primal,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS primal_find_tri_side( Primal primal, int tri, int node0, int node1,
+				   int *tri_side )
+{
+  int canidate;
+  int n0, n1;
+
+  if (tri < 0 || tri >= primal_ntri(primal) ) 
+    return KNIFE_ARRAY_BOUND;
+
+  for ( canidate = 0 ; canidate < 3 ; canidate++ )
+    {
+      n0 = primal->t2n[primal_face_side_node0(canidate)+3*tri];
+      n1 = primal->t2n[primal_face_side_node1(canidate)+3*tri];
+
+      if ( ( n0 == node0 && n1 == node1 ) ||
+	   ( n1 == node0 && n0 == node1 ) )
+	{
+	  *tri_side = canidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
