@@ -44,6 +44,8 @@ int main( int argc, char *argv[] )
   Primal volume_primal;
   Domain domain;
 
+  KnifeBool tecplot_output = FALSE;
+
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
 
@@ -70,6 +72,11 @@ int main( int argc, char *argv[] )
 	printf("-b %d\n", *bc );
       }
 
+      if( strcmp(argv[argument],"-t") == 0 ) {
+	tecplot_output = TRUE;
+	printf("-t\n");
+      }
+
       argument++;
     }
 
@@ -80,11 +87,11 @@ int main( int argc, char *argv[] )
 
   domain = domain_create( volume_primal, surface );
   TRY( domain_dual_elements( domain ), "dual creation" );
-  domain_tecplot( domain, "orig.t" );
+  if (tecplot_output) domain_tecplot( domain, "orig.t" );
 
   TRY( domain_boolean_subtract( domain ), "dual creation" );
 
-  domain_tecplot( domain, "cut.t" );
+  if (tecplot_output) domain_tecplot( domain, "cut.t" );
 
   /* sleep(2); */
 
