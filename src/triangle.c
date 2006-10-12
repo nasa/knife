@@ -179,9 +179,9 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						  cut_intersection0(cut));
     subnode1 = triangle_subnode_with_intersection(triangle, 
 						  cut_intersection1(cut));
-    TRY( triangle_find_subtri_with(triangle, 
-				   subnode0, subnode1, 
-				   &subtri ), "edge was not recovered" );
+    TRY( triangle_subtri_with_subnodes( triangle, 
+					subnode0, subnode1, 
+					&subtri ), "edge was not recovered" );
   }
 
   /* verify that all subtriangle have a positive area in uvw space */
@@ -347,8 +347,8 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 
   existing_subtri = NULL;
 
-  if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n0, n1, 
-						 &existing_subtri))
+  if (KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, n0, n1, 
+						      &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
       triangle_add_subtri(triangle,new_subtri);
@@ -356,8 +356,8 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
       subtri_replace_node(new_subtri,      n1, new_node);
     }
 
-  if (KNIFE_SUCCESS == triangle_find_subtri_with(triangle, n1, n0, 
-						 &existing_subtri))
+  if (KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, n1, n0, 
+						      &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
       triangle_add_subtri(triangle,new_subtri);
@@ -388,11 +388,11 @@ KNIFE_STATUS triangle_insert_into_center( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS triangle_find_subtri_with( Triangle triangle, 
-					Subnode n0, Subnode n1,
-					Subtri *found_subtri )
+KNIFE_STATUS triangle_subtri_with_subnodes( Triangle triangle, 
+					    Subnode n0, Subnode n1,
+					    Subtri *subtri )
 {
-  Subtri subtri;
+  Subtri canidate;
   int subtri_index;
 
   if( NULL == triangle ) return KNIFE_NULL;
@@ -401,15 +401,32 @@ KNIFE_STATUS triangle_find_subtri_with( Triangle triangle,
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
     {
-      subtri = triangle_subtri(triangle, subtri_index);
-      if ( subtri_has2(subtri,n0,n1) )
+      canidate = triangle_subtri(triangle, subtri_index);
+      if ( subtri_has2(canidate,n0,n1) )
 	{
-	  *found_subtri = subtri;
+	  *subtri = canidate;
 	  return KNIFE_SUCCESS;
 	}
     }
 
   return KNIFE_NOT_FOUND;
+}
+
+KNIFE_STATUS triangle_subtri_with_intersections( Triangle triangle, 
+						 Intersection i0,
+						 Intersection i1,
+						 Subtri *subtri )
+{
+  Subnode s0, s1;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  s0 = triangle_subnode_with_intersection( triangle, i0 );
+  s1 = triangle_subnode_with_intersection( triangle, i1 );
+
+   if( NULL == s0 ||  NULL == s1 ) return KNIFE_NOT_FOUND;
+
+   return triangle_subtri_with_subnodes(triangle, s0, s1, subtri);
 }
 
 KNIFE_STATUS triangle_first_blocking_side( Triangle triangle, 
@@ -528,7 +545,8 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
   double volume;
 
   TRY( subtri_orient( subtri, subnode, &n0, &n1, &n2 ), "orient");
-  if ( KNIFE_SUCCESS == triangle_find_subtri_with( triangle, n2, n1, &other ) )
+  if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, n2, n1, 
+						       &other ) )
     {
       subtri_orient( other, n2, &o0, &o1, &o2 );
       xyz0[0] = subnode_v(n0);
@@ -552,9 +570,9 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
       if ( volume < 0.0 )
 	{
 	  TRY( triangle_swap_side(triangle,n1,n2), "swap");
-	  TRY( triangle_find_subtri_with( triangle, n1, o2, &other ), "on1" );
+	  TRY( triangle_subtri_with_subnodes(triangle, n1, o2, &other), "on1" );
 	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn1" );
-	  TRY( triangle_find_subtri_with( triangle, o2, n2, &other ), "on2" );
+	  TRY( triangle_subtri_with_subnodes(triangle, o2, n2, &other), "on2" );
 	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn2" );
 	}
     }
@@ -569,8 +587,8 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   Subnode node2, node3;
   Subnode n0, n1, n2;
 
-  TRY( triangle_find_subtri_with( triangle, node0, node1, &subtri0 ), "s0" );
-  TRY( triangle_find_subtri_with( triangle, node1, node0, &subtri1 ), "s1" );
+  TRY( triangle_subtri_with_subnodes(triangle, node0, node1, &subtri0 ), "s0" );
+  TRY( triangle_subtri_with_subnodes(triangle, node1, node0, &subtri1 ), "s1" );
 
   TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
   node2 = n2;

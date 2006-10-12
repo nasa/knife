@@ -14,6 +14,17 @@
 #include "poly.h"
 #include "cut.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      triangle_eps(triangle);				      \
+      return code;					      \
+    }							      \
+  }
+
 Poly poly_create( void )
 {
   Poly poly;
@@ -100,6 +111,7 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
   int cut_index;
   Triangle triangle, cutter;
   Cut cut;
+  Subtri cutter_subtri01, cutter_subtri10;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -123,6 +135,17 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	  cut = triangle_cut(triangle,cut_index);
 	  cutter = cut_other_triangle(cut,triangle);
 	  
+	  TRY( triangle_subtri_with_intersections( cutter, 
+						   cut_intersection0(cut), 
+						   cut_intersection1(cut),
+						   &cutter_subtri01 ), 
+	       "cutter_subtri01");
+	  TRY( triangle_subtri_with_intersections( cutter, 
+						   cut_intersection1(cut), 
+						   cut_intersection0(cut),
+						   &cutter_subtri10 ), 
+	       "cutter_subtri10");
+
 	}
     }
 
