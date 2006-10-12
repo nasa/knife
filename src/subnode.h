@@ -42,12 +42,17 @@ void subnode_free( Subnode );
 
 #define subnode_intersection( subnode ) ((subnode)->intersection) 
 
+KNIFE_STATUS subnode_xyz( Subnode, double *xyz );
+
 double subnode_x( Subnode );
 double subnode_y( Subnode );
 double subnode_z( Subnode );
 
-double subnode_area( Subnode node0, Subnode node1, Subnode node2 );
+#define subnode_same_parent( s0, s1 ) \
+  ( ( (s0)->node == (s1)->node ) && \
+    ( (s0)->intersection == (s1)->intersection ) )
 
+double subnode_area( Subnode node0, Subnode node1, Subnode node2 );
 
 
 END_C_DECLORATION

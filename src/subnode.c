@@ -44,6 +44,28 @@ void subnode_free( Subnode subnode )
   free( subnode );
 }
 
+KNIFE_STATUS subnode_xyz( Subnode subnode, double *xyz )
+{
+  if ( NULL == subnode ) return KNIFE_NULL;
+
+  if (NULL != subnode->node)
+    {
+      xyz[0] = subnode->node->xyz[0];
+      xyz[1] = subnode->node->xyz[1];
+      xyz[2] = subnode->node->xyz[2];
+      return KNIFE_SUCCESS;
+    }
+
+  if (NULL != subnode->intersection) 
+    {
+      xyz[0] = intersection_x(subnode->intersection);
+      xyz[1] = intersection_y(subnode->intersection);
+      xyz[2] = intersection_z(subnode->intersection);
+      return KNIFE_SUCCESS;
+    }
+  return KNIFE_NOT_FOUND;
+}
+
 double subnode_x( Subnode subnode )
 {
   if (NULL != subnode->node) return subnode->node->xyz[0];

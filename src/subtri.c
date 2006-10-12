@@ -158,8 +158,6 @@ KnifeBool subtri_above( Subtri subtri, Subtri other )
   return ( 0.0 < intersection_volume6(xyz0,xyz1,xyz2,xyz3) );
 }
 
-
-
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
 {
   if (NULL == subtri) return KNIFE_NULL;
