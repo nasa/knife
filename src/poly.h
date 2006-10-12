@@ -31,6 +31,7 @@ BEGIN_C_DECLORATION
 
 struct PolyStruct {
   Array mask;
+  Array surf;
 };
 
 Poly poly_create( void );
@@ -40,12 +41,22 @@ void poly_free( Poly );
 KNIFE_STATUS poly_add_triangle( Poly, Triangle, 
 				KnifeBool inward_pointing_normal );
 
-#define poly_add_mask( poly, new_mask )		\
+KnifeBool poly_has_surf_triangle( Poly, Triangle );
+KNIFE_STATUS poly_gather_surf( Poly );
+
+#define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
-#define poly_nmask( poly )		\
+#define poly_nmask( poly )			\
   array_size( (poly)->mask )
-#define poly_mask( poly, mask_index )		\
+#define poly_mask( poly, mask_index )			\
   ((Mask)array_item( (poly)->mask, (mask_index) ))
+
+#define poly_add_surf( poly, new_surf )			\
+  array_add( (poly)->surf, (ArrayItem)(new_surf) )
+#define poly_nsurf( poly )			\
+  array_size( (poly)->surf )
+#define poly_surf( poly, surf_index )			\
+  ((Mask)array_item( (poly)->surf, (surf_index) ))
 
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 

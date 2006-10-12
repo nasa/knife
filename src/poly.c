@@ -12,6 +12,7 @@
  */
 
 #include "poly.h"
+#include "cut.h"
 
 Poly poly_create( void )
 {
@@ -33,6 +34,7 @@ KNIFE_STATUS poly_initialize( Poly poly )
 {
 
   poly->mask = array_create(4,40);
+  poly->surf = array_create(4,40);
 
   return KNIFE_SUCCESS;
 }
@@ -41,6 +43,7 @@ void poly_free( Poly poly )
 {
   if ( NULL == poly ) return;
   array_free( poly->mask );
+  array_free( poly->surf );
   free( poly );
 }
 
@@ -50,6 +53,46 @@ KNIFE_STATUS poly_add_triangle( Poly poly, Triangle triangle,
   return poly_add_mask( poly, mask_create( triangle, inward_pointing_normal ) );
 }
 
+KnifeBool poly_has_surf_triangle( Poly poly, Triangle triangle )
+{
+  int surf_index;
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    {
+      if ( triangle == mask_triangle( poly_surf(poly, surf_index) ) )
+	   return TRUE;
+    }
+  
+  return FALSE;
+}
+
+
+KNIFE_STATUS poly_gather_surf( Poly poly )
+{
+  int mask_index;
+  Triangle triangle, other;
+  int cut_index;
+  Cut cut;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      triangle = mask_triangle(poly_mask(poly, mask_index));
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	  cut = triangle_cut(triangle,cut_index);
+	  other = cut_other_triangle(cut,triangle);
+	  if ( !poly_has_surf_triangle(poly,other) )
+	    poly_add_surf(poly,mask_create( other, TRUE ));
+	}
+    }
+  
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
@@ -67,6 +110,14 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
       nsubtri += triangle_nsubtri(mask_triangle(mask) );
     }
 
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      nsubtri += triangle_nsubtri(mask_triangle(mask) );
+    }
+
   fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  3*nsubtri, nsubtri );
 
@@ -78,6 +129,14 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
       triangle_dump_geom(mask_triangle(mask), f );
     }
 
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      triangle_dump_geom(mask_triangle(mask), f );
+    }
+
   for ( subtri_index = 0;
 	subtri_index < nsubtri; 
 	subtri_index++)
@@ -86,5 +145,5 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 	    2+3*subtri_index,
 	    3+3*subtri_index );
 
- return KNIFE_SUCCESS;
+  return KNIFE_SUCCESS;
 }

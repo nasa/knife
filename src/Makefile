@@ -4,10 +4,10 @@
 test: all
 	( cd ../cases/one_cell && \
 	  time ../../`uname`/src/knife -s surface.fgrid -b 1 \
-	                               -v one_cell.fgrid )
+	                               -v one_cell.fgrid -t )
 	( cd ../cases/tiny3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
-	                               -v gbumpn.fgrid )
+	                               -v gbumpn.fgrid -t )
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
 	                               -v om6box.fgrid )

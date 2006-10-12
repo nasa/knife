@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include "mask.h"
 
-Mask mask_create( Triangle traingle, KnifeBool reversed )
+Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
 {
   Mask mask;
   
@@ -27,7 +27,7 @@ Mask mask_create( Triangle traingle, KnifeBool reversed )
   }
 
   mask->triangle = traingle;
-  mask->reversed = reversed;
+  mask->inward_pointing_normal = inward_pointing_normal;
   mask->active   = NULL;
 
   return mask;

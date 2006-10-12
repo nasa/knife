@@ -26,11 +26,11 @@ END_C_DECLORATION
 BEGIN_C_DECLORATION
 struct MaskStruct {
   Triangle triangle;
-  KnifeBool reversed;
+  KnifeBool inward_pointing_normal;
   KnifeBool *active;
 };
 
-Mask mask_create( Triangle, KnifeBool reversed );
+Mask mask_create( Triangle, KnifeBool inward_pointing_normal );
 void mask_free( Mask );
 
 #define mask_triangle( mask )((mask)->triangle)

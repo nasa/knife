@@ -257,6 +257,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment0 = cell_side + 10 * cell;
 	  segment1 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
 	  segment2 = cell_edge + 4 + 10 * cell;
+	  /* triangle normal points from node0 to node1 */
 	  triangle_initialize( domain_triangle(domain,triangle_index),
 			       domain_segment(domain,segment0),
 			       domain_segment(domain,segment1),
@@ -274,6 +275,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment0 = cell_side + 10 * cell;
 	  segment1 = cell_edge + 4 + 10 * cell;
 	  segment2 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	  /* triangle normal points from node0 to node1 */
 	  triangle_initialize( domain_triangle(domain,triangle_index),
 			       domain_segment(domain,segment0),
 			       domain_segment(domain,segment1),
