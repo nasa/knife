@@ -55,9 +55,20 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;
   int mask_index;
+  int nsubtri;
+  int subtri_index;
+
+  nsubtri = 0;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      nsubtri += triangle_nsubtri(mask_triangle(mask) );
+    }
 
   fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
-	  3*poly_nmask(poly), poly_nmask(poly) );
+	  3*nsubtri, nsubtri );
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -67,13 +78,13 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
       triangle_dump_geom(mask_triangle(mask), f );
     }
 
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
+  for ( subtri_index = 0;
+	subtri_index < nsubtri; 
+	subtri_index++)
     fprintf(f, "%6d %6d %6d\n",
-	    1+3*mask_index,
-	    2+3*mask_index,
-	    3+3*mask_index );
+	    1+3*subtri_index,
+	    2+3*subtri_index,
+	    3+3*subtri_index );
 
  return KNIFE_SUCCESS;
 }

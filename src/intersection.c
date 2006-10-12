@@ -13,6 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
+#include <values.h>
 #include "intersection.h"
 
 Intersection intersection_of( Triangle triangle, Segment segment )
@@ -177,4 +179,21 @@ KNIFE_STATUS intersection_uvw( Intersection intersection, Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+double intersection_x( Intersection intersection )
+{
+  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[0] +
+	         intersection->t * intersection->segment->node1->xyz[0] );
+}
+
+double intersection_y( Intersection intersection )
+{
+  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[1] +
+	         intersection->t * intersection->segment->node1->xyz[1] );
+}
+
+double intersection_z( Intersection intersection )
+{
+  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[2] +
+	         intersection->t * intersection->segment->node1->xyz[2] );
+}
 

@@ -630,18 +630,27 @@ double triangle_min_subtri_area( Triangle triangle )
 
 KNIFE_STATUS triangle_dump_geom( Triangle triangle, FILE *f )
 {
-  fprintf(f,"%30.20e%30.20e%30.20e\n",
-	  triangle->node0->xyz[0],
-	  triangle->node0->xyz[1],
-	  triangle->node0->xyz[2]);
-  fprintf(f,"%30.20e%30.20e%30.20e\n",
-	  triangle->node1->xyz[0],
-	  triangle->node1->xyz[1],
-	  triangle->node1->xyz[2]);
-  fprintf(f,"%30.20e%30.20e%30.20e\n",
-	  triangle->node2->xyz[0],
-	  triangle->node2->xyz[1],
-	  triangle->node2->xyz[2]);
+  Subtri subtri;
+  int subtri_index;
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      fprintf(f,"%30.20e%30.20e%30.20e\n",
+	      subnode_x(subtri_n0(subtri)),
+	      subnode_y(subtri_n0(subtri)),
+	      subnode_z(subtri_n0(subtri)));
+      fprintf(f,"%30.20e%30.20e%30.20e\n",
+	      subnode_x(subtri_n1(subtri)),
+	      subnode_y(subtri_n1(subtri)),
+	      subnode_z(subtri_n1(subtri)));
+      fprintf(f,"%30.20e%30.20e%30.20e\n",
+	      subnode_x(subtri_n2(subtri)),
+	      subnode_y(subtri_n2(subtri)),
+	      subnode_z(subtri_n2(subtri)));
+    }
 
   return KNIFE_SUCCESS;
 }

@@ -13,6 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
+#include <values.h>
 #include "subnode.h"
 
 Subnode subnode_create( double u, double v, double w, 
@@ -40,6 +42,31 @@ void subnode_free( Subnode subnode )
 {
   if ( NULL == subnode ) return;
   free( subnode );
+}
+
+double subnode_x( Subnode subnode )
+{
+  if (NULL != subnode->node) return subnode->node->xyz[0];
+  if (NULL != subnode->intersection) 
+    return intersection_x(subnode->intersection);
+  return DBL_MAX;
+}
+
+
+double subnode_y( Subnode subnode )
+{
+  if (NULL != subnode->node) return subnode->node->xyz[1];
+  if (NULL != subnode->intersection) 
+    return intersection_y(subnode->intersection);
+  return DBL_MAX;
+}
+
+double subnode_z( Subnode subnode )
+{
+  if (NULL != subnode->node) return subnode->node->xyz[2];
+  if (NULL != subnode->intersection) 
+    return intersection_z(subnode->intersection);
+  return DBL_MAX;
 }
 
 double subnode_area( Subnode n0, Subnode n1, Subnode n2 )

@@ -42,6 +42,10 @@ void subnode_free( Subnode );
 
 #define subnode_intersection( subnode ) ((subnode)->intersection) 
 
+double subnode_x( Subnode );
+double subnode_y( Subnode );
+double subnode_z( Subnode );
+
 double subnode_area( Subnode node0, Subnode node1, Subnode node2 );
 
 
