@@ -114,6 +114,13 @@ KNIFE_STATUS primal_find_edge ( Primal, int node0, int node1,
 #define primal_cell_edge_node1(edge) \
   ((0==edge)?1:(1==edge)?2:(3==edge)?2:3)
 
+/* 2, 3, 1, 0, 2, 0 */
+#define primal_cell_edge_left_side(edge) \
+  ((0==edge)?2:(1==edge)?3:(2==edge)?1:(3==edge)?0:(4==edge)?2:0)
+/* 3, 1, 2, 3, 0, 1 */
+#define primal_cell_edge_right_side(edge) \
+  ((0==edge)?3:(1==edge)?1:(2==edge)?2:(3==edge)?3:(4==edge)?0:1)
+
 #define primal_cell_side_node0(side) ((0==side)?1:(1==side)?0:(2==side)?0:0)
 #define primal_cell_side_node1(side) ((0==side)?3:(1==side)?2:(2==side)?3:1)
 #define primal_cell_side_node2(side) ((0==side)?2:(1==side)?3:(2==side)?1:2)
