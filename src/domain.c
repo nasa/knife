@@ -134,7 +134,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int side;
   int cell_center, tri_center, edge_center;
   int edge_index, segment_index, triangle_index;
-  int tri_nodes[3];
+  int tri_side, cell_side;
+  int tri_nodes[3], cell_nodes[4];
   double xyz[3];
   int cell_edge;
   int segment0, segment1, segment2;
@@ -242,31 +243,45 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
   for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
     {
-      for ( side = 0 ; side < 4 ; side++)
+      for ( cell_edge = 0 ; cell_edge < 6 ; cell_edge++)
 	{
-	  segment0 = side + 10 * cell;
-	  tri = primal_c2t(domain->primal,cell,side);
-	  primal_tri(domain->primal,tri,tri_nodes);
-	  for ( edge = 0 ; edge < 3 ; edge++)
-	    {
-	      segment1 = edge + 3 * tri + 10 * primal_ncell(domain->primal);
-	      node0 = tri_nodes[primal_face_side_node0(edge)];
-	      node1 = tri_nodes[primal_face_side_node1(edge)];
-	      TRY( primal_find_edge( domain->primal, node0, node1, 
-				     &edge_index ), "dual int tri find edge" );
-	      TRY( primal_find_cell_edge( domain->primal, cell, edge_index,
-					  &cell_edge ), "dual int tri ce");
-	      segment2 = cell_edge + 4 + 10 * cell;
-	      triangle_index = edge + 3 * side + 12 * cell;
-	      triangle_initialize( domain_triangle(domain,triangle_index),
-				   domain_segment(domain,segment0),
-				   domain_segment(domain,segment1),
-				   domain_segment(domain,segment2));
-	      poly_add_triangle( domain_poly(domain,node0),
-				 domain_triangle(domain,triangle_index) );
-	      poly_add_triangle( domain_poly(domain,node1),
-				 domain_triangle(domain,triangle_index) );
-	    }
+	  primal_cell(domain->primal,cell,cell_nodes);
+	  node0 = cell_nodes[primal_cell_edge_node0(cell_edge)];
+	  node1 = cell_nodes[primal_cell_edge_node1(cell_edge)];
+
+	  cell_side = primal_cell_edge_left_side(cell_edge);
+	  tri = primal_c2t(domain->primal,cell,cell_side);
+	  TRY( primal_find_tri_side( domain->primal, tri, node0, node1,
+				     &tri_side ), "dual int find lf tri side");
+	  triangle_index = 0 + 2 * cell_edge + 12 * cell;
+	  segment0 = cell_side + 10 * cell;
+	  segment1 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	  segment2 = cell_edge + 4 + 10 * cell;
+	  triangle_initialize( domain_triangle(domain,triangle_index),
+			       domain_segment(domain,segment0),
+			       domain_segment(domain,segment1),
+			       domain_segment(domain,segment2));
+	  poly_add_triangle( domain_poly(domain,node0),
+			     domain_triangle(domain,triangle_index), FALSE );
+	  poly_add_triangle( domain_poly(domain,node1),
+			     domain_triangle(domain,triangle_index), TRUE );
+
+	  cell_side = primal_cell_edge_right_side(cell_edge);
+	  tri = primal_c2t(domain->primal,cell,cell_side);
+	  TRY( primal_find_tri_side( domain->primal, tri, node0, node1,
+				     &tri_side ), "dual int find rt tri side");
+	  triangle_index = 1 + 2 * cell_edge + 12 * cell;
+	  segment0 = cell_side + 10 * cell;
+	  segment1 = cell_edge + 4 + 10 * cell;
+	  segment2 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	  triangle_initialize( domain_triangle(domain,triangle_index),
+			       domain_segment(domain,segment0),
+			       domain_segment(domain,segment1),
+			       domain_segment(domain,segment2));
+	  poly_add_triangle( domain_poly(domain,node0),
+			     domain_triangle(domain,triangle_index), FALSE );
+	  poly_add_triangle( domain_poly(domain,node1),
+			     domain_triangle(domain,triangle_index), TRUE );
 	}
     }
 
