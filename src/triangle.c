@@ -427,6 +427,8 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
   if( NULL == triangle ) return KNIFE_NULL;
 
   best_area = -999.0;
+  best_s0 = NULL;
+  best_s1 = NULL;
 
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
