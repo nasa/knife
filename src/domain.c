@@ -301,6 +301,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   NearStruct target;
   KNIFE_STATUS code;
 
+  printf("forming surface near tree\n");
+
   near_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 				    sizeof(NearStruct));
   for (triangle_index=0;
