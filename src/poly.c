@@ -94,6 +94,23 @@ KNIFE_STATUS poly_gather_surf( Poly poly )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_determine_active_subtri( Poly poly )
+{
+  int mask_index;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    mask_deactivate_all_subtri( poly_mask(poly, mask_index) );
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    mask_deactivate_all_subtri( poly_surf(poly, mask_index) );
+   
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;

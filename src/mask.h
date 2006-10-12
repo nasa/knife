@@ -35,6 +35,8 @@ void mask_free( Mask );
 
 #define mask_triangle( mask )((mask)->triangle)
 
+KNIFE_STATUS mask_deactivate_all_subtri( Mask );
+
 END_C_DECLORATION
 
 #endif /* MASK_H */

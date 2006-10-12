@@ -40,3 +40,22 @@ void mask_free( Mask mask )
   free( mask );
 }
 
+KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
+{
+  int nsubtri;
+  int subtri_index;
+
+  nsubtri = triangle_nsubtri( mask_triangle(mask) );
+
+  mask->active = (KnifeBool *) malloc( sizeof(int) );
+  if (NULL == mask->active) {
+    printf("%s: %d: malloc mask->active failed in mask_deactivate_all_subtri\n",
+	   __FILE__,__LINE__);
+    return KNIFE_MEMORY; 
+  }
+  
+  for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
+    mask->active[subtri_index] = FALSE;
+  
+  return KNIFE_SUCCESS;
+}

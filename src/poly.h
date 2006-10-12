@@ -42,7 +42,10 @@ KNIFE_STATUS poly_add_triangle( Poly, Triangle,
 				KnifeBool inward_pointing_normal );
 
 KnifeBool poly_has_surf_triangle( Poly, Triangle );
+
 KNIFE_STATUS poly_gather_surf( Poly );
+
+KNIFE_STATUS poly_determine_active_subtri( Poly );
 
 #define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
