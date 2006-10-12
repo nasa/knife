@@ -1,5 +1,5 @@
 
-/* volume defined by a watertight collection of triangles */
+/* volume defined by a watertight collection of masks */
 
 /* $Id$ */
 
@@ -32,7 +32,7 @@ Poly poly_create( void )
 KNIFE_STATUS poly_initialize( Poly poly )
 {
 
-  poly->triangle = array_create(4,40);
+  poly->mask = array_create(4,40);
 
   return KNIFE_SUCCESS;
 }
@@ -40,32 +40,40 @@ KNIFE_STATUS poly_initialize( Poly poly )
 void poly_free( Poly poly )
 {
   if ( NULL == poly ) return;
-  array_free( poly->triangle );
+  array_free( poly->mask );
   free( poly );
 }
 
+KNIFE_STATUS poly_add_triangle( Poly poly, Triangle triangle, 
+				KnifeBool inward_pointing_normal )
+{
+  return poly_add_mask( poly, mask_create( triangle, inward_pointing_normal ) );
+}
+
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
-  Triangle triangle;
-  int triangle_index;
+  Mask mask;
+  int mask_index;
 
-  fprintf(f, "zone t='poly', i=%d, j=%d, f=fepoint, et=triangle\n",
-	  3*poly_ntriangle(poly), poly_ntriangle(poly) );
+  fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  3*poly_nmask(poly), poly_nmask(poly) );
 
-  for ( triangle_index = 0;
-	triangle_index < poly_ntriangle(poly); 
-	triangle_index++)
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
     {
-      triangle = poly_triangle(poly, triangle_index);
-      triangle_dump_geom(triangle,f);
-    } 
-  for ( triangle_index = 0;
-	triangle_index < poly_ntriangle(poly); 
-	triangle_index++)
-  fprintf(f, "%6d %6d %6d\n",
-	  1+3*triangle_index,
-	  2+3*triangle_index,
-	  3+3*triangle_index );
+      mask = poly_mask(poly, mask_index);
+      triangle_dump_geom(mask_triangle(mask), f );
+    }
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    fprintf(f, "%6d %6d %6d\n",
+	    1+3*mask_index,
+	    2+3*mask_index,
+	    3+3*mask_index );
 
  return KNIFE_SUCCESS;
 }

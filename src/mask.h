@@ -33,6 +33,8 @@ struct MaskStruct {
 Mask mask_create( Triangle, KnifeBool reversed );
 void mask_free( Mask );
 
+#define mask_triangle( mask )((mask)->triangle)
+
 END_C_DECLORATION
 
 #endif /* MASK_H */

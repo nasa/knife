@@ -1,5 +1,5 @@
 
-/* volume defined by a watertight collection of triangles */
+/* volume defined by a watertight collection of masks */
 
 /* $Id$ */
 
@@ -25,23 +25,27 @@ END_C_DECLORATION
 
 #include "array.h"
 #include "triangle.h"
+#include "mask.h"
 
 BEGIN_C_DECLORATION
 
 struct PolyStruct {
-  Array triangle;
+  Array mask;
 };
 
 Poly poly_create( void );
 KNIFE_STATUS poly_initialize( Poly );
 void poly_free( Poly );
 
-#define poly_add_triangle( poly, new_triangle )		\
-  array_add( (poly)->triangle, (ArrayItem)(new_triangle) )
-#define poly_ntriangle( poly )		\
-  array_size( (poly)->triangle )
-#define poly_triangle( poly, triangle_index )		\
-  ((Triangle)array_item( (poly)->triangle, (triangle_index) ))
+KNIFE_STATUS poly_add_triangle( Poly, Triangle, 
+				KnifeBool inward_pointing_normal );
+
+#define poly_add_mask( poly, new_mask )		\
+  array_add( (poly)->mask, (ArrayItem)(new_mask) )
+#define poly_nmask( poly )		\
+  array_size( (poly)->mask )
+#define poly_mask( poly, mask_index )		\
+  ((Mask)array_item( (poly)->mask, (mask_index) ))
 
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 
