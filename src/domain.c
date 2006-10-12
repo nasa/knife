@@ -358,6 +358,18 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
       return code;
     }
 
+  printf("triangulation complete\n");
+
+  code = domain_gather_surf(domain);
+  if (KNIFE_SUCCESS != code)
+    {
+      printf("%s: %d: domain_gather_surf returned %d\n",
+	     __FILE__,__LINE__,code);
+      return code;
+    }
+
+  printf("surface gathered\n");
+
   return (KNIFE_SUCCESS);
 }
 
@@ -391,6 +403,32 @@ KNIFE_STATUS domain_triangulate( Domain domain )
     }
 
   printf("volume triangulated\n");
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS domain_gather_surf( Domain domain )
+{
+  KNIFE_STATUS code;
+  int poly_index;
+  int cut_poly;
+
+  cut_poly =0;
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain); 
+	poly_index++)
+    {
+      code = poly_gather_surf( domain_poly(domain,poly_index) );
+      if (KNIFE_SUCCESS != code)
+	{
+	  printf("%s: %d: poly_gather_surf returned %d\n",
+		 __FILE__,__LINE__,code);
+	  return code;
+	}
+      if ( 0 < poly_nsurf( domain_poly(domain,poly_index) ) ) cut_poly++;
+    }
+
+  printf("polyhedra %d of %d have been cut\n",cut_poly,domain_npoly(domain));
 
   return KNIFE_SUCCESS;
 }

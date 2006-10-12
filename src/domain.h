@@ -80,6 +80,7 @@ KNIFE_STATUS domain_dual_elements( Domain );
 KNIFE_STATUS domain_boolean_subtract( Domain );
 
 KNIFE_STATUS domain_triangulate( Domain );
+KNIFE_STATUS domain_gather_surf( Domain );
 
 KNIFE_STATUS domain_tecplot( Domain, char *filename );
 
