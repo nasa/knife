@@ -135,6 +135,8 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
       nsubtri += mask_nsubtri( mask );
     }
 
+  if (0==nsubtri) return KNIFE_SUCCESS;
+
   fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  3*nsubtri, nsubtri );
 
