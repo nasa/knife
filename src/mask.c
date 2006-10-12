@@ -48,7 +48,9 @@ int mask_nsubtri( Mask mask )
   if ( NULL == mask->active ) return triangle_nsubtri(mask_triangle(mask));
 
   nsubtri = 0;
-  for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
+  for (subtri_index = 0;
+       subtri_index < triangle_nsubtri(mask_triangle(mask));
+       subtri_index++)
     if (mask->active[subtri_index]) nsubtri++;
 
   return nsubtri;
