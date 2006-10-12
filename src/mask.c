@@ -79,6 +79,9 @@ KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
   Triangle triangle;
   int subtri_index;
 
+  if ( NULL == mask ) return KNIFE_NULL;
+  if (NULL == mask->active) return KNIFE_ARRAY_BOUND;
+
   triangle = mask_triangle(mask);
 
   for ( subtri_index = 0;
