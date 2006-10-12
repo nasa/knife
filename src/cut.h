@@ -34,6 +34,9 @@ struct CutStruct {
 Cut cut_between( Triangle, Triangle );
 void cut_free( Cut );
 
+#define cut_other_triangle(cut,triangle)				\
+  ( ((triangle)==(cut)->triangle1) ? (cut)->triangle0 : (cut)->triangle1 )
+
 #define cut_intersection0(cut) ((cut)->intersection0)
 #define cut_intersection1(cut) ((cut)->intersection1)
 
