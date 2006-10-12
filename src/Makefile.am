@@ -13,6 +13,7 @@ libknife_a_SOURCES = \
 	node.h node.c \
 	segment.h segment.c \
 	triangle.h triangle.c \
+	mask.h mask.c \
 	poly.h poly.c \
 	surface.h surface.c \
 	domain.h domain.c \
@@ -31,6 +32,7 @@ libknife_a_include_HEADERS = \
 	node.h \
 	segment.h \
 	triangle.h \
+	mask.h \
 	poly.h \
 	surface.h \
 	domain.h \
