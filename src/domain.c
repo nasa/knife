@@ -317,6 +317,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 					   &(near_tree[triangle_index]) );
     }
 
+  printf("surface near tree formed\n");
+
   max_touched = surface_ntriangle(domain->surface);
 
   touched = (int *) malloc( max_touched * sizeof(int) );
@@ -342,6 +344,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   free(touched);
 
+  printf("cuts computed\n");
+
   code = domain_triangulate(domain);
   if (KNIFE_SUCCESS != code)
     {
@@ -366,6 +370,8 @@ KNIFE_STATUS domain_triangulate( Domain domain )
       return code;
     }
 
+  printf("surface triangulated\n");
+
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
@@ -379,6 +385,8 @@ KNIFE_STATUS domain_triangulate( Domain domain )
 	  return code;
 	}
     }
+
+  printf("volume triangulated\n");
 
   return KNIFE_SUCCESS;
 }
