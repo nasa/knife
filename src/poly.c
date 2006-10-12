@@ -97,6 +97,9 @@ KNIFE_STATUS poly_gather_surf( Poly poly )
 KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 {
   int mask_index;
+  int cut_index;
+  Triangle triangle, cutter;
+  Cut cut;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -108,6 +111,22 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	mask_index++)
     mask_deactivate_all_subtri( poly_surf(poly, mask_index) );
    
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      triangle = mask_triangle(poly_mask(poly, mask_index));
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	  cut = triangle_cut(triangle,cut_index);
+	  cutter = cut_other_triangle(cut,triangle);
+	  
+	}
+    }
+
+
   return KNIFE_SUCCESS;
 }
 
