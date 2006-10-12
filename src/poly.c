@@ -190,11 +190,10 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	       "triang_subtri10");
 
 	  if (subtri_above(triang_subtri01,cutter_subtri01))
-	    mask_activate_subtri(mask, triang_subtri01);
+	    TRY( mask_activate_subtri(mask, triang_subtri01), "active t01");
 
 	  if (subtri_above(triang_subtri10,cutter_subtri01))
-	    mask_activate_subtri(mask, triang_subtri10);
-
+	    TRY( mask_activate_subtri(mask, triang_subtri10), "active t10");
 	}
     }
 
