@@ -44,6 +44,7 @@ int mask_nsubtri( Mask mask )
 {
   int nsubtri;
   int subtri_index;
+
   if ( NULL == mask->active ) return triangle_nsubtri(mask_triangle(mask));
 
   nsubtri = 0;
@@ -60,7 +61,7 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
 
   nsubtri = triangle_nsubtri( mask_triangle(mask) );
 
-  mask->active = (KnifeBool *) malloc( sizeof(int) );
+  mask->active = (KnifeBool *) malloc( nsubtri * sizeof(int) );
   if (NULL == mask->active) {
     printf("%s: %d: malloc mask->active failed in mask_deactivate_all_subtri\n",
 	   __FILE__,__LINE__);
@@ -86,6 +87,7 @@ KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
     if ( subtri == triangle_subtri(triangle, subtri_index) )
       {
 	mask->active[subtri_index] = TRUE;
+	return KNIFE_SUCCESS;
       }
 
   return KNIFE_NOT_FOUND; 
@@ -97,14 +99,14 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
   Triangle triangle;
   int subtri_index;
 
-  if ( NULL == mask->active ) return triangle_dump_geom(mask_triangle(mask),f);
-
   triangle = mask_triangle(mask);
+
+  if ( NULL == mask->active ) return triangle_dump_geom(triangle,f);
 
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
-    if ( mask->active[subtri_index]) 
+    if ( mask->active[subtri_index] ) 
       subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
 
   return KNIFE_SUCCESS;
