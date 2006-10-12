@@ -55,6 +55,8 @@ KNIFE_STATUS subtri_orient( Subtri, Subnode,
 KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
 KNIFE_STATUS subtri_area( Subtri );
 
+KnifeBool subtri_above( Subtri, Subtri );
+
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f );
 
 END_C_DECLORATION

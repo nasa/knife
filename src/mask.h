@@ -40,6 +40,7 @@ void mask_free( Mask );
 int mask_nsubtri( Mask );
 
 KNIFE_STATUS mask_deactivate_all_subtri( Mask );
+KNIFE_STATUS mask_activate_subtri( Mask, Subtri );
 
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
 KNIFE_STATUS mask_find_subtri_with( Mask, FILE * );

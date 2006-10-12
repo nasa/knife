@@ -73,6 +73,25 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
+{
+  Triangle triangle;
+  int subtri_index;
+
+  triangle = mask_triangle(mask);
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    if ( subtri == triangle_subtri(triangle, subtri_index) )
+      {
+	mask->active[subtri_index] = TRUE;
+      }
+
+  return KNIFE_NOT_FOUND; 
+}
+
+
 KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 {
   Triangle triangle;

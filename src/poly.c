@@ -78,6 +78,34 @@ KnifeBool poly_has_surf_triangle( Poly poly, Triangle triangle )
   return FALSE;
 }
 
+KNIFE_STATUS poly_mask_with_triangle( Poly poly, Triangle triangle, Mask *mask )
+{
+  int mask_index;
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    {
+      if ( triangle == mask_triangle( poly_surf(poly, mask_index) ) )
+	{
+	  *mask = poly_surf(poly, mask_index);
+	  return KNIFE_SUCCESS;
+	}
+    }
+  
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      if ( triangle == mask_triangle( poly_mask(poly, mask_index) ) )
+	{
+	  *mask = poly_mask(poly, mask_index);
+	  return KNIFE_SUCCESS;
+	}
+    }
+  
+  return KNIFE_NOT_FOUND;
+}
 
 KNIFE_STATUS poly_gather_surf( Poly poly )
 {
@@ -112,6 +140,8 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
   Triangle triangle, cutter;
   Cut cut;
   Subtri cutter_subtri01, cutter_subtri10;
+  Subtri triang_subtri01, triang_subtri10;
+  Mask mask, surf;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -127,14 +157,16 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	mask_index < poly_nmask(poly); 
 	mask_index++)
     {
-      triangle = mask_triangle(poly_mask(poly, mask_index));
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
       for ( cut_index = 0;
 	    cut_index < triangle_ncut(triangle); 
 	    cut_index++)
 	{
 	  cut = triangle_cut(triangle,cut_index);
 	  cutter = cut_other_triangle(cut,triangle);
-	  
+	  TRY( poly_mask_with_triangle(poly, cutter, &surf), "cutter mask" );
+
 	  TRY( triangle_subtri_with_intersections( cutter, 
 						   cut_intersection0(cut), 
 						   cut_intersection1(cut),
@@ -145,6 +177,23 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 						   cut_intersection0(cut),
 						   &cutter_subtri10 ), 
 	       "cutter_subtri10");
+
+	  TRY( triangle_subtri_with_intersections( triangle, 
+						   cut_intersection0(cut), 
+						   cut_intersection1(cut),
+						   &triang_subtri01 ), 
+	       "triang_subtri01");
+	  TRY( triangle_subtri_with_intersections( triangle, 
+						   cut_intersection1(cut), 
+						   cut_intersection0(cut),
+						   &triang_subtri10 ), 
+	       "triang_subtri10");
+
+	  if (subtri_above(triang_subtri01,cutter_subtri01))
+	    mask_activate_subtri(mask, triang_subtri01);
+
+	  if (subtri_above(triang_subtri10,cutter_subtri01))
+	    mask_activate_subtri(mask, triang_subtri10);
 
 	}
     }

@@ -133,6 +133,33 @@ KNIFE_STATUS subtri_area( Subtri subtri )
   return subnode_area(subtri_n0(subtri), subtri_n1(subtri), subtri_n2(subtri));
 }
 
+KnifeBool subtri_above( Subtri subtri, Subtri other )
+{
+  Subnode subnode;
+  double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
+
+  subnode = subtri_n0(subtri);
+
+  if ( subnode_same_parent( subnode, subtri_n0(other) ) ||
+       subnode_same_parent( subnode, subtri_n1(other) ) ||
+       subnode_same_parent( subnode, subtri_n2(other) ) )
+    subnode = subtri_n1(subtri);
+
+  if ( subnode_same_parent( subnode, subtri_n0(other) ) ||
+       subnode_same_parent( subnode, subtri_n1(other) ) ||
+       subnode_same_parent( subnode, subtri_n2(other) ) )
+    subnode = subtri_n2(subtri);
+
+  subnode_xyz(subtri_n0(other),xyz0);
+  subnode_xyz(subtri_n1(other),xyz1);
+  subnode_xyz(subtri_n2(other),xyz2);
+  subnode_xyz(subnode,xyz3);
+
+  return ( 0.0 < intersection_volume6(xyz0,xyz1,xyz2,xyz3) );
+}
+
+
+
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
 {
   if (NULL == subtri) return KNIFE_NULL;
