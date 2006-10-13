@@ -640,10 +640,12 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
 
   if (NULL == filename) 
     {
+      printf("tecplot output to domain.t\n");
       f = fopen("domain.t", "w");
     }
   else
     {
+      printf("tecplot output to %s\n",filename);
       f = fopen(filename, "w");
     }
   
@@ -653,6 +655,8 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
     poly_tecplot_zone(domain_poly(domain,poly), f );
 
   fclose(f);
+
+  printf("tecplot output complete\n");
   
   return KNIFE_SUCCESS;
 }
