@@ -31,5 +31,6 @@ Node segment_common_node( Segment segment0, Segment segment1 )
   if ( segment0->node0 == segment1->node1 ) node = segment0->node0;
   if ( segment0->node1 == segment1->node0 ) node = segment0->node1;
   if ( segment0->node1 == segment1->node1 ) node = segment0->node1;
+  if (NULL == node) printf("%s: %d: no common node\n",__FILE__,__LINE__);
   return node;
 }
