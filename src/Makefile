@@ -10,12 +10,10 @@ test: all
 	                               -v gbumpn.fgrid -t )
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
-	                               -v om6box.fgrid )
-
-big: all
+	                               -v om6box.fgrid -t )
 	( cd ../cases/big3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 \
-	                               -v gbumpn.fgrid  )
+	                               -v gbumpn.fgrid -t )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
