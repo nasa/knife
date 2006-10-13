@@ -144,6 +144,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int surface_nnode;
   int *node_g2l;
   int node_index;
+  int other_face, other_side;
+  int *f2s;
 
   printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
 	 primal_nnode(domain->primal),
@@ -221,6 +223,32 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     10 * primal_ncell(domain->primal) +
     3  * primal_ntri(domain->primal) +
     3  * primal_nface(domain->primal);
+
+  f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
+
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
+    {
+      f2s[0+3*face] = EMPTY;
+      f2s[1+3*face] = EMPTY;
+      f2s[2+3*face] = EMPTY;
+    }
+
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
+    {
+      primal_face(domain->primal, face, face_nodes);
+      for ( side = 0 ; side<3; side++ )
+	if (EMPTY == f2s[side+3*face])
+	  {
+	    f2s[side+3*face] = domain->nsegment;
+	    node0 = face_nodes[primal_face_side_node0(side)];
+	    node1 = face_nodes[primal_face_side_node1(side)];
+	    TRY( primal_find_face_side(domain->primal, node1, node0, 
+				       &other_face, &other_side), "face_side"); 
+	    f2s[other_side+3*other_face] = domain->nsegment;
+	    domain->nsegment += 2; /* a tri side has 2 segments */
+	  }
+    }
+
   domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
 					       sizeof(SegmentStruct));
   domain_test_malloc(domain->segment,
