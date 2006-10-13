@@ -94,10 +94,10 @@ KNIFE_STATUS primal_tri( Primal, int tri_index, int *nodes);
 KNIFE_STATUS primal_tri_center( Primal, int tri_index, double *xyz); 
 
 KNIFE_STATUS primal_find_face_side( Primal, int node0, int node1, 
-				    int *other_face_index, int *other_side ); 
+				    int *face_index, int *side ); 
 
 KNIFE_STATUS primal_find_cell_side( Primal, int node0, int node1, int node2, 
-				    int *other_cell_index, int *other_side ); 
+				    int *cell_index, int *side ); 
 
 KNIFE_STATUS primal_find_cell_edge( Primal, int cell, int edge, int *cell_edge);
 
