@@ -443,7 +443,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
 				    domain_segment(domain,segment2)),
-	       "boundary tri init 0");
+	       "boundary tri init 1");
 	  poly_add_triangle( domain_poly(domain,node1),
 			     domain_triangle(domain,triangle_index), TRUE );
 	}
