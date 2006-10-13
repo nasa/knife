@@ -244,24 +244,28 @@ KNIFE_STATUS poly_paint( Poly poly )
 	mask_index++)
     TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
 
-  another_coat_of_paint = FALSE;
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
+  another_coat_of_paint = TRUE;
+  while (another_coat_of_paint)
     {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( (1 == triangle_nsubtri(triangle)) && 
-	   !mask_subtri_active(mask,0) )
+      another_coat_of_paint = FALSE;
+      for ( mask_index = 0;
+	    mask_index < poly_nmask(poly); 
+	    mask_index++)
 	{
-	  if ( poly_active_mask_with_nodes( poly, 
-					    triangle->node0,
-					    triangle->node1,
-					    triangle->node2)  )
+	  mask = poly_mask(poly,mask_index);
+	  triangle = mask_triangle(mask);
+	  if ( (1 == triangle_nsubtri(triangle)) && 
+	       !mask_subtri_active(mask,0) )
 	    {
-	      mask_activate_subtri_index( mask, 0 );
-	      another_coat_of_paint = TRUE;
-	    }	       
+	      if ( poly_active_mask_with_nodes( poly, 
+						triangle->node0,
+						triangle->node1,
+						triangle->node2)  )
+		{
+		  mask_activate_subtri_index( mask, 0 );
+		  another_coat_of_paint = TRUE;
+		}	       
+	    }
 	}
     }
   
