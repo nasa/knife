@@ -254,15 +254,10 @@ KNIFE_STATUS poly_paint( Poly poly )
       if ( (1 == triangle_nsubtri(triangle)) && 
 	   !mask_subtri_active(mask,0) )
 	{
-	  if ( poly_segment_between_nodes_active( poly, 
-						  triangle->node0,
-						  triangle->node1 ) ||
-	       poly_segment_between_nodes_active( poly, 
-						  triangle->node1,
-						  triangle->node2 ) ||
-	       poly_segment_between_nodes_active( poly, 
-						  triangle->node2,
-						  triangle->node0 ) )
+	  if ( poly_active_mask_with_nodes( poly, 
+					    triangle->node0,
+					    triangle->node1,
+					    triangle->node2)  )
 	    {
 	      mask_activate_subtri_index( mask, 0 );
 	      another_coat_of_paint = TRUE;
@@ -273,7 +268,8 @@ KNIFE_STATUS poly_paint( Poly poly )
   return KNIFE_SUCCESS;
 }
 
-KnifeBool poly_segment_between_nodes_active( Poly poly, Node n0, Node n1 )
+KnifeBool poly_active_mask_with_nodes( Poly poly, 
+				       Node n0, Node n1, Node n2  )
 {
   int mask_index, subtri_index;
   Triangle triangle;
@@ -287,6 +283,32 @@ KnifeBool poly_segment_between_nodes_active( Poly poly, Node n0, Node n1 )
 	{
 	  if ( KNIFE_SUCCESS != 
 	       triangle_subtri_index_with_nodes( triangle,n0,n1,
+						 &subtri_index ) )
+	    {
+	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
+		     __FILE__,__LINE__);
+	      return FALSE;
+	    }
+	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	    return TRUE;
+	}
+      if ( triangle_has2(triangle,n1,n2) )
+	{
+	  if ( KNIFE_SUCCESS != 
+	       triangle_subtri_index_with_nodes( triangle,n1,n2,
+						 &subtri_index ) )
+	    {
+	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
+		     __FILE__,__LINE__);
+	      return FALSE;
+	    }
+	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	    return TRUE;
+	}
+      if ( triangle_has2(triangle,n2,n0) )
+	{
+	  if ( KNIFE_SUCCESS != 
+	       triangle_subtri_index_with_nodes( triangle,n2,n0,
 						 &subtri_index ) )
 	    {
 	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
