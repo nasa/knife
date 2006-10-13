@@ -37,7 +37,11 @@ static int triangle_frame = 0;
       return NULL;					      \
     }							      \
   }
-
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == pointer){					      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2)
 {
@@ -66,8 +70,11 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->segment[2] = segment2;
 
   triangle->node0 = segment_common_node( segment1, segment2 );
+  NOT_NULL(triangle->node0,"common node0 NULL in triangle_initialize");
   triangle->node1 = segment_common_node( segment0, segment2 );
+  NOT_NULL(triangle->node1,"common node1 NULL in triangle_initialize");
   triangle->node2 = segment_common_node( segment0, segment1 );
+  NOT_NULL(triangle->node2,"common node2 NULL in triangle_initialize");
 
   subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
   subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
