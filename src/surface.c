@@ -97,6 +97,7 @@ Surface surface_from( Primal primal, Array bcs,
 	    f2s[side+3*local_iface] = surface->nsegment;
 	    node0 = face[primal_face_side_node0(side)];
 	    node1 = face[primal_face_side_node1(side)];
+	    /* the other face may not be there if not watertight */
 	    if (KNIFE_SUCCESS == primal_find_face_side(primal, 
 						       node1, node0, 
 						       &other_global, 
