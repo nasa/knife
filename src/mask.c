@@ -116,7 +116,11 @@ KNIFE_STATUS mask_paint( Mask mask )
   Subnode subnode0, subnode1;
   Cut cut;
 
+  KnifeBool more_paint;
+
   triangle = mask_triangle(mask);
+
+  more_paint = FALSE;
 
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
@@ -137,6 +141,8 @@ KNIFE_STATUS mask_paint( Mask mask )
 					  &neighbor_index ), "neighbor_index");
 	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
 		{
+		 if ( !mask->active[subtri_index] || 
+		      !mask->active[neighbor_index] ) more_paint = TRUE;
 		  mask->active[subtri_index] = TRUE;
 		  mask->active[neighbor_index] = TRUE;
 		}
@@ -144,6 +150,8 @@ KNIFE_STATUS mask_paint( Mask mask )
 	}
     } 
  
+  if (more_paint) return mask_paint( mask );
+
   return KNIFE_SUCCESS;
 }
 
