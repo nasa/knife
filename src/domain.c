@@ -207,15 +207,17 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       TRY( primal_edge_center( domain->primal, edge, xyz), "edge center" );
       node_initialize( domain_node(domain,node), xyz, node);
     }
-  for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
-    if ( EMPTY != node_g2l[node] )
+  for ( node_index = 0 ; 
+	node_index < primal_nnode(domain->primal) ; 
+	node_index++) 
+    if ( EMPTY != node_g2l[node_index] )
       {
 	node = 
-	  node_g2l[node] + 
+	  node_g2l[node_index] + 
 	  primal_nedge(domain->primal) + 
 	  primal_ntri(domain->primal) + 
 	  primal_ncell(domain->primal);
-	primal_xyz(domain->primal,node,xyz);
+	primal_xyz(domain->primal,node_index,xyz);
 	node_initialize( domain_node(domain,node), xyz, node);
       }
 
