@@ -464,6 +464,23 @@ KNIFE_STATUS primal_find_edge( Primal primal,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS primal_find_tri( Primal primal, int node0, int node1, int node2, 
+			      int *tri )
+{
+  int cell_index, side;
+
+  if (KNIFE_SUCCESS == primal_find_cell_side( primal, node0, node1, node2, 
+					      &cell_index, &side ) )
+    return primal_c2t(primal,cell_index,side);
+
+  /* search for reversed face on boundary */
+  if (KNIFE_SUCCESS == primal_find_cell_side( primal, node1, node0, node2, 
+					      &cell_index, &side ) )
+    return primal_c2t(primal,cell_index,side);
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS primal_find_tri_side( Primal primal, int tri, int node0, int node1,
 				   int *tri_side )
 {
