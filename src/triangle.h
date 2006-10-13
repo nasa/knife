@@ -97,6 +97,10 @@ KNIFE_STATUS triangle_subtri_with_subnodes( Triangle,
 					    Subnode n0, Subnode n1,
 					    Subtri *subtri );
 
+KNIFE_STATUS triangle_cut_with_subnodes( Triangle, 
+					 Subnode n0, Subnode n1,
+					 Cut *cut );
+
 KNIFE_STATUS triangle_subtri_with_intersections( Triangle, 
 						 Intersection i0, 
 						 Intersection i1,

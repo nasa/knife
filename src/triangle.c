@@ -412,6 +412,32 @@ KNIFE_STATUS triangle_subtri_with_subnodes( Triangle triangle,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS triangle_cut_with_subnodes( Triangle triangle, 
+					 Subnode n0, Subnode n1,
+					 Cut *cut )
+{
+  Cut canidate;
+  int cut_index;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++)
+    {
+      canidate = triangle_cut(triangle, cut_index);
+      if ( cut_has_intersections( canidate,
+				  subnode_intersection(n0),
+				  subnode_intersection(n1) ) )
+	{
+	  *cut = canidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS triangle_subtri_with_intersections( Triangle triangle, 
 						 Intersection i0,
 						 Intersection i1,
