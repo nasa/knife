@@ -20,7 +20,6 @@
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
-      triangle_eps(triangle);				      \
       return code;					      \
     }							      \
   }
@@ -146,12 +145,12 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
-    mask_deactivate_all_subtri( poly_mask(poly, mask_index) );
+    TRY(mask_deactivate_all_subtri( poly_mask(poly, mask_index) ),"deact mask");
 
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
-    mask_deactivate_all_subtri( poly_surf(poly, mask_index) );
+    TRY(mask_deactivate_all_subtri( poly_surf(poly, mask_index) ),"deact surf");
    
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -215,6 +214,23 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	}
     }
 
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_paint( Poly poly )
+{
+  int mask_index;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    TRY( mask_paint( poly_mask(poly, mask_index) ), "mask paint");
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
+   
   return KNIFE_SUCCESS;
 }
 

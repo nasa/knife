@@ -98,6 +98,38 @@ KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
   return KNIFE_NOT_FOUND; 
 }
 
+KNIFE_STATUS mask_paint( Mask mask )
+{
+  int subtri_index;
+  Triangle triangle;
+  Subtri subtri, neighbor;
+  Subnode subnode0, subnode1;
+  Cut cut;
+
+  triangle = mask_triangle(mask);
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle,subtri_index); 
+      subnode0 = subtri_n0(subtri);
+      subnode1 = subtri_n1(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  if (KNIFE_NOT_FOUND == triangle_cut_with_subnodes( triangle, 
+							     subnode1, subnode0,
+							     &cut ) )
+	    {
+	      
+	    }
+	}
+    } 
+ 
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 {
