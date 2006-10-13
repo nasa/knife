@@ -319,6 +319,38 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 			      domain_node(domain,tri_center),
 			      domain_node(domain,node_index));
 	}
+      for ( side = 0 ; side < 3 ; side++)
+	{
+	  node0 = face_nodes[primal_face_side_node0(side)];
+	  node1 = face_nodes[primal_face_side_node1(side)];
+	  TRY( primal_find_face_side(domain->primal, node1, node0, 
+				     &other_face, &other_side), "i face_side"); 
+	  if ( face < other_face ) /* only init segment once */
+	    {
+	      TRY( primal_find_edge( domain->primal, node0, node1, 
+				     &edge_index ), "face seg find edge" );
+	      edge_center = edge_index + primal_ntri(domain->primal) 
+	                  + primal_ncell(domain->primal);
+	      segment_index = 0 + f2s[side+3*face];
+	      node_index = 
+		node_g2l[node0] + 
+		primal_nedge(domain->primal) + 
+		primal_ntri(domain->primal) + 
+		primal_ncell(domain->primal);
+	      segment_initialize( domain_segment(domain,segment_index),
+				  domain_node(domain,node_index),
+				  domain_node(domain,edge_center));
+	      segment_index = 1 + f2s[side+3*face];
+	      node_index = 
+		node_g2l[node1] + 
+		primal_nedge(domain->primal) + 
+		primal_ntri(domain->primal) + 
+		primal_ncell(domain->primal);
+	      segment_initialize( domain_segment(domain,segment_index),
+				  domain_node(domain,edge_center),
+				  domain_node(domain,node_index));
+	    }
+	}
     }
 
   domain->ntriangle = 12*primal_ncell(domain->primal);
