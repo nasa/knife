@@ -29,6 +29,7 @@ END_C_DECLORATION
 #include "subnode.h"
 #include "subtri.h"
 #include "intersection.h"
+#include "cut.h"
 
 BEGIN_C_DECLORATION
 

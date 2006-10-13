@@ -13,7 +13,6 @@
 
 #include <math.h>
 #include "triangle.h"
-#include "cut.h"
 
 static int triangle_frame = 0;
 
