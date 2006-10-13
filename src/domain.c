@@ -374,6 +374,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     }
 
   free(node_g2l);
+  free(f2s);
   
   printf("dual completed\n");
 
