@@ -41,6 +41,10 @@ int mask_nsubtri( Mask );
 
 KNIFE_STATUS mask_deactivate_all_subtri( Mask );
 KNIFE_STATUS mask_activate_subtri( Mask, Subtri );
+
+#define mask_subtri_active(mask,subtri_index)	\
+  ( NULL == (mask)->active ? TRUE : (mask)->active[(subtri_index)] )
+
 KNIFE_STATUS mask_paint( Mask );
 
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
