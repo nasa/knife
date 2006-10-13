@@ -308,7 +308,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       primal_tri(domain->primal,tri,tri_nodes);
       for ( node = 0 ; node < 3 ; node++)
 	{
-	  segment_index = node + 3* face + 
+	  segment_index = node + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
 	  node_index = 
 	    node_g2l[face_nodes[node]] + 
@@ -353,7 +353,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 
-  domain->ntriangle = 12*primal_ncell(domain->primal);
+  domain->ntriangle = 12*primal_ncell(domain->primal)
+                    +  6*primal_nface(domain->primal);
   domain->triangle = (TriangleStruct *)malloc( domain->ntriangle * 
 					       sizeof(TriangleStruct));
   domain_test_malloc(domain->triangle,"domain_dual_elements triangle");
@@ -405,6 +406,42 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
+    {
+      primal_face(domain->primal, face, face_nodes);
+      TRY( primal_find_tri( domain->primal, 
+			    face_nodes[0], face_nodes[1], face_nodes[2],
+			    &tri ), "find tri for triangle init" );
+      for ( side = 0 ; side < 3 ; side++)
+	{
+	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
+	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	  segment1 = primal_face_side_node0(side) + 3 * face + 
+	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
+	  segment2 = 0 + f2s[side+3*face];
+	  node = face_nodes[primal_face_side_node0(side)];
+	  triangle_initialize( domain_triangle(domain,triangle_index),
+			       domain_segment(domain,segment0),
+			       domain_segment(domain,segment1),
+			       domain_segment(domain,segment2));
+	  poly_add_triangle( domain_poly(domain,node),
+			     domain_triangle(domain,triangle_index), TRUE );
+
+	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
+	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	  segment1 = 1 + f2s[side+3*face];
+	  segment2 = primal_face_side_node1(side) + 3 * face + 
+	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
+	  node = face_nodes[primal_face_side_node1(side)];
+	  triangle_initialize( domain_triangle(domain,triangle_index),
+			       domain_segment(domain,segment0),
+			       domain_segment(domain,segment1),
+			       domain_segment(domain,segment2));
+	  poly_add_triangle( domain_poly(domain,node),
+			     domain_triangle(domain,triangle_index), TRUE );
+	}
+    }
+	  
   free(node_g2l);
   free(f2s);
   
