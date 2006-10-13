@@ -303,13 +303,15 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 				       Node n0, Node n1, Node n2  )
 {
   int mask_index, subtri_index;
+  Mask mask;
   Triangle triangle;
   
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
     {
-      triangle = mask_triangle(poly_mask(poly,mask_index));
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
       if ( triangle_has2(triangle,n0,n1) )
 	{
 	  if ( KNIFE_SUCCESS != 
@@ -320,7 +322,7 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	  if ( mask_subtri_active(mask,subtri_index ) )
 	    return TRUE;
 	}
       if ( triangle_has2(triangle,n1,n2) )
@@ -333,7 +335,7 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	  if ( mask_subtri_active(mask,subtri_index ) )
 	    return TRUE;
 	}
       if ( triangle_has2(triangle,n2,n0) )
@@ -346,7 +348,7 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	  if ( mask_subtri_active(mask,subtri_index ) )
 	    return TRUE;
 	}
     }
@@ -358,13 +360,15 @@ KnifeBool poly_active_surf_with_nodes( Poly poly,
 				       Node n0, Node n1, Node n2  )
 {
   int surf_index, subtri_index;
+  Mask surf;
   Triangle triangle;
   
   for ( surf_index = 0;
 	surf_index < poly_nsurf(poly); 
 	surf_index++)
     {
-      triangle = mask_triangle(poly_surf(poly,surf_index));
+      surf = poly_mask(poly,surf_index);
+      triangle = mask_triangle(surf);
       if ( triangle_has2(triangle,n0,n1) )
 	{
 	  if ( KNIFE_SUCCESS != 
@@ -375,7 +379,7 @@ KnifeBool poly_active_surf_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_surf(poly,surf_index),subtri_index ) )
+	  if ( mask_subtri_active(surf,subtri_index ) )
 	    return TRUE;
 	}
       if ( triangle_has2(triangle,n1,n2) )
@@ -388,7 +392,7 @@ KnifeBool poly_active_surf_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_surf(poly,surf_index),subtri_index ) )
+	  if ( mask_subtri_active(surf,subtri_index ) )
 	    return TRUE;
 	}
       if ( triangle_has2(triangle,n2,n0) )
@@ -401,14 +405,13 @@ KnifeBool poly_active_surf_with_nodes( Poly poly,
 		     __FILE__,__LINE__);
 	      return FALSE;
 	    }
-	  if ( mask_subtri_active(poly_surf(poly,surf_index),subtri_index ) )
+	  if ( mask_subtri_active(surf,subtri_index ) )
 	    return TRUE;
 	}
     }
 
   return FALSE;
 }
-
 
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
