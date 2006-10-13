@@ -149,6 +149,48 @@ KNIFE_STATUS mask_paint( Mask mask )
 		}
 	    }
 	}
+      subnode0 = subtri_n1(subtri);
+      subnode1 = subtri_n2(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  if (KNIFE_NOT_FOUND == triangle_cut_with_subnodes( triangle, 
+							     subnode1, subnode0,
+							     &cut ) )
+	    {
+	      TRY( triangle_subtri_index( triangle, neighbor,
+					  &neighbor_index ), "neighbor_index");
+	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+		{
+		 if ( !mask->active[subtri_index] || 
+		      !mask->active[neighbor_index] ) more_paint = TRUE;
+		  mask->active[subtri_index] = TRUE;
+		  mask->active[neighbor_index] = TRUE;
+		}
+	    }
+	}
+      subnode0 = subtri_n2(subtri);
+      subnode1 = subtri_n0(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  if (KNIFE_NOT_FOUND == triangle_cut_with_subnodes( triangle, 
+							     subnode1, subnode0,
+							     &cut ) )
+	    {
+	      TRY( triangle_subtri_index( triangle, neighbor,
+					  &neighbor_index ), "neighbor_index");
+	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+		{
+		 if ( !mask->active[subtri_index] || 
+		      !mask->active[neighbor_index] ) more_paint = TRUE;
+		  mask->active[subtri_index] = TRUE;
+		  mask->active[neighbor_index] = TRUE;
+		}
+	    }
+	}
     } 
  
   if (more_paint) return mask_paint( mask );
