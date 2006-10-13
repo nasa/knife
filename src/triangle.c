@@ -387,6 +387,27 @@ KNIFE_STATUS triangle_insert_into_center( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_subtri_index( Triangle triangle, Subtri subtri,
+				    int *subtri_index )
+{
+  int canidate;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( canidate = 0;
+	canidate < triangle_nsubtri(triangle); 
+	canidate++)
+    {
+      if ( subtri == triangle_subtri(triangle, canidate) )
+	{
+	  *subtri_index = canidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS triangle_subtri_with_subnodes( Triangle triangle, 
 					    Subnode n0, Subnode n1,
 					    Subtri *subtri )
