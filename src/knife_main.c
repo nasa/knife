@@ -44,7 +44,9 @@ int main( int argc, char *argv[] )
   Primal volume_primal;
   Domain domain;
 
+  KnifeBool inward_pointing_surface_normal = TRUE;
   KnifeBool tecplot_output = FALSE;
+  KnifeBool arguments_require_stop = FALSE;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -56,6 +58,11 @@ int main( int argc, char *argv[] )
 	argument++; 
 	sprintf( surface_filename, "%s", argv[argument] );
 	printf("-s %s\n", surface_filename);
+      }
+
+      if( strcmp(argv[argument],"-r") == 0 ) {
+	inward_pointing_surface_normal = FALSE;
+	printf("-r\n");
       }
 
       if( strcmp(argv[argument],"-v") == 0 ) {
@@ -77,11 +84,29 @@ int main( int argc, char *argv[] )
 	printf("-t\n");
       }
 
+      if( (strcmp(argv[argument],"-h") == 0 )    ||
+	  (strcmp(argv[argument],"--help") == 0 ) ) {
+	printf("-s surface fgrid filename\n");
+	printf("-r surface triangle normals point out of the domain\n");
+	printf("-v volume fgrid filename\n");
+	printf("-h,--help display help info and exit\n");
+	printf("--version display version info and exit\n");
+	arguments_require_stop = TRUE;
+      }
+
+      if( (strcmp(argv[argument],"--version") == 0 ) ) {
+	printf("knife cut cell driver version %s\n",VERSION);
+	arguments_require_stop = TRUE;
+      }
+
       argument++;
     }
 
+  if (arguments_require_stop) return 0;
+
   surface_primal = primal_from_FAST( surface_filename );
-  surface = surface_from( surface_primal, active_bcs );
+  surface = surface_from( surface_primal, active_bcs, 
+			  inward_pointing_surface_normal );
 
   volume_primal = primal_from_FAST( volume_filename );
 
