@@ -137,10 +137,6 @@ KNIFE_STATUS triangle_extent( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
-#define NOT_NULL(fcn) if ( NULL == (fcn) ) {		  \
-    printf("%s: %d: NULL subnode\n",__FILE__,__LINE__);	  \
-    return KNIFE_FAILURE; }
-
 KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
   int cut_index;
@@ -156,8 +152,10 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection0(cut) ) );
-    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection1(cut) ) );
+    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection0(cut) ),
+	      "NULL subnode0 in triangle_triangulate_cuts" );
+    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection1(cut) ),
+	      "NULL subnode0 in triangle_triangulate_cuts" );
   }
 
   /* recover all cuts as subtriangle sides */
