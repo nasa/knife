@@ -471,12 +471,18 @@ KNIFE_STATUS primal_find_tri( Primal primal, int node0, int node1, int node2,
 
   if (KNIFE_SUCCESS == primal_find_cell_side( primal, node0, node1, node2, 
 					      &cell_index, &side ) )
-    return primal_c2t(primal,cell_index,side);
+    {
+      *tri =  primal_c2t(primal,cell_index,side);
+      return KNIFE_SUCCESS;
+    }
 
   /* search for reversed face on boundary */
   if (KNIFE_SUCCESS == primal_find_cell_side( primal, node1, node0, node2, 
 					      &cell_index, &side ) )
-    return primal_c2t(primal,cell_index,side);
+    {
+      *tri =  primal_c2t(primal,cell_index,side);
+      return KNIFE_SUCCESS;
+    }
 
   return KNIFE_NOT_FOUND;
 }
