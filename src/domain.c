@@ -130,18 +130,20 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 KNIFE_STATUS domain_dual_elements( Domain domain )
 {
   int node;
-  int cell, edge, tri;
+  int cell, edge, tri, face;
   int side;
   int cell_center, tri_center, edge_center;
   int edge_index, segment_index, triangle_index;
   int tri_side, cell_side;
-  int tri_nodes[3], cell_nodes[4];
+  int tri_nodes[3], cell_nodes[4], face_nodes[4];
   double xyz[3];
   int cell_edge;
   int segment0, segment1, segment2;
   int node0, node1;
   int poly;
-  
+  int surface_nnode;
+  int *node_g2l;
+
   printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
 	 primal_nnode(domain->primal),
 	 primal_nface(domain->primal),
@@ -155,10 +157,30 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
     poly_initialize(domain_poly(domain,poly));
   
+
+  node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
+  for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
+    node_g2l[node] = EMPTY;
+
+  surface_nnode = 0;
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++ )
+    {
+      primal_face(domain->primal, face, face_nodes);
+      for (node=0;node<3;node++)
+	if (EMPTY == node_g2l[face_nodes[node]]) 
+	  {
+	    node_g2l[face_nodes[node]] = surface_nnode;
+	    surface_nnode++;
+	  }
+    }
+
+  printf("number of nodes in the surface %d\n",surface_nnode);
+
   domain->nnode = 
     primal_ncell(domain->primal) +
     primal_ntri(domain->primal) +
-    primal_nedge(domain->primal);
+    primal_nedge(domain->primal) +
+    surface_nnode;
   domain->node = (NodeStruct *)malloc( domain->nnode * 
 				       sizeof(NodeStruct));
   domain_test_malloc(domain->node,
@@ -182,6 +204,17 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       TRY( primal_edge_center( domain->primal, edge, xyz), "edge center" );
       node_initialize( domain_node(domain,node), xyz, node);
     }
+  for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
+    if ( EMPTY != node_g2l[node] )
+      {
+	node = 
+	  node_g2l[node] + 
+	  primal_nedge(domain->primal) + 
+	  primal_ntri(domain->primal) + 
+	  primal_ncell(domain->primal);
+	primal_xyz(domain->primal,node,xyz);
+	node_initialize( domain_node(domain,node), xyz, node);
+      }
 
   domain->nsegment = 
     10 * primal_ncell(domain->primal) +
