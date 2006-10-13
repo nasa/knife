@@ -194,6 +194,24 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 
 	  if (subtri_above(triang_subtri10,cutter_subtri01))
 	    TRY( mask_activate_subtri(mask, triang_subtri10), "active t10");
+
+	  if ( mask->inward_pointing_normal )
+	    {
+	      if (  subtri_above(cutter_subtri01,triang_subtri01))
+		TRY( mask_activate_subtri(surf, cutter_subtri01), "active c01");
+
+	      if (  subtri_above(cutter_subtri10,triang_subtri01))
+		TRY( mask_activate_subtri(surf, cutter_subtri10), "active c10");
+	    }
+	  else
+	    {
+	      if ( !subtri_above(cutter_subtri01,triang_subtri01))
+		TRY( mask_activate_subtri(surf, cutter_subtri01), "active!c01");
+
+	      if ( !subtri_above(cutter_subtri10,triang_subtri01))
+		TRY( mask_activate_subtri(surf, cutter_subtri10), "active!c10");
+	    }
+
 	}
     }
 
