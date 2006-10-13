@@ -15,6 +15,16 @@
 #include <stdio.h>
 #include "mask.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
 Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
 {
   Mask mask;
@@ -100,8 +110,8 @@ KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
 
 KNIFE_STATUS mask_paint( Mask mask )
 {
-  int subtri_index;
   Triangle triangle;
+  int subtri_index, neighbor_index;
   Subtri subtri, neighbor;
   Subnode subnode0, subnode1;
   Cut cut;
@@ -123,7 +133,13 @@ KNIFE_STATUS mask_paint( Mask mask )
 							     subnode1, subnode0,
 							     &cut ) )
 	    {
-	      
+	      TRY( triangle_subtri_index( triangle, neighbor,
+					  &neighbor_index ), "neighbor_index");
+	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+		{
+		  mask->active[subtri_index] = TRUE;
+		  mask->active[neighbor_index] = TRUE;
+		}
 	    }
 	}
     } 
