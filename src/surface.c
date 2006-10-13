@@ -15,7 +15,8 @@
 #include <stdio.h>
 #include "surface.h"
 
-Surface surface_from( Primal primal, Array bcs )
+Surface surface_from( Primal primal, Array bcs, 
+		      KnifeBool inward_pointing_normal  )
 {
   Surface surface;
   int face[4];
@@ -164,10 +165,20 @@ Surface surface_from( Primal primal, Array bcs )
 						 sizeof(TriangleStruct));
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
-      triangle_initialize( surface_triangle(surface,local_iface),
-			   surface_segment(surface,f2s[0+3*local_iface]),
-			   surface_segment(surface,f2s[1+3*local_iface]),
-			   surface_segment(surface,f2s[2+3*local_iface]) );
+      if ( inward_pointing_normal )
+	{
+	  triangle_initialize( surface_triangle(surface,local_iface),
+			       surface_segment(surface,f2s[0+3*local_iface]),
+			       surface_segment(surface,f2s[1+3*local_iface]),
+			       surface_segment(surface,f2s[2+3*local_iface]) );
+	}
+      else
+	{
+	  triangle_initialize( surface_triangle(surface,local_iface),
+			       surface_segment(surface,f2s[1+3*local_iface]),
+			       surface_segment(surface,f2s[0+3*local_iface]),
+			       surface_segment(surface,f2s[2+3*local_iface]) );
+	}
     }
 
   free(face_l2g);

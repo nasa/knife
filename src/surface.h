@@ -38,7 +38,7 @@ struct SurfaceStruct {
   TriangleStruct *triangle;
 };
 
-Surface surface_from( Primal, Array of_bcs );
+Surface surface_from( Primal, Array of_bcs, KnifeBool inward_pointing_normal );
 
 void surface_free( Surface );
 
