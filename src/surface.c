@@ -15,6 +15,16 @@
 #include <stdio.h>
 #include "surface.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
 Surface surface_from( Primal primal, Array bcs, 
 		      KnifeBool inward_pointing_normal  )
 {
@@ -200,22 +210,13 @@ void surface_free( Surface surface )
 
 KNIFE_STATUS surface_triangulate( Surface surface )
 {
-  KNIFE_STATUS code;
   int triangle_index;
 
   for ( triangle_index = 0;
 	triangle_index < surface_ntriangle(surface); 
 	triangle_index++)
-    {
-      code = triangle_triangulate_cuts( surface_triangle(surface,
-							 triangle_index) );
-      if (KNIFE_SUCCESS != code)
-	{
-	  printf("%s: %d: triangle_triangulate_cuts returned %d\n",
-		 __FILE__,__LINE__,code);
-	  return code;
-	}
-    }
+    TRY( triangle_triangulate_cuts( surface_triangle(surface,triangle_index) ), 
+				    "triangle_triangulate_cuts" );
 
   return KNIFE_SUCCESS;
 }
