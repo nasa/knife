@@ -135,12 +135,6 @@ KNIFE_STATUS poly_gather_surf( Poly poly )
 KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 {
   int mask_index;
-  int cut_index;
-  Triangle triangle, cutter;
-  Cut cut;
-  Subtri cutter_subtri01, cutter_subtri10;
-  Subtri triang_subtri01, triang_subtri10;
-  Mask mask, surf;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -151,7 +145,23 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
     TRY(mask_deactivate_all_subtri( poly_surf(poly, mask_index) ),"deact surf");
-   
+
+   TRY( poly_activate_subtri_at_cuts( poly ), "activate at cuts");
+   TRY( poly_paint( poly ), "paint");
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
+{
+  int mask_index;
+  int cut_index;
+  Triangle triangle, cutter;
+  Cut cut;
+  Subtri cutter_subtri01, cutter_subtri10;
+  Subtri triang_subtri01, triang_subtri10;
+  Mask mask, surf;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
@@ -213,16 +223,6 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 
 	}
     }
-
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    TRY(mask_paint( poly_mask(poly, mask_index) ),"paint mask");
-
-  for ( mask_index = 0;
-	mask_index < poly_nsurf(poly); 
-	mask_index++)
-    TRY(mask_paint( poly_surf(poly, mask_index) ),"paint surf");
 
   return KNIFE_SUCCESS;
 }

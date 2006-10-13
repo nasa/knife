@@ -49,6 +49,7 @@ KNIFE_STATUS poly_gather_surf( Poly );
 
 KNIFE_STATUS poly_determine_active_subtri( Poly );
 
+KNIFE_STATUS poly_activate_subtri_at_cuts( Poly );
 KNIFE_STATUS poly_paint( Poly );
 
 #define poly_add_mask( poly, new_mask )			\
