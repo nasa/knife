@@ -143,6 +143,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int poly;
   int surface_nnode;
   int *node_g2l;
+  int node_index;
 
   printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
 	 primal_nnode(domain->primal),
@@ -218,7 +219,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
   domain->nsegment = 
     10 * primal_ncell(domain->primal) +
-    3  * primal_ntri(domain->primal);
+    3  * primal_ntri(domain->primal) +
+    3  * primal_nface(domain->primal);
   domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
 					       sizeof(SegmentStruct));
   domain_test_malloc(domain->segment,
@@ -265,6 +267,29 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment_initialize( domain_segment(domain,segment_index),
 			      domain_node(domain,tri_center),
 			      domain_node(domain,edge_center));
+	}
+    }
+
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
+    {
+      primal_face(domain->primal, face, face_nodes);
+      TRY( primal_find_tri( domain->primal, 
+			    face_nodes[0], face_nodes[1], face_nodes[2],
+			    &tri ), "find tri for face" );
+      tri_center = tri + primal_ncell(domain->primal);;
+      primal_tri(domain->primal,tri,tri_nodes);
+      for ( node = 0 ; node < 3 ; node++)
+	{
+	  segment_index = node + 3* face + 
+	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
+	  node_index = 
+	    node_g2l[face_nodes[node]] + 
+	    primal_nedge(domain->primal) + 
+	    primal_ntri(domain->primal) + 
+	    primal_ncell(domain->primal);
+	  segment_initialize( domain_segment(domain,segment_index),
+			      domain_node(domain,tri_center),
+			      domain_node(domain,node_index));
 	}
     }
 
@@ -320,6 +345,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 
+  free(node_g2l);
+  
   printf("dual completed\n");
 
   return (KNIFE_SUCCESS);
