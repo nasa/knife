@@ -40,6 +40,10 @@ void cut_free( Cut );
 #define cut_intersection0(cut) ((cut)->intersection0)
 #define cut_intersection1(cut) ((cut)->intersection1)
 
+#define cut_has_intersections(cut,int0,int1)				\
+  ( ( ((cut)->intersection0==(int0)) && ((cut)->intersection1==(int1)) ) || \
+    ( ((cut)->intersection1==(int0)) && ((cut)->intersection0==(int1)) ) )
+
 END_C_DECLORATION
 
 #endif /* CUT_H */
