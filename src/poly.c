@@ -214,6 +214,16 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
 	}
     }
 
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    TRY(mask_paint( poly_mask(poly, mask_index) ),"paint mask");
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    TRY(mask_paint( poly_surf(poly, mask_index) ),"paint surf");
+
   return KNIFE_SUCCESS;
 }
 
