@@ -52,6 +52,8 @@ KNIFE_STATUS poly_determine_active_subtri( Poly );
 KNIFE_STATUS poly_activate_subtri_at_cuts( Poly );
 KNIFE_STATUS poly_paint( Poly );
 
+KnifeBool poly_segment_between_nodes_active( Poly, Node n0, Node n1 );
+
 #define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
 #define poly_nmask( poly )			\

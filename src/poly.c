@@ -230,6 +230,9 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 KNIFE_STATUS poly_paint( Poly poly )
 {
   int mask_index;
+  Mask mask;
+  Triangle triangle;
+  KnifeBool another_coat_of_paint;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -240,8 +243,62 @@ KNIFE_STATUS poly_paint( Poly poly )
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
     TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
-   
+
+  another_coat_of_paint = FALSE;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( (1 == triangle_nsubtri(triangle)) && 
+	   !mask_subtri_active(mask,0) )
+	{
+	  if ( poly_segment_between_nodes_active( poly, 
+						  triangle->node0,
+						  triangle->node1 ) ||
+	       poly_segment_between_nodes_active( poly, 
+						  triangle->node1,
+						  triangle->node2 ) ||
+	       poly_segment_between_nodes_active( poly, 
+						  triangle->node2,
+						  triangle->node0 ) )
+	    {
+	      mask_activate_subtri_index( mask, 0 );
+	      another_coat_of_paint = TRUE;
+	    }	       
+	}
+    }
+  
   return KNIFE_SUCCESS;
+}
+
+KnifeBool poly_segment_between_nodes_active( Poly poly, Node n0, Node n1 )
+{
+  int mask_index, subtri_index;
+  Triangle triangle;
+  
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      triangle = mask_triangle(poly_mask(poly,mask_index));
+      if ( triangle_has2(triangle,n0,n1) )
+	{
+	  if ( KNIFE_SUCCESS != 
+	       triangle_subtri_index_with_nodes( triangle,n0,n1,
+						 &subtri_index ) )
+	    {
+	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
+		     __FILE__,__LINE__);
+	      return FALSE;
+	    }
+	  if ( mask_subtri_active(poly_mask(poly,mask_index),subtri_index ) )
+	    return TRUE;
+	}
+    }
+
+  return FALSE;
 }
 
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )

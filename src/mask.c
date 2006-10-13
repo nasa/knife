@@ -88,24 +88,25 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
 
 KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
 {
-  Triangle triangle;
   int subtri_index;
 
   if ( NULL == mask ) return KNIFE_NULL;
-  if (NULL == mask->active) return KNIFE_ARRAY_BOUND;
 
-  triangle = mask_triangle(mask);
+  TRY( triangle_subtri_index( mask_triangle(mask), subtri, &subtri_index ),
+       "no index for subtri" );
 
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
-    if ( subtri == triangle_subtri(triangle, subtri_index) )
-      {
-	mask->active[subtri_index] = TRUE;
-	return KNIFE_SUCCESS;
-      }
+  return mask_activate_subtri_index( mask, subtri_index ); 
+}
 
-  return KNIFE_NOT_FOUND; 
+KNIFE_STATUS mask_activate_subtri_index( Mask mask, int subtri_index )
+{
+
+  if ( NULL == mask ) return KNIFE_NULL;
+  if ( NULL == mask->active ) return KNIFE_ARRAY_BOUND;
+
+  mask->active[subtri_index] = TRUE;
+
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS mask_paint( Mask mask )
