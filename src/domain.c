@@ -419,6 +419,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	{
 	  node0 = face_nodes[primal_face_side_node0(side)];
 	  node1 = face_nodes[primal_face_side_node1(side)];
+	  TRY( primal_find_face_side(domain->primal, node1, node0, 
+				     &other_face, &other_side), "u face_side"); 
 	  TRY( primal_find_tri_side( domain->primal, tri, node0, node1,
 				     &tri_side ), "dual int find rt tri side");
 	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
@@ -426,6 +428,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment1 = primal_face_side_node0(side) + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
 	  segment2 = 0 + f2s[side+3*face];
+	  if (other_face < face) segment2 = 1 + f2s[side+3*face];
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
@@ -437,6 +440,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
 	  segment1 = 1 + f2s[side+3*face];
+	  if (other_face < face) segment1 = 0 + f2s[side+3*face];
 	  segment2 = primal_face_side_node1(side) + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
