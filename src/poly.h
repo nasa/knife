@@ -62,6 +62,9 @@ KNIFE_STATUS poly_paint( Poly );
 KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2 );
 KnifeBool poly_active_surf_with_nodes( Poly, Node n0, Node n1, Node n2 );
 
+KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
+                                                  KnifeBool *active );
+
 #define poly_topo( poly ) ((poly)->topo)
 
 #define poly_add_mask( poly, new_mask )			\

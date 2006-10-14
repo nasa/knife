@@ -414,6 +414,36 @@ KnifeBool poly_active_surf_with_nodes( Poly poly,
   return FALSE;
 }
 
+KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
+						  KnifeBool *active )
+{
+  int mask_index;
+  Mask mask;
+  Triangle triangle;
+  KnifeBool found;
+  KnifeBool found_active;
+
+  found = FALSE;
+  found_active = FALSE;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if (triangle_has1(triangle,node))
+	{
+	  found = TRUE;
+	  if ( 1 != triangle_nsubtri(triangle) ) return KNIFE_FAILURE;
+	  if ( mask_subtri_active(mask,0) ) found_active = TRUE;
+	}
+    }
+
+  if (found) *active = found_active;
+
+  return (found?KNIFE_SUCCESS:KNIFE_NOT_FOUND);
+}
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;

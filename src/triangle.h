@@ -52,6 +52,11 @@ void triangle_echo( Triangle );
 #define triangle_segment(triangle,segment_index)	\
   ((triangle)->segment[segment_index])
 
+#define triangle_has1(triangle,node)		\
+  ( (triangle)->node0 == node ||		\
+    (triangle)->node1 == node ||		\
+    (triangle)->node2 == node )
+    
 #define triangle_has2(triangle,n0,n1) \
   ( ((triangle)->node0==n0||(triangle)->node1==n0||(triangle)->node2==n0) && \
     ((triangle)->node0==n1||(triangle)->node1==n1||(triangle)->node2==n1) )
