@@ -491,6 +491,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   printf("surface near tree formed\n");
 
+  printf("compute cuts\n");
+
   max_touched = surface_ntriangle(domain->surface);
 
   touched = (int *) malloc( max_touched * sizeof(int) );
@@ -518,17 +520,26 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   printf("cuts computed\n");
 
+  printf("start triangulation\n");
+
   TRY( domain_triangulate(domain), "domain_triangulate" );
 
   printf("triangulation complete\n");
 
+  printf("gather surface\n");
+
   TRY( domain_gather_surf(domain), "domain_gather_surf" );
 
-  printf("surface gathered\n");
+  printf("determine active subtris\n");
 
-  TRY( domain_determine_active_subtri(domain), "domain_determine_active_subtri" );
+  TRY( domain_determine_active_subtri(domain), 
+       "domain_determine_active_subtri" );
 
-  printf("active subtris determined\n");
+  printf("dual_topology\n");
+
+  TRY( domain_set_dual_topology( domain ), "domain_set_dual_topology" );
+
+  printf("boolean subtract completed");
 
   return (KNIFE_SUCCESS);
 }
@@ -585,11 +596,10 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS domain_set_poly_topology( Domain domain )
+KNIFE_STATUS domain_set_dual_topology( Domain domain )
 {
   int poly_index;
   if (NULL == domain) return KNIFE_NULL;
-
 
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
