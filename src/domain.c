@@ -599,6 +599,10 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
 KNIFE_STATUS domain_set_dual_topology( Domain domain )
 {
   int poly_index;
+  int edge;
+  int edge_nodes[2];
+  POLY_TOPO topo0, topo1;
+
   if (NULL == domain) return KNIFE_NULL;
 
   for ( poly_index = 0;
@@ -607,6 +611,20 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
     {
       if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) 
 	domain_poly(domain,poly_index)->topo = POLY_CUT;
+    }
+
+  for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      TRY( primal_edge( domain->primal, edge, edge_nodes), 
+	   "dual_topo primal_edge" );
+      topo0 = poly_topo(domain_poly(domain,edge_nodes[0]));
+      topo1 = poly_topo(domain_poly(domain,edge_nodes[1]));
+      if (POLY_CUT == topo0 && POLY_INTERIOR == topo1)
+	{
+	}
+      if (POLY_CUT == topo1 && POLY_INTERIOR == topo0)
+	{
+	}
     }
 
   return KNIFE_SUCCESS;
