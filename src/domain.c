@@ -470,7 +470,6 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   int max_touched, ntouched;
   int *touched;
   NearStruct target;
-  KNIFE_STATUS code;
 
   printf("forming surface near tree\n");
 
@@ -519,33 +518,15 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   printf("cuts computed\n");
 
-  code = domain_triangulate(domain);
-  if (KNIFE_SUCCESS != code)
-    {
-      printf("%s: %d: domain_triangulate returned %d\n",
-	     __FILE__,__LINE__,code);
-      return code;
-    }
+  TRY( domain_triangulate(domain), "domain_triangulate" );
 
   printf("triangulation complete\n");
 
-  code = domain_gather_surf(domain);
-  if (KNIFE_SUCCESS != code)
-    {
-      printf("%s: %d: domain_gather_surf returned %d\n",
-	     __FILE__,__LINE__,code);
-      return code;
-    }
+  TRY( domain_gather_surf(domain), "domain_gather_surf" );
 
   printf("surface gathered\n");
 
-  code = domain_determine_active_subtri(domain);
-  if (KNIFE_SUCCESS != code)
-    {
-      printf("%s: %d: domain_determine_active_subtri returned %d\n",
-	     __FILE__,__LINE__,code);
-      return code;
-    }
+  TRY( domain_determine_active_subtri(domain), "domain_determine_active_subtri" );
 
   printf("active subtris determined\n");
 
@@ -554,32 +535,17 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
 KNIFE_STATUS domain_triangulate( Domain domain )
 {
-  KNIFE_STATUS code;
   int triangle_index;
 
-  code = surface_triangulate(domain->surface);
-  if (KNIFE_SUCCESS != code)
-    {
-      printf("%s: %d: surface_triangulate returned %d\n",
-	     __FILE__,__LINE__,code);
-      return code;
-    }
+  TRY( surface_triangulate(domain->surface), "surface_triangulate" );
 
   printf("surface triangulated\n");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
-    {
-      code = triangle_triangulate_cuts( domain_triangle(domain,
-							triangle_index) );
-      if (KNIFE_SUCCESS != code)
-	{
-	  printf("%s: %d: triangle_triangulate_cuts returned %d\n",
-		 __FILE__,__LINE__,code);
-	  return code;
-	}
-    }
+    TRY( triangle_triangulate_cuts( domain_triangle(domain, triangle_index) ), 
+	 "volume triangulate_cuts" );
 
   printf("volume triangulated\n");
 
@@ -588,22 +554,15 @@ KNIFE_STATUS domain_triangulate( Domain domain )
 
 KNIFE_STATUS domain_gather_surf( Domain domain )
 {
-  KNIFE_STATUS code;
   int poly_index;
   int cut_poly;
 
-  cut_poly =0;
+  cut_poly = 0;
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
     {
-      code = poly_gather_surf( domain_poly(domain,poly_index) );
-      if (KNIFE_SUCCESS != code)
-	{
-	  printf("%s: %d: poly_gather_surf returned %d\n",
-		 __FILE__,__LINE__,code);
-	  return code;
-	}
+      TRY( poly_gather_surf( domain_poly(domain,poly_index) ), "poly_gather_surf" );
       if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) cut_poly++;
     }
 
@@ -614,22 +573,14 @@ KNIFE_STATUS domain_gather_surf( Domain domain )
 
 KNIFE_STATUS domain_determine_active_subtri( Domain domain )
 {
-  KNIFE_STATUS code;
   int poly_index;
 
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
     if ( poly_has_surf( domain_poly( domain, poly_index ) ) )
-      {
-	code = poly_determine_active_subtri( domain_poly(domain,poly_index) );
-	if (KNIFE_SUCCESS != code)
-	  {
-	    printf("%s: %d: poly_determine_active_subtri returned %d\n",
-		   __FILE__,__LINE__,code);
-	    return code;
-	  }
-      }
+      TRY( poly_determine_active_subtri( domain_poly(domain,poly_index) ),
+	   "poly_determine_active_subtri" );
 
   return KNIFE_SUCCESS;
 }
@@ -653,7 +604,7 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
   fprintf(f,"title='domain geometry'\nvariables='x','y','z'\n");
   
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    poly_tecplot_zone(domain_poly(domain,poly), f );
+    TRY( poly_tecplot_zone(domain_poly(domain,poly), f ), "poly_tecplot_zone");
 
   fclose(f);
 
