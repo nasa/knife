@@ -69,6 +69,9 @@ KnifeBool poly_active_surf_with_nodes( Poly, Node n0, Node n1, Node n2 );
 #define poly_surf( poly, surf_index )			\
   ((Mask)array_item( (poly)->surf, (surf_index) ))
 
+#define poly_has_surf( poly ) \
+  ( 0 < poly_nsurf( poly ) )
+
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 
 

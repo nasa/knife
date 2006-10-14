@@ -604,7 +604,7 @@ KNIFE_STATUS domain_gather_surf( Domain domain )
 		 __FILE__,__LINE__,code);
 	  return code;
 	}
-      if ( 0 < poly_nsurf( domain_poly(domain,poly_index) ) ) cut_poly++;
+      if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) cut_poly++;
     }
 
   printf("polyhedra %d of %d have been cut\n",cut_poly,domain_npoly(domain));
@@ -620,15 +620,16 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
-    {
-      code = poly_determine_active_subtri( domain_poly(domain,poly_index) );
-      if (KNIFE_SUCCESS != code)
-	{
-	  printf("%s: %d: poly_determine_active_subtri returned %d\n",
-		 __FILE__,__LINE__,code);
-	  return code;
-	}
-    }
+    if ( poly_has_surf( domain_poly( domain, poly_index ) ) )
+      {
+	code = poly_determine_active_subtri( domain_poly(domain,poly_index) );
+	if (KNIFE_SUCCESS != code)
+	  {
+	    printf("%s: %d: poly_determine_active_subtri returned %d\n",
+		   __FILE__,__LINE__,code);
+	    return code;
+	  }
+      }
 
   return KNIFE_SUCCESS;
 }
