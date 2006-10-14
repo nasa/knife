@@ -34,6 +34,7 @@ END_C_DECLORATION
 BEGIN_C_DECLORATION
 
 struct TriangleStruct {
+  KnifeBool on_boundary;
   Segment segment[3];
   Node node0, node1, node2;
   Array subnode;
@@ -41,11 +42,13 @@ struct TriangleStruct {
   Array cut;
 };
 
-Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2);
+Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2,
+			 KnifeBool on_boundary);
 KNIFE_STATUS triangle_initialize(Triangle,
 				 Segment segment0, 
 				 Segment segment1, 
-				 Segment segment2);
+				 Segment segment2,
+				 KnifeBool on_boundary);
 void triangle_free( Triangle );
 void triangle_echo( Triangle );
 
@@ -60,6 +63,8 @@ void triangle_echo( Triangle );
 #define triangle_has2(triangle,n0,n1) \
   ( ((triangle)->node0==n0||(triangle)->node1==n0||(triangle)->node2==n0) && \
     ((triangle)->node0==n1||(triangle)->node1==n1||(triangle)->node2==n1) )
+
+#define triangle_on_boundry(triangle) ((triangle)->on_boundary)
 
 #define triangle_xyz0(triangle) (node_xyz((triangle)->node0))
 #define triangle_xyz1(triangle) (node_xyz((triangle)->node1))

@@ -181,14 +181,16 @@ Surface surface_from( Primal primal, Array bcs,
 	  triangle_initialize( surface_triangle(surface,local_iface),
 			       surface_segment(surface,f2s[0+3*local_iface]),
 			       surface_segment(surface,f2s[1+3*local_iface]),
-			       surface_segment(surface,f2s[2+3*local_iface]) );
+			       surface_segment(surface,f2s[2+3*local_iface]),
+			       TRUE );
 	}
       else
 	{
 	  triangle_initialize( surface_triangle(surface,local_iface),
 			       surface_segment(surface,f2s[1+3*local_iface]),
 			       surface_segment(surface,f2s[0+3*local_iface]),
-			       surface_segment(surface,f2s[2+3*local_iface]) );
+			       surface_segment(surface,f2s[2+3*local_iface]),
+			       TRUE );
 	}
     }
 

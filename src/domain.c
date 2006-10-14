@@ -121,10 +121,12 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
       triangle_initialize( domain_triangle(domain,tri),
 			   domain_segment(domain,edge0),
 			   domain_segment(domain,edge1),
-			   domain_segment(domain,edge2) );
+			   domain_segment(domain,edge2),
+			   FALSE );
     }
 
-  return (KNIFE_SUCCESS);
+  printf("domain_tetrahedral_elements: implement on_boundary determination\n");
+  return (KNIFE_IMPLEMENT);
 }
 
 KNIFE_STATUS domain_dual_elements( Domain domain )
@@ -382,7 +384,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  triangle_initialize( domain_triangle(domain,triangle_index),
 			       domain_segment(domain,segment0),
 			       domain_segment(domain,segment1),
-			       domain_segment(domain,segment2));
+			       domain_segment(domain,segment2), FALSE );
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
 	  poly_add_triangle( domain_poly(domain,node1),
@@ -400,7 +402,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2)), 
+				    domain_segment(domain,segment2), FALSE ), 
 	       "int tri init");
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
@@ -432,7 +434,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2)),
+				    domain_segment(domain,segment2), TRUE),
 	       "boundary tri init 0");
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), TRUE );
@@ -446,7 +448,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2)),
+				    domain_segment(domain,segment2), TRUE),
 	       "boundary tri init 1");
 	  poly_add_triangle( domain_poly(domain,node1),
 			     domain_triangle(domain,triangle_index), TRUE );
@@ -605,7 +607,7 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   POLY_TOPO topo0, topo1;
   int node_index;
   Node node;
-  KnifeBool active_face;
+  KnifeBool active;
 
   if (NULL == domain) return KNIFE_NULL;
 
@@ -632,15 +634,15 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
       if ( POLY_CUT == topo0 && POLY_INTERIOR == topo1 )
 	{
 	  TRY( poly_mask_surrounding_node_activity( poly0, node,
-						    &active_face ), "active01");
-	  if ( active_face ) poly_topo(poly1) = POLY_EXTERIOR;
+						    &active ), "active01");
+	  if ( !active ) poly_topo(poly1) = POLY_EXTERIOR;
 	}
 
       if ( POLY_CUT == topo1 && POLY_INTERIOR == topo0 )
 	{
 	  TRY( poly_mask_surrounding_node_activity( poly1, node,
-						    &active_face ), "active10");
-	  if ( active_face ) poly_topo(poly0) = POLY_EXTERIOR;
+						    &active ), "active10");
+	  if ( !active ) poly_topo(poly0) = POLY_EXTERIOR;
 	}
 
     }
