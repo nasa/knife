@@ -451,6 +451,8 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
   int nsubtri;
   int subtri_index;
 
+  if ( POLY_EXTERIOR == poly_topo(poly) ) return KNIFE_SUCCESS;
+
   nsubtri = 0;
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
