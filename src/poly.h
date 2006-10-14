@@ -30,6 +30,7 @@ END_C_DECLORATION
 BEGIN_C_DECLORATION
 
 struct PolyStruct {
+  KNIFE_TOPO topo;
   Array mask;
   Array surf;
 };

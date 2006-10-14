@@ -64,6 +64,12 @@ typedef int KNIFE_STATUS;
 #define KNIFE_MISSING     (11)
 #define KNIFE_RECOVERED   (12)
 
+typedef int KNIFE_TOPO;
+
+#define KNIFE_TOPO_EXTERIOR (0)
+#define KNIFE_TOPO_INTERION (1)
+#define KNIFE_TOPO_CUT      (2)
+
 END_C_DECLORATION
 
 #endif /* KNIFE_DEFINITIONS_H */
