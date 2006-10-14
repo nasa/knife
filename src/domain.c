@@ -609,6 +609,8 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   Node node;
   KnifeBool active;
 
+  KnifeBool requires_another_sweep;
+
   if (NULL == domain) return KNIFE_NULL;
 
   for ( poly_index = 0;
@@ -643,6 +645,34 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	  TRY( poly_mask_surrounding_node_activity( poly1, node,
 						    &active ), "active10");
 	  if ( !active ) poly_topo(poly0) = POLY_EXTERIOR;
+	}
+
+    }
+
+  requires_another_sweep = TRUE;
+  while (requires_another_sweep) 
+    {
+      requires_another_sweep = FALSE;
+      for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+	{
+	  TRY( primal_edge( domain->primal, edge, edge_nodes), 
+	       "dual_topo primal_edge" );
+	  poly0 = domain_poly(domain,edge_nodes[0]);
+	  topo0 = poly_topo(poly0);
+	  poly1 = domain_poly(domain,edge_nodes[1]);
+	  topo1 = poly_topo(poly1);
+
+	  if ( POLY_EXTERIOR == topo0 && POLY_INTERIOR == topo1 )
+	    {
+	      requires_another_sweep = TRUE;
+	      poly_topo(poly1) = POLY_EXTERIOR;
+	    }
+
+	  if ( POLY_EXTERIOR == topo1 && POLY_INTERIOR == topo0 )
+	    {
+	      requires_another_sweep = TRUE;
+	      poly_topo(poly0) = POLY_EXTERIOR;
+	    }
 	}
 
     }
