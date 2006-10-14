@@ -601,7 +601,10 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   int poly_index;
   int edge;
   int edge_nodes[2];
+  Poly poly0, poly1;
   POLY_TOPO topo0, topo1;
+  int node_index;
+  Node node;
 
   if (NULL == domain) return KNIFE_NULL;
 
@@ -615,16 +618,22 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
+      node_index = edge + 
+	primal_ntri(domain->primal) + primal_ncell(domain->primal);
+      node = domain_node(domain,node_index);
       TRY( primal_edge( domain->primal, edge, edge_nodes), 
 	   "dual_topo primal_edge" );
-      topo0 = poly_topo(domain_poly(domain,edge_nodes[0]));
-      topo1 = poly_topo(domain_poly(domain,edge_nodes[1]));
+      poly0 = domain_poly(domain,edge_nodes[0]);
+      topo0 = poly_topo(poly0);
+      poly1 = domain_poly(domain,edge_nodes[1]);
+      topo1 = poly_topo(poly1);
       if (POLY_CUT == topo0 && POLY_INTERIOR == topo1)
-	{
-	}
+	if (poly_inactive_triangles_surround_node(poly0,node) )
+	  poly_topo(poly1) = POLY_EXTERIOR;
+
       if (POLY_CUT == topo1 && POLY_INTERIOR == topo0)
-	{
-	}
+	if (poly_inactive_triangles_surround_node(poly1,node) )
+	  poly_topo(poly0) = POLY_EXTERIOR;
     }
 
   return KNIFE_SUCCESS;
