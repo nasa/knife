@@ -585,6 +585,13 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS domain_flag_poly_outside_domain( Domain domain )
+{
+  if (NULL == domain) return KNIFE_NULL;
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
 {
   FILE *f;
