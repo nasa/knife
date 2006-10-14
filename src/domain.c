@@ -585,9 +585,19 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS domain_flag_poly_outside_domain( Domain domain )
+KNIFE_STATUS domain_set_poly_topology( Domain domain )
 {
+  int poly_index;
   if (NULL == domain) return KNIFE_NULL;
+
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain); 
+	poly_index++)
+    {
+      if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) 
+	domain_poly(domain,poly_index)->topo = POLY_CUT;
+    }
 
   return KNIFE_SUCCESS;
 }

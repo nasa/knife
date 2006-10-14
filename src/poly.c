@@ -43,7 +43,7 @@ Poly poly_create( void )
 KNIFE_STATUS poly_initialize( Poly poly )
 {
 
-  poly->topo = KNIFE_TOPO_INTERIOR;
+  poly->topo = POLY_INTERIOR;
   poly->mask = array_create(4,40);
   poly->surf = array_create(4,40);
 

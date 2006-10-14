@@ -29,8 +29,14 @@ END_C_DECLORATION
 
 BEGIN_C_DECLORATION
 
+typedef int POLY_TOPO;
+
+#define POLY_EXTERIOR (0)
+#define POLY_INTERIOR (1)
+#define POLY_CUT      (2)
+
 struct PolyStruct {
-  KNIFE_TOPO topo;
+  POLY_TOPO topo;
   Array mask;
   Array surf;
 };
