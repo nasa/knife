@@ -431,7 +431,8 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
     {
       mask = poly_mask(poly,mask_index);
       triangle = mask_triangle(mask);
-      if (triangle_has1(triangle,node))
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
 	{
 	  found = TRUE;
 	  if ( 1 != triangle_nsubtri(triangle) ) return KNIFE_FAILURE;
