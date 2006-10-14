@@ -112,6 +112,7 @@ int main( int argc, char *argv[] )
 
   domain = domain_create( volume_primal, surface );
   TRY( domain_dual_elements( domain ), "dual creation" );
+
   if (tecplot_output) domain_tecplot( domain, "orig.t" );
 
   TRY( domain_boolean_subtract( domain ), "dual creation" );
