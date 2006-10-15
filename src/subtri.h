@@ -62,7 +62,8 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f );
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri, 
 						  double *origin,
 						  double *centroid,
-						  double *volume );
+						  double *volume,
+			       KnifeBool outward_pointing_normal );
 
 END_C_DECLORATION
 

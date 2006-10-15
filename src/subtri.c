@@ -176,11 +176,14 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
   return KNIFE_SUCCESS;
 }
 
+/* need 3 point quadrature rule for quadratic function (centroid) */
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri, 
 						  double *origin,
 						  double *centroid,
-						  double *volume )
+						  double *volume,
+			       KnifeBool outward_pointing_normal)
 {
+  double xyz0[3], xyz1[3], xyz2[3];
 
   return KNIFE_SUCCESS;
 }

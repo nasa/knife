@@ -236,7 +236,8 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask,
       {
 	subtri = triangle_subtri(triangle,subtri_index);
 	TRY( subtri_centroid_volume_contribution( subtri, origin,
-						  centroid, volume ),
+						  centroid, volume,
+				    !(mask->inward_pointing_normal) ),
 	     "subtri_centroid_volume_contribution failed");
       }
 
