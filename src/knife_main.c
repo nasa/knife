@@ -119,6 +119,8 @@ int main( int argc, char *argv[] )
 
   if (tecplot_output) domain_tecplot( domain, "cut.t" );
 
+  TRY( domain_export_fun3d( domain ), "dual creation" );
+
   /* sleep(2); */
 
   return 0;

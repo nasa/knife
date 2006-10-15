@@ -83,6 +83,8 @@ KNIFE_STATUS domain_gather_surf( Domain );
 KNIFE_STATUS domain_determine_active_subtri( Domain );
 KNIFE_STATUS domain_set_dual_topology( Domain );
 
+KNIFE_STATUS domain_export_fun3d( Domain );
+
 KNIFE_STATUS domain_tecplot( Domain, char *filename );
 
 END_C_DECLORATION

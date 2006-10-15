@@ -541,7 +541,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   TRY( domain_set_dual_topology( domain ), "domain_set_dual_topology" );
 
-  printf("boolean subtract completed");
+  printf("boolean subtract completed\n");
 
   return (KNIFE_SUCCESS);
 }
@@ -704,6 +704,12 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS domain_export_fun3d( Domain domain )
+{
+  printf("%p\n",(void *)domain);
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
 {
   FILE *f;
@@ -723,7 +729,9 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
   fprintf(f,"title='domain geometry'\nvariables='x','y','z'\n");
   
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    TRY( poly_tecplot_zone(domain_poly(domain,poly), f ), "poly_tecplot_zone");
+    if ( poly_active( domain_poly(domain,poly) ) )
+      TRY( poly_tecplot_zone(domain_poly(domain,poly), f ), 
+	   "poly_tecplot_zone");
 
   fclose(f);
 
