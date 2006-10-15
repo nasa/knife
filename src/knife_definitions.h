@@ -63,6 +63,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_NEG_AREA    (10)
 #define KNIFE_MISSING     (11)
 #define KNIFE_RECOVERED   (12)
+#define KNIFE_DIV_ZERO    (13)
 
 END_C_DECLORATION
 

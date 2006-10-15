@@ -51,6 +51,10 @@ KNIFE_STATUS mask_paint( Mask );
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
 KNIFE_STATUS mask_find_subtri_with( Mask, FILE * );
 
+KNIFE_STATUS mask_centroid_volume_contribution( Mask, double *origin,
+						double *centroid, 
+						double *volume );
+
 END_C_DECLORATION
 
 #endif /* MASK_H */

@@ -447,13 +447,39 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
   return (found?KNIFE_SUCCESS:KNIFE_NOT_FOUND);
 }
 
-KNIFE_STATUS poly_centroid( Poly poly, double *origin, double *center)
+KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin, 
+				   double *centroid, double *volume )
 {
+  int mask_index;
+
   if (NULL == poly) return KNIFE_NULL;
 
-  center[0] = origin[0];
-  center[1] = origin[1];
-  center[2] = origin[2];
+  centroid[0] = 0.0;
+  centroid[1] = 0.0;
+  centroid[2] = 0.0;
+  *volume   = 0.0;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    TRY(mask_centroid_volume_contribution( poly_mask(poly, mask_index),
+					   origin, centroid, volume),
+	"cent vol mask");
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    TRY(mask_centroid_volume_contribution( poly_surf(poly, mask_index),
+					   origin, centroid, volume),
+	"cent vol surf");
+
+
+  if ( ABS(*volume) < 1.0e-14 )
+    return KNIFE_DIV_ZERO;
+
+  centroid[0] /= (*volume) + origin[0];
+  centroid[1] /= (*volume) + origin[1];
+  centroid[2] /= (*volume) + origin[2];
 
   return KNIFE_SUCCESS;
 }

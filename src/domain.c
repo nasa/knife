@@ -715,7 +715,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   int poly_index;
   Poly poly;
   int nnode;
-  double xyz[3], center[3];
+  double xyz[3], center[3], volume;
   int *node_g2l;
   int node;
   FILE *f;
@@ -750,7 +750,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
 	  if (poly_cut(poly)) 
 	    {
-	      poly_centroid(poly,xyz,center);
+	      poly_centroid_volume(poly,xyz,center,&volume);
 	      fprintf(f,"%30.20e %30.20e %30.20e\n",
 		      center[0],center[1],center[2]);	  
 	    }
