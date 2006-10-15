@@ -43,6 +43,7 @@ Poly poly_create( void )
 KNIFE_STATUS poly_initialize( Poly poly )
 {
 
+  poly->primal_node = NULL;
   poly->topo = POLY_INTERIOR;
   poly->mask = array_create(4,40);
   poly->surf = array_create(4,40);
@@ -53,6 +54,7 @@ KNIFE_STATUS poly_initialize( Poly poly )
 void poly_free( Poly poly )
 {
   if ( NULL == poly ) return;
+  node_free( poly->primal_node );
   array_free( poly->mask );
   array_free( poly->surf );
   free( poly );

@@ -36,6 +36,7 @@ typedef int POLY_TOPO;
 #define POLY_CUT      (2)
 
 struct PolyStruct {
+  Node primal_node;
   POLY_TOPO topo;
   Array mask;
   Array surf;
