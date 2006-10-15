@@ -17,6 +17,22 @@
 #include "cut.h"
 #include "near.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == (pointer)) {				      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
+
 Domain domain_create( Primal primal, Surface surface)
 {
   Domain domain;
@@ -48,16 +64,6 @@ void domain_free( Domain domain )
 
   free(domain);
 }
-
-#define TRY(fcn,msg)					      \
-  {							      \
-    int code;						      \
-    code = (fcn);					      \
-    if (KNIFE_SUCCESS != code){				      \
-      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
-      return code;					      \
-    }							      \
-  }
 
 KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 {
@@ -710,6 +716,12 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   Poly poly;
   int nnode;
   double xyz[3];
+  int *node_g2l;
+  int node;
+  FILE *f;
+  node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
+  for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
+    node_g2l[node] = EMPTY;
 
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain);
@@ -718,18 +730,33 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       poly = domain_poly(domain,poly_index);
       if (poly_active(poly))
 	{
-	  if (poly_cut(poly))
-	    {
-	      poly_centroid(poly, xyz);
-	    }
-	  else
-	    {
-	      primal_xyz(domain->primal,poly_index,xyz);
-	    }
-	  poly->primal_node = node_create(xyz[0],xyz[1],xyz[2],nnode);
+	  node_g2l[poly_index] = nnode;
 	  nnode++;
 	}
     }
+
+  f = fopen("postslice.nodes","w");
+  NOT_NULL(f,"nodes file not open");
+
+  fprintf(f,"%d\n",nnode);
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain);
+	poly_index++)
+    {
+      if ( EMPTY != node_g2l[poly_index] )
+	{
+	  poly = domain_poly(domain,poly_index);
+	  primal_xyz(domain_primal(domain),poly_index,xyz);
+	  if (poly_cut(poly)) poly_centroid(poly,xyz);
+	  fprintf(f,"%30.20e %30.20e %30.20e\n",xyz[0],xyz[1],xyz[2]);	  
+	}
+    }
+
+  fclose(f);
+
+  free(node_g2l);
+
   return KNIFE_SUCCESS;
 }
 
