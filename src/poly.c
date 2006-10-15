@@ -447,6 +447,17 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
   return (found?KNIFE_SUCCESS:KNIFE_NOT_FOUND);
 }
 
+KNIFE_STATUS poly_centroid( Poly poly, double *origin, double *center)
+{
+  if (NULL == poly) return KNIFE_NULL;
+
+  center[0] = origin[0];
+  center[1] = origin[1];
+  center[2] = origin[2];
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;
