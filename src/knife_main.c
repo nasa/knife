@@ -119,7 +119,9 @@ int main( int argc, char *argv[] )
 
   if (tecplot_output) domain_tecplot( domain, "cut.t" );
 
-  TRY( domain_export_fun3d( domain ), "dual creation" );
+  printf("start dump dual to fun3d\n");
+  TRY( domain_export_fun3d( domain ), "export fun3d" );
+  printf("complete dump dual to fun3d\n");
 
   /* sleep(2); */
 
