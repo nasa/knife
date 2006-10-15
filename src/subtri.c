@@ -176,3 +176,12 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri, 
+						  double *origin,
+						  double *centroid,
+						  double *volume )
+{
+
+  return KNIFE_SUCCESS;
+}
+
