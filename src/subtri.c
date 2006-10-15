@@ -13,7 +13,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "subtri.h"
+
+#define TRY(fcn,msg)                                          \
+  {                                                           \
+    int code;                                                 \
+    code = (fcn);                                             \
+    if (KNIFE_SUCCESS != code){                               \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;                                            \
+    }                                                         \
+  }
 
 Subtri subtri_create( Subnode n0, Subnode n1, Subnode n2 )
 {
@@ -176,6 +187,44 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_normal_area( Subtri subtri, 
+				 double *normal,
+				 double *area)
+{
+  double xyz0[3], xyz1[3], xyz2[3];
+  double edge1[3], edge2[3];
+
+  TRY( subnode_xyz( subtri_n0(subtri), xyz0), "norm area subnode0 xyz" );
+  TRY( subnode_xyz( subtri_n1(subtri), xyz1), "norm area subnode1 xyz" );
+  TRY( subnode_xyz( subtri_n2(subtri), xyz2), "norm area subnode2 xyz" );
+
+  edge1[0] = xyz1[0]-xyz0[0];
+  edge1[1] = xyz1[1]-xyz0[1];
+  edge1[2] = xyz1[2]-xyz0[2];
+
+  edge2[0] = xyz2[0]-xyz0[0];
+  edge2[1] = xyz2[1]-xyz0[1];
+  edge2[2] = xyz2[2]-xyz0[2];
+
+  normal[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1];
+  normal[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2];
+  normal[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0];
+
+  (*area) = sqrt( normal[0]*normal[0] +
+		  normal[1]*normal[1] +
+		  normal[2]*normal[2] );
+
+  if ( ABS(*area) < 1.0e-14 ) return KNIFE_DIV_ZERO;
+
+  normal[0] /= (*area);
+  normal[1] /= (*area);
+  normal[2] /= (*area);
+  
+  (*area) /= 2.0;
+
+  return KNIFE_SUCCESS;
+}
+
 /* need 3 point quadrature rule for quadratic function (centroid) */
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri, 
 						  double *origin,
@@ -184,6 +233,32 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
 			       KnifeBool outward_pointing_normal)
 {
   double xyz0[3], xyz1[3], xyz2[3];
+  double normal[3], area;
+  double xyz[3];
+  int i;
+  
+  int iquad;
+  int nquad = 3;
+  double bary0[] = {4.0/6.0, 1.0/6.0, 1.0/6.0};
+  double bary1[] = {1.0/6.0, 4.0/6.0, 1.0/6.0};
+  double bary2[] = {1.0/6.0, 1.0/6.0, 4.0/6.0};
+  double wieght[] = {1.0/3.0, 1.0/3.0, 1.0/3.0};
+
+  TRY( subnode_xyz( subtri_n0(subtri), xyz0), "cent vol subnode0 xyz" );
+  TRY( subnode_xyz( subtri_n1(subtri), xyz1), "cent vol subnode1 xyz" );
+  TRY( subnode_xyz( subtri_n2(subtri), xyz2), "cent vol subnode2 xyz" );
+
+  TRY( subtri_normal_area( subtri, normal, &area ), "norm area" );
+
+  for (iquad = 0; iquad<nquad; iquad++)
+    {
+      for(i=0;i<3;i++) xyz[i] = 
+	bary0[iquad]*xyz0[i] + 
+	bary1[iquad]*xyz1[i] + 
+	bary2[iquad]*xyz2[i];
+
+
+    }
 
   return KNIFE_SUCCESS;
 }
