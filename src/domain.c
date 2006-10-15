@@ -706,7 +706,30 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 
 KNIFE_STATUS domain_export_fun3d( Domain domain )
 {
-  printf("%p\n",(void *)domain);
+  int poly_index;
+  Poly poly;
+  int nnode;
+  double xyz[3];
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain);
+	poly_index++)
+    {
+      poly = domain_poly(domain,poly_index);
+      if (poly_active(poly))
+	{
+	  if (poly_cut(poly))
+	    {
+	      poly_centroid(poly, xyz);
+	    }
+	  else
+	    {
+	      primal_xyz(domain->primal,poly_index,xyz);
+	    }
+	  poly->primal_node = node_create(xyz[0],xyz[1],xyz[2],nnode);
+	  nnode++;
+	}
+    }
   return KNIFE_SUCCESS;
 }
 

@@ -68,7 +68,8 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 
 #define poly_topo( poly ) ((poly)->topo)
 
-#define poly_active( poly ) (poly_topo(poly))
+#define poly_active( poly ) (POLY_EXTERIOR != poly_topo(poly))
+#define poly_cut( poly ) (POLY_CUT == poly_topo(poly))
 
 #define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
@@ -86,6 +87,8 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 
 #define poly_has_surf( poly ) \
   ( 0 < poly_nsurf( poly ) )
+
+KNIFE_STATUS poly_centroid( Poly, double *xyz );
 
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 
