@@ -234,8 +234,6 @@ KNIFE_STATUS poly_paint( Poly poly )
 {
   int mask_index;
   Mask mask;
-  int surf_index;
-  Mask surf;
   Triangle triangle;
   KnifeBool another_coat_of_paint;
 
