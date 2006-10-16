@@ -1025,7 +1025,17 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
+  printf("dump surf stuff\n");
 
+  f = fopen("postslice.surf","w");
+  NOT_NULL(f,"surf file not open");
+
+
+
+
+
+
+  fclose(f);
 
   free(node_g2l);
 
