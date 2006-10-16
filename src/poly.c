@@ -489,6 +489,47 @@ KNIFE_STATUS poly_directed_area_about( Poly poly, Node node,
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS poly_face_geometry_about( Poly poly, Node node, FILE *f )
+{
+  int mask_index;
+  Mask mask;
+  Triangle triangle;
+  int nsubtri;
+
+  nsubtri = 0;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  nsubtri += mask_nsubtri( mask );
+	}
+    }
+
+  fprintf(f,"%d\n",nsubtri);
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  TRY( mask_dump_geom( mask, f),
+	       "mask_dump_geom" );
+	}
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;

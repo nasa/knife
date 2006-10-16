@@ -910,8 +910,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
-  f = fopen("postslice.faces","w");
-  NOT_NULL(f,"faces file not open");
+  printf("dump edge stuff\n");
 
   ncut = 0;
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
@@ -924,6 +923,9 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	       poly_cut(domain_poly(domain,edge_nodes[1])) ) ncut++;
 	} 
     }
+
+  f = fopen("postslice.faces","w");
+  NOT_NULL(f,"faces file not open");
 
   fprintf(f,"%d\n",ncut);
 
@@ -950,7 +952,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	      fprintf(f,"%d %d\n",1+node1,1+node0);
 	      poly = domain_poly(domain, edge_nodes[1]);
 	    }
-	  TRY( poly_face_geometry_about( poly, edge_node), "edge face geom");
+	  TRY( poly_face_geometry_about( poly, edge_node, f), "edge face geom");
 	} 
     }
 
