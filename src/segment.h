@@ -55,8 +55,11 @@ Node segment_common_node( Segment segment0, Segment segment1 );
 #define segment_triangle( segment, triangle_index )	\
   ((Triangle)array_item( (segment)->triangle, (triangle_index) ))
 
-#define segment_xyz0(segment) (node_xyz((segment)->node0))
-#define segment_xyz1(segment) (node_xyz((segment)->node1))
+#define segment_node0(segment) ((segment)->node0)
+#define segment_node1(segment) ((segment)->node1)
+
+#define segment_xyz0(segment) (node_xyz(segment_node0(segment))
+#define segment_xyz1(segment) (node_xyz(segment_node1(segment)
 
 END_C_DECLORATION
 
