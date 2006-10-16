@@ -59,7 +59,7 @@ static int triangle_tecplot_frame = 0;
   }
 
 Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2,
-			 KnifeBool on_boundary )
+			 int boundary_face_index )
 {
   Triangle triangle;
   
@@ -70,7 +70,8 @@ Triangle triangle_create(Segment segment0, Segment segment1, Segment segment2,
     return NULL; 
   }
 
-  triangle_initialize(triangle, segment0, segment1, segment2, on_boundary);
+  triangle_initialize(triangle, 
+		      segment0, segment1, segment2, boundary_face_index);
 
   return triangle;
 }
@@ -79,11 +80,11 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
 				 Segment segment0, 
 				 Segment segment1, 
 				 Segment segment2,
-				 KnifeBool on_boundary )
+				 int boundary_face_index )
 {
   Subnode subnode0, subnode1, subnode2;
 
-  triangle->on_boundary = on_boundary;
+  triangle->boundary_face_index = boundary_face_index;
 
   triangle->segment[0] = segment0;
   triangle->segment[1] = segment1;

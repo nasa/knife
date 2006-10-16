@@ -128,7 +128,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
 			   domain_segment(domain,edge0),
 			   domain_segment(domain,edge1),
 			   domain_segment(domain,edge2),
-			   FALSE );
+			   EMPTY );
     }
 
   printf("domain_tetrahedral_elements: implement on_boundary determination\n");
@@ -390,7 +390,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  triangle_initialize( domain_triangle(domain,triangle_index),
 			       domain_segment(domain,segment0),
 			       domain_segment(domain,segment1),
-			       domain_segment(domain,segment2), FALSE );
+			       domain_segment(domain,segment2), EMPTY );
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
 	  poly_add_triangle( domain_poly(domain,node1),
@@ -408,7 +408,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2), FALSE ), 
+				    domain_segment(domain,segment2), EMPTY ), 
 	       "int tri init");
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
@@ -440,7 +440,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2), TRUE),
+				    domain_segment(domain,segment2), face),
 	       "boundary tri init 0");
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), TRUE );
@@ -454,7 +454,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
 				    domain_segment(domain,segment0),
 				    domain_segment(domain,segment1),
-				    domain_segment(domain,segment2), TRUE),
+				    domain_segment(domain,segment2), face),
 	       "boundary tri init 1");
 	  poly_add_triangle( domain_poly(domain,node1),
 			     domain_triangle(domain,triangle_index), TRUE );
