@@ -750,7 +750,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
 	  if (poly_cut(poly)) 
 	    {
-	      poly_centroid_volume(poly,xyz,center,&volume);
+	      TRY( poly_centroid_volume(poly,xyz,center,&volume), "cent vol");
 	      fprintf(f,"%30.20e %30.20e %30.20e\n",
 		      center[0],center[1],center[2]);	  
 	    }
