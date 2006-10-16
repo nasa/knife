@@ -141,6 +141,8 @@ double triangle_min_subtri_area( Triangle );
 
 KNIFE_STATUS triangle_dump_geom( Triangle, FILE *);
 
+void triangle_examine_subnodes(Triangle triangle);
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */

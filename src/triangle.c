@@ -20,12 +20,12 @@ static int triangle_frame = 0;
   if (TRUE) {							\
     if (subtri_reference_area(subtri) < 0.0 ) {			\
       triangle_eps(triangle);					\
+      triangle_examine_subnodes(triangle);			\
       printf("%s: %d: neg area %e\n",				\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
       return KNIFE_NEG_AREA;					\
     }								\
   }
-
 
 #define TRY(fcn,msg)					      \
   {							      \
@@ -764,4 +764,36 @@ KNIFE_STATUS triangle_dump_geom( Triangle triangle, FILE *f )
     subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
 
   return KNIFE_SUCCESS;
+}
+
+void triangle_examine_subnodes(Triangle triangle)
+{
+  int subnode_index;						
+  int other_index;
+  double diff;
+  for ( subnode_index = 0;					
+	subnode_index < triangle_nsubnode(triangle);	
+	subnode_index++)					
+    {							
+      printf("%2d   u %f v %f w %f\n",	subnode_index,
+	     triangle_subnode(triangle,subnode_index)->uvw[0],
+	     triangle_subnode(triangle,subnode_index)->uvw[1],
+	     triangle_subnode(triangle,subnode_index)->uvw[2]);
+      for ( other_index = 0;					
+	    other_index < triangle_nsubnode(triangle);	
+	    other_index++)					
+	{
+	  diff = ABS(triangle_subnode(triangle,  other_index)->uvw[0] -
+		     triangle_subnode(triangle,subnode_index)->uvw[0]) +
+	    ABS(triangle_subnode(triangle,  other_index)->uvw[1]-
+		triangle_subnode(triangle,subnode_index)->uvw[1]) +
+	    ABS(triangle_subnode(triangle,  other_index)->uvw[2]-
+		triangle_subnode(triangle,subnode_index)->uvw[2]);
+	  if (diff < 1.0e-8)
+	    printf("  %2d u %f v %f w %f\n",	other_index,
+		   triangle_subnode(triangle,other_index)->uvw[0],
+		   triangle_subnode(triangle,other_index)->uvw[1],
+		   triangle_subnode(triangle,other_index)->uvw[2]);
+	}
+    }
 }
