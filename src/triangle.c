@@ -18,7 +18,7 @@ static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
 
 #define POSITIVE_AREA( subtri )					\
-  if (TRUE) {							\
+  if (FALSE) {							\
     if (subtri_reference_area(subtri) < 0.0 ) {			\
       triangle_eps(triangle);					\
       triangle_tecplot(triangle);				\
@@ -36,6 +36,7 @@ static int triangle_tecplot_frame = 0;
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       triangle_eps(triangle);				      \
+      triangle_tecplot(triangle);			      \
       return code;					      \
     }							      \
   }
@@ -47,6 +48,7 @@ static int triangle_tecplot_frame = 0;
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       triangle_eps(triangle);				      \
+      triangle_tecplot(triangle);			      \
       return NULL;					      \
     }							      \
   }
@@ -206,6 +208,10 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   min_area = triangle_min_subtri_area( triangle );
   if (min_area < 0.0) 
     {
+      printf("frames eps %d tecplot%d\n",
+	     triangle_eps_frame,triangle_tecplot_frame);
+      triangle_eps(triangle);
+      triangle_tecplot(triangle);
       printf("%s: %d: area %30.20e\n",__FILE__,__LINE__,min_area);
       return KNIFE_NEG_AREA;
     }
@@ -859,7 +865,7 @@ void triangle_examine_subnodes(Triangle triangle)
 		triangle_subnode(triangle,subnode_index)->uvw[1]) +
 	    ABS(triangle_subnode(triangle,  other_index)->uvw[2]-
 		triangle_subnode(triangle,subnode_index)->uvw[2]);
-	  if (diff < 1.0e-8)
+	  if (subnode_index != other_index && diff < 1.0e-8)
 	    printf("  %2d u %f v %f w %f\n",	other_index,
 		   triangle_subnode(triangle,other_index)->uvw[0],
 		   triangle_subnode(triangle,other_index)->uvw[1],
