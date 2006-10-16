@@ -379,6 +379,22 @@ KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_gather_active_surf( Poly poly, Triangle triangle,
+				      KnifeBool *true_if_added )
+{
+  Mask surf;
+
+  if ( poly_has_surf_triangle( poly, triangle ) ) return KNIFE_SUCCESS;
+
+  surf = mask_create( triangle, TRUE );
+
+  TRY( poly_add_surf(poly,surf), "add surf" );
+
+  (*true_if_added) = TRUE;
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
 						  KnifeBool *active )
 {
