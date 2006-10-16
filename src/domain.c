@@ -752,7 +752,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
 	  if (poly_cut(poly)) 
 	    {
-	      TRY( poly_centroid_volume(poly,xyz,center,&volume), "cent vol");
+	      TRY( poly_centroid_volume(poly,xyz,center,&volume), "Cent vol");
 	      fprintf(f,"%30.20e %30.20e %30.20e\n",
 		      center[0],center[1],center[2]);	  
 	    }
@@ -761,6 +761,19 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	      fprintf(f,"%30.20e %30.20e %30.20e\n",
 		      xyz[0],xyz[1],xyz[2]);	  
 	    }
+	}
+    }
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain);
+	poly_index++)
+    {
+      if ( EMPTY != node_g2l[poly_index] )
+	{
+	  poly = domain_poly(domain,poly_index);
+	  primal_xyz(domain_primal(domain),poly_index,xyz);
+	  TRY( poly_centroid_volume(poly,xyz,center,&volume), "cent Vol");
+	  fprintf(f,"%30.20e\n",volume);	  
 	}
     }
 
