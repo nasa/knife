@@ -54,6 +54,9 @@ double subnode_z( Subnode );
 
 double subnode_area( Subnode node0, Subnode node1, Subnode node2 );
 
+#define subnode_echo(sn,str) printf("%s u %f v %f w %f\n",(str),	\
+				    (sn)->uvw[0],(sn)->uvw[1],(sn)->uvw[2]);
+
 
 END_C_DECLORATION
 
