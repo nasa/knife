@@ -719,10 +719,12 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   int *node_g2l;
   int node;
   FILE *f;
+
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
     node_g2l[node] = EMPTY;
 
+  nnode = 0;
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain);
 	poly_index++)
