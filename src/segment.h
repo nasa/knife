@@ -59,7 +59,7 @@ Node segment_common_node( Segment segment0, Segment segment1 );
 #define segment_node1(segment) ((segment)->node1)
 
 #define segment_xyz0(segment) (node_xyz(segment_node0(segment))
-#define segment_xyz1(segment) (node_xyz(segment_node1(segment)
+#define segment_xyz1(segment) (node_xyz(segment_node1(segment))
 
 END_C_DECLORATION
 
