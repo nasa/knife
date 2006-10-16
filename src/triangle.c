@@ -16,6 +16,17 @@
 
 static int triangle_frame = 0;
 
+#define POSITIVE_AREA( subtri )					\
+  if (TRUE) {							\
+    if (subtri_reference_area(subtri) < 0.0 ) {			\
+      triangle_eps(triangle);					\
+      printf("%s: %d: neg area %e\n",				\
+	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
+      return KNIFE_NEG_AREA;					\
+    }								\
+  }
+
+
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -359,6 +370,8 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
       triangle_add_subtri(triangle,new_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
+      POSITIVE_AREA( existing_subtri );
+      POSITIVE_AREA( new_subtri );
     }
 
   if (KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, n1, n0, 
@@ -368,6 +381,8 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
       triangle_add_subtri(triangle,new_subtri);
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
+      POSITIVE_AREA( existing_subtri );
+      POSITIVE_AREA( new_subtri );
     }
 
   return KNIFE_SUCCESS;
@@ -389,6 +404,10 @@ KNIFE_STATUS triangle_insert_into_center( Triangle triangle,
   subtri_replace_node(subtri0, subtri_n0(subtri0), new_node);
   subtri_replace_node(subtri1, subtri_n1(subtri1), new_node);
   subtri_replace_node(subtri2, subtri_n2(subtri2), new_node);
+
+  POSITIVE_AREA( subtri0 );
+  POSITIVE_AREA( subtri1 );
+  POSITIVE_AREA( subtri2 );
 
   return KNIFE_SUCCESS;
 }
@@ -550,7 +569,10 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
     }
 
   if ( best_area < 1.0e-14 )
-    return KNIFE_NOT_FOUND;
+    {    
+      printf("%s: %d: best area %e\n",__FILE__,__LINE__,best_area);
+      return KNIFE_NOT_FOUND;
+    }
 
   *s0 = best_s0;
   *s1 = best_s1;
@@ -684,21 +706,26 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   subtri1->n1 = node3;
   subtri1->n2 = node2;
 
+  POSITIVE_AREA( subtri0 );
+  POSITIVE_AREA( subtri1 );
+
   return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS triangle_recover_side( Triangle triangle, 
 				    Subnode node0, Subnode node1 )
 {
-
+  KNIFE_STATUS blocking_code;
   Subnode side0, side1;
 
   if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
-
+  
+  blocking_code = triangle_first_blocking_side( triangle, node0, node1, 
+						&side0, &side1 );
+  
   /* return successfully if the subtriangle already exsits */
-  if (KNIFE_RECOVERED == triangle_first_blocking_side( triangle, node0, node1, 
-						       &side0, &side1 ) ) 
-    return KNIFE_SUCCESS;
+  if ( KNIFE_RECOVERED == blocking_code ) return KNIFE_SUCCESS;
+  TRY( blocking_code, "first blocking side not found" );
 
   TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
 
