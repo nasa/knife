@@ -714,12 +714,16 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 {
   int poly_index;
   Poly poly;
-  int nnode, ntet;
+  int nnode, ntet, nedge;
   double xyz[3], center[3], volume;
   int *node_g2l;
-  int node, cell;
+  int node, cell, edge;
   FILE *f;
   int cell_nodes[4];
+  int edge_nodes[2];
+  int node0, node1;
+  int node_index;
+  Node edge_node;
 
   printf("dump node stuff\n");
 
@@ -814,6 +818,66 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     }
 
   fclose(f);
+
+  printf("dump edge stuff\n");
+
+  nedge = 0;
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) ) nedge++; 
+    }
+
+  f = fopen("postslice.edges","w");
+  NOT_NULL(f,"tets file not open");
+
+  fprintf(f,"%d\n",nedge);
+
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
+	{
+	  node0 = node_g2l[edge_nodes[0]];
+	  node1 = node_g2l[edge_nodes[1]];
+	  if ( node0<node1)
+	    {
+	      fprintf(f,"%d %d\n",1+node0,1+node1);
+	    }
+	  else
+	    {
+	      fprintf(f,"%d %d\n",1+node1,1+node0);
+	    }
+	}
+    }
+
+  fclose(f);
+
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
+	{
+	  node_index = edge + 
+	    primal_ntri(domain->primal) + primal_ncell(domain->primal);
+	  edge_node = domain_node(domain,node_index);
+
+	  node0 = node_g2l[edge_nodes[0]];
+	  node1 = node_g2l[edge_nodes[1]];
+	  if ( node0<node1)
+	    {
+
+	    }
+	  else
+	    {
+
+	    }
+	}
+    }
+
 
 
   free(node_g2l);
