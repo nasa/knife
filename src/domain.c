@@ -855,8 +855,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	}
     }
 
-  fclose(f);
-
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
       primal_edge(domain->primal, edge, edge_nodes);
@@ -884,7 +882,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	}
     }
 
-
+  fclose(f);
 
   free(node_g2l);
 
