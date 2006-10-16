@@ -721,6 +721,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   FILE *f;
   int cell_nodes[4];
 
+  printf("dump node stuff\n");
+
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
     node_g2l[node] = EMPTY;
@@ -779,6 +781,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     }
 
   fclose(f);
+
+  printf("dump tet stuff\n");
 
   ntet = 0;
   for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
