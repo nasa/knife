@@ -555,7 +555,8 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
       if ( subtri_has1(subtri,node2) )
 	{
 	  if ( subtri_has1(subtri,node3) ) return KNIFE_RECOVERED;
-	  subtri_orient( subtri, node2, &n0, &node0, &node1 );
+	  TRY( subtri_orient( subtri, node2, &n0, &node0, &node1 ),
+	       "orient in block" );
 	  right_area = subnode_area( node1, node2, node3 );
 	  left_area = subnode_area( node0, node3, node2 );
 	  min_area = MIN(right_area, left_area);
