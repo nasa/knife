@@ -13,8 +13,6 @@ test: all
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
 	                               -v om6box.fgrid $(TEC_FLAG) )
-
-big: all
 	( cd ../cases/big3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
