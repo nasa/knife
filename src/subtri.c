@@ -139,7 +139,7 @@ KNIFE_STATUS subtri_bary( Subtri subtri, Subnode node, double *bary )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS subtri_area( Subtri subtri )
+double subtri_reference_area( Subtri subtri )
 {
   return subnode_area(subtri_n0(subtri), subtri_n1(subtri), subtri_n2(subtri));
 }
@@ -215,7 +215,7 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 		  normal[2]*normal[2] );
 
   if ( ABS(*area) < 1.0e-14 ) {
-    printf("%s: %d: subtri area is %e\n",__FILE__,__LINE__,(*area));
+    printf("%s: %d: subtri physical area is %e\n",__FILE__,__LINE__,(*area));
     return KNIFE_DIV_ZERO;
   }
 
@@ -255,7 +255,12 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
   for(i=0;i<3;i++) xyz1[i] -= origin[i];
   for(i=0;i<3;i++) xyz2[i] -= origin[i];
 
-  TRY( subtri_normal_area( subtri, normal, &area ), "norm area" );
+  if ( KNIFE_SUCCESS != subtri_normal_area( subtri, normal, &area ) )
+    {
+      printf("%s: %d: warning subtri reference area omitted %e\n",
+	     __FILE__,__LINE__,subtri_reference_area( subtri ));
+      return KNIFE_SUCCESS;
+    }
 
   for (iquad = 0; iquad<nquad; iquad++)
     {

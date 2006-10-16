@@ -53,7 +53,7 @@ KNIFE_STATUS subtri_orient( Subtri, Subnode,
 			    Subnode *n0, Subnode *n1, Subnode *n2 );
 
 KNIFE_STATUS subtri_bary( Subtri, Subnode, double *bary );
-KNIFE_STATUS subtri_area( Subtri );
+double subtri_reference_area( Subtri );
 
 KnifeBool subtri_above( Subtri, Subtri );
 
