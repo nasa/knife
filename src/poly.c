@@ -473,7 +473,6 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
 					   origin, centroid, volume),
 	"cent vol surf");
 
-
   if ( ABS(*volume) < 1.0e-14 )
     return KNIFE_DIV_ZERO;
 
