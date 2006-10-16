@@ -84,6 +84,8 @@ KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz);
 /* face[4] : face[0-2] face node indexes, face[3] boundary group id  */
 KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
 
+KNIFE_STATUS primal_max_face_id( Primal, int *max_face_id); 
+
 KNIFE_STATUS primal_cell( Primal, int cell_index, int *nodes); 
 KNIFE_STATUS primal_cell_center( Primal, int cell_index, double *xyz); 
 

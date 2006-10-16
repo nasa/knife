@@ -271,6 +271,18 @@ KNIFE_STATUS primal_face( Primal primal, int face_index, int *face)
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_max_face_id( Primal primal, int *max_face_id)
+{
+  int face_index;
+
+  *max_face_id = 0;
+
+  for (face_index=0; face_index<primal_nface(primal); face_index++)
+    *max_face_id = MAX(*max_face_id, primal->f2n[3+4*face_index]);
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_cell( Primal primal, int cell_index, int *cell)
 {
   if (cell_index < 0 || cell_index >= primal_ncell(primal) ) 
