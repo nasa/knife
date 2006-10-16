@@ -131,6 +131,7 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle,
 					   Subnode *s0, Subnode *s1 );
 
 KNIFE_STATUS triangle_eps( Triangle );
+KNIFE_STATUS triangle_tecplot( Triangle );
 
 KNIFE_STATUS triangle_delaunay( Triangle, Subnode );
 KNIFE_STATUS triangle_suspect_edge( Triangle, Subnode, Subtri );
