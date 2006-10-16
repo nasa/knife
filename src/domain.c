@@ -725,6 +725,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   int node_index;
   Node edge_node;
 
+  double directed_area[3];
+
   printf("dump node stuff\n");
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
@@ -869,12 +871,16 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  node1 = node_g2l[edge_nodes[1]];
 	  if ( node0<node1)
 	    {
-
+	      poly = domain_poly(domain, edge_nodes[0]);
 	    }
 	  else
 	    {
-
+	      poly = domain_poly(domain, edge_nodes[1]);
 	    }
+	  TRY( poly_directed_normal_about( poly, edge_node, 
+					   directed_area), "da");
+	  fprintf(f,"%30.20e %30.20e %30.20e\n",
+		  directed_area[0],directed_area[1],directed_area[2]);	  
 	}
     }
 
