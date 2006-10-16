@@ -236,6 +236,7 @@ KNIFE_STATUS poly_paint( Poly poly )
   Mask mask;
   Triangle triangle;
   KnifeBool another_coat_of_paint;
+  int segment_index;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -282,13 +283,10 @@ KNIFE_STATUS poly_paint( Poly poly )
 	{
 	  mask = poly_surf(poly,mask_index);
 	  triangle = mask_triangle(mask);
-
-
-
-
-
-
-
+	  for ( segment_index = 0; segment_index < 3; segment_index++ )
+	    TRY ( poly_paint_surf( poly, mask,
+				   triangle->segment[segment_index],
+				   &another_coat_of_paint ), "paint surf ");
 	}
     }
   
