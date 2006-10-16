@@ -913,7 +913,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
-  printf("dump edge stuff\n");
+  printf("dump face stuff\n");
 
   ncut = 0;
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
