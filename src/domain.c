@@ -714,7 +714,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 {
   int poly_index;
   Poly poly;
-  int nnode, ntet, nedge, norig, ncut, nface;
+  int nnode, ntet, nedge, norig, ncut, nface, ntri;
   double xyz[3], center[3], volume;
   int *node_g2l, *face_g2l;
   int node, cell, edge, face;
@@ -729,6 +729,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   int max_face_id, face_id;
   int i;
+
+  KnifeBool active, original;
 
   printf("dump node stuff\n");
 
@@ -1030,10 +1032,63 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   f = fopen("postslice.surf","w");
   NOT_NULL(f,"surf file not open");
 
+  ntri = 0;
+  for ( face = 0; face < primal_nface(domain->primal); face++)
+    {
+      primal_face(domain->primal,face,face_nodes);
+      
+      active =( poly_active(domain_poly(domain,face_nodes[0])) ||
+		poly_active(domain_poly(domain,face_nodes[1])) ||
+		poly_active(domain_poly(domain,face_nodes[2])) );
+      
+      original =( poly_original(domain_poly(domain,face_nodes[0])) &&
+		  poly_original(domain_poly(domain,face_nodes[1])) &&
+		  poly_original(domain_poly(domain,face_nodes[2])) );
+      
 
+      if (active && !original) ntri++;
+    }
 
+  fprintf(f,"%d\n",ntri);
 
+  for ( face = 0; face < primal_nface(domain->primal); face++)
+    {
+      primal_face(domain->primal,face,face_nodes);
+      
+      active = ( poly_active(domain_poly(domain,face_nodes[0])) ||
+		 poly_active(domain_poly(domain,face_nodes[1])) ||
+		 poly_active(domain_poly(domain,face_nodes[2])) );
+      
+      original = ( poly_original(domain_poly(domain,face_nodes[0])) &&
+		   poly_original(domain_poly(domain,face_nodes[1])) &&
+		   poly_original(domain_poly(domain,face_nodes[2])) );
+      
 
+      if (active && !original) ntri++;
+    }
+
+  for ( face = 0; face < primal_nface(domain->primal); face++)
+    {
+      primal_face(domain->primal,face,face_nodes);
+      
+      active = ( poly_active(domain_poly(domain,face_nodes[0])) ||
+		 poly_active(domain_poly(domain,face_nodes[1])) ||
+		 poly_active(domain_poly(domain,face_nodes[2])) );
+      
+      original = ( poly_original(domain_poly(domain,face_nodes[0])) &&
+		   poly_original(domain_poly(domain,face_nodes[1])) &&
+		   poly_original(domain_poly(domain,face_nodes[2])) );
+      
+      if (active && !original) 
+	{
+	  TRY( poly_boundary_face_geometry(domain_poly(domain,face_nodes[0]),
+					   face, f), "poly bound 0");
+	  TRY( poly_boundary_face_geometry(domain_poly(domain,face_nodes[1]),
+					   face, f), "poly bound 1");
+	  TRY( poly_boundary_face_geometry(domain_poly(domain,face_nodes[2]),
+					   face, f), "poly bound 2");
+	}
+    }
 
   fclose(f);
 
