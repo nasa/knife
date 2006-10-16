@@ -57,7 +57,7 @@ double subtri_reference_area( Subtri );
 
 KnifeBool subtri_above( Subtri, Subtri );
 
-KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f );
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f );
 
 KNIFE_STATUS subtri_normal_area( Subtri subtri, 
 				 double *normal,

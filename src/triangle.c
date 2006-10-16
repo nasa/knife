@@ -853,18 +853,6 @@ double triangle_min_subtri_area( Triangle triangle )
   return min_area;
 }
 
-KNIFE_STATUS triangle_dump_geom( Triangle triangle, FILE *f )
-{
-  int subtri_index;
-
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
-    subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
-
-  return KNIFE_SUCCESS;
-}
-
 void triangle_examine_subnodes(Triangle triangle)
 {
   int subnode_index;						

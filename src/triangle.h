@@ -143,8 +143,6 @@ KNIFE_STATUS triangle_recover_side( Triangle, Subnode node0, Subnode node1 );
 
 double triangle_min_subtri_area( Triangle );
 
-KNIFE_STATUS triangle_dump_geom( Triangle, FILE *);
-
 void triangle_examine_subnodes(Triangle triangle);
 
 END_C_DECLORATION

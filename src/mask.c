@@ -205,14 +205,13 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
   int subtri_index;
 
   triangle = mask_triangle(mask);
-
-  if ( NULL == mask->active ) return triangle_dump_geom(triangle,f);
-
+  
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
-    if ( mask->active[subtri_index] ) 
-      subtri_dump_geom( triangle_subtri(triangle, subtri_index), f );
+    if ( mask_subtri_active(mask,subtri_index) ) 
+      subtri_dump_geom( triangle_subtri(triangle, subtri_index), 
+			mask->inward_pointing_normal, f );
 
   return KNIFE_SUCCESS;
 }

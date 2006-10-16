@@ -169,17 +169,32 @@ KnifeBool subtri_above( Subtri subtri, Subtri other )
   return ( 0.0 < intersection_volume6(xyz0,xyz1,xyz2,xyz3) );
 }
 
-KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f )
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
 {
   if (NULL == subtri) return KNIFE_NULL;
-  fprintf(f,"%30.20e%30.20e%30.20e",
-	  subnode_x(subtri_n0(subtri)),
-	  subnode_y(subtri_n0(subtri)),
-	  subnode_z(subtri_n0(subtri)));
-  fprintf(f,"%30.20e%30.20e%30.20e",
-	  subnode_x(subtri_n1(subtri)),
-	  subnode_y(subtri_n1(subtri)),
-	  subnode_z(subtri_n1(subtri)));
+
+  if (reverse)
+    {
+      fprintf(f,"%30.20e%30.20e%30.20e",
+	      subnode_x(subtri_n1(subtri)),
+	      subnode_y(subtri_n1(subtri)),
+	      subnode_z(subtri_n1(subtri)));
+      fprintf(f,"%30.20e%30.20e%30.20e",
+	      subnode_x(subtri_n0(subtri)),
+	      subnode_y(subtri_n0(subtri)),
+	      subnode_z(subtri_n0(subtri)));
+    }
+  else
+    {
+      fprintf(f,"%30.20e%30.20e%30.20e",
+	      subnode_x(subtri_n0(subtri)),
+	      subnode_y(subtri_n0(subtri)),
+	      subnode_z(subtri_n0(subtri)));
+      fprintf(f,"%30.20e%30.20e%30.20e",
+	      subnode_x(subtri_n1(subtri)),
+	      subnode_y(subtri_n1(subtri)),
+	      subnode_z(subtri_n1(subtri)));
+    }
   fprintf(f,"%30.20e%30.20e%30.20e\n",
 	  subnode_x(subtri_n2(subtri)),
 	  subnode_y(subtri_n2(subtri)),
