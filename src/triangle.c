@@ -157,6 +157,26 @@ KNIFE_STATUS triangle_extent( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_neighbor( Triangle triangle, Segment segment, 
+				Triangle *other )
+{
+  if (2 != segment_ntriangle(segment)) return KNIFE_UNIQUENESS;
+
+  if ( triangle == segment_triangle(segment, 0) )
+    {
+      *other = segment_triangle(segment, 1);
+      return KNIFE_SUCCESS;
+    }
+
+  if ( triangle == segment_triangle(segment, 1) )
+    {
+      *other = segment_triangle(segment, 0);
+      return KNIFE_SUCCESS;
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
 KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 {
   int cut_index;

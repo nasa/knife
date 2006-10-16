@@ -64,6 +64,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_MISSING     (11)
 #define KNIFE_RECOVERED   (12)
 #define KNIFE_DIV_ZERO    (13)
+#define KNIFE_UNIQUENESS  (14)
 
 END_C_DECLORATION
 

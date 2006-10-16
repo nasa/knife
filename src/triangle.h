@@ -93,6 +93,8 @@ void triangle_echo( Triangle );
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 
+KNIFE_STATUS triangle_neighbor( Triangle, Segment, Triangle *other );
+
 KNIFE_STATUS triangle_triangulate_cuts( Triangle );
 
 KNIFE_STATUS triangle_insert_unique_subnode( Triangle, Intersection );
