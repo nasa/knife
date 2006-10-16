@@ -714,7 +714,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 {
   int poly_index;
   Poly poly;
-  int nnode, ntet, nedge;
+  int nnode, ntet, nedge, norig;
   double xyz[3], center[3], volume;
   int *node_g2l;
   int node, cell, edge;
@@ -880,6 +880,32 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  fprintf(f,"%30.20e %30.20e %30.20e\n",
 		  directed_area[0],directed_area[1],directed_area[2]);	  
 	}
+    }
+
+  norig = 0;
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) &&
+	   !poly_cut(domain_poly(domain,edge_nodes[0])) &&
+	   !poly_cut(domain_poly(domain,edge_nodes[1])) ) norig++; 
+    }
+
+  fprintf(f,"%d\n",norig);
+
+  nedge = 0;
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
+	{
+	  if ( !poly_cut(domain_poly(domain,edge_nodes[0])) &&
+	       !poly_cut(domain_poly(domain,edge_nodes[1])) ) 
+	    fprintf(f,"%d\n",nedge);
+	  nedge++;
+	} 
     }
 
   fclose(f);
