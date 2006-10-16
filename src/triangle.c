@@ -511,12 +511,12 @@ KNIFE_STATUS triangle_subtri_with_intersections( Triangle triangle,
 }
 
 KNIFE_STATUS triangle_first_blocking_side( Triangle triangle, 
-					   Subnode node0, Subnode node1,
+					   Subnode node2, Subnode node3,
 					   Subnode *s0, Subnode *s1 )
 {
   Subtri subtri;
   int subtri_index;
-  Subnode n0, n1, n2;
+  Subnode n0, node0, node1;
   double right_area, left_area;
   double best_area;
   Subnode best_s0, best_s1;
@@ -533,18 +533,18 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
 	subtri_index++)
     {
       subtri = triangle_subtri(triangle, subtri_index);
-      if ( subtri_has1(subtri,node0) )
+      if ( subtri_has1(subtri,node2) )
 	{
-	  if ( subtri_has1(subtri,node1) ) return KNIFE_RECOVERED;
-	  subtri_orient( subtri, node0, &n0, &n1, &n2 );
-	  right_area = subnode_area( n0, n1, node1 );
-	  left_area = subnode_area( n0, node1, n2 );
+	  if ( subtri_has1(subtri,node3) ) return KNIFE_RECOVERED;
+	  subtri_orient( subtri, node2, &n0, &node0, &node1 );
+	  right_area = subnode_area( node1, node2, node3 );
+	  left_area = subnode_area( node0, node3, node2 );
 	  min_area = MIN(right_area, left_area);
 	  if ( min_area > best_area )
 	    { 
 	      best_area = min_area;
-	      best_s0 = n2;
-	      best_s1 = n1;
+	      best_s0 = node0;
+	      best_s1 = node1;
 	    }
 	}
     }
