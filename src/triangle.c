@@ -168,10 +168,10 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection0(cut) ),
-	      "NULL subnode0 in triangle_triangulate_cuts" );
-    NOT_NULL( triangle_unique_subnode(triangle, cut_intersection1(cut) ),
-	      "NULL subnode0 in triangle_triangulate_cuts" );
+    TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
+	 "NULL subnode0 in triangle_triangulate_cuts" );
+    TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
+	 "NULL subnode1 in triangle_triangulate_cuts" );
   }
 
   /* recover all cuts as subtriangle sides */
@@ -227,26 +227,25 @@ Subnode triangle_subnode_with_intersection( Triangle triangle,
       subnode = triangle_subnode(triangle, subnode_index);
       if ( intersection == subnode_intersection(subnode) ) return subnode;
     }
+
   return NULL;
 }
 
-Subnode triangle_unique_subnode( Triangle triangle, Intersection intersection)
+KNIFE_STATUS triangle_insert_unique_subnode( Triangle triangle, 
+					     Intersection intersection)
 {
   Subnode subnode;
   double uvw[3];
 
-  subnode = triangle_subnode_with_intersection( triangle, 
-						intersection);
+  if ( NULL != triangle_subnode_with_intersection( triangle,intersection) )
+    return KNIFE_SUCCESS;
 
-  if ( NULL == subnode )
-    {
-      intersection_uvw(intersection,triangle,uvw);
-      subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
-      TRYN( triangle_add_subnode( triangle, subnode ), "add subnode" );
-      TRYN( triangle_insert( triangle, subnode), "insert" );
-    }
+  intersection_uvw(intersection,triangle,uvw);
+  subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
+  TRY( triangle_add_subnode( triangle, subnode ), "add subnode" );
+  TRY( triangle_insert( triangle, subnode), "insert" );
 
-  return subnode;
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,

@@ -95,7 +95,7 @@ KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
 
 KNIFE_STATUS triangle_triangulate_cuts( Triangle );
 
-Subnode triangle_unique_subnode( Triangle, Intersection );
+KNIFE_STATUS triangle_insert_unique_subnode( Triangle, Intersection );
 
 Subnode triangle_subnode_with_intersection( Triangle, Intersection );
 
