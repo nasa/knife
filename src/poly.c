@@ -272,6 +272,26 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
+  another_coat_of_paint = TRUE;
+  while (another_coat_of_paint)
+    {
+      another_coat_of_paint = FALSE;
+      for ( mask_index = 0;
+	    mask_index < poly_nsurf(poly); 
+	    mask_index++)
+	{
+	  mask = poly_surf(poly,mask_index);
+	  triangle = mask_triangle(mask);
+
+
+
+
+
+
+
+	}
+    }
+  
   return KNIFE_SUCCESS;
 }
 
@@ -325,63 +345,6 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 	      return FALSE;
 	    }
 	  if ( mask_subtri_active(mask,subtri_index ) )
-	    return TRUE;
-	}
-    }
-
-  return FALSE;
-}
-
-KnifeBool poly_active_surf_with_nodes( Poly poly, 
-				       Node n0, Node n1, Node n2  )
-{
-  int surf_index, subtri_index;
-  Mask surf;
-  Triangle triangle;
-  
-  for ( surf_index = 0;
-	surf_index < poly_nsurf(poly); 
-	surf_index++)
-    {
-      surf = poly_mask(poly,surf_index);
-      triangle = mask_triangle(surf);
-      if ( triangle_has2(triangle,n0,n1) )
-	{
-	  if ( KNIFE_SUCCESS != 
-	       triangle_subtri_index_with_nodes( triangle,n0,n1,
-						 &subtri_index ) )
-	    {
-	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
-		     __FILE__,__LINE__);
-	      return FALSE;
-	    }
-	  if ( mask_subtri_active(surf,subtri_index ) )
-	    return TRUE;
-	}
-      if ( triangle_has2(triangle,n1,n2) )
-	{
-	  if ( KNIFE_SUCCESS != 
-	       triangle_subtri_index_with_nodes( triangle,n1,n2,
-						 &subtri_index ) )
-	    {
-	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
-		     __FILE__,__LINE__);
-	      return FALSE;
-	    }
-	  if ( mask_subtri_active(surf,subtri_index ) )
-	    return TRUE;
-	}
-      if ( triangle_has2(triangle,n2,n0) )
-	{
-	  if ( KNIFE_SUCCESS != 
-	       triangle_subtri_index_with_nodes( triangle,n2,n0,
-						 &subtri_index ) )
-	    {
-	      printf("%s: %d: REALLY WRONG!! cannot find subtri\n",
-		     __FILE__,__LINE__);
-	      return FALSE;
-	    }
-	  if ( mask_subtri_active(surf,subtri_index ) )
 	    return TRUE;
 	}
     }
