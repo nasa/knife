@@ -214,7 +214,10 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 		  normal[1]*normal[1] +
 		  normal[2]*normal[2] );
 
-  if ( ABS(*area) < 1.0e-14 ) return KNIFE_DIV_ZERO;
+  if ( ABS(*area) < 1.0e-14 ) {
+    printf("%s: %d: subtri area is %e\n",__FILE__,__LINE__,(*area));
+    return KNIFE_DIV_ZERO;
+  }
 
   normal[0] /= (*area);
   normal[1] /= (*area);
@@ -242,11 +245,15 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
   double bary0[] = {4.0/6.0, 1.0/6.0, 1.0/6.0};
   double bary1[] = {1.0/6.0, 4.0/6.0, 1.0/6.0};
   double bary2[] = {1.0/6.0, 1.0/6.0, 4.0/6.0};
-  double wieght[] = {1.0/3.0, 1.0/3.0, 1.0/3.0};
+  double weight[] = {1.0/3.0, 1.0/3.0, 1.0/3.0};
 
   TRY( subnode_xyz( subtri_n0(subtri), xyz0), "cent vol subnode0 xyz" );
   TRY( subnode_xyz( subtri_n1(subtri), xyz1), "cent vol subnode1 xyz" );
   TRY( subnode_xyz( subtri_n2(subtri), xyz2), "cent vol subnode2 xyz" );
+
+  for(i=0;i<3;i++) xyz0[i] -= origin[i];
+  for(i=0;i<3;i++) xyz1[i] -= origin[i];
+  for(i=0;i<3;i++) xyz2[i] -= origin[i];
 
   TRY( subtri_normal_area( subtri, normal, &area ), "norm area" );
 
@@ -257,7 +264,24 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
 	bary1[iquad]*xyz1[i] + 
 	bary2[iquad]*xyz2[i];
 
-
+      if (outward_pointing_normal)
+	{
+	  (*volume) += weight[i]*area*( xyz[0]*normal[0] + 
+					xyz[1]*normal[1] + 
+					xyz[2]*normal[2] ) / 3.0;
+	  centroid[0] += weight[i]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
+	  centroid[1] += weight[i]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
+	  centroid[2] += weight[i]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
+	}
+      else
+	{
+	  (*volume) -= weight[i]*area*( xyz[0]*normal[0] + 
+					xyz[1]*normal[1] + 
+					xyz[2]*normal[2] ) / 3.0;
+	  centroid[0] -= weight[i]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
+	  centroid[1] -= weight[i]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
+	  centroid[2] -= weight[i]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
+	}
     }
 
   return KNIFE_SUCCESS;
