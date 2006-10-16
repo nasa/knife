@@ -59,6 +59,8 @@ KNIFE_STATUS poly_determine_active_subtri( Poly );
 
 KNIFE_STATUS poly_activate_subtri_at_cuts( Poly );
 KNIFE_STATUS poly_paint( Poly );
+KNIFE_STATUS poly_paint_surf( Poly, Mask surf, 
+			      Segment, KnifeBool *another_pass );
 
 KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2 );
 

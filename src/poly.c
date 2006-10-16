@@ -350,6 +350,35 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
   return FALSE;
 }
 
+KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf, 
+			      Segment segment, KnifeBool *another_pass )
+{
+  KNIFE_STATUS status;
+  Triangle triangle, other_triangle;
+  int subtri_index;
+
+  triangle = mask_triangle(surf);
+
+  status = triangle_subtri_index_with_nodes( triangle,
+					     segment_node0(segment),
+					     segment_node1(segment),
+					     &subtri_index );
+
+  if ( KNIFE_NOT_FOUND == status ) return KNIFE_SUCCESS;
+
+  TRY( status, "find subtri with nodes" );
+  
+  if ( mask_subtri_active(surf,subtri_index) )
+    {
+      TRY( triangle_neighbor( triangle, segment, &other_triangle), 
+	   "other tri" );
+      TRY( poly_gather_active_surf( poly, other_triangle, 
+				    another_pass ), "gather act surf");
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
 						  KnifeBool *active )
 {
