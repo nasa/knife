@@ -714,7 +714,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 {
   int poly_index;
   Poly poly;
-  int nnode, ntet, nedge, norig;
+  int nnode, ntet, nedge, norig, ncut;
   double xyz[3], center[3], volume;
   int *node_g2l;
   int node, cell, edge;
@@ -909,6 +909,53 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     }
 
   fclose(f);
+
+  f = fopen("postslice.faces","w");
+  NOT_NULL(f,"faces file not open");
+
+  ncut = 0;
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
+	{
+	  if ( poly_cut(domain_poly(domain,edge_nodes[0])) ||
+	       poly_cut(domain_poly(domain,edge_nodes[1])) ) ncut++;
+	} 
+    }
+
+  fprintf(f,"%d\n",ncut);
+
+  ncut = 0;
+  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
+    {
+      primal_edge(domain->primal, edge, edge_nodes);
+      if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
+	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
+	{
+	  node_index = edge + 
+	    primal_ntri(domain->primal) + primal_ncell(domain->primal);
+	  edge_node = domain_node(domain,node_index);
+
+	  node0 = node_g2l[edge_nodes[0]];
+	  node1 = node_g2l[edge_nodes[1]];
+	  if ( node0<node1)
+	    {
+	      fprintf(f,"%d %d\n",1+node0,1+node1);
+	      poly = domain_poly(domain, edge_nodes[0]);
+	    }
+	  else
+	    {
+	      fprintf(f,"%d %d\n",1+node1,1+node0);
+	      poly = domain_poly(domain, edge_nodes[1]);
+	    }
+	  TRY( poly_face_geometry_about( poly, edge_node), "edge face geom");
+	} 
+    }
+
+  fclose(f);
+
 
   free(node_g2l);
 
