@@ -719,6 +719,7 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
 {
   Subnode n0,n1,n2;
   Subtri other;
+  Cut cut;
   Subnode o0,o1,o2;
   double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
   double volume;
@@ -726,35 +727,37 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
   TRY( subtri_orient( subtri, subnode, &n0, &n1, &n2 ), "orient");
   if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, n2, n1, 
 						       &other ) )
-    {
-      subtri_orient( other, n2, &o0, &o1, &o2 );
-      xyz0[0] = subnode_v(n0);
-      xyz0[1] = subnode_w(n0);
+    if ( KNIFE_NOT_FOUND == triangle_cut_with_subnodes( triangle, n2, n1, 
+							&cut ) )
+      {
+	subtri_orient( other, n2, &o0, &o1, &o2 );
+	xyz0[0] = subnode_v(n0);
+	xyz0[1] = subnode_w(n0);
  
-      xyz1[0] = subnode_v(n1);
-      xyz1[1] = subnode_w(n1);
+	xyz1[0] = subnode_v(n1);
+	xyz1[1] = subnode_w(n1);
 
-      xyz2[0] = subnode_v(n2);
-      xyz2[1] = subnode_w(n2);
+	xyz2[0] = subnode_v(n2);
+	xyz2[1] = subnode_w(n2);
 
-      xyz3[0] = subnode_v(o2);
-      xyz3[1] = subnode_w(o2);
+	xyz3[0] = subnode_v(o2);
+	xyz3[1] = subnode_w(o2);
 
-      xyz0[2] = xyz0[0]*xyz0[0]+xyz0[1]*xyz0[1];
-      xyz1[2] = xyz1[0]*xyz1[0]+xyz1[1]*xyz1[1];
-      xyz2[2] = xyz2[0]*xyz2[0]+xyz2[1]*xyz2[1];
-      xyz3[2] = xyz3[0]*xyz3[0]+xyz3[1]*xyz3[1];
+	xyz0[2] = xyz0[0]*xyz0[0]+xyz0[1]*xyz0[1];
+	xyz1[2] = xyz1[0]*xyz1[0]+xyz1[1]*xyz1[1];
+	xyz2[2] = xyz2[0]*xyz2[0]+xyz2[1]*xyz2[1];
+	xyz3[2] = xyz3[0]*xyz3[0]+xyz3[1]*xyz3[1];
 
-      volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
-      if ( volume < 0.0 )
-	{
-	  TRY( triangle_swap_side(triangle,n1,n2), "swap");
-	  TRY( triangle_subtri_with_subnodes(triangle, n1, o2, &other), "on1" );
-	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn1" );
-	  TRY( triangle_subtri_with_subnodes(triangle, o2, n2, &other), "on2" );
-	  TRY( triangle_suspect_edge( triangle, subnode, other ), "sn2" );
-	}
-    }
+	volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
+	if ( volume < 0.0 )
+	  {
+	    TRY( triangle_swap_side(triangle,n1,n2), "swap");
+	    TRY( triangle_subtri_with_subnodes(triangle, n1, o2, &other),"on1");
+	    TRY( triangle_suspect_edge( triangle, subnode, other ), "sn1" );
+	    TRY( triangle_subtri_with_subnodes(triangle, o2, n2, &other),"on2");
+	    TRY( triangle_suspect_edge( triangle, subnode, other ), "sn2" );
+	  }
+      }
 
   return KNIFE_SUCCESS;
 }
