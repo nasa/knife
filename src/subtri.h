@@ -59,6 +59,10 @@ KnifeBool subtri_above( Subtri, Subtri );
 
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, FILE *f );
 
+KNIFE_STATUS subtri_normal_area( Subtri subtri, 
+				 double *normal,
+				 double *area);
+
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri, 
 						  double *origin,
 						  double *centroid,

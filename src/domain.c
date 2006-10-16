@@ -877,8 +877,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	    {
 	      poly = domain_poly(domain, edge_nodes[1]);
 	    }
-	  TRY( poly_directed_normal_about( poly, edge_node, 
-					   directed_area), "da");
+	  TRY( poly_directed_area_about( poly, edge_node, 
+					 directed_area), "directed_area");
 	  fprintf(f,"%30.20e %30.20e %30.20e\n",
 		  directed_area[0],directed_area[1],directed_area[2]);	  
 	}

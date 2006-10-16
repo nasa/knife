@@ -233,13 +233,50 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask,
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
-    if ( (NULL == mask->active) || mask->active[subtri_index])
+    if ( mask_subtri_active(mask,subtri_index) )
       {
 	subtri = triangle_subtri(triangle,subtri_index);
 	TRY( subtri_centroid_volume_contribution( subtri, origin,
 						  centroid, volume,
 				    !(mask->inward_pointing_normal) ),
 	     "subtri_centroid_volume_contribution failed");
+      }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS mask_directed_area_contribution( Mask mask, 
+					      double *directed_area )
+{
+  Triangle triangle;
+  Subtri subtri;
+  int subtri_index;
+  double normal[3], area;
+
+  if ( NULL == mask ) return KNIFE_NULL;
+
+  triangle = mask_triangle(mask);
+  
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    if ( mask_subtri_active(mask,subtri_index) )
+      {
+	subtri = triangle_subtri(triangle,subtri_index);
+	TRY( subtri_normal_area( subtri, normal, &area ),
+	     "subtri_normal_area failed");
+	if (mask->inward_pointing_normal)
+	  {
+	    directed_area[0] -= area*normal[0];
+	    directed_area[1] -= area*normal[1];
+	    directed_area[2] -= area*normal[2];
+	  }
+	else
+	  {
+	    directed_area[0] += area*normal[0];
+	    directed_area[1] += area*normal[1];
+	    directed_area[2] += area*normal[2];
+	  }
       }
 
   return KNIFE_SUCCESS;

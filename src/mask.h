@@ -54,6 +54,7 @@ KNIFE_STATUS mask_find_subtri_with( Mask, FILE * );
 KNIFE_STATUS mask_centroid_volume_contribution( Mask, double *origin,
 						double *centroid, 
 						double *volume );
+KNIFE_STATUS mask_directed_area_contribution( Mask, double *directed_area );
 
 END_C_DECLORATION
 
