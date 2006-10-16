@@ -984,7 +984,10 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       for ( face = 0; face < primal_nface(domain->primal); face++)
 	{
 	  primal_face(domain->primal,face,face_nodes);
-	  if ( face_id == face_nodes[4] )
+	  if ( face_id == face_nodes[4] &&
+	       poly_original(domain_poly(domain,face_nodes[0])) &&
+	       poly_original(domain_poly(domain,face_nodes[1])) &&
+	       poly_original(domain_poly(domain,face_nodes[2])) )
 	    {
 	      nface++;
 	      for ( i = 0; i < 3 ; i++ )
@@ -1006,7 +1009,10 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       for ( face = 0; face < primal_nface(domain->primal); face++)
 	{
 	  primal_face(domain->primal,face,face_nodes);
-	  if ( face_id == face_nodes[4] )
+	  if ( face_id == face_nodes[4] &&
+	       poly_original(domain_poly(domain,face_nodes[0])) &&
+	       poly_original(domain_poly(domain,face_nodes[1])) &&
+	       poly_original(domain_poly(domain,face_nodes[2])) )
 	    fprintf(f,"%d %d %d\n",
 		    1+node_g2l[face_g2l[face_nodes[0]]],
 		    1+node_g2l[face_g2l[face_nodes[1]]],
