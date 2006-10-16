@@ -274,31 +274,6 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
-  another_coat_of_paint = TRUE;
-  while (another_coat_of_paint)
-    {
-      another_coat_of_paint = FALSE;
-      for ( surf_index = 0;
-	    surf_index < poly_nsurf(poly); 
-	    surf_index++)
-	{
-	  surf = poly_surf(poly,surf_index);
-	  triangle = mask_triangle(surf);
-	  if ( (1 == triangle_nsubtri(triangle)) && 
-	       !mask_subtri_active(surf,0) )
-	    {
-	      if ( poly_active_surf_with_nodes( poly, 
-						triangle->node0,
-						triangle->node1,
-						triangle->node2)  )
-		{
-		  mask_activate_subtri_index( surf, 0 );
-		  another_coat_of_paint = TRUE;
-		}	       
-	    }
-	}
-    }
-  
   return KNIFE_SUCCESS;
 }
 
