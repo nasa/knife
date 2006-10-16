@@ -787,7 +787,7 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
       f = fopen(filename, "w");
     }
   
-  fprintf(f,"title='domain geometry'\nvariables='x','y','z'\n");
+  fprintf(f,"title=domain_geometry\nvariables=x,y,z\n");
   
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
     if ( poly_active( domain_poly(domain,poly) ) )

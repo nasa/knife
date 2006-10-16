@@ -661,7 +661,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 
   f = fopen(filename, "w");
 
-  fprintf(f,"title='triangle geometry'\nvariables='x','y','z','v','w'\n");
+  fprintf(f,"title=triangle_geometry\nvariables=x,y,z,v,w\n");
   fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  triangle_nsubnode(triangle), triangle_nsubtri(triangle) );
 
