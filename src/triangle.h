@@ -109,6 +109,7 @@ KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode,
 KNIFE_STATUS triangle_insert_into_center( Triangle, Subnode, Subtri );
 
 KNIFE_STATUS triangle_subtri_index( Triangle, Subtri, int *subtri_index );
+KNIFE_STATUS triangle_subnode_index( Triangle, Subnode, int *subnode_index );
 
 KNIFE_STATUS triangle_subtri_with_subnodes( Triangle, 
 					    Subnode n0, Subnode n1,

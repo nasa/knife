@@ -14,12 +14,14 @@
 #include <math.h>
 #include "triangle.h"
 
-static int triangle_frame = 0;
+static int triangle_eps_frame = 0;
+static int triangle_tecplot_frame = 0;
 
 #define POSITIVE_AREA( subtri )					\
   if (TRUE) {							\
     if (subtri_reference_area(subtri) < 0.0 ) {			\
       triangle_eps(triangle);					\
+      triangle_tecplot(triangle);				\
       triangle_examine_subnodes(triangle);			\
       printf("%s: %d: neg area %e\n",				\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
@@ -284,7 +286,8 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
   if ( -1.0e-12 > best_min_bary ) 
     {
       printf("subnode u %f v %f w %f frame %d\n",
-	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2],triangle_frame);
+	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2],
+	     triangle_eps_frame);
       triangle_eps(triangle);
       printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
 	     __FILE__,__LINE__,best_min_bary);
@@ -425,6 +428,27 @@ KNIFE_STATUS triangle_subtri_index( Triangle triangle, Subtri subtri,
       if ( subtri == triangle_subtri(triangle, canidate) )
 	{
 	  *subtri_index = canidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
+KNIFE_STATUS triangle_subnode_index( Triangle triangle, Subnode subnode,
+				    int *subnode_index )
+{
+  int canidate;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( canidate = 0;
+	canidate < triangle_nsubnode(triangle); 
+	canidate++)
+    {
+      if ( subnode == triangle_subnode(triangle, canidate) )
+	{
+	  *subnode_index = canidate;
 	  return KNIFE_SUCCESS;
 	}
     }
@@ -589,9 +613,9 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
   f = fopen("gnuplot_mesh_command","w");
   fprintf(f,"reset\n");
   fprintf(f,"set term postscript eps\n");
-  fprintf(f,"set output 'frame%04d.eps'\n",triangle_frame);
+  fprintf(f,"set output 'frame%04d.eps'\n",triangle_eps_frame);
 
-  triangle_frame++;
+  triangle_eps_frame++;
 
   fprintf(f,"set size ratio -1\n");
   fprintf(f,"set xlabel 'V'\n");
@@ -618,6 +642,52 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
 
   fclose(f);
   system("gnuplot gnuplot_mesh_command; rm gnuplot_mesh_command");
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS triangle_tecplot( Triangle triangle)
+{
+  int subnode_index;
+  Subnode subnode;
+  double xyz[3];
+  int subtri_index;
+  Subtri subtri;
+  int node0, node1, node2;
+  char filename[1025];
+  FILE *f;
+
+  sprintf(filename, "frame%04d.t",triangle_tecplot_frame );
+  triangle_tecplot_frame++;
+
+  f = fopen(filename, "w");
+
+  fprintf(f,"title='triangle geometry'\nvariables='x','y','z','v','w'\n");
+  fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  triangle_nsubnode(triangle), triangle_nsubtri(triangle) );
+
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
+    {
+      subnode = triangle_subnode(triangle, subnode_index);
+      TRY( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
+      fprintf(f, " %20.25f %20.25f %20.25f %20.25f %20.25f\n",
+	      xyz[0], xyz[1], xyz[2], subnode_v(subnode), subnode_w(subnode) );
+    }
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      TRY( triangle_subnode_index( triangle, subtri->n0, &node0), "tec sn0");
+      TRY( triangle_subnode_index( triangle, subtri->n1, &node1), "tec sn1");
+      TRY( triangle_subnode_index( triangle, subtri->n2, &node2), "tec sn2");
+      fprintf(f, "%6d %6d %6d\n", 1+node0, 1+node1, 1+node2);
+    }
+
+  fclose(f);
+
   return KNIFE_SUCCESS;
 }
 
