@@ -20,6 +20,7 @@
     int code;						      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
+      triangle_eps(mask_triangle(mask));		      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       return code;					      \
     }							      \
