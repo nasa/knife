@@ -244,10 +244,13 @@ KNIFE_STATUS triangle_verify_subtri_area( Triangle triangle )
       printf("%s: %d: improving area %e\n",__FILE__,__LINE__,min_area);
       triangle_tecplot(triangle);
       
-      TRY( triangle_swap_neg_area( triangle ), "neg area swap" );
+      TRY( triangle_swap_neg_area( triangle ), 
+	   "neg area swap failed to improve triangle" );
       
       min_area = triangle_min_subtri_area( triangle );
     }
+
+  printf("%s: %d: min area %e\n",min_area);
 
   return ( (min_area <= 0.0) ? KNIFE_NEG_AREA : KNIFE_SUCCESS );
 
