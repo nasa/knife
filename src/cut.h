@@ -31,7 +31,7 @@ struct CutStruct {
   Intersection intersection0, intersection1;
 };
 
-Cut cut_between( Triangle, Triangle );
+KNIFE_STATUS cut_establish_between( Triangle, Triangle );
 void cut_free( Cut );
 
 #define cut_other_triangle(cut,triangle)				\

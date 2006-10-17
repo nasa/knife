@@ -536,8 +536,10 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
       near_touched(near_tree, &target, &ntouched, max_touched, touched);
       for (i=0;i<ntouched;i++)
 	{
-	  cut_between( domain_triangle(domain,triangle_index),
-		       surface_triangle(domain->surface,touched[i]) );
+	  TRY( cut_establish_between( domain_triangle(domain,triangle_index),
+				      surface_triangle(domain->surface,
+						       touched[i]) ),
+	       "cut establishment failed" );
 	}
     }
 

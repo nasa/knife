@@ -15,20 +15,31 @@
 #include <stdio.h>
 #include "cut.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
 
 #define cut_gather_intersection						\
   if ( NULL != intersection ) {						\
     if ( NULL == intersection0 ) { intersection0 = intersection; }	\
     else { if ( NULL == intersection1 ) { intersection1 = intersection; } \
       else { printf("%s: %d: cut_between improper intersection\n",	\
-		    __FILE__,__LINE__); return NULL; } } }
+		    __FILE__,__LINE__); return KNIFE_IMPROPER; } } }
 
-Cut cut_between( Triangle triangle0, Triangle triangle1 )
+KNIFE_STATUS cut_establish_between( Triangle triangle0, Triangle triangle1 )
 {
   Cut cut;
   Intersection intersection;
   Intersection intersection0, intersection1;
   int segment_index;
+
+  if ( NULL == triangle0 || NULL == triangle1 ) return KNIFE_NULL;
 
   intersection0 = NULL;
   intersection1 = NULL;
@@ -53,7 +64,7 @@ Cut cut_between( Triangle triangle0, Triangle triangle1 )
     { 
       printf("%s: %d: cut_between improper intersection\n",	\
 	     __FILE__,__LINE__); 
-      return NULL; 
+      return KNIFE_IMPROPER; 
     }
 
   if ( NULL != intersection0 && NULL != intersection0 )
@@ -63,24 +74,20 @@ Cut cut_between( Triangle triangle0, Triangle triangle1 )
 	{
 	  printf("%s: %d: malloc failed in cut_between\n",
 		 __FILE__,__LINE__);
-	  return NULL; 
+	  return KNIFE_MEMORY; 
 	}
       
       cut->triangle0 = triangle0;
       cut->triangle1 = triangle1;
 
-      triangle_add_cut( triangle0, cut );
-      triangle_add_cut( triangle1, cut );
+      TRY( triangle_add_cut( triangle0, cut ), "add cut to tri0");
+      TRY( triangle_add_cut( triangle1, cut ), "add cut to tri1");
 
       cut->intersection0 = intersection0;
       cut->intersection1 = intersection1;
-  
-      return cut;
     }
-  else 
-    {
-      return NULL;
-    }
+
+  return KNIFE_SUCCESS; 
 }
 
 void cut_free( Cut cut )
