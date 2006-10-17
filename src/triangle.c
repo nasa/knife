@@ -21,9 +21,10 @@ static int triangle_tecplot_frame = 0;
   if (TRUE) {							\
     if (subtri_reference_area(subtri) <= 0.0 ) {		\
       triangle_tecplot(triangle);				\
-      triangle_examine_subnodes(triangle);			\
       printf("%s: %d: neg area %e\n",				\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
+      subtri_dump_echo( subtri );				\
+      triangle_examine_subnodes(triangle);			\
       return KNIFE_NEG_AREA;					\
     }								\
   }
