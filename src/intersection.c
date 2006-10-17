@@ -95,25 +95,29 @@ void intersection_free( Intersection intersection )
   free( intersection );
 }
 
+/* replace this with floating point check */
+#define TEST_FOR_SINGULAR_VOLUME(volume_to_test,msg)	\
+  if (ABS(volume_to_test) < 1.0e-20) {			\
+    printf("%s: %d: %s %.16e singular\n",		\
+	   __FILE__,__LINE__,(msg),(volume_to_test));	\
+    return KNIFE_SINGULAR; }
+
 KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
                                 double *s0, double *s1,
                                 double *t,
                                 double *uvw )
 {
-  double singular_tol;
   double top_volume, bot_volume;
   double side0_volume, side1_volume, side2_volume;
   double total_volume;
-
-  singular_tol = 1.0e-12; /* replace this with floating point check */
 
   /* is segment in triangle plane? */
   top_volume = intersection_volume6(t0, t1, t2, s0);
   bot_volume = intersection_volume6(t0, t1, t2, s1);
 
   /* raise exception if degeneracy detected */
-  if (ABS(top_volume) < singular_tol) return KNIFE_SINGULAR;
-  if (ABS(bot_volume) < singular_tol) return KNIFE_SINGULAR;
+  TEST_FOR_SINGULAR_VOLUME(top_volume,"top volume");
+  TEST_FOR_SINGULAR_VOLUME(bot_volume,"bot volume");
 
   /* if signs match, segment is entirely above or below triangle */
   if (top_volume > 0.0 && bot_volume > 0.0 ) return KNIFE_NO_INT;
@@ -125,9 +129,9 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
   side1_volume = intersection_volume6(t2, t0, s0, s1);
 
   /* raise exception if degeneracy detected */
-  if (ABS(side0_volume) < singular_tol) return KNIFE_SINGULAR;
-  if (ABS(side1_volume) < singular_tol) return KNIFE_SINGULAR;
-  if (ABS(side2_volume) < singular_tol) return KNIFE_SINGULAR;
+  TEST_FOR_SINGULAR_VOLUME(side0_volume,"side0 volume");
+  TEST_FOR_SINGULAR_VOLUME(side1_volume,"side1 volume");
+  TEST_FOR_SINGULAR_VOLUME(side2_volume,"side2 volume");
 
   /* if signs match segment ray passes inside of triangle */
   if ( (side0_volume > 0.0 && side1_volume > 0.0 && side2_volume > 0.0 ) ||
