@@ -1010,8 +1010,14 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
       face_l2g = (int *)malloc( nnode*sizeof(int) );
 
+      nnode = 0;
       for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
-	if ( EMPTY != face_g2l[node] ) face_l2g[face_g2l[node]] = node;
+	if ( EMPTY != face_g2l[node] ) 
+	  {
+	    face_l2g[nnode] = node;
+	    face_g2l[node] = nnode;
+	    nnode++;
+	  }
 
       for ( node = 0 ; node < nnode ; node++)
 	fprintf(f,"%d\n",1+node_g2l[face_l2g[node]]);
