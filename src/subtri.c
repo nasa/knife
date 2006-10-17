@@ -171,31 +171,33 @@ KnifeBool subtri_above( Subtri subtri, Subtri other )
 
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
 {
+  char format[]=" %.16e %.16e %.16e";
+  char formatl[]=" %.16e %.16e %.16e\n";
   if (NULL == subtri) return KNIFE_NULL;
 
   if (reverse)
     {
-      fprintf(f,"%30.20e%30.20e%30.20e",
+      fprintf(f,format,
 	      subnode_x(subtri_n1(subtri)),
 	      subnode_y(subtri_n1(subtri)),
 	      subnode_z(subtri_n1(subtri)));
-      fprintf(f,"%30.20e%30.20e%30.20e",
+      fprintf(f,format,
 	      subnode_x(subtri_n0(subtri)),
 	      subnode_y(subtri_n0(subtri)),
 	      subnode_z(subtri_n0(subtri)));
     }
   else
     {
-      fprintf(f,"%30.20e%30.20e%30.20e",
+      fprintf(f,format,
 	      subnode_x(subtri_n0(subtri)),
 	      subnode_y(subtri_n0(subtri)),
 	      subnode_z(subtri_n0(subtri)));
-      fprintf(f,"%30.20e%30.20e%30.20e",
+      fprintf(f,format,
 	      subnode_x(subtri_n1(subtri)),
 	      subnode_y(subtri_n1(subtri)),
 	      subnode_z(subtri_n1(subtri)));
     }
-  fprintf(f,"%30.20e%30.20e%30.20e\n",
+  fprintf(f,formatl,
 	  subnode_x(subtri_n2(subtri)),
 	  subnode_y(subtri_n2(subtri)),
 	  subnode_z(subtri_n2(subtri)));
