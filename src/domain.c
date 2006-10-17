@@ -162,6 +162,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	 primal_nedge(domain->primal),
 	 primal_ntri(domain->primal));
 
+  printf("create poly for primal nodes\n");
+
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,"domain_dual_elements poly");
@@ -186,6 +188,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     }
 
   printf("number of nodes in the surface %d\n",surface_nnode);
+
+  printf("create dual nodes\n");
 
   domain->nnode = 
     primal_ncell(domain->primal) +
@@ -228,6 +232,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	primal_xyz(domain->primal,node_index,xyz);
 	TRY( node_initialize( domain_node(domain,node), xyz, node),"node init");
       }
+
+  printf("create dual segments\n");
 
   domain->nsegment = 
     10 * primal_ncell(domain->primal) +
@@ -366,6 +372,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 
+  printf("create interior dual triangles\n");
+
   domain->ntriangle = 12*primal_ncell(domain->primal)
                     +  6*primal_nface(domain->primal);
   domain->triangle = (TriangleStruct *)malloc( domain->ntriangle * 
@@ -420,6 +428,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 			     domain_triangle(domain,triangle_index), TRUE );
 	}
     }
+
+  printf("create boundary dual triangles\n");
 
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
     {
