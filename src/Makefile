@@ -7,6 +7,9 @@ test: all
 	( cd ../cases/one_cell && \
 	  time ../../`uname`/src/knife -s surface.fgrid -b 1 -r \
 	                               -v one_cell.fgrid $(TEC_FLAG) )
+	( cd ../cases/box5 && \
+	  time ../../`uname`/src/knife -s surface.fgrid -b 1 \
+	                               -v box5.fgrid $(TEC_FLAG) )
 	( cd ../cases/tiny3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
