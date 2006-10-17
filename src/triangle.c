@@ -275,11 +275,14 @@ KNIFE_STATUS triangle_insert_unique_subnode( Triangle triangle,
   Subnode subnode;
   double uvw[3];
 
+  if( NULL == triangle || NULL == intersection ) return KNIFE_NULL;
+
   if ( NULL != triangle_subnode_with_intersection( triangle,intersection) )
     return KNIFE_SUCCESS;
 
-  intersection_uvw(intersection,triangle,uvw);
+  TRY( intersection_uvw(intersection,triangle,uvw), "intersection uvw" );
   subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
+  NOT_NULL( subnode, "new subnode NULL");
   TRY( triangle_add_subnode( triangle, subnode ), "add subnode" );
   TRY( triangle_insert( triangle, subnode), "insert" );
 
