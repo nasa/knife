@@ -63,6 +63,7 @@ KNIFE_STATUS subnode_xyz( Subnode subnode, double *xyz )
       xyz[2] = intersection_z(subnode->intersection);
       return KNIFE_SUCCESS;
     }
+
   return KNIFE_NOT_FOUND;
 }
 
