@@ -274,7 +274,7 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
 
   if ( KNIFE_SUCCESS != subtri_normal_area( subtri, normal, &area ) )
     {
-      printf("%s: %d: warning subtri area %e reference area %e omitted\n",
+      printf("%s: %d: warning subtri area %e (%e) omitted\n",
 	     __FILE__,__LINE__,area,subtri_reference_area( subtri ));
       return KNIFE_SUCCESS;
     }
