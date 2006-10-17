@@ -101,15 +101,16 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   triangle->subnode = array_create( 3, 50 );
   NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
 
-  triangle_add_subnode( triangle, subnode0 );
-  triangle_add_subnode( triangle, subnode1 );
-  triangle_add_subnode( triangle, subnode2 );
+  TRY( triangle_add_subnode( triangle, subnode0 ), "add sn0");
+  TRY( triangle_add_subnode( triangle, subnode1 ), "add sn1");
+  TRY( triangle_add_subnode( triangle, subnode2 ), "add sn2");
 
   triangle->subtri  = array_create( 1, 50 );
   NOT_NULL(triangle->subtri, "triangle->subtri NULL in init");
 
-  triangle_add_subtri( triangle, 
-		       subtri_create( subnode0, subnode1, subnode2 ) );
+  TRY( triangle_add_subtri( triangle, 
+			    subtri_create( subnode0, subnode1, subnode2 ) ),
+       "add st");
 
   triangle->cut = array_create( 1, 50 );
   NOT_NULL(triangle->cut, "triangle->cut NULL in init");
@@ -403,7 +404,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 						      &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
-      triangle_add_subtri(triangle,new_subtri);
+      TRY( triangle_add_subtri(triangle,new_subtri), "add new st01");
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
       POSITIVE_AREA( existing_subtri );
@@ -414,7 +415,7 @@ KNIFE_STATUS triangle_insert_into_side(Triangle triangle, Subnode new_node,
 						      &existing_subtri))
     {
       new_subtri = subtri_shallow_copy(existing_subtri);
-      triangle_add_subtri(triangle,new_subtri);
+      TRY( triangle_add_subtri(triangle,new_subtri), "add new st10");
       subtri_replace_node(existing_subtri, n0, new_node);
       subtri_replace_node(new_subtri,      n1, new_node);
       POSITIVE_AREA( existing_subtri );
@@ -434,8 +435,8 @@ KNIFE_STATUS triangle_insert_into_center( Triangle triangle,
   subtri1 = subtri_shallow_copy( subtri0 );
   subtri2 = subtri_shallow_copy( subtri0 );
 
-  triangle_add_subtri(triangle,subtri1);
-  triangle_add_subtri(triangle,subtri2);
+  TRY( triangle_add_subtri(triangle,subtri1), "add new st cent 1");
+  TRY( triangle_add_subtri(triangle,subtri2), "add new st cent 2");
       
   subtri_replace_node(subtri0, subtri_n0(subtri0), new_node);
   subtri_replace_node(subtri1, subtri_n1(subtri1), new_node);
