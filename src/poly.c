@@ -142,7 +142,7 @@ KNIFE_STATUS poly_gather_surf( Poly poly )
 	  cut = triangle_cut(triangle,cut_index);
 	  other = cut_other_triangle(cut,triangle);
 	  if ( !poly_has_surf_triangle(poly,other) )
-	    poly_add_surf(poly,mask_create( other, TRUE ));
+	    TRY( poly_add_surf(poly,mask_create( other, TRUE ) ), "add surf");
 	}
     }
   
