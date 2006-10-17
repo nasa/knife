@@ -568,6 +568,28 @@ KNIFE_STATUS poly_boundary_face_geometry( Poly poly, int face_index, FILE *f )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_surf_geometry( Poly poly, FILE *f )
+{
+  int surf_index;
+  int nsubtri;
+
+  nsubtri = 0;
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    nsubtri += mask_nsubtri( poly_surf(poly,surf_index) );
+
+  fprintf(f,"%d\n",nsubtri);
+
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    {
+      TRY( mask_dump_geom( poly_surf(poly,surf_index), f), "mask_dump_geom" );
+    }
+
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {

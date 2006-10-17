@@ -99,6 +99,7 @@ KNIFE_STATUS poly_centroid_volume( Poly, double *origin,
 KNIFE_STATUS poly_directed_area_about( Poly, Node, double *directed_area );
 KNIFE_STATUS poly_face_geometry_about( Poly, Node, FILE * );
 KNIFE_STATUS poly_boundary_face_geometry( Poly, int face_index, FILE * );
+KNIFE_STATUS poly_surf_geometry( Poly, FILE * );
 
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
 
