@@ -18,8 +18,8 @@ static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
 
 #define POSITIVE_AREA( subtri )					\
-  if (FALSE) {							\
-    if (subtri_reference_area(subtri) < 0.0 ) {			\
+  if (TRUE) {							\
+    if (subtri_reference_area(subtri) <= 0.0 ) {		\
       triangle_tecplot(triangle);				\
       triangle_examine_subnodes(triangle);			\
       printf("%s: %d: neg area %e\n",				\
@@ -248,9 +248,9 @@ KNIFE_STATUS triangle_verify_subtri_area( Triangle triangle )
 	   "neg area swap failed to improve triangle" );
       
       min_area = triangle_min_subtri_area( triangle );
-    }
 
-  printf("%s: %d: min area %e\n",min_area);
+      printf("%s: %d: min area now %e\n",__FILE__,__LINE__,min_area);
+    }
 
   return ( (min_area <= 0.0) ? KNIFE_NEG_AREA : KNIFE_SUCCESS );
 
