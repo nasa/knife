@@ -869,6 +869,12 @@ KNIFE_STATUS triangle_recover_side( Triangle triangle,
   if ( KNIFE_RECOVERED == blocking_code ) return KNIFE_SUCCESS;
   TRY( blocking_code, "first blocking side not found" );
 
+  if ( !triangle_swap_positive( triangle, side0, side1 ) )
+    {
+      printf("%s: %d: swap will fail\n",__FILE__,__LINE__);
+      triangle_tecplot(triangle);
+    }
+
   TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
 
   return triangle_recover_side(triangle, node0, node1);
