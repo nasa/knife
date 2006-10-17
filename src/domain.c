@@ -1093,6 +1093,24 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	    }
 	}
     }
+  
+  ncut = 0;
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain);
+	poly_index++)
+    if ( POLY_EXTERIOR == poly_topo( domain_poly( domain, poly_index ) ) ) 
+      ncut++;
+
+  fprintf(f,"%d\n",ncut);
+  
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain);
+	poly_index++)
+    if ( POLY_EXTERIOR == poly_topo( domain_poly( domain, poly_index ) ) )
+      {
+	fprintf(f,"%d\n",node_g2l[poly_index]);
+	TRY( poly_surf_geometry(domain_poly(domain,poly_index), f),"poly surf");
+      }
 
   fclose(f);
 
