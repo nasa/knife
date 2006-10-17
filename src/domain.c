@@ -716,7 +716,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   Poly poly;
   int nnode, ntet, nedge, norig, ncut, nface, ntri;
   double xyz[3], center[3], volume;
-  int *node_g2l, *face_g2l;
+  int *node_g2l, *face_g2l, *face_l2g;
   int node, cell, edge, face;
   FILE *f;
   int cell_nodes[4];
@@ -1007,8 +1007,16 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	}
 
       fprintf(f,"%d\n",nnode);
+
+      face_l2g = (int *)malloc( nnode*sizeof(int) );
+
       for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
-	if ( EMPTY != face_g2l[node] ) fprintf(f,"%d\n",1+node_g2l[node]);
+	if ( EMPTY != face_g2l[node] ) face_l2g[face_g2l[node]] = node;
+
+      for ( node = 0 ; node < nnode ; node++)
+	fprintf(f,"%d\n",1+node_g2l[face_l2g[node]]);
+
+      free(face_l2g);
 
       fprintf(f,"%d\n",nface);
       for ( face = 0; face < primal_nface(domain->primal); face++)
@@ -1019,9 +1027,9 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	       poly_original(domain_poly(domain,face_nodes[1])) &&
 	       poly_original(domain_poly(domain,face_nodes[2])) )
 	    fprintf(f,"%d %d %d\n",
-		    1+node_g2l[face_g2l[face_nodes[0]]],
-		    1+node_g2l[face_g2l[face_nodes[1]]],
-		    1+node_g2l[face_g2l[face_nodes[2]]] );
+		    1+face_g2l[face_nodes[0]],
+		    1+face_g2l[face_nodes[1]],
+		    1+face_g2l[face_nodes[2]] );
 	}      
       
     }
