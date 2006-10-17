@@ -749,6 +749,27 @@ KNIFE_STATUS triangle_delaunay( Triangle triangle, Subnode subnode )
   return KNIFE_SUCCESS;
 }
 
+KnifeBool triangle_swap_positive( Triangle triangle, 
+				  Subnode node0, Subnode node1 )
+{
+  Subtri subtri0, subtri1;
+  Subnode node2, node3;
+  Subnode n0, n1, n2;
+
+  TRY( triangle_subtri_with_subnodes(triangle, node0, node1, &subtri0 ), "s0" );
+  TRY( triangle_subtri_with_subnodes(triangle, node1, node0, &subtri1 ), "s1" );
+
+  TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
+  node2 = n2;
+  TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
+  node3 = n2;
+
+  return ( 0.0 <= subnode_area( node1, node2, node3 ) &&
+	   0.0 <= subnode_area( node0, node3, node2 ) );
+ 
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS triangle_suspect_edge( Triangle triangle, 
 				    Subnode subnode, Subtri subtri )
 {
@@ -784,7 +805,7 @@ KNIFE_STATUS triangle_suspect_edge( Triangle triangle,
 	xyz3[2] = xyz3[0]*xyz3[0]+xyz3[1]*xyz3[1];
 
 	volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
-	if ( volume < 0.0 )
+	if ( volume < 0.0 && triangle_swap_positive(triangle,n1,n2) )
 	  {
 	    TRY( triangle_swap_side(triangle,n1,n2), "swap");
 	    TRY( triangle_subtri_with_subnodes(triangle, n1, o2, &other),"on1");
