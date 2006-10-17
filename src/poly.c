@@ -455,9 +455,9 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   if ( ABS(*volume) < 1.0e-14 )
     return KNIFE_DIV_ZERO;
 
-  centroid[0] /= (*volume) + origin[0];
-  centroid[1] /= (*volume) + origin[1];
-  centroid[2] /= (*volume) + origin[2];
+  centroid[0] = centroid[0] / (*volume) + origin[0];
+  centroid[1] = centroid[1] / (*volume) + origin[1];
+  centroid[2] = centroid[2] / (*volume) + origin[2];
 
   return KNIFE_SUCCESS;
 }
