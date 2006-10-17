@@ -17,11 +17,23 @@
 #include <values.h>
 #include "intersection.h"
 
-Intersection intersection_of( Triangle triangle, Segment segment )
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
+KNIFE_STATUS intersection_of( Triangle triangle, Segment segment, 
+			      Intersection *returned_intersection )
 {
   double t, uvw[3];
   Intersection intersection;
   int intersection_index;
+  KNIFE_STATUS intersection_status;
   
   /* if this triangle and segment have meet before the outcome will be the
    * same, so return the previously computed intersection */
@@ -31,40 +43,50 @@ Intersection intersection_of( Triangle triangle, Segment segment )
     {
       intersection = segment_intersection(segment,intersection_index);
       if ( triangle == intersection_triangle(intersection) )
-	return intersection;
+	{
+	  *returned_intersection = intersection;
+	  return KNIFE_SUCCESS;
+	}
     }
 
   intersection = NULL;
 
-  if ( KNIFE_SUCCESS == intersection_core( triangle_xyz0(triangle), 
+  intersection_status = intersection_core( triangle_xyz0(triangle), 
 					   triangle_xyz1(triangle), 
 					   triangle_xyz2(triangle), 
 					   segment_xyz0(segment), 
 					   segment_xyz1(segment),
-					   &t, uvw ) ) 
-    {
-      intersection = (Intersection)malloc( sizeof(IntersectionStruct) );
-      if (NULL == intersection) 
-	{
-	  printf("%s: %d: malloc failed in intersection_of\n",
-		 __FILE__,__LINE__);
-	  return NULL; 
-	}
-
-      intersection->triangle = triangle;
-      intersection->segment = segment;
-
-      segment_add_intersection( segment, intersection );
-
-      intersection->t = t;
-      intersection->uvw[0] = uvw[0];
-      intersection->uvw[1] = uvw[1];
-      intersection->uvw[2] = uvw[2];
+					   &t, uvw );
   
-    } 
+  if ( KNIFE_NO_INT == intersection_status )
+    {
+      *returned_intersection = NULL;
+      return KNIFE_SUCCESS;
+    }
 
-  return intersection;
+  TRY( intersection_status, "intersection determination");
 
+  intersection = (Intersection)malloc( sizeof(IntersectionStruct) );
+  if (NULL == intersection) 
+    {
+      printf("%s: %d: malloc failed in intersection_of\n",__FILE__,__LINE__);
+      return KNIFE_MEMORY; 
+    }
+
+  intersection->triangle = triangle;
+  intersection->segment = segment;
+
+  TRY( segment_add_intersection( segment, intersection ), 
+       "add intersection to segment");
+
+  intersection->t = t;
+  intersection->uvw[0] = uvw[0];
+  intersection->uvw[1] = uvw[1];
+  intersection->uvw[2] = uvw[2];
+
+  *returned_intersection = intersection;
+
+  return KNIFE_SUCCESS;
 }
 
 void intersection_free( Intersection intersection )

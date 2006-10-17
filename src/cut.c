@@ -29,7 +29,7 @@
   if ( NULL != intersection ) {						\
     if ( NULL == intersection0 ) { intersection0 = intersection; }	\
     else { if ( NULL == intersection1 ) { intersection1 = intersection; } \
-      else { printf("%s: %d: cut_between improper intersection\n",	\
+      else { printf("%s: %d: cut_between improper intersection >2\n",	\
 		    __FILE__,__LINE__); return KNIFE_IMPROPER; } } }
 
 KNIFE_STATUS cut_establish_between( Triangle triangle0, Triangle triangle1 )
@@ -41,28 +41,31 @@ KNIFE_STATUS cut_establish_between( Triangle triangle0, Triangle triangle1 )
 
   if ( NULL == triangle0 || NULL == triangle1 ) return KNIFE_NULL;
 
+  intersection  = NULL;
   intersection0 = NULL;
   intersection1 = NULL;
 
   for (segment_index = 0 ; segment_index < 3; segment_index++ )
     {
-      intersection = intersection_of( triangle1, 
-				      triangle_segment( triangle0,
-							segment_index ) );
+      TRY( intersection_of( triangle1, 
+			    triangle_segment( triangle0, segment_index ),
+			    &intersection ),
+	   "triangle1 segment intersection" );
       cut_gather_intersection;
     }
   
   for (segment_index = 0 ; segment_index < 3; segment_index++ )
     {
-      intersection = intersection_of( triangle0, 
-				      triangle_segment( triangle1,
-							segment_index ) );
+      TRY( intersection_of( triangle0, 
+			    triangle_segment( triangle1, segment_index ),
+			    &intersection ),
+	   "triangle0 segment intersection" );
       cut_gather_intersection;
     }
 
   if ( NULL != intersection0 && NULL == intersection0 )
     { 
-      printf("%s: %d: cut_between improper intersection\n",	\
+      printf("%s: %d: cut_between improper intersection =1 \n",
 	     __FILE__,__LINE__); 
       return KNIFE_IMPROPER; 
     }

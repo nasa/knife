@@ -33,7 +33,8 @@ struct IntersectionStruct {
   double uvw[3];
 };
 
-Intersection intersection_of( Triangle, Segment );
+KNIFE_STATUS intersection_of( Triangle, Segment, 
+			      Intersection *returned_intersection );
 void intersection_free( Intersection );
 
 #define intersection_triangle( intersection ) ((intersection)->triangle)
