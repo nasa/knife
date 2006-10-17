@@ -232,7 +232,8 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 		  normal[2]*normal[2] );
 
   if ( ABS(*area) < 1.0e-14 ) {
-    printf("%s: %d: subtri physical area is %e\n",__FILE__,__LINE__,(*area));
+    /* printf("%s: %d: subtri physical area is %e\n",
+       __FILE__,__LINE__,(*area)); */
     return KNIFE_DIV_ZERO;
   }
 
