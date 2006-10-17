@@ -20,7 +20,6 @@ static int triangle_tecplot_frame = 0;
 #define POSITIVE_AREA( subtri )					\
   if (FALSE) {							\
     if (subtri_reference_area(subtri) < 0.0 ) {			\
-      triangle_eps(triangle);					\
       triangle_tecplot(triangle);				\
       triangle_examine_subnodes(triangle);			\
       printf("%s: %d: neg area %e\n",				\
@@ -35,7 +34,6 @@ static int triangle_tecplot_frame = 0;
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
-      triangle_eps(triangle);				      \
       triangle_tecplot(triangle);			      \
       return code;					      \
     }							      \
@@ -47,7 +45,6 @@ static int triangle_tecplot_frame = 0;
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
-      triangle_eps(triangle);				      \
       triangle_tecplot(triangle);			      \
       return NULL;					      \
     }							      \
@@ -240,10 +237,7 @@ KNIFE_STATUS triangle_verify_subtri_area( Triangle triangle )
 
   while (min_area <= 0.0)
     {
-      printf("%s: %d: area %e frames eps %d tecplot %d\n",
-	     __FILE__,__LINE__,min_area,
-	     triangle_eps_frame,triangle_tecplot_frame);
-      triangle_eps(triangle);
+      printf("%s: %d: improving area %e\n",__FILE__,__LINE__,min_area);
       triangle_tecplot(triangle);
       
       TRY( triangle_swap_neg_area( triangle ), "neg area swap" );
@@ -326,10 +320,9 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 
   if ( -1.0e-12 > best_min_bary ) 
     {
-      printf("subnode u %f v %f w %f frame %d\n",
-	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2],
-	     triangle_eps_frame);
-      triangle_eps(triangle);
+      printf("subnode u %f v %f w %f\n",
+	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2]);
+      triangle_tecplot(triangle);
       printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
 	     __FILE__,__LINE__,best_min_bary);
       return KNIFE_NOT_FOUND;
@@ -713,7 +706,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	subnode_index++)
     {
       subnode = triangle_subnode(triangle, subnode_index);
-      NOT_NULL( subnode, "tecplot subnode NULL" ),
+      NOT_NULL( subnode, "tecplot subnode NULL" );
       TRY( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
       fprintf(f, " %20.25f %20.25f %20.25f %20.25f %20.25f\n",
 	      subnode_v(subnode), subnode_w(subnode), xyz[0], xyz[1], xyz[2] );
