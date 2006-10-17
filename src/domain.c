@@ -908,7 +908,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  if ( !poly_cut(domain_poly(domain,edge_nodes[0])) &&
 	       !poly_cut(domain_poly(domain,edge_nodes[1])) ) 
-	    fprintf(f,"%d\n",nedge);
+	    fprintf(f,"%d\n",1+nedge);
 	  nedge++;
 	} 
     }
@@ -1072,21 +1072,21 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  if (poly_active(domain_poly(domain,face_nodes[0])))
 	    {
-	      fprintf(f,"%d\n",node_g2l[face_nodes[0]]);	      
+	      fprintf(f,"%d\n",1+node_g2l[face_nodes[0]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
 							   face_nodes[0]),
 					       face, f), "poly bound 0");
 	    }
 	  if (poly_active(domain_poly(domain,face_nodes[1])))
 	    {
-	      fprintf(f,"%d\n",node_g2l[face_nodes[1]]);	      
+	      fprintf(f,"%d\n",1+node_g2l[face_nodes[1]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
 							   face_nodes[1]),
 					       face, f), "poly bound 1");
 	    }
 	  if (poly_active(domain_poly(domain,face_nodes[2])))
 	    {
-	      fprintf(f,"%d\n",node_g2l[face_nodes[2]]);	      
+	      fprintf(f,"%d\n",1+node_g2l[face_nodes[2]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
 							   face_nodes[2]),
 					       face, f), "poly bound 2");
@@ -1108,7 +1108,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	poly_index++)
     if ( POLY_EXTERIOR == poly_topo( domain_poly( domain, poly_index ) ) )
       {
-	fprintf(f,"%d\n",node_g2l[poly_index]);
+	fprintf(f,"%d\n",1+node_g2l[poly_index]);
 	TRY( poly_surf_geometry(domain_poly(domain,poly_index), f),"poly surf");
       }
 
