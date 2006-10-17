@@ -497,6 +497,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   near_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 				    sizeof(NearStruct));
+  NOT_NULL( near_tree, "near_tree NULL");
+
   for (triangle_index=0;
        triangle_index<surface_ntriangle(domain->surface);
        triangle_index++)
@@ -518,6 +520,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   max_touched = surface_ntriangle(domain->surface);
 
   touched = (int *) malloc( max_touched * sizeof(int) );
+  NOT_NULL( touched, "touched NULL");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
@@ -539,6 +542,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
     }
 
   free(touched);
+  free(near_tree);
 
   printf("cuts computed\n");
 
