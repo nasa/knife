@@ -289,8 +289,8 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
       if (outward_pointing_normal)
 	{
 	  (*volume) += weight[iquad]*area*( xyz[0]*normal[0] + 
-					xyz[1]*normal[1] + 
-					xyz[2]*normal[2] ) / 3.0;
+					    xyz[1]*normal[1] + 
+					    xyz[2]*normal[2] ) / 3.0;
 	  centroid[0] += weight[iquad]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
 	  centroid[1] += weight[iquad]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
 	  centroid[2] += weight[iquad]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
@@ -298,8 +298,8 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
       else
 	{
 	  (*volume) -= weight[iquad]*area*( xyz[0]*normal[0] + 
-					xyz[1]*normal[1] + 
-					xyz[2]*normal[2] ) / 3.0;
+					    xyz[1]*normal[1] + 
+					    xyz[2]*normal[2] ) / 3.0;
 	  centroid[0] -= weight[iquad]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
 	  centroid[1] -= weight[iquad]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
 	  centroid[2] -= weight[iquad]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
