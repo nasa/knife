@@ -26,7 +26,7 @@ KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 )
   segment->node0 = node0;
   segment->node1 = node1;
 
-  segment->intersection = array_create( 5, 10 );
+  segment->intersection = array_create( 1, 10 );
   NOT_NULL( segment->intersection, "segment init intersection array NULL" );
 
   segment->triangle = array_create( 2, 10 );
