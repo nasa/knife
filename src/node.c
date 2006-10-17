@@ -34,12 +34,14 @@ Node node_create(double x, double y, double z, int indx)
   return node;
 }
 
-void node_initialize( Node node, double *xyz, int indx )
+KNIFE_STATUS node_initialize( Node node, double *xyz, int indx )
 {  
   node->xyz[0] = xyz[0];
   node->xyz[1] = xyz[1];
   node->xyz[2] = xyz[2];
   node->indx=indx;
+
+  return KNIFE_SUCCESS;
 }
 
 void node_free( Node node )

@@ -27,7 +27,7 @@ struct NodeStruct {
 };
 
 Node node_create( double x, double y, double z, int indx );
-void node_initialize( Node, double *xyz, int indx );
+KNIFE_STATUS node_initialize( Node, double *xyz, int indx );
 
 #define node_xyz(node) ((node)->xyz)
 #define node_x(node) ((node)->xyz[0])

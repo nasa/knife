@@ -81,7 +81,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
   domain_test_malloc(domain->poly,
 		     "domain_tetrahedral_elements poly");
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    poly_initialize(domain_poly(domain,poly));
+    TRY( poly_initialize(domain_poly(domain,poly)), "poly init");
 
   domain->nnode = primal_nnode(domain->primal);
   domain->node = (NodeStruct *)malloc( domain->nnode * 
@@ -91,7 +91,7 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
   for (node = 0 ; node < primal_nnode(domain->primal) ; node++)
     {
       TRY( primal_xyz( domain->primal, node, xyz), "xyz" );
-      node_initialize( domain_node(domain,node), xyz, node);
+      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
     }
 
   domain->nsegment = primal_nedge(domain->primal);
@@ -102,9 +102,9 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
       TRY( primal_edge( domain->primal, edge, edge_nodes), "primal_edge" );
-      segment_initialize( domain_segment(domain,edge),
-			  domain_node(domain,edge_nodes[0]),
-			  domain_node(domain,edge_nodes[1]));
+      TRY( segment_initialize( domain_segment(domain,edge),
+			       domain_node(domain,edge_nodes[0]),
+			       domain_node(domain,edge_nodes[1])), "seg init");
     }
 
   domain->ntriangle = primal_ntri(domain->primal);
@@ -124,11 +124,11 @@ KNIFE_STATUS domain_tetrahedral_elements( Domain domain )
       TRY( primal_find_edge( domain->primal, 
 			     tri_nodes[2], tri_nodes[0],
 			     &edge1 ), "edge1" );
-      triangle_initialize( domain_triangle(domain,tri),
-			   domain_segment(domain,edge0),
-			   domain_segment(domain,edge1),
-			   domain_segment(domain,edge2),
-			   EMPTY );
+      TRY( triangle_initialize( domain_triangle(domain,tri),
+				domain_segment(domain,edge0),
+				domain_segment(domain,edge1),
+				domain_segment(domain,edge2),
+				EMPTY ), "triangle init");
     }
 
   printf("domain_tetrahedral_elements: implement on_boundary determination\n");
@@ -166,7 +166,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
   domain_test_malloc(domain->poly,"domain_dual_elements poly");
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    poly_initialize(domain_poly(domain,poly));
+    TRY( poly_initialize(domain_poly(domain,poly)), "poly init");
   
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
@@ -201,19 +201,19 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     {
       node = cell;
       TRY( primal_cell_center( domain->primal, cell, xyz), "cell center" );
-      node_initialize( domain_node(domain,node), xyz, node);
+      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
     }
   for ( tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
     {
       node = tri + primal_ncell(domain->primal);
       TRY( primal_tri_center( domain->primal, tri, xyz), "tri center" );
-      node_initialize( domain_node(domain,node), xyz, node);
+      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
     }
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
       node = edge + primal_ntri(domain->primal) + primal_ncell(domain->primal);
       TRY( primal_edge_center( domain->primal, edge, xyz), "edge center" );
-      node_initialize( domain_node(domain,node), xyz, node);
+      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
     }
   for ( node_index = 0 ; 
 	node_index < primal_nnode(domain->primal) ; 
@@ -226,7 +226,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  primal_ntri(domain->primal) + 
 	  primal_ncell(domain->primal);
 	primal_xyz(domain->primal,node_index,xyz);
-	node_initialize( domain_node(domain,node), xyz, node);
+	TRY( node_initialize( domain_node(domain,node), xyz, node),"node init");
       }
 
   domain->nsegment = 
@@ -273,9 +273,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  tri = primal_c2t(domain->primal,cell,side);
 	  tri_center = tri + primal_ncell(domain->primal);
 	  segment_index = side + 10 * cell;
-	  segment_initialize( domain_segment(domain,segment_index),
-			      domain_node(domain,cell_center),
-			      domain_node(domain,tri_center));
+	  TRY( segment_initialize( domain_segment(domain,segment_index),
+				   domain_node(domain,cell_center),
+				   domain_node(domain,tri_center)), "seg init");
 	}
       for ( edge = 0 ; edge < 6 ; edge++)
 	{
@@ -283,9 +283,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  edge_center = edge_index + primal_ntri(domain->primal) 
 	                           + primal_ncell(domain->primal);
 	  segment_index = edge + 4 + 10 * cell;
-	  segment_initialize( domain_segment(domain,segment_index),
-			      domain_node(domain,cell_center),
-			      domain_node(domain,edge_center));
+	  TRY( segment_initialize( domain_segment(domain,segment_index),
+				   domain_node(domain,cell_center),
+				   domain_node(domain,edge_center)),"seg init");
 	}
     }
 
@@ -302,9 +302,10 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  edge_center = edge_index + primal_ntri(domain->primal) 
 	                           + primal_ncell(domain->primal);
 	  segment_index = side + 3 * tri + 10 * primal_ncell(domain->primal);
-	  segment_initialize( domain_segment(domain,segment_index),
-			      domain_node(domain,tri_center),
-			      domain_node(domain,edge_center));
+	  TRY( segment_initialize( domain_segment(domain,segment_index),
+				   domain_node(domain,tri_center),
+				   domain_node(domain,edge_center)),
+	       "seg init");
 	}
     }
 
@@ -325,9 +326,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    primal_nedge(domain->primal) + 
 	    primal_ntri(domain->primal) + 
 	    primal_ncell(domain->primal);
-	  segment_initialize( domain_segment(domain,segment_index),
-			      domain_node(domain,tri_center),
-			      domain_node(domain,node_index));
+	  TRY( segment_initialize( domain_segment(domain,segment_index),
+				   domain_node(domain,tri_center),
+				   domain_node(domain,node_index)), "seg init");
 	}
       for ( side = 0 ; side < 3 ; side++)
 	{
@@ -347,18 +348,20 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
-	      segment_initialize( domain_segment(domain,segment_index),
-				  domain_node(domain,node_index),
-				  domain_node(domain,edge_center));
+	      TRY( segment_initialize( domain_segment(domain,segment_index),
+				       domain_node(domain,node_index),
+				       domain_node(domain,edge_center)), 
+		   "seg init");
 	      segment_index = 1 + f2s[side+3*face];
 	      node_index = 
 		node_g2l[node1] + 
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
-	      segment_initialize( domain_segment(domain,segment_index),
-				  domain_node(domain,edge_center),
-				  domain_node(domain,node_index));
+	      TRY( segment_initialize( domain_segment(domain,segment_index),
+				       domain_node(domain,edge_center),
+				       domain_node(domain,node_index)), 
+		   "seg init");
 	    }
 	}
     }
@@ -387,10 +390,11 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment1 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
 	  segment2 = cell_edge + 4 + 10 * cell;
 	  /* triangle normal points from node0 to node1 */
-	  triangle_initialize( domain_triangle(domain,triangle_index),
-			       domain_segment(domain,segment0),
-			       domain_segment(domain,segment1),
-			       domain_segment(domain,segment2), EMPTY );
+	  TRY( triangle_initialize( domain_triangle(domain,triangle_index),
+				    domain_segment(domain,segment0),
+				    domain_segment(domain,segment1),
+				    domain_segment(domain,segment2), EMPTY ), 
+	       "triangle init");
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
 	  poly_add_triangle( domain_poly(domain,node1),

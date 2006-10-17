@@ -67,7 +67,6 @@ void array_free( Array array )
   free( array );
 }
 
-
 KNIFE_STATUS array_add( Array array, ArrayItem item )
 {
   ArrayItem *new_data;

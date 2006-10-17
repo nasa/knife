@@ -24,6 +24,12 @@
     }							      \
   }
 
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == (pointer)) {				      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
+
 Poly poly_create( void )
 {
   Poly poly;
@@ -35,7 +41,11 @@ Poly poly_create( void )
     return NULL; 
   }
 
-  poly_initialize( poly );
+  if ( KNIFE_SUCCESS != poly_initialize( poly ))
+    {
+      poly_free( poly );
+      return NULL;
+    };
 
   return poly;
 }
@@ -45,8 +55,12 @@ KNIFE_STATUS poly_initialize( Poly poly )
 
   poly->primal_node = NULL;
   poly->topo = POLY_INTERIOR;
+
   poly->mask = array_create(4,40);
+  NOT_NULL( poly->mask, "poly mask array null" );
+
   poly->surf = array_create(4,40);
+  NOT_NULL( poly->surf, "poly surf array null" );
 
   return KNIFE_SUCCESS;
 }
