@@ -238,7 +238,7 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
   normal[1] /= (*area);
   normal[2] /= (*area);
   
-  (*area) /= 2.0;
+  (*area) *= 0.5;
 
   return KNIFE_SUCCESS;
 }
@@ -257,9 +257,9 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
   
   int iquad;
   int nquad = 3;
-  double bary0[] = {4.0/6.0, 1.0/6.0, 1.0/6.0};
-  double bary1[] = {1.0/6.0, 4.0/6.0, 1.0/6.0};
-  double bary2[] = {1.0/6.0, 1.0/6.0, 4.0/6.0};
+  double bary0[]  = {4.0/6.0, 1.0/6.0, 1.0/6.0};
+  double bary1[]  = {1.0/6.0, 4.0/6.0, 1.0/6.0};
+  double bary2[]  = {1.0/6.0, 1.0/6.0, 4.0/6.0};
   double weight[] = {1.0/3.0, 1.0/3.0, 1.0/3.0};
 
   TRY( subnode_xyz( subtri_n0(subtri), xyz0), "cent vol subnode0 xyz" );
@@ -286,21 +286,21 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
 
       if (outward_pointing_normal)
 	{
-	  (*volume) += weight[i]*area*( xyz[0]*normal[0] + 
+	  (*volume) += weight[iquad]*area*( xyz[0]*normal[0] + 
 					xyz[1]*normal[1] + 
 					xyz[2]*normal[2] ) / 3.0;
-	  centroid[0] += weight[i]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
-	  centroid[1] += weight[i]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
-	  centroid[2] += weight[i]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
+	  centroid[0] += weight[iquad]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
+	  centroid[1] += weight[iquad]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
+	  centroid[2] += weight[iquad]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
 	}
       else
 	{
-	  (*volume) -= weight[i]*area*( xyz[0]*normal[0] + 
+	  (*volume) -= weight[iquad]*area*( xyz[0]*normal[0] + 
 					xyz[1]*normal[1] + 
 					xyz[2]*normal[2] ) / 3.0;
-	  centroid[0] -= weight[i]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
-	  centroid[1] -= weight[i]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
-	  centroid[2] -= weight[i]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
+	  centroid[0] -= weight[iquad]*area*( xyz[0]*xyz[0]*normal[0] ) / 2.0;
+	  centroid[1] -= weight[iquad]*area*( xyz[1]*xyz[1]*normal[1] ) / 2.0;
+	  centroid[2] -= weight[iquad]*area*( xyz[2]*xyz[2]*normal[2] ) / 2.0;
 	}
     }
 
