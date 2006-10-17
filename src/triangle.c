@@ -698,6 +698,8 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   FILE *f;
 
   sprintf(filename, "frame%04d.t",triangle_tecplot_frame );
+  printf("producing %s\n",filename);
+
   triangle_tecplot_frame++;
 
   f = fopen(filename, "w");
