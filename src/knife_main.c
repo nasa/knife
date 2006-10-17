@@ -108,6 +108,7 @@ int main( int argc, char *argv[] )
   surface = surface_from( surface_primal, active_bcs, 
 			  inward_pointing_surface_normal );
 
+  printf("read in volume grid\n");
   volume_primal = primal_from_FAST( volume_filename );
 
   domain = domain_create( volume_primal, surface );
