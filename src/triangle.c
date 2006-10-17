@@ -702,7 +702,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 
   f = fopen(filename, "w");
 
-  fprintf(f,"title=triangle_geometry\nvariables=x,y,z,v,w\n");
+  fprintf(f,"title=triangle_geometry\nvariables=v,w,x,y,z\n");
   fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  triangle_nsubnode(triangle), triangle_nsubtri(triangle) );
 
@@ -713,7 +713,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       subnode = triangle_subnode(triangle, subnode_index);
       TRY( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
       fprintf(f, " %20.25f %20.25f %20.25f %20.25f %20.25f\n",
-	      xyz[0], xyz[1], xyz[2], subnode_v(subnode), subnode_w(subnode) );
+	      subnode_v(subnode), subnode_w(subnode), xyz[0], xyz[1], xyz[2] );
     }
 
   for ( subtri_index = 0;
