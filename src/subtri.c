@@ -204,24 +204,24 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS subtri_dump_echo( Subtri subtri )
+KNIFE_STATUS subtri_echo_uvw( Subtri subtri )
 {
   char format[]=" %.16e %.16e %.16e\n";
   if (NULL == subtri) return KNIFE_NULL;
 
 
   printf( format,
-	  subnode_x(subtri_n0(subtri)),
-	  subnode_y(subtri_n0(subtri)),
-	  subnode_z(subtri_n0(subtri)));
+	  subnode_u(subtri_n0(subtri)),
+	  subnode_v(subtri_n0(subtri)),
+	  subnode_w(subtri_n0(subtri)));
   printf( format,
-	  subnode_x(subtri_n1(subtri)),
-	  subnode_y(subtri_n1(subtri)),
-	  subnode_z(subtri_n1(subtri)));
+	  subnode_u(subtri_n1(subtri)),
+	  subnode_v(subtri_n1(subtri)),
+	  subnode_w(subtri_n1(subtri)));
   printf( format,
-	  subnode_x(subtri_n2(subtri)),
-	  subnode_y(subtri_n2(subtri)),
-	  subnode_z(subtri_n2(subtri)));
+	  subnode_u(subtri_n2(subtri)),
+	  subnode_v(subtri_n2(subtri)),
+	  subnode_w(subtri_n2(subtri)));
 
   return KNIFE_SUCCESS;
 }

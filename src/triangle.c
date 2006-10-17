@@ -23,7 +23,7 @@ static int triangle_tecplot_frame = 0;
       triangle_tecplot(triangle);				\
       printf("%s: %d: neg area %e\n",				\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
-      subtri_dump_echo( subtri );				\
+      subtri_echo_uvw( subtri );				\
       triangle_examine_subnodes(triangle);			\
       return KNIFE_NEG_AREA;					\
     }								\
