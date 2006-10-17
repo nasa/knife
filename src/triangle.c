@@ -198,9 +198,9 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
     TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
-	 "NULL subnode0 in triangle_triangulate_cuts" );
+	 "insert subnode0 in triangle_triangulate_cuts" );
     TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
-	 "NULL subnode1 in triangle_triangulate_cuts" );
+	 "insert subnode1 in triangle_triangulate_cuts" );
   }
 
   /* recover all cuts as subtriangle sides */
