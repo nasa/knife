@@ -210,15 +210,15 @@ KNIFE_STATUS subtri_dump_echo( Subtri subtri )
   if (NULL == subtri) return KNIFE_NULL;
 
 
-  fprintf(format,
+  printf( format,
 	  subnode_x(subtri_n0(subtri)),
 	  subnode_y(subtri_n0(subtri)),
 	  subnode_z(subtri_n0(subtri)));
-  fprintf(format,
+  printf( format,
 	  subnode_x(subtri_n1(subtri)),
 	  subnode_y(subtri_n1(subtri)),
 	  subnode_z(subtri_n1(subtri)));
-  fprintf(format,
+  printf( format,
 	  subnode_x(subtri_n2(subtri)),
 	  subnode_y(subtri_n2(subtri)),
 	  subnode_z(subtri_n2(subtri)));
