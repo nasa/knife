@@ -74,7 +74,7 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 
 #define poly_active( poly ) (POLY_EXTERIOR != poly_topo(poly))
 #define poly_cut( poly ) (POLY_CUT == poly_topo(poly))
-#define poly_original( poly ) (POLY_INTERIOR != poly_topo(poly))
+#define poly_original( poly ) (POLY_INTERIOR == poly_topo(poly))
 
 #define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
