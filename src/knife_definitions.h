@@ -50,21 +50,22 @@ typedef short KnifeBool;
 
 typedef int KNIFE_STATUS;
 
-#define KNIFE_SUCCESS      (0)
-#define KNIFE_FAILURE      (1)
-#define KNIFE_MEMORY       (2)
-#define KNIFE_ARRAY_BOUND  (3)
-#define KNIFE_NOT_FOUND    (4)
-#define KNIFE_SINGULAR     (5)
-#define KNIFE_NO_INT       (6)
-#define KNIFE_NULL         (7)
-#define KNIFE_BIGGER       (8)
-#define KNIFE_IMPLEMENT    (9)
-#define KNIFE_NEG_AREA    (10)
-#define KNIFE_MISSING     (11)
-#define KNIFE_RECOVERED   (12)
-#define KNIFE_DIV_ZERO    (13)
-#define KNIFE_UNIQUENESS  (14)
+#define KNIFE_SUCCESS       (0)
+#define KNIFE_FAILURE       (1)
+#define KNIFE_MEMORY        (2)
+#define KNIFE_ARRAY_BOUND   (3)
+#define KNIFE_NOT_FOUND     (4)
+#define KNIFE_SINGULAR      (5)
+#define KNIFE_NO_INT        (6)
+#define KNIFE_NULL          (7)
+#define KNIFE_BIGGER        (8)
+#define KNIFE_IMPLEMENT     (9)
+#define KNIFE_NEG_AREA     (10)
+#define KNIFE_MISSING      (11)
+#define KNIFE_RECOVERED    (12)
+#define KNIFE_DIV_ZERO     (13)
+#define KNIFE_UNIQUENESS   (14)
+#define KNIFE_NOT_IMPROVED (15)
 
 END_C_DECLORATION
 

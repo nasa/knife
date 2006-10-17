@@ -190,8 +190,6 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   Subnode subnode0, subnode1;
   Subtri subtri;
 
-  double min_area;
-
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
   for ( cut_index = 0;
@@ -231,20 +229,31 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   }
 
   /* verify that all subtriangle have a positive area in uvw space */
+  return triangle_verify_subtri_area( triangle );
+}
+
+KNIFE_STATUS triangle_verify_subtri_area( Triangle triangle )
+{
+  double min_area;
+  
   min_area = triangle_min_subtri_area( triangle );
-  if (min_area < 0.0) 
+
+  while (min_area <= 0.0)
     {
-      printf("frames eps %d tecplot%d\n",
+      printf("%s: %d: area %e frames eps %d tecplot %d\n",
+	     __FILE__,__LINE__,min_area,
 	     triangle_eps_frame,triangle_tecplot_frame);
       triangle_eps(triangle);
       triangle_tecplot(triangle);
-      printf("%s: %d: area %30.20e\n",__FILE__,__LINE__,min_area);
-      return KNIFE_NEG_AREA;
+      
+      TRY( triangle_swap_neg_area( triangle ), "neg area swap" );
+      
+      min_area = triangle_min_subtri_area( triangle );
     }
 
-  return KNIFE_SUCCESS;
-}
+  return ( (min_area <= 0.0) ? KNIFE_NEG_AREA : KNIFE_SUCCESS );
 
+}
 
 Subnode triangle_subnode_with_intersection( Triangle triangle, 
 					    Intersection intersection)
@@ -835,6 +844,87 @@ KNIFE_STATUS triangle_recover_side( Triangle triangle,
   TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
 
   return triangle_recover_side(triangle, node0, node1);
+}
+
+KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
+					      Subnode node0, Subnode node1)
+{
+  Subtri subtri0, subtri1;
+  Subnode n0, n1, n2;
+  Subnode node2, node3;
+
+  Cut cut;
+  double orig_area, new_area;
+
+  if ( KNIFE_SUCCESS == triangle_cut_with_subnodes( triangle, 
+						    node0, node1,
+						    &cut )  )
+    return KNIFE_NOT_IMPROVED;
+
+  TRY( triangle_subtri_with_subnodes(triangle, node0, node1, &subtri0 ), "s0" );
+  TRY( triangle_subtri_with_subnodes(triangle, node1, node0, &subtri1 ), "s1" );
+
+  TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
+  node2 = n2;
+  TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
+  node3 = n2;
+
+  orig_area = MIN( subtri_reference_area( subtri0 ),
+		   subtri_reference_area( subtri1 ) );
+
+  new_area = MIN( subnode_area( node1, node2, node3 ),
+		  subnode_area( node0, node3, node2 ) );
+
+  if ( new_area > orig_area ) 
+    return triangle_swap_side( triangle, node0, node1 );
+
+  return KNIFE_NOT_IMPROVED;
+}
+
+KNIFE_STATUS triangle_swap_neg_area( Triangle triangle )
+{
+  int subtri_index;
+  Subtri subtri;
+  Subnode node0, node1;
+
+  double area;
+  KnifeBool improved;
+
+  improved = FALSE;
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      area = subtri_reference_area( subtri );
+      if ( area <= 0.0 )
+	{
+	  node0 = subtri_n0(subtri); node1 = subtri_n1(subtri);
+	  if ( KNIFE_SUCCESS == 
+	       triangle_swap_min_area_increase ( triangle,node0,node1 ) )
+	    {
+	      improved = TRUE;
+	      continue;
+	    }
+	  node0 = subtri_n1(subtri); node1 = subtri_n2(subtri);
+	  if ( KNIFE_SUCCESS == 
+	       triangle_swap_min_area_increase ( triangle,node0,node1 ) )
+	    {
+	      improved = TRUE;
+	      continue;
+	    }
+	  node0 = subtri_n2(subtri); node1 = subtri_n0(subtri);
+	  if ( KNIFE_SUCCESS == 
+	       triangle_swap_min_area_increase ( triangle,node0,node1 ) )
+	    {
+	      improved = TRUE;
+	      continue;
+	    }
+	}
+    }
+
+  return ( improved ? KNIFE_SUCCESS : KNIFE_NOT_IMPROVED );
 }
 
 double triangle_min_subtri_area( Triangle triangle )
