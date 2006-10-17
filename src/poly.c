@@ -436,7 +436,7 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   centroid[0] = 0.0;
   centroid[1] = 0.0;
   centroid[2] = 0.0;
-  *volume   = 0.0;
+  (*volume)   = 0.0;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
