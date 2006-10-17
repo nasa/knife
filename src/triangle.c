@@ -715,7 +715,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       subnode = triangle_subnode(triangle, subnode_index);
       NOT_NULL( subnode, "tecplot subnode NULL" );
       TRY( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
-      fprintf(f, " %20.25f %20.25f %20.25f %20.25f %20.25f\n",
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 	      subnode_v(subnode), subnode_w(subnode), xyz[0], xyz[1], xyz[2] );
     }
 
