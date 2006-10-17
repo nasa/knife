@@ -101,20 +101,20 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
   subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
 
-  triangle->subnode = array_create( 20, 50 );
+  triangle->subnode = array_create( 3, 50 );
   NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
 
   triangle_add_subnode( triangle, subnode0 );
   triangle_add_subnode( triangle, subnode1 );
   triangle_add_subnode( triangle, subnode2 );
 
-  triangle->subtri  = array_create( 20, 50 );
+  triangle->subtri  = array_create( 1, 50 );
   NOT_NULL(triangle->subtri, "triangle->subtri NULL in init");
 
   triangle_add_subtri( triangle, 
 		       subtri_create( subnode0, subnode1, subnode2 ) );
 
-  triangle->cut = array_create( 10, 50 );
+  triangle->cut = array_create( 1, 50 );
   NOT_NULL(triangle->cut, "triangle->cut NULL in init");
 
   return KNIFE_SUCCESS;
