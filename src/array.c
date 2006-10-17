@@ -19,6 +19,12 @@ Array array_from( ArrayItem *data, int size )
 {
   Array array;
   
+  if (NULL == data ) {
+    printf("%s: %d: NULL data passed to array_from\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
+
   array = (Array) malloc( sizeof(ArrayStruct) );
   if (NULL == array) {
     printf("%s: %d: malloc failed in array_from\n",
@@ -50,13 +56,8 @@ Array array_create( int guess, int chunk )
   array->allocated  = MAX(guess,1);
   array->chunk      = MAX(chunk,1);
        
-  array->data = (ArrayItem *) malloc( array->allocated * sizeof(ArrayItem) );
-  if (NULL == array->data) {
-    printf("%s: %d: malloc failed in array_create\n",
-	   __FILE__,__LINE__);
-    return NULL; 
-  }
-
+  array->data = NULL;
+  
   return array;
 }
 
@@ -70,6 +71,18 @@ void array_free( Array array )
 KNIFE_STATUS array_add( Array array, ArrayItem item )
 {
   ArrayItem *new_data;
+
+  if ( NULL == array->data )
+    {
+      array->data = (ArrayItem *) malloc( array->allocated * 
+					  sizeof(ArrayItem) );
+      if (NULL == array->data) {
+	printf("%s: %d: malloc failed in array_add\n",
+	       __FILE__,__LINE__);
+	return KNIFE_MEMORY; 
+      }
+    }
+
   if (array->actual >= array->allocated)
     {
       array->allocated += array->chunk;
@@ -83,6 +96,7 @@ KNIFE_STATUS array_add( Array array, ArrayItem item )
       }
       array->data = new_data;
     }
+
   array->data[array->actual] = item;
   array->actual++;
   return KNIFE_SUCCESS;
