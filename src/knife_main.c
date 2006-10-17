@@ -116,7 +116,7 @@ int main( int argc, char *argv[] )
 
   if (tecplot_output) domain_tecplot( domain, "orig.t" );
 
-  TRY( domain_boolean_subtract( domain ), "dual creation" );
+  TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
   if (tecplot_output) domain_tecplot( domain, "cut.t" );
 
