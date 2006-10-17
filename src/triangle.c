@@ -95,8 +95,11 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
   NOT_NULL(triangle->node2,"common node2 NULL in triangle_initialize");
 
   subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
+  NOT_NULL(subnode0, "NULL sn0");
   subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
+  NOT_NULL(subnode1, "NULL sn1");
   subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
+  NOT_NULL(subnode2, "NULL sn2");
 
   triangle->subnode = array_create( 3, 50 );
   NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
