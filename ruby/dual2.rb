@@ -353,7 +353,7 @@ class Dual
    center = triangle.center
    diameter = triangle.diameter
    probe = Near.new(-1,center[0],center[1],center[2],diameter)
-   cut_surface.near_tree.first.touched(probe).each do |index|
+   cut_surface.triangle_near_tree.first.touched(probe).each do |index|
     tool = cut_surface.triangles[index]
     Cut.between(triangle,tool)
    end
