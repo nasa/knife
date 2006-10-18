@@ -175,6 +175,36 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
 
 KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
 {
+  int side0, side1;
+  Subnode node0, node1, node2;
+  double area, best_area;
+  int best_side0, best_side1;
   
+  best_area = -1.0;
+  best_side0 = EMPTY;
+  best_side1 = EMPTY;
+
+  for ( side0 = 0 ; side0 < loop_nside(loop) ; side0++ )
+    for ( side1 = 0 ; side1 < loop_nside(loop) ; side1++ )
+      if ( loop->side[1+2*side0] == loop->side[0+2*side1] )
+	{
+	  node0 = loop->side[0+2*side0];
+	  node1 = loop->side[1+2*side0];
+	  node2 = loop->side[1+2*side1];
+	  
+	  area = subnode_area( node0, node1, node2 );
+	  if ( area > best_area )
+	    {
+	      best_area = area;
+	      best_side0 = side0;
+	      best_side1 = side1;
+	    }
+	}
+
+  if (best_area < 0.0) return KNIFE_NOT_FOUND;
+
+  *side0_index = best_side0;
+  *side1_index = best_side1;
+
   return KNIFE_SUCCESS;
 }
