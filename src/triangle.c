@@ -191,7 +191,9 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   Cut cut;
   Subnode subnode0, subnode1;
   Subtri subtri;
-  KNIFE_STATUS recovered;
+  KNIFE_STATUS recover_status;
+  KnifeBool *cut_recovered;
+  KnifeBool improvement;
 
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
@@ -206,21 +208,48 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   }
 
   /* recover all cuts as subtriangle sides */
+
+  cut_recovered = (KnifeBool *) malloc( triangle_ncut(triangle) * 
+					sizeof(KnifeBool) );
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
-    cut = triangle_cut(triangle,cut_index);
-    subnode0 = triangle_subnode_with_intersection(triangle, 
-						  cut_intersection0(cut));
-    subnode1 = triangle_subnode_with_intersection(triangle, 
-						  cut_intersection1(cut));
-    recovered = triangle_recover_side(triangle, subnode0, subnode1 );
-    if ( KNIFE_NOT_IMPROVED == recovered )
-      {
-	TRY( triangle_recover_side(triangle, subnode1, subnode0 ), 
-	     "edge recovery");
-      }
+    cut_recovered[cut_index] = FALSE;
   }
+
+  improvement = TRUE;
+  while( improvement )
+    {
+      improvement = FALSE;
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++) 
+	if ( !cut_recovered[cut_index] ) 
+	  {
+	    cut = triangle_cut(triangle,cut_index);
+	    subnode0 = triangle_subnode_with_intersection(triangle, 
+							cut_intersection0(cut));
+	    subnode1 = triangle_subnode_with_intersection(triangle, 
+						        cut_intersection1(cut));
+	    /* try both orientations */
+	    recover_status = 
+	      triangle_recover_side(triangle, subnode0, subnode1 );
+	    if ( KNIFE_NOT_IMPROVED == recover_status )
+	      recover_status = 
+		triangle_recover_side(triangle, subnode1, subnode0 );
+
+	    if ( KNIFE_SUCCESS == recover_status )
+	      {
+		cut_recovered[cut_index] = TRUE;
+		improvement = TRUE;
+	      }
+	    if ( KNIFE_NOT_IMPROVED != recover_status )
+	      TRY( recover_status, "recover_side failure" );
+
+	  }
+    }
+
+  free(cut_recovered);
 
   /* verify that all cuts are now subtriangle sides (redundant) */
   for ( cut_index = 0;
