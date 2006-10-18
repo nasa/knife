@@ -205,6 +205,18 @@ KNIFE_STATUS intersection_uvw( Intersection intersection, Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS intersection_xyz( Intersection intersection,double *xyz)
+{
+  if (NULL == intersection) return KNIFE_NULL;
+
+  xyz[0] = intersection_x( intersection );
+  xyz[1] = intersection_y( intersection );
+  xyz[2] = intersection_z( intersection );
+
+  return KNIFE_SUCCESS;
+}
+
+
 double intersection_x( Intersection intersection )
 {
   return ( (1.0-intersection->t) * intersection->segment->node0->xyz[0] +

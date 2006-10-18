@@ -46,6 +46,7 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
 double intersection_volume6( double *a, double *b, double *c, double *d);
 
 KNIFE_STATUS intersection_uvw( Intersection, Triangle, double *uvw);
+KNIFE_STATUS intersection_xyz( Intersection, double *xyz);
 
 double intersection_x( Intersection );
 double intersection_y( Intersection );
