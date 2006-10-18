@@ -1082,7 +1082,7 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
   TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
        "no first subtri found" );
 
-  loop = loop_create();
+  loop = loop_create( );
   NOT_NULL( loop, "loop creation" );
   TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
   TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
