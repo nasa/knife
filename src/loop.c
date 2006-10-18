@@ -236,7 +236,12 @@ KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
 	    }
 	}
 
-  if (best_area < 0.0) return KNIFE_NOT_FOUND;
+  if (best_area < 0.0) 
+    {
+      printf("%s: %d: best area in find convex %.16e\n",__FILE__,__LINE__,
+	     best_area);
+      return KNIFE_NOT_FOUND;
+    }
 
   *side0_index = best_side0;
   *side1_index = best_side1;
