@@ -927,29 +927,6 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS triangle_recover_side( Triangle triangle, 
-				    Subnode node0, Subnode node1 )
-{
-  KNIFE_STATUS blocking_code;
-  Subnode side0, side1;
-
-  if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
-  
-  blocking_code = triangle_first_blocking_side( triangle, node0, node1, 
-						&side0, &side1 );
-  
-  /* return successfully if the subtriangle already exsits */
-  if ( KNIFE_RECOVERED == blocking_code ) return KNIFE_SUCCESS;
-  TRY( blocking_code, "first blocking side not found" );
-
-  if ( !triangle_swap_positive( triangle, side0, side1 ) )
-    return KNIFE_NOT_IMPROVED;
-
-  TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
-
-  return triangle_recover_side(triangle, node0, node1);
-}
-
 KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
 					      Subnode node0, Subnode node1)
 {
@@ -1084,3 +1061,54 @@ void triangle_examine_subnodes(Triangle triangle)
 	}
     }
 }
+
+KNIFE_STATUS triangle_provable_recovery( Triangle triangle, 
+					 Subnode node0, Subnode node1 )
+{
+  KNIFE_STATUS blocking_code, next_status;
+  Subnode side0, side1;
+  Subtri subtri;
+  Loop loop;
+
+  if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
+  
+  blocking_code = triangle_first_blocking_side( triangle, node0, node1, 
+						&side0, &side1 );
+  
+  /* return successfully if the subtriangle already exsits */
+  if ( KNIFE_RECOVERED == blocking_code ) return KNIFE_SUCCESS;
+  TRY( blocking_code, "first blocking side not found" );
+
+  TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
+       "no first subtri found" );
+
+  loop = loop_create();
+  NOT_NULL( loop, "loop creation" );
+  TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
+  TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
+
+  next_status = KNIFE_SUCCESS;
+
+  while ( KNIFE_SUCCESS == next_status )
+    {
+      next_status = triangle_next_blocking_side( triangle, side1, side0, node1,
+						 &side0, &side1 );
+      TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
+	   "no next subtri found" );
+      TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
+      TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
+      
+      if ( KNIFE_NO_MORE != next_status) TRY( next_status, "next block" );
+    }
+
+  /* split loop between node0 and node1 */
+  TRY( loop_hard_edge( loop, node0, node1 ), "loop hard edge");
+
+  /* split loop between node0 and node1 */
+  TRY( loop_triangulate( loop, triangle ), "loop triangulate");
+
+  loop_free(loop);
+
+  return KNIFE_SUCCESS;
+}
+
