@@ -60,3 +60,28 @@ void loop_free( Loop loop )
   free( loop );
 }
 
+KNIFE_STATUS loop_add_side( Loop loop, Subnode node0, Subnode node1 )
+{
+  Subnode *new_side;
+
+  if (loop->nside >= loop->allocated)
+    {
+      loop->allocated += 10;
+      new_side = (Subnode *) realloc( loop->side, 
+				      2 * loop->allocated * sizeof(Subnode) );
+      if (NULL == new_side) {
+	printf("%s: %d: realloc failed in loop_add_side\n",
+	       __FILE__,__LINE__);
+	loop->allocated -= 10;
+	return KNIFE_MEMORY;
+      }
+      loop->side = new_side;
+    }
+
+  loop->side[0+2*loop->nside] = node0;
+  loop->side[1+2*loop->nside] = node1;
+
+  loop->nside++;
+
+  return KNIFE_SUCCESS;
+}
