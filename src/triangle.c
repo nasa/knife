@@ -966,6 +966,29 @@ KNIFE_STATUS triangle_swap_side( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_recover_side( Triangle triangle, 
+				    Subnode node0, Subnode node1 )
+{
+  KNIFE_STATUS blocking_code;
+  Subnode side0, side1;
+
+  if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
+  
+  blocking_code = triangle_first_blocking_side( triangle, node0, node1, 
+						&side0, &side1 );
+  
+  /* return successfully if the subtriangle already exsits */
+  if ( KNIFE_RECOVERED == blocking_code ) return KNIFE_SUCCESS;
+  TRY( blocking_code, "first blocking side not found" );
+
+  if ( !triangle_swap_positive( triangle, side0, side1 ) )
+    return KNIFE_NOT_IMPROVED;
+
+  TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
+
+  return triangle_recover_side(triangle, node0, node1);
+}
+
 KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
 					      Subnode node0, Subnode node1)
 {

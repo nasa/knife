@@ -38,6 +38,7 @@ struct LoopStruct {
 Loop loop_create( void );
 void loop_free( Loop );
 
+KNIFE_STATUS loop_add_side( Loop, Subnode, Subnode );
 KNIFE_STATUS loop_add_subtri( Loop, Subtri );
 KNIFE_STATUS loop_hard_edge( Loop, Subnode node0, Subnode node1 );
 KNIFE_STATUS loop_triangulate( Loop, Triangle );
