@@ -838,12 +838,12 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
     }
 
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++)
     {
       fprintf(f, "%6d %6d %6d\n", 
-	      1+2*subtri_index, 2+2*subtri_index, 2+2*subtri_index);
+	      1+2*cut_index, 2+2*cut_index, 2+2*cut_index);
     }
 
   fclose(f);
