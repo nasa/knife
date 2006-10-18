@@ -233,7 +233,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						        cut_intersection1(cut));
 	    /* try both orientations */
 	    recover_status = 
-	      triangle_recover_side(triangle, subnode0, subnode1 );
+	      triangle_provable_recovery(triangle, subnode0, subnode1 );
 	    if ( KNIFE_NOT_IMPROVED == recover_status )
 	      recover_status = 
 		triangle_recover_side(triangle, subnode1, subnode0 );
