@@ -13,6 +13,8 @@
 
 #include "loop.h"
 
+static int loop_tecplot_frame = 0;
+
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -218,7 +220,13 @@ KNIFE_STATUS loop_tecplot( Loop loop)
   double xyz[3];
   double uvw[3];
 
-  f = fopen("loop.t", "w");
+  char filename[1025];
+
+  sprintf(filename, "loop%04d.t",loop_tecplot_frame );
+  printf("producing %s\n",filename);
+  loop_tecplot_frame++;
+
+  f = fopen(filename, "w");
 
   fprintf(f,"title=loop_geometry\nvariables=v,w,x,y,z\n");
   fprintf(f, "zone t=loop, i=%d, j=%d, f=fepoint, et=triangle\n",
