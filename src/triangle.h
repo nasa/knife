@@ -90,6 +90,8 @@ void triangle_echo( Triangle );
 
 #define triangle_add_subtri( triangle, new_subtri )		\
   array_add( (triangle)->subtri, (ArrayItem)(new_subtri) )
+#define triangle_remove_subtri( triangle, old_subtri )		\
+  array_remove( (triangle)->subtri, (ArrayItem)(old_subtri) )
 #define triangle_nsubtri( triangle )		\
   array_size( (triangle)->subtri )
 #define triangle_subtri( triangle, subtri_index )		\
