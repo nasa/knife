@@ -36,6 +36,8 @@ Subnode subnode_create( double u, double v, double w,
 			Node, Intersection );
 void subnode_free( Subnode );
 
+KNIFE_STATUS subnode_uvw( Subnode, double *uvw );
+
 #define subnode_u( subnode ) ((subnode)->uvw[0]) 
 #define subnode_v( subnode ) ((subnode)->uvw[1]) 
 #define subnode_w( subnode ) ((subnode)->uvw[2]) 

@@ -44,6 +44,17 @@ void subnode_free( Subnode subnode )
   free( subnode );
 }
 
+KNIFE_STATUS subnode_uvw( Subnode subnode, double *uvw )
+{
+  if ( NULL == subnode ) return KNIFE_NULL;
+  
+  uvw[0] = subnode->uvw[0];
+  uvw[1] = subnode->uvw[1];
+  uvw[2] = subnode->uvw[2];
+  
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS subnode_xyz( Subnode subnode, double *xyz )
 {
   if ( NULL == subnode ) return KNIFE_NULL;
