@@ -698,6 +698,13 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   int subtri_index;
   Subtri subtri;
   int node0, node1, node2;
+
+  int cut_index;
+  Cut cut;
+  Intersection intersection;
+
+  double uvw[3];
+
   char filename[1025];
   FILE *f;
 
@@ -709,7 +716,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   f = fopen(filename, "w");
 
   fprintf(f,"title=triangle_geometry\nvariables=v,w,x,y,z\n");
-  fprintf(f, "zone t=poly, i=%d, j=%d, f=fepoint, et=triangle\n",
+  fprintf(f, "zone t=subtri, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  triangle_nsubnode(triangle), triangle_nsubtri(triangle) );
 
   for ( subnode_index = 0;
@@ -732,6 +739,37 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       TRY( triangle_subnode_index( triangle, subtri->n1, &node1), "tec sn1");
       TRY( triangle_subnode_index( triangle, subtri->n2, &node2), "tec sn2");
       fprintf(f, "%6d %6d %6d\n", 1+node0, 1+node1, 1+node2);
+    }
+
+  fprintf(f, "zone t=cut, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  2*triangle_ncut(triangle), triangle_ncut(triangle) );
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++)
+    {
+      cut = triangle_cut(triangle, cut_index);
+      NOT_NULL( cut, "tecplot cut NULL" );
+      intersection = cut_intersection0(cut);
+      NOT_NULL( intersection, "tecplot intersection0 NULL" );
+      TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+      TRY( intersection_xyz( intersection, xyz ), "int xyz" );
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+      intersection = cut_intersection1(cut);
+      NOT_NULL( intersection, "tecplot intersection1 NULL" );
+      TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+      TRY( intersection_xyz( intersection, xyz ), "int xyz" );
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+    }
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      fprintf(f, "%6d %6d %6d\n", 
+	      1+2*subtri_index, 2+2*subtri_index, 2+2*subtri_index);
     }
 
   fclose(f);
