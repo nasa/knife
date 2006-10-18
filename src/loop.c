@@ -155,3 +155,12 @@ KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
   
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS loop_hard_edge( Loop loop, Subnode node0, Subnode node1 )
+{
+
+  TRY( loop_add_side( loop, node0, node1 ), "add side");
+  TRY( loop_add_side( loop, node1, node0 ), "add side");  
+
+  return KNIFE_SUCCESS;
+}
