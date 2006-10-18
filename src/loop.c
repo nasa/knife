@@ -114,19 +114,44 @@ KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
   Subnode node0, node1;
   KNIFE_STATUS remove_status;
 
+  node0 = subtri_n1(subtri);
+  node1 = subtri_n2(subtri);
+
+  remove_status = loop_remove_side( loop, node1, node0 );
+  if (KNIFE_NOT_FOUND == remove_status)
+    {
+      TRY( loop_add_side( loop, node0, node1 ), "add side");
+    }
+  else
+    {
+      TRY( remove_status, "remove side");
+    }
+  
+  node0 = subtri_n2(subtri);
+  node1 = subtri_n0(subtri);
+
+  remove_status = loop_remove_side( loop, node1, node0 );
+  if (KNIFE_NOT_FOUND == remove_status)
+    {
+      TRY( loop_add_side( loop, node0, node1 ), "add side");
+    }
+  else
+    {
+      TRY( remove_status, "remove side");
+    }
+  
   node0 = subtri_n0(subtri);
   node1 = subtri_n1(subtri);
 
   remove_status = loop_remove_side( loop, node1, node0 );
   if (KNIFE_NOT_FOUND == remove_status)
     {
-      TRY( loop_add_side( loop, node0, node1 ), "add 01");
+      TRY( loop_add_side( loop, node0, node1 ), "add side");
     }
   else
     {
-      TRY( remove_status, "add 01");
+      TRY( remove_status, "remove side");
     }
-
   
   return KNIFE_SUCCESS;
 }
