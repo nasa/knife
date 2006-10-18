@@ -685,6 +685,44 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_next_blocking_side( Triangle triangle, 
+					  Subnode node0, Subnode node1,
+					  Subnode target,
+					  Subnode *s0, Subnode *s1 )
+{
+  Subnode node2;
+  Subnode n0, n1;
+  Subtri subtri;
+  double area0, area1;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  TRY( triangle_subtri_with_subnodes( triangle, node0, node1, &subtri ),"nst"); 
+  
+  TRY( subtri_orient( subtri, node0, &n0, &n1, &node2 ),
+       "orient in next block" );
+
+  if ( target == node2 ) return KNIFE_NO_MAS;
+
+  area0 = subnode_area( node2, target, node0 );
+  area1 = subnode_area( node1, target, node2 );
+
+  if ( area0 <= 0.0 && area1 <= 0.0 ) return KNIFE_NOT_FOUND;
+
+  if ( area1 > area0 )
+    {
+      *s0 = node1;
+      *s1 = node2;
+    }
+  else
+    {
+      *s0 = node2;
+      *s1 = node0;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS triangle_eps( Triangle triangle)
 {
   int subtri_index;
@@ -1092,14 +1130,24 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
 
   while ( KNIFE_SUCCESS == next_status )
     {
-      next_status = triangle_next_blocking_side( triangle, side1, side0, node1,
+      next_status = triangle_next_blocking_side( triangle, 
+						 side1, side0, 
+						 node1,
 						 &side0, &side1 );
-      TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
-	   "no next subtri found" );
+      if ( KNIFE_NO_MAS == next_status) 
+	{
+	  TRY( triangle_subtri_with_subnodes( triangle, side1, side0, &subtri ),
+	       "no next subtri found" );
+	}
+      else
+	{
+	  TRY( next_status, "next block" );
+	  TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
+	       "no next subtri found" );
+	}
+	  
       TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
       TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
-      
-      if ( KNIFE_NO_MAS != next_status) TRY( next_status, "next block" );
     }
 
   /* split loop between node0 and node1 */

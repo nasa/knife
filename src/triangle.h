@@ -140,6 +140,10 @@ KNIFE_STATUS triangle_subtri_with_intersections( Triangle,
 KNIFE_STATUS triangle_first_blocking_side( Triangle, 
 					   Subnode n0, Subnode n1,
 					   Subnode *s0, Subnode *s1 );
+KNIFE_STATUS triangle_next_blocking_side( Triangle, 
+					  Subnode n0, Subnode n1, 
+					  Subnode target,
+					  Subnode *s0, Subnode *s1 );
 
 KNIFE_STATUS triangle_eps( Triangle );
 KNIFE_STATUS triangle_tecplot( Triangle );
