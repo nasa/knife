@@ -21,7 +21,8 @@ libknife_a_SOURCES = \
 	cut.h cut.c \
 	near.h near.c \
 	subnode.h subnode.c \
-	subtri.h subtri.c
+	subtri.h subtri.c \
+	loop.h loop.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -40,7 +41,8 @@ libknife_a_include_HEADERS = \
 	cut.h \
 	near.h \
 	subnode.h \
-	subtri.h
+	subtri.h \
+	loop.h
 
 bin_PROGRAMS = knife
 

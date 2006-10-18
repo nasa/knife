@@ -13,6 +13,7 @@
 
 #include <math.h>
 #include "triangle.h"
+#include "loop.h"
 
 static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
