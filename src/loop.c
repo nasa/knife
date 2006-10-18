@@ -139,11 +139,43 @@ KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS loop_hard_edge( Loop loop, Subnode node0, Subnode node1 )
+KNIFE_STATUS loop_subnode_after( Loop loop, Subnode node0, Subnode *node1)
 {
+  int side_index;
 
-  TRY( loop_add_side( loop, node0, node1 ), "add side");
-  TRY( loop_add_side( loop, node1, node0 ), "add side");  
+  for ( side_index = 0 ; side_index < loop_nside(loop) ; side_index++ )
+    if ( loop->side[0+2*side_index] == node0 )
+      {
+	*node1 = loop->side[1+2*side_index];
+	return KNIFE_SUCCESS;
+      }
+
+  return KNIFE_NOT_FOUND;
+}
+
+KNIFE_STATUS loop_split( Loop old_loop, Subnode node0, Subnode node1, 
+			 Loop *new_loop )
+{
+  Subnode move0, move1;
+  Loop loop;
+
+  loop = old_loop; /* for tecplot on TRY */
+
+  *new_loop = loop_create(  );
+
+  NOT_NULL( *new_loop, "new loop creation in split" );
+
+  move0 = node0;
+  while (move0 != node1)
+    {
+      TRY( loop_subnode_after( old_loop, move0, &move1 ), "node after, split");
+      TRY( loop_remove_side(   old_loop, move0,  move1 ), "remove move" );
+      TRY( loop_add_side(     *new_loop, move0,  move1 ), "add move" );
+      move0 = move1;
+    }
+
+  TRY( loop_add_side(  old_loop, node0, node1 ), "old_loop add hard side" );
+  TRY( loop_add_side( *new_loop, node1, node0 ), "new_loop add hard side" );
 
   return KNIFE_SUCCESS;
 }

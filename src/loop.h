@@ -46,7 +46,9 @@ KNIFE_STATUS loop_add_to_front( Loop loop, Subnode, Subnode );
 
 KNIFE_STATUS loop_add_subtri( Loop, Subtri );
 
-KNIFE_STATUS loop_hard_edge( Loop, Subnode node0, Subnode node1 );
+KNIFE_STATUS loop_subnode_after( Loop, Subnode node0, Subnode *node1);
+
+KNIFE_STATUS loop_split( Loop, Subnode node0, Subnode node1, Loop *new_loop );
 
 KNIFE_STATUS loop_triangulate( Loop, Triangle );
 

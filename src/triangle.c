@@ -1130,7 +1130,7 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
   KNIFE_STATUS blocking_code, next_status;
   Subnode side0, side1;
   Subtri subtri;
-  Loop loop;
+  Loop loop0, loop1;
 
   if ( NULL == node0 || NULL == node1 ) return KNIFE_NULL;
   
@@ -1144,9 +1144,9 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
   TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
        "no first subtri found" );
 
-  loop = loop_create( );
-  NOT_NULL( loop, "loop creation" );
-  TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
+  loop0 = loop_create( );
+  NOT_NULL( loop0, "loop creation" );
+  TRY( loop_add_subtri( loop0, subtri ), "subtri not added to loop" );
   TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
 
   next_status = KNIFE_SUCCESS;
@@ -1169,17 +1169,18 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
 	       "no next subtri found" );
 	}
 	  
-      TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
+      TRY( loop_add_subtri( loop0, subtri ), "subtri not added to loop" );
       TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
     }
 
   /* split loop between node0 and node1 */
-  TRY( loop_hard_edge( loop, node0, node1 ), "loop hard edge");
+  TRY( loop_split( loop0, node0, node1, &loop1 ), "loop hard edge");
 
-  /* split loop between node0 and node1 */
-  TRY( loop_triangulate( loop, triangle ), "loop triangulate");
+  TRY( loop_triangulate( loop0, triangle ), "loop0 triangulate");
+  TRY( loop_triangulate( loop1, triangle ), "loop1 triangulate");
 
-  loop_free(loop);
+  loop_free(loop0);
+  loop_free(loop1);
 
   return KNIFE_SUCCESS;
 }
