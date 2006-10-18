@@ -43,7 +43,7 @@ Loop loop_create( void )
   loop->nside = 0;
   loop->allocated = 10;
 
-  loop->side = (Subnode *) malloc( 2 * array->allocated * sizeof(Subnode) );
+  loop->side = (Subnode *) malloc( 2 * loop->allocated * sizeof(Subnode) );
   if (NULL == loop->side) {
     printf("%s: %d: malloc failed in loop_create side\n",
 	   __FILE__,__LINE__);
