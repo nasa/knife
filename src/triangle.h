@@ -153,6 +153,9 @@ double triangle_min_subtri_area( Triangle );
 
 void triangle_examine_subnodes(Triangle triangle);
 
+KNIFE_STATUS triangle_provable_recovery( Triangle, 
+					 Subnode node0, Subnode node1 );
+
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */
