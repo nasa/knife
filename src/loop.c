@@ -85,3 +85,48 @@ KNIFE_STATUS loop_add_side( Loop loop, Subnode node0, Subnode node1 )
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS loop_remove_side( Loop loop, Subnode node0, Subnode node1 )
+{
+  int existing_side;
+  int sweep;
+  KnifeBool found;
+
+  found = FALSE;
+  for ( existing_side = 0 ; existing_side < loop_nside(loop) ; existing_side++ )
+    if ( node0 == loop->side[0+2*existing_side] &&
+	 node1 == loop->side[1+2*existing_side] ) 
+      {
+	found = TRUE;
+	for ( sweep = existing_side+1 ; sweep < loop_nside(loop) ; sweep++ )
+	  {
+	    loop->side[0+2*(sweep-1)] = loop->side[0+2*sweep];
+	    loop->side[1+2*(sweep-1)] = loop->side[1+2*sweep];
+	    loop->nside--;
+	  }
+      }
+  
+  return ( found ? KNIFE_SUCCESS : KNIFE_NOT_FOUND );
+}
+
+KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
+{
+  Subnode node0, node1;
+  KNIFE_STATUS remove_status;
+
+  node0 = subtri_n0(subtri);
+  node1 = subtri_n1(subtri);
+
+  remove_status = loop_remove_side( loop, node1, node0 );
+  if (KNIFE_NOT_FOUND == remove_status)
+    {
+      TRY( loop_add_side( loop, node0, node1 ), "add 01");
+    }
+  else
+    {
+      TRY( remove_status, "add 01");
+    }
+
+  
+  return KNIFE_SUCCESS;
+}
