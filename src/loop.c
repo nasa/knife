@@ -109,49 +109,29 @@ KNIFE_STATUS loop_remove_side( Loop loop, Subnode node0, Subnode node1 )
   return ( found ? KNIFE_SUCCESS : KNIFE_NOT_FOUND );
 }
 
+KNIFE_STATUS loop_add_to_front( Loop loop, Subnode node0, Subnode node1 )
+{
+  KNIFE_STATUS remove_status;
+  
+  remove_status = loop_remove_side( loop, node1, node0 );
+  if (KNIFE_NOT_FOUND == remove_status)
+    {
+      TRY( loop_add_side( loop, node0, node1 ), "add side");
+    }
+  else
+    {
+      TRY( remove_status, "remove side");
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
 {
-  Subnode node0, node1;
-  KNIFE_STATUS remove_status;
 
-  node0 = subtri_n1(subtri);
-  node1 = subtri_n2(subtri);
-
-  remove_status = loop_remove_side( loop, node1, node0 );
-  if (KNIFE_NOT_FOUND == remove_status)
-    {
-      TRY( loop_add_side( loop, node0, node1 ), "add side");
-    }
-  else
-    {
-      TRY( remove_status, "remove side");
-    }
-  
-  node0 = subtri_n2(subtri);
-  node1 = subtri_n0(subtri);
-
-  remove_status = loop_remove_side( loop, node1, node0 );
-  if (KNIFE_NOT_FOUND == remove_status)
-    {
-      TRY( loop_add_side( loop, node0, node1 ), "add side");
-    }
-  else
-    {
-      TRY( remove_status, "remove side");
-    }
-  
-  node0 = subtri_n0(subtri);
-  node1 = subtri_n1(subtri);
-
-  remove_status = loop_remove_side( loop, node1, node0 );
-  if (KNIFE_NOT_FOUND == remove_status)
-    {
-      TRY( loop_add_side( loop, node0, node1 ), "add side");
-    }
-  else
-    {
-      TRY( remove_status, "remove side");
-    }
+  TRY( loop_add_to_front( loop, subtri_n1(subtri), subtri_n2(subtri) ), "fnt0");
+  TRY( loop_add_to_front( loop, subtri_n2(subtri), subtri_n0(subtri) ), "fnt1");
+  TRY( loop_add_to_front( loop, subtri_n0(subtri), subtri_n1(subtri) ), "fnt2");
   
   return KNIFE_SUCCESS;
 }
@@ -161,6 +141,34 @@ KNIFE_STATUS loop_hard_edge( Loop loop, Subnode node0, Subnode node1 )
 
   TRY( loop_add_side( loop, node0, node1 ), "add side");
   TRY( loop_add_side( loop, node1, node0 ), "add side");  
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
+{
+  int side0, side1;
+  Subnode node0, node1, node2;
+  Subtri subtri;
+
+  while (0 < loop_nside(loop))
+    { 
+      TRY( loop_most_convex( loop, &side0, &side1 ), "most convex");
+      
+      node0 = loop->side[0+2*side0];
+      node1 = loop->side[1+2*side0];
+      if ( node1 != loop->side[0+2*side1] ) return KNIFE_FAILURE;
+      node2 = loop->side[1+2*side1];
+      
+      /* add the subtri sides in reverse */
+      TRY( loop_add_to_front( loop, node2, node1 ), "triangulate front 0");
+      TRY( loop_add_to_front( loop, node0, node2 ), "triangulate front 1");
+      TRY( loop_add_to_front( loop, node1, node0 ), "triangulate front 2");
+
+      subtri = subtri_create( node0, node1, node2 );
+      NOT_NULL( subtri, "subtri creation failed" );
+      TRY( triangle_add_subtri(triangle,subtri), "add new subtri");
+    }
 
   return KNIFE_SUCCESS;
 }

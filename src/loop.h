@@ -42,6 +42,7 @@ void loop_free( Loop );
 
 KNIFE_STATUS loop_add_side( Loop, Subnode, Subnode );
 KNIFE_STATUS loop_remove_side( Loop, Subnode, Subnode );
+KNIFE_STATUS loop_add_to_front( Loop loop, Subnode, Subnode );
 
 KNIFE_STATUS loop_add_subtri( Loop, Subtri );
 
