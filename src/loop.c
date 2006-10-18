@@ -18,6 +18,7 @@
     int code;						      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
+      loop_tecplot(loop);                                     \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       return code;					      \
     }							      \
@@ -205,6 +206,50 @@ KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
 
   *side0_index = best_side0;
   *side1_index = best_side1;
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS loop_tecplot( Loop loop)
+{
+  FILE *f;
+  int side_index;
+  Subnode subnode;
+  double xyz[3];
+  double uvw[3];
+
+  f = fopen("loop.t", "w");
+
+  fprintf(f,"title=loop_geometry\nvariables=v,w,x,y,z\n");
+  fprintf(f, "zone t=loop, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  2*loop_nside(loop), loop_nside(loop) );
+
+  for ( side_index = 0;
+	side_index < loop_nside(loop); 
+	side_index++)
+    {
+      subnode = loop->side[0+2*side_index];
+      subnode_uvw(subnode,uvw);
+      subnode_xyz(subnode,xyz);
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+
+      subnode = loop->side[1+2*side_index];
+      subnode_uvw(subnode,uvw);
+      subnode_xyz(subnode,xyz);
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+    }
+
+  for ( side_index = 0;
+	side_index < loop_nside(loop); 
+	side_index++)
+    {
+      fprintf(f, "%6d %6d %6d\n", 
+	      1+2*side_index, 2+2*side_index, 2+2*side_index);
+    }
+
+  fclose(f);
 
   return KNIFE_SUCCESS;
 }
