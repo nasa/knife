@@ -1098,7 +1098,7 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
       TRY( loop_add_subtri( loop, subtri ), "subtri not added to loop" );
       TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
       
-      if ( KNIFE_NO_MORE != next_status) TRY( next_status, "next block" );
+      if ( KNIFE_NO_MAS != next_status) TRY( next_status, "next block" );
     }
 
   /* split loop between node0 and node1 */
