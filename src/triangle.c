@@ -191,6 +191,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   Cut cut;
   Subnode subnode0, subnode1;
   Subtri subtri;
+  KNIFE_STATUS recovered;
 
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
@@ -213,7 +214,12 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						  cut_intersection0(cut));
     subnode1 = triangle_subnode_with_intersection(triangle, 
 						  cut_intersection1(cut));
-    TRY( triangle_recover_side(triangle, subnode0, subnode1 ), "edge recovery");
+    recovered = triangle_recover_side(triangle, subnode0, subnode1 );
+    if ( KNIFE_NOT_IMPROVED == recovered )
+      {
+	TRY( triangle_recover_side(triangle, subnode1, subnode0 ), 
+	     "edge recovery");
+      }
   }
 
   /* verify that all cuts are now subtriangle sides (redundant) */
@@ -809,8 +815,8 @@ KnifeBool triangle_swap_positive( Triangle triangle,
   TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
   node3 = n2;
 
-  return ( 0.0 <= subnode_area( node1, node2, node3 ) &&
-	   0.0 <= subnode_area( node0, node3, node2 ) );
+  return ( 1.0e-20 <= subnode_area( node1, node2, node3 ) &&
+	   1.0e-20 <= subnode_area( node0, node3, node2 ) );
  
   return KNIFE_SUCCESS;
 }
@@ -908,10 +914,7 @@ KNIFE_STATUS triangle_recover_side( Triangle triangle,
   TRY( blocking_code, "first blocking side not found" );
 
   if ( !triangle_swap_positive( triangle, side0, side1 ) )
-    {
-      printf("%s: %d: swap will fail\n",__FILE__,__LINE__);
-      triangle_tecplot(triangle);
-    }
+    return KNIFE_NOT_IMPROVED;
 
   TRY( triangle_swap_side( triangle, side0, side1 ), "swap in recover" ); 
 
