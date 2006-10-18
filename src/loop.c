@@ -153,7 +153,7 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
 
   while (0 < loop_nside(loop))
     { 
-      TRY( loop_most_convex( loop, &side0, &side1 ), "most convex");
+      TRY( loop_most_convex( loop, &side0, &side1 ), "most convex failed");
       
       node0 = loop->side[0+2*side0];
       node1 = loop->side[1+2*side0];
