@@ -234,7 +234,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						        cut_intersection1(cut));
 	    /* try both orientations */
 	    recover_status = 
-	      triangle_provable_recovery(triangle, subnode0, subnode1 );
+	      triangle_recover_side(triangle, subnode0, subnode1 );
 	    if ( KNIFE_NOT_IMPROVED == recover_status )
 	      recover_status = 
 		triangle_recover_side(triangle, subnode1, subnode0 );
@@ -249,6 +249,21 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 
 	  }
     }
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) 
+    if ( !cut_recovered[cut_index] ) 
+      {
+	cut = triangle_cut(triangle,cut_index);
+	subnode0 = triangle_subnode_with_intersection(triangle, 
+						      cut_intersection0(cut));
+	subnode1 = triangle_subnode_with_intersection(triangle, 
+						      cut_intersection1(cut));
+	TRY( triangle_provable_recovery(triangle, subnode0, subnode1 ),
+	     "provable recovery" );
+      }
+
 
   free(cut_recovered);
 
