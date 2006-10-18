@@ -102,6 +102,27 @@ KNIFE_STATUS array_add( Array array, ArrayItem item )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS array_remove( Array array, ArrayItem item )
+{
+  int indx;
+  int sweep;
+  KnifeBool found;
+
+  if ( NULL == item ) return KNIFE_NULL;
+
+  found = FALSE;
+  for ( indx = 0 ; indx < array_size(array) ; indx++ )
+    if ( item == array_item( array,indx ) ) 
+      {
+	found = TRUE;
+	for ( sweep = indx+1 ; sweep < array_size(array) ; sweep++ )
+	  array->data[sweep-1] = array->data[sweep];
+	array->actual--;
+      }
+  
+  return ( found ? KNIFE_SUCCESS : KNIFE_NOT_FOUND );
+}
+
 KnifeBool array_contains_int( Array array, int target )
 {
   int indx;
