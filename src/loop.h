@@ -50,6 +50,8 @@ KNIFE_STATUS loop_hard_edge( Loop, Subnode node0, Subnode node1 );
 
 KNIFE_STATUS loop_triangulate( Loop, Triangle );
 
+KNIFE_STATUS loop_most_convex( Loop, int *side0_index, int *side1_index );
+
 END_C_DECLORATION
 
 #endif /* LOOP_H */

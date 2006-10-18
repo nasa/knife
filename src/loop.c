@@ -172,3 +172,9 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
+{
+  
+  return KNIFE_SUCCESS;
+}
