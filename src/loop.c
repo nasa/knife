@@ -105,8 +105,8 @@ KNIFE_STATUS loop_remove_side( Loop loop, Subnode node0, Subnode node1 )
 	  {
 	    loop->side[0+2*(sweep-1)] = loop->side[0+2*sweep];
 	    loop->side[1+2*(sweep-1)] = loop->side[1+2*sweep];
-	    loop->nside--;
 	  }
+	loop->nside--;
       }
   
   return ( found ? KNIFE_SUCCESS : KNIFE_NOT_FOUND );
