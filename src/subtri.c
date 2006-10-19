@@ -148,6 +148,7 @@ KnifeBool subtri_above( Subtri subtri, Subtri other )
 {
   Subnode subnode;
   double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
+  double volume;
 
   subnode = subtri_n0(subtri);
 
@@ -166,7 +167,15 @@ KnifeBool subtri_above( Subtri subtri, Subtri other )
   subnode_xyz(subtri_n2(other),xyz2);
   subnode_xyz(subnode,xyz3);
 
-  return ( 0.0 < intersection_volume6(xyz0,xyz1,xyz2,xyz3) );
+  volume = intersection_volume6(xyz0,xyz1,xyz2,xyz3);
+
+  if ( ABS(volume) < 1.0e-12 )
+    {
+      printf("%s: %d: above %.15e \n",__FILE__,__LINE__,volume);
+      return FALSE;
+    }
+
+  return ( 0.0 < volume );
 }
 
 KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
