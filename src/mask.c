@@ -232,6 +232,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] != mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 01\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 	      }
@@ -241,6 +242,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 01\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 		
@@ -263,6 +265,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] != mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 12\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 	      }
@@ -272,6 +275,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 12\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 		
@@ -293,6 +297,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] != mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 20\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 	      }
@@ -302,6 +307,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 20\n",__FILE__,__LINE__);
+		    triangle_tecplot(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 		
