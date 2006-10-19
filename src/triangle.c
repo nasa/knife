@@ -381,9 +381,9 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 	}
     }
 
-  if ( -1.0e-12 > best_min_bary ) 
+  if ( -1.0e-8 > best_min_bary ) 
     {
-      printf("subnode u %f v %f w %f\n",
+      printf("subnode u %e v %e w %e\n",
 	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2]);
       triangle_tecplot(triangle);
       printf("%s: %d: triangle_enclosing_subtri %30.20e\n",
