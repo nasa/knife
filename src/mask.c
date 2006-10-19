@@ -238,7 +238,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 01\n",__FILE__,__LINE__);
 		    return KNIFE_INCONSISTENT;
@@ -269,7 +269,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 12\n",__FILE__,__LINE__);
 		    return KNIFE_INCONSISTENT;
@@ -299,7 +299,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		if (mask->active[subtri_index] && mask->active[neighbor_index])
 		  {
 		    printf("%s: %d: consistent 20\n",__FILE__,__LINE__);
 		    return KNIFE_INCONSISTENT;
