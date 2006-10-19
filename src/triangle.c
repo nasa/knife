@@ -517,6 +517,7 @@ KNIFE_STATUS triangle_subtri_index( Triangle triangle, Subtri subtri,
   int canidate;
 
   if( NULL == triangle ) return KNIFE_NULL;
+  if( NULL == subtri ) return KNIFE_NULL;
 
   for ( canidate = 0;
 	canidate < triangle_nsubtri(triangle); 
