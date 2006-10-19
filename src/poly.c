@@ -613,6 +613,7 @@ KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
   int subtri_index;
 
   if ( POLY_EXTERIOR == poly_topo(poly) ) return KNIFE_SUCCESS;
+  if ( POLY_INTERIOR == poly_topo(poly) ) return KNIFE_SUCCESS;
 
   nsubtri = 0;
   for ( mask_index = 0;
