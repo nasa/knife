@@ -68,6 +68,7 @@ typedef int KNIFE_STATUS;
 #define KNIFE_NOT_IMPROVED (15)
 #define KNIFE_IMPROPER     (16)
 #define KNIFE_NO_MAS       (17)
+#define KNIFE_INCONSISTENT (18)
 
 END_C_DECLORATION
 

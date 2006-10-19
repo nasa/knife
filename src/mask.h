@@ -47,6 +47,7 @@ KNIFE_STATUS mask_activate_subtri_index( Mask, int subtri_index );
   ( NULL == (mask)->active ? TRUE : (mask)->active[(subtri_index)] )
 
 KNIFE_STATUS mask_paint( Mask );
+KNIFE_STATUS mask_verify_paint( Mask );
 
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
 KNIFE_STATUS mask_find_subtri_with( Mask, FILE * );

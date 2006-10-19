@@ -199,6 +199,119 @@ KNIFE_STATUS mask_paint( Mask mask )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS mask_verify_paint( Mask mask )
+{
+  Triangle triangle;
+  int subtri_index, neighbor_index;
+  Subtri subtri, neighbor;
+  Subnode subnode0, subnode1;
+  Cut cut;
+
+  KNIFE_STATUS cut_status;
+
+  triangle = mask_triangle(mask);
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle,subtri_index); 
+      subnode0 = subtri_n0(subtri);
+      subnode1 = subtri_n1(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  TRY( triangle_subtri_index( triangle, neighbor,
+				      &neighbor_index ), "neighbor");
+	  cut_status = triangle_cut_with_subnodes( triangle, 
+						   subnode1, subnode0,
+						   &cut );
+	    if ( KNIFE_NOT_FOUND == cut_status )
+	      {
+		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: inconsistent 01\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+	      }
+	    else
+	      {
+		TRY( cut_status, "cut stat");
+		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: consistent 01\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+		
+	      }
+		
+	}
+      subnode0 = subtri_n1(subtri);
+      subnode1 = subtri_n2(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  TRY( triangle_subtri_index( triangle, neighbor,
+				      &neighbor_index ), "neighbor");
+	  cut_status = triangle_cut_with_subnodes( triangle, 
+						   subnode1, subnode0,
+						   &cut );
+	    if ( KNIFE_NOT_FOUND == cut_status )
+	      {
+		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: inconsistent 12\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+	      }
+	    else
+	      {
+		TRY( cut_status, "cut stat");
+		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: consistent 12\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+		
+	      }
+	}
+      subnode0 = subtri_n2(subtri);
+      subnode1 = subtri_n0(subtri);
+      if ( KNIFE_SUCCESS == triangle_subtri_with_subnodes( triangle, 
+							   subnode1, subnode0,
+							   &neighbor ) )
+	{
+	  TRY( triangle_subtri_index( triangle, neighbor,
+				      &neighbor_index ), "neighbor");
+	  cut_status = triangle_cut_with_subnodes( triangle, 
+						   subnode1, subnode0,
+						   &cut );
+	    if ( KNIFE_NOT_FOUND == cut_status )
+	      {
+		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: inconsistent 20\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+	      }
+	    else
+	      {
+		TRY( cut_status, "cut stat");
+		if (mask->active[subtri_index] == mask->active[neighbor_index])
+		  {
+		    printf("%s: %d: consistent 20\n",__FILE__,__LINE__);
+		    return KNIFE_INCONSISTENT;
+		  }
+		
+	      }
+	}
+    } 
+ 
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 {
   Triangle triangle;

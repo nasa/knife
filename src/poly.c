@@ -304,6 +304,23 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
+  return poly_verify_painting( poly );
+}
+
+KNIFE_STATUS poly_verify_painting( Poly poly )
+{
+  int mask_index;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    TRY( mask_verify_paint( poly_mask(poly, mask_index) ), "mask verify");
+
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    TRY( mask_verify_paint( poly_surf(poly, mask_index) ), "surf verify");
+
   return KNIFE_SUCCESS;
 }
 
