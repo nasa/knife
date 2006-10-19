@@ -307,6 +307,15 @@ KNIFE_STATUS poly_paint( Poly poly )
 	mask_index++)
     TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
 
+  verify_code = poly_verify_painting( poly );
+
+  if ( KNIFE_SUCCESS != verify_code )
+    {
+      printf("verify failed after mask paint\n");
+      poly_tecplot( poly );
+      return verify_code;
+    }
+
   another_coat_of_paint = TRUE;
   while (another_coat_of_paint)
     {
@@ -351,7 +360,11 @@ KNIFE_STATUS poly_paint( Poly poly )
   
   verify_code = poly_verify_painting( poly );
 
-  if ( verify_code) poly_tecplot( poly );
+  if ( KNIFE_SUCCESS != verify_code )
+    {
+      printf("verify failed after uncut neighbor search\n");
+      poly_tecplot( poly );
+    }
 
   return verify_code;
 }
