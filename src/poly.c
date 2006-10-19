@@ -14,6 +14,9 @@
 #include "poly.h"
 #include "cut.h"
 
+static int poly_tecplot_frame = 0;
+
+
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -252,6 +255,8 @@ KNIFE_STATUS poly_paint( Poly poly )
   KnifeBool another_coat_of_paint;
   int segment_index;
 
+  KNIFE_STATUS verify_code;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
@@ -304,7 +309,11 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
-  return poly_verify_painting( poly );
+  verify_code = poly_verify_painting( poly );
+
+  if ( verify_code) poly_tecplot( poly );
+
+  return verify_code;
 }
 
 KNIFE_STATUS poly_verify_painting( Poly poly )
@@ -622,15 +631,33 @@ KNIFE_STATUS poly_surf_geometry( Poly poly, FILE *f )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_tecplot( Poly poly )
+{
+  char filename[1025];
+  FILE *f;
+  sprintf(filename, "poly%04d.t",poly_tecplot_frame );
+  printf("producing %s\n",filename);
+
+  poly_tecplot_frame++;
+
+  f = fopen(filename, "w");
+  
+  fprintf(f,"title=poly_geometry\nvariables=x,y,z\n");
+
+  poly_tecplot_zone( poly, f );
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+
+}
+
 KNIFE_STATUS poly_tecplot_zone( Poly poly, FILE *f )
 {
   Mask mask;
   int mask_index;
   int nsubtri;
   int subtri_index;
-
-  if ( POLY_EXTERIOR == poly_topo(poly) ) return KNIFE_SUCCESS;
-  if ( POLY_INTERIOR == poly_topo(poly) ) return KNIFE_SUCCESS;
 
   nsubtri = 0;
   for ( mask_index = 0;
