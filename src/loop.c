@@ -159,7 +159,7 @@ KNIFE_STATUS loop_split( Loop old_loop, Subnode node0, Subnode node1,
   Subnode move0, move1;
   Loop loop;
 
-  loop = old_loop; /* for tecplot on TRY */
+  loop = old_loop; /* for tecplot in TRY( ) macro */
 
   *new_loop = loop_create(  );
 
@@ -188,6 +188,9 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
 
   while (0 < loop_nside(loop))
     { 
+      triangle_tecplot(triangle);
+      loop_tecplot(loop);
+
       TRY( loop_most_convex( loop, &side0, &side1 ), "most convex failed");
       
       node0 = loop->side[0+2*side0];
