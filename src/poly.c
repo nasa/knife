@@ -178,6 +178,7 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
   int cut_index;
   Triangle triangle, cutter;
   Cut cut;
+  Subtri subtri;
   Subtri cutter_subtri01, cutter_subtri10;
   Subtri triang_subtri01, triang_subtri10;
   Mask mask, surf;
@@ -219,10 +220,15 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 						   &triang_subtri10 ), 
 	       "triang_subtri10");
 
-	  TRY( subtri_contained_volume6( cutter_subtri01, triang_subtri01, 
+	  subtri = cutter_subtri01;
+	  if ( subtri_reference_area( cutter_subtri10 ) >
+	       subtri_reference_area( cutter_subtri01 ) )
+	    subtri = cutter_subtri10;
+
+	  TRY( subtri_contained_volume6( subtri, triang_subtri01, 
 					 &volume01), "vol");
 
-	  TRY( subtri_contained_volume6( cutter_subtri01, triang_subtri10, 
+	  TRY( subtri_contained_volume6( subtri, triang_subtri10, 
 					 &volume10), "vol");
 
 	  if ( ( volume01 > 0.0 && volume10 > 0.0 ) ||
@@ -235,7 +241,8 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	    }
 
 
-	  if ( volume01 > volume10 && surf->inward_pointing_normal )
+	  if ( (  surf->inward_pointing_normal && volume01 > volume10 ) || 
+	       ( !surf->inward_pointing_normal && volume01 < volume10 ) )
 	    {
 	      TRY( mask_activate_subtri(mask, triang_subtri01), "active m01");
 	    }
@@ -244,12 +251,15 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	      TRY( mask_activate_subtri(mask, triang_subtri10), "active m10");
 	    }
 
+	  subtri = triang_subtri01;
+	  if ( subtri_reference_area( triang_subtri10 ) >
+	       subtri_reference_area( triang_subtri01 ) )
+	    subtri = triang_subtri10;
 
-
-	  TRY( subtri_contained_volume6( triang_subtri01, cutter_subtri01, 
+	  TRY( subtri_contained_volume6( subtri, cutter_subtri01, 
 					 &volume01), "vol");
 
-	  TRY( subtri_contained_volume6( triang_subtri01, cutter_subtri10, 
+	  TRY( subtri_contained_volume6( subtri, cutter_subtri10, 
 					 &volume10), "vol");
 
 	  if ( ( volume01 > 0.0 && volume10 > 0.0 ) ||
@@ -261,7 +271,8 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	      return KNIFE_INCONSISTENT;
 	    }
 
-	  if ( volume01 > volume10 && mask->inward_pointing_normal )
+	  if ( (  mask->inward_pointing_normal && volume01 > volume10 ) || 
+	       ( !mask->inward_pointing_normal && volume01 < volume10 ) )
 	    {
 	      TRY( mask_activate_subtri(surf, cutter_subtri01), "active s01");
 	    }
