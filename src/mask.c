@@ -28,6 +28,12 @@ static int mask_tecplot_frame = 0;
     }							      \
   }
 
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == pointer){					      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
+
 Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
 {
   Mask mask;
@@ -405,18 +411,10 @@ KNIFE_STATUS mask_directed_area_contribution( Mask mask,
 KNIFE_STATUS mask_tecplot( Mask mask)
 {
   Triangle triangle;
-  int subnode_index;
-  Subnode subnode;
-  double xyz[3];
   int subtri_index;
   Subtri subtri;
-  int node0, node1, node2;
-
-  int cut_index;
-  Cut cut;
-  Intersection intersection;
-
-  double uvw[3];
+  Subnode subnode;
+  double uvw[3], xyz[3];
 
   char filename[1025];
   FILE *f;
@@ -439,19 +437,19 @@ KNIFE_STATUS mask_tecplot( Mask mask)
 	subtri_index++)
     {
       subtri = triangle_subtri(triangle, subtri_index);
-      subnode = subtri_n0(subnode); NOT_NULL( subtri, "n0 NULL" );
+      subnode = subtri_n0(subtri); NOT_NULL( subnode, "n0 NULL" );
       TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
       TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
 	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2], 
 	      mask_subtri_active(mask,subtri_index) );
-      subnode = subtri_n1(subnode); NOT_NULL( subtri, "n1 NULL" );
+      subnode = subtri_n1(subtri); NOT_NULL( subnode, "n1 NULL" );
       TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
       TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
 	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2], 
 	      mask_subtri_active(mask,subtri_index) );
-      subnode = subtri_n2(subnode); NOT_NULL( subtri, "n2 NULL" );
+      subnode = subtri_n2(subtri); NOT_NULL( subnode, "n2 NULL" );
       TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
       TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
