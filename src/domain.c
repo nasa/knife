@@ -786,7 +786,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
 	  if (poly_cut(poly)) 
 	    {
-	      TRY( poly_centroid_volume(poly,xyz,center,&volume), "Cent vol");
+	      poly_centroid_volume(poly,xyz,center,&volume);
 	      fprintf(f,"%.16e %.16e %.16e\n",
 		      center[0],center[1],center[2]);	  
 	    }
@@ -806,7 +806,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  poly = domain_poly(domain,poly_index);
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
-	  TRY( poly_centroid_volume(poly,xyz,center,&volume), "cent Vol");
+	  poly_centroid_volume(poly,xyz,center,&volume);
 	  fprintf(f,"%.16e\n",volume);	  
 	}
     }
