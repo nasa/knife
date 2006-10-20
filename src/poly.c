@@ -300,12 +300,32 @@ KNIFE_STATUS poly_paint( Poly poly )
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
-    TRY( mask_paint( poly_mask(poly, mask_index) ), "mask paint");
+    {
+      TRY( mask_paint( poly_mask(poly, mask_index) ), "mask paint");
+      verify_code = mask_verify_paint( poly_mask(poly, mask_index) );
+
+      if ( KNIFE_SUCCESS != verify_code )
+	{
+	  printf("verify failed after mask paint\n");
+	  poly_tecplot( poly );
+	  return verify_code;
+	}
+    }
 
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
-    TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
+    {
+      TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
+      verify_code = mask_verify_paint( poly_surf(poly, mask_index) );
+
+      if ( KNIFE_SUCCESS != verify_code )
+	{
+	  printf("verify failed after surf paint\n");
+	  poly_tecplot( poly );
+	  return verify_code;
+	}
+    }
 
   verify_code = poly_verify_painting( poly );
 
