@@ -513,8 +513,6 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 					   &(near_tree[triangle_index]) );
     }
 
-  printf("surface near tree formed\n");
-
   printf("compute cuts\n");
 
   max_touched = surface_ntriangle(domain->surface);
@@ -546,13 +544,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   free(touched);
   free(near_tree);
 
-  printf("cuts computed\n");
-
-  printf("start triangulation\n");
-
   TRY( domain_triangulate(domain), "domain_triangulate" );
-
-  printf("triangulation complete\n");
 
   printf("gather surface\n");
 
@@ -563,7 +555,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   TRY( domain_determine_active_subtri(domain), 
        "domain_determine_active_subtri" );
 
-  printf("dual_topology\n");
+  printf("establish dual topology\n");
 
   TRY( domain_set_dual_topology( domain ), "domain_set_dual_topology" );
 
@@ -576,17 +568,17 @@ KNIFE_STATUS domain_triangulate( Domain domain )
 {
   int triangle_index;
 
+  printf("triangulate surface\n");
+
   TRY( surface_triangulate(domain->surface), "surface_triangulate" );
 
-  printf("surface triangulated\n");
+  printf("triangulate volume\n");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
     TRY( triangle_triangulate_cuts( domain_triangle(domain, triangle_index) ), 
 	 "volume triangulate_cuts" );
-
-  printf("volume triangulated\n");
 
   return KNIFE_SUCCESS;
 }
