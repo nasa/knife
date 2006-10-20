@@ -166,6 +166,43 @@ KNIFE_STATUS triangle_extent( Triangle triangle,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_normal_area( Triangle triangle, 
+				 double *normal,
+				 double *area)
+{
+  double edge1[3], edge2[3];
+
+  edge1[0] = triangle_xyz1(triangle)[0]-triangle_xyz0(triangle)[0];
+  edge1[1] = triangle_xyz1(triangle)[1]-triangle_xyz0(triangle)[1];
+  edge1[2] = triangle_xyz1(triangle)[2]-triangle_xyz0(triangle)[2];
+
+  edge2[0] = triangle_xyz2(triangle)[0]-triangle_xyz0(triangle)[0];
+  edge2[1] = triangle_xyz2(triangle)[1]-triangle_xyz0(triangle)[1];
+  edge2[2] = triangle_xyz2(triangle)[2]-triangle_xyz0(triangle)[2];
+
+  normal[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1];
+  normal[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2];
+  normal[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0];
+
+  (*area) = sqrt( normal[0]*normal[0] +
+		  normal[1]*normal[1] +
+		  normal[2]*normal[2] );
+
+  if ( (*area) < 1.0e-14 ) {
+    /* printf("%s: %d: triangle physical area is %e\n",
+       __FILE__,__LINE__,(*area)); */
+    return KNIFE_DIV_ZERO;
+  }
+
+  normal[0] /= (*area);
+  normal[1] /= (*area);
+  normal[2] /= (*area);
+  
+  (*area) *= 0.5;
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS triangle_neighbor( Triangle triangle, Segment segment, 
 				Triangle *other )
 {

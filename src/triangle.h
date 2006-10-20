@@ -98,6 +98,7 @@ void triangle_echo( Triangle );
   ((Subtri)array_item( (triangle)->subtri, (subtri_index) ))
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
+KNIFE_STATUS triangle_normal_area( Triangle, double *normal, double *area );
 
 KNIFE_STATUS triangle_neighbor( Triangle, Segment, Triangle *other );
 

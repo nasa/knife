@@ -271,6 +271,40 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_centroid_area( Subtri subtri, 
+				   double *centroid,
+				   double *area)
+{
+  double xyz0[3], xyz1[3], xyz2[3];
+  double edge1[3], edge2[3];
+
+  TRY( subnode_xyz( subtri_n0(subtri), xyz0), "norm area subnode0 xyz" );
+  TRY( subnode_xyz( subtri_n1(subtri), xyz1), "norm area subnode1 xyz" );
+  TRY( subnode_xyz( subtri_n2(subtri), xyz2), "norm area subnode2 xyz" );
+
+  edge1[0] = xyz1[0]-xyz0[0];
+  edge1[1] = xyz1[1]-xyz0[1];
+  edge1[2] = xyz1[2]-xyz0[2];
+
+  edge2[0] = xyz2[0]-xyz0[0];
+  edge2[1] = xyz2[1]-xyz0[1];
+  edge2[2] = xyz2[2]-xyz0[2];
+
+  centroid[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1];
+  centroid[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2];
+  centroid[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0];
+
+  (*area) = 0.5 * sqrt( centroid[0]*centroid[0] +
+			centroid[1]*centroid[1] +
+			centroid[2]*centroid[2] );
+
+  centroid[0] = ( xyz0[0] + xyz1[0] + xyz2[0] ) / 3.0;
+  centroid[1] = ( xyz0[1] + xyz1[1] + xyz2[1] ) / 3.0;
+  centroid[2] = ( xyz0[2] + xyz1[2] + xyz2[2] ) / 3.0;
+  
+  return KNIFE_SUCCESS;
+}
+
 /* need 3 point quadrature rule for quadratic function (centroid) */
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri, 
 						  double *origin,

@@ -50,6 +50,8 @@ KNIFE_STATUS mask_paint( Mask );
 KNIFE_STATUS mask_verify_paint( Mask );
 
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
+KNIFE_STATUS mask_lumped_area( Mask, FILE * );
+
 KNIFE_STATUS mask_find_subtri_with( Mask, FILE * );
 
 KNIFE_STATUS mask_centroid_volume_contribution( Mask, double *origin,
