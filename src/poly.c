@@ -575,8 +575,15 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
 					   origin, centroid, volume),
 	"cent vol surf");
 
-  if ( ABS(*volume) < 1.0e-14 )
-    return KNIFE_DIV_ZERO;
+  if ( (*volume) < 1.0e-14 )
+    {
+      printf("%s: %d: poly_centroid_volume: vol %.16e\n",
+	     __FILE__,__LINE__,(*volume));
+      centroid[0] = origin[0];
+      centroid[1] = origin[1];
+      centroid[2] = origin[2];
+      return KNIFE_DIV_ZERO;
+    }
 
   centroid[0] = centroid[0] / (*volume) + origin[0];
   centroid[1] = centroid[1] / (*volume) + origin[1];
