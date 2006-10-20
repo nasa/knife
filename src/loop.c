@@ -20,8 +20,8 @@ static int loop_tecplot_frame = 0;
     int code;						      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
-      loop_tecplot(loop);                                     \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      loop_tecplot(loop);                                     \
       return code;					      \
     }							      \
   }
@@ -52,6 +52,9 @@ Loop loop_create( void )
 	   __FILE__,__LINE__);
     return NULL; 
   }
+
+  loop->node0 = NULL;
+  loop->node1 = NULL;
 
   return loop;
 }
@@ -174,13 +177,137 @@ KNIFE_STATUS loop_split( Loop old_loop, Subnode node0, Subnode node1,
       move0 = move1;
     }
 
-  TRY( loop_add_side(  old_loop, node0, node1 ), "old_loop add hard side" );
-  TRY( loop_add_side( *new_loop, node1, node0 ), "new_loop add hard side" );
+  TRY( loop_add_to_front(  old_loop, node0, node1 ), "old_loop add hard side" );
+  old_loop->node0 = node0;
+  old_loop->node1 = node1;
+  TRY( loop_add_to_front( *new_loop, node1, node0 ), "new_loop add hard side" );
+  (*new_loop)->node0 = node1;
+  (*new_loop)->node1 = node0;
 
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS loop_three_subnodes( Loop loop, 
+				  Subnode *subnode0, 
+				  Subnode *subnode1, 
+				  Subnode *subnode2  )
+{
+  int side_index;
+
+  if ( 3 != loop_nside(loop) )
+    {
+      printf("%s: %d: loop_three_subnodes: nside %d != 0\n",__FILE__,__LINE__,
+	     loop_nside(loop));
+      return KNIFE_FAILURE;
+    }
+
+  (*subnode0) = loop->side[0+2*0];
+  (*subnode1) = loop->side[1+2*0];
+
+  for ( side_index = 0 ; side_index < loop_nside(loop) ; side_index++ )
+    {
+      if ( (*subnode0) != loop->side[0+2*side_index] &&
+	   (*subnode1) != loop->side[0+2*side_index] )
+	{
+	  (*subnode2) = loop->side[0+2*side_index];
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_FAILURE;
+}
+
 KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
+{
+  int side_index;
+  double area, best_area;
+  Subnode subnode, best_subnode;
+  Loop loop0, loop1;
+
+  Subtri subtri;
+  Subnode subnode0, subnode1, subnode2;
+
+  if ( NULL == loop->node0 || NULL == loop->node1)
+    {
+      printf("call loop_split before loop_triangulate\n");
+      return KNIFE_NULL;
+    }
+
+  if ( 0 == loop_nside(loop) ) return KNIFE_SUCCESS;
+
+  if ( 3 > loop_nside(loop) )
+    {
+      printf("%s: %d: loop_triangulate: nside %d != 0\n",__FILE__,__LINE__,
+	     loop_nside(loop));
+      return KNIFE_FAILURE;
+    }
+
+  if ( 3 == loop_nside(loop) )
+    {
+      TRY( loop_three_subnodes( loop, &subnode0, &subnode1, &subnode2 ),
+	   "loop_three_subnodes" );
+      area = subnode_area( subnode0, subnode1, subnode2 );
+      if ( area <= 0.0 )
+	{
+	  printf("%s: %d: loop_triangulate: %.16e\n",__FILE__,__LINE__,area);
+	  loop_tecplot(loop);
+	  return KNIFE_NEG_AREA;
+	}
+      TRY( loop_add_to_front( loop, subnode2, subnode1 ), "front 0");
+      TRY( loop_add_to_front( loop, subnode0, subnode2 ), "front 1");
+      TRY( loop_add_to_front( loop, subnode1, subnode0 ), "front 2");
+      if ( 0 != loop_nside(loop) )
+	{
+	  printf("%s: %d: loop_triangulate: nside %d != 0\n",__FILE__,__LINE__,
+		 loop_nside(loop));
+	  loop_tecplot(loop);
+	  return KNIFE_FAILURE;
+	}
+      subtri = subtri_create( subnode0, subnode1, subnode2 );
+      NOT_NULL( subtri, "subtri creation failed" );
+      TRY( triangle_add_subtri(triangle,subtri), "add new subtri");
+      
+      return KNIFE_SUCCESS;
+    }
+
+  best_area = 999.0;
+  best_subnode = NULL;
+
+  for ( side_index = 0 ; side_index < loop_nside(loop) ; side_index++ )
+    {
+      subnode = loop->side[0+2*side_index];
+      if ( loop->node0 == subnode || loop->node1 == subnode ) continue;
+      area = subnode_area( loop->node0, loop->node1, subnode );
+      if ( area > 0.0 && area < best_area )
+	{
+	  best_area = area;
+	  best_subnode = subnode;
+	}
+    }
+
+  if ( NULL == best_subnode )
+    {
+      printf("%s: %d: loop_triangulate: best subnode not found\n",
+	     __FILE__,__LINE__);
+      loop_tecplot(loop);
+      return KNIFE_NOT_FOUND;
+    }
+
+  subnode0 = loop->node0;
+  subnode1 = loop->node1;
+
+  TRY( loop_split( loop, best_subnode, subnode0, &loop0 ), "split0" );
+
+  TRY( loop_split( loop, subnode1, best_subnode, &loop1 ), "split1" );
+
+  TRY( loop_triangulate( loop,  triangle ), "fill loop" );
+  TRY( loop_triangulate( loop0, triangle ), "fill loop0" );
+  TRY( loop_triangulate( loop1, triangle ), "fill loop1" );
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS loop_triangulate_old( Loop loop, Triangle triangle )
 {
   int side0, side1;
   Subnode node0, node1, node2;

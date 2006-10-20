@@ -33,6 +33,7 @@ struct LoopStruct {
   int nside;
   int allocated;
   Subnode *side;
+  Subnode node0, node1;
 };
 
 Loop loop_create( void );
