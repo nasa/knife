@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include "mask.h"
 
+static int mask_tecplot_frame = 0;
+
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -400,3 +402,72 @@ KNIFE_STATUS mask_directed_area_contribution( Mask mask,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS mask_tecplot( Mask mask)
+{
+  Triangle triangle;
+  int subnode_index;
+  Subnode subnode;
+  double xyz[3];
+  int subtri_index;
+  Subtri subtri;
+  int node0, node1, node2;
+
+  int cut_index;
+  Cut cut;
+  Intersection intersection;
+
+  double uvw[3];
+
+  char filename[1025];
+  FILE *f;
+
+  triangle = mask_triangle(mask);
+
+  sprintf(filename, "mask%04d.t",mask_tecplot_frame );
+  printf("producing %s\n",filename);
+
+  mask_tecplot_frame++;
+
+  f = fopen(filename, "w");
+
+  fprintf(f,"title=mask_geometry\nvariables=v,w,x,y,z,a\n");
+  fprintf(f, "zone t=mask, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  3*triangle_nsubtri(triangle), triangle_nsubtri(triangle) );
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      subtri = triangle_subtri(triangle, subtri_index);
+      subnode = subtri_n0(subnode); NOT_NULL( subtri, "n0 NULL" );
+      TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
+      TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2], 
+	      mask_subtri_active(mask,subtri_index) );
+      subnode = subtri_n1(subnode); NOT_NULL( subtri, "n1 NULL" );
+      TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
+      TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2], 
+	      mask_subtri_active(mask,subtri_index) );
+      subnode = subtri_n2(subnode); NOT_NULL( subtri, "n2 NULL" );
+      TRY( subnode_uvw( subnode, uvw ), "sn uvw" );
+      TRY( subnode_xyz( subnode, xyz ), "sn xyz" );
+      fprintf(f, " %.16e %.16e %.16e %.16e %.16e %d\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2], 
+	      mask_subtri_active(mask,subtri_index) );
+    }
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      fprintf(f, "%6d %6d %6d\n", 
+	      1+3*subtri_index, 2+3*subtri_index, 3+3*subtri_index);
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}

@@ -57,6 +57,8 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask, double *origin,
 						double *volume );
 KNIFE_STATUS mask_directed_area_contribution( Mask, double *directed_area );
 
+KNIFE_STATUS mask_tecplot( Mask );
+
 END_C_DECLORATION
 
 #endif /* MASK_H */
