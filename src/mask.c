@@ -152,9 +152,12 @@ KNIFE_STATUS mask_paint( Mask mask )
 	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
 		{
 		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] ) more_paint = TRUE;
-		  mask->active[subtri_index] = TRUE;
-		  mask->active[neighbor_index] = TRUE;
+		      !mask->active[neighbor_index] ) 
+		   {
+		     more_paint = TRUE;
+		     mask->active[subtri_index] = TRUE;
+		     mask->active[neighbor_index] = TRUE;
+		   }
 		}
 	    }
 	}
@@ -173,9 +176,12 @@ KNIFE_STATUS mask_paint( Mask mask )
 	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
 		{
 		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] ) more_paint = TRUE;
-		  mask->active[subtri_index] = TRUE;
-		  mask->active[neighbor_index] = TRUE;
+		      !mask->active[neighbor_index] ) 
+		   {
+		     more_paint = TRUE;
+		     mask->active[subtri_index] = TRUE;
+		     mask->active[neighbor_index] = TRUE;
+		   }
 		}
 	    }
 	}
@@ -194,9 +200,12 @@ KNIFE_STATUS mask_paint( Mask mask )
 	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
 		{
 		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] ) more_paint = TRUE;
-		  mask->active[subtri_index] = TRUE;
-		  mask->active[neighbor_index] = TRUE;
+		      !mask->active[neighbor_index] )
+		   {
+		     more_paint = TRUE;
+		     mask->active[subtri_index] = TRUE;
+		     mask->active[neighbor_index] = TRUE;
+		   }
 		}
 	    }
 	}
