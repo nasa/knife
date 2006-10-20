@@ -749,7 +749,7 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
   f = fopen("gnuplot_mesh_command","w");
   fprintf(f,"reset\n");
   fprintf(f,"set term postscript eps\n");
-  fprintf(f,"set output 'frame%04d.eps'\n",triangle_eps_frame);
+  fprintf(f,"set output 'triangle%04d.eps'\n",triangle_eps_frame);
 
   triangle_eps_frame++;
 
@@ -799,7 +799,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   char filename[1025];
   FILE *f;
 
-  sprintf(filename, "frame%04d.t",triangle_tecplot_frame );
+  sprintf(filename, "triangle%04d.t",triangle_tecplot_frame );
   printf("producing %s\n",filename);
 
   triangle_tecplot_frame++;
