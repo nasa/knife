@@ -198,14 +198,31 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
+
+  /* add to boundary first */
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
-	 "insert subnode0 in triangle_triangulate_cuts" );
-    TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
+    if ( triangle != intersection_triangle( cut_intersection0(cut) ) )
+      TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
+	   "insert side subnode0 in triangle_triangulate_cuts" );
+    if ( triangle != intersection_triangle( cut_intersection1(cut) ) )
+      TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
 	 "insert subnode1 in triangle_triangulate_cuts" );
+  }
+
+  /* now triangle interior */
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    if ( triangle == intersection_triangle( cut_intersection0(cut) ) )
+      TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
+	   "insert subnode0 in triangle_triangulate_cuts" );
+    if ( triangle == intersection_triangle( cut_intersection1(cut) ) )
+      TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
+	   "insert subnode1 in triangle_triangulate_cuts" );
   }
 
   /* recover all cuts as subtriangle sides */
