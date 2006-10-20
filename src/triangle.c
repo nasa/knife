@@ -195,6 +195,7 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   KNIFE_STATUS recover_status;
   KnifeBool *cut_recovered;
   KnifeBool improvement;
+  int subnode_index;
 
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
@@ -282,8 +283,17 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	     "provable recovery" );
       }
 
-
   free(cut_recovered);
+
+  /* enforce delaunay after recovery */
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
+    {
+      TRY( triangle_delaunay( triangle, 
+			      triangle_subnode(triangle,subnode_index ) ),
+	   "re-d");
+    }
 
   /* verify that all cuts are now subtriangle sides (redundant) */
   for ( cut_index = 0;
