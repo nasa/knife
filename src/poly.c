@@ -237,6 +237,11 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	    {
 	      printf("%s: %d: inside inconsistent %.16e %.16e\n",
 		     __FILE__,__LINE__,volume01, volume10);
+	      mask_tecplot(surf);
+	      mask_tecplot(mask);
+	      triangle_tecplot(cutter);
+	      triangle_tecplot(triangle);
+	      poly_tecplot(poly);
 	      return KNIFE_INCONSISTENT;
 	    }
 
@@ -268,6 +273,11 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	    {
 	      printf("%s: %d: inside inconsistent %.16e %.16e\n",
 		     __FILE__,__LINE__,volume01, volume10);
+	      mask_tecplot(mask);
+	      mask_tecplot(surf);
+	      triangle_tecplot(triangle);
+	      triangle_tecplot(cutter);
+	      poly_tecplot(poly);
 	      return KNIFE_INCONSISTENT;
 	    }
 
