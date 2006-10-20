@@ -577,7 +577,7 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
 
   if ( (*volume) < 1.0e-14 )
     {
-      tecplot_poly( poly );
+      poly_tecplot( poly );
       printf("%s: %d: poly_centroid_volume: vol %.16e\n",
 	     __FILE__,__LINE__,(*volume));
       centroid[0] = origin[0];
