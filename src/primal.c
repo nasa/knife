@@ -15,6 +15,40 @@
 #include <stdio.h>
 #include "primal.h"
 
+#define primal_test_malloc(ptr,fcn)		       \
+  if (NULL == (ptr)) {				       \
+    printf("%s: %d: malloc failed in %s\n",	       \
+	   __FILE__,__LINE__,(fcn));		       \
+    return NULL;				       \
+  }
+
+#define primal_test_status(ptr,fcn)		       \
+  if (NULL == (ptr)) {				       \
+    printf("%s: %d: malloc failed in %s\n",	       \
+	   __FILE__,__LINE__,(fcn));		       \
+    return KNIFE_MEMORY;			       \
+  }
+
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
+#define TRYN(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return NULL;					      \
+    }							      \
+  }
+
 Primal primal_create(int nnode, int nface, int ncell)
 {
   Primal primal;
@@ -56,8 +90,21 @@ Primal primal_from_FAST( char *filename )
   FILE *file;
 
   file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return NULL;
+    }
+
   fscanf(file,"%d %d %d",&nnode,&nface,&ncell);
   primal = primal_create( nnode, nface, ncell );
+  if ( NULL == primal )
+    {
+      printf("%s: %d: primal_from_FAST: primal creation \n",
+	     __FILE__,__LINE__);
+      return NULL;
+    }
 
   for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[0+3*i]));
   for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[1+3*i]));
@@ -96,8 +143,8 @@ Primal primal_from_FAST( char *filename )
 
   fclose(file);
 
-  primal_establish_c2e(primal);
-  primal_establish_c2t(primal);
+  TRYN( primal_establish_c2e(primal), "c2e" );
+  TRYN( primal_establish_c2t(primal), "c2t" );
 
   return primal;
 }
@@ -154,6 +201,7 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
   int edge_index, node0, node1;
 
   primal->c2e = (int *)malloc(6*primal_ncell(primal)*sizeof(int));
+  primal_test_status(primal,"primal_establish_c2e c2e");
   for(cell=0;cell<6*primal_ncell(primal);cell++) primal->c2e[cell]= EMPTY;
 
   primal->nedge = 0;
@@ -172,6 +220,7 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
     }
 
   primal->e2n = (int *)malloc(2*primal->nedge*sizeof(int));
+  primal_test_status(primal,"primal_establish_c2e e2n");
   for(cell=0;cell<primal_ncell(primal);cell++)
     {
       primal_cell(primal, cell, nodes);
@@ -198,6 +247,7 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
   int n0,n1,n2;
 
   primal->c2t = (int *)malloc(4*primal_ncell(primal)*sizeof(int));
+  primal_test_status(primal,"primal_establish_c2t c2t");
   for(cell=0;cell<4*primal_ncell(primal);cell++) primal->c2t[cell]= EMPTY;
 
   primal->ntri = 0;
@@ -225,6 +275,7 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
     }
 
   primal->t2n = (int *)malloc(3*primal->ntri*sizeof(int));
+  primal_test_status(primal,"primal_establish_t2n t2n");
   for(cell=0;cell<primal_ncell(primal);cell++)
     {
       primal_cell(primal, cell, nodes);

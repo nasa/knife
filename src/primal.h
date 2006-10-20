@@ -51,13 +51,6 @@ struct PrimalStruct {
 
 };
 
-#define primal_test_malloc(ptr,fcn)		       \
-  if (NULL == (ptr)) {				       \
-    printf("%s: %d: malloc failed in %s\n",	       \
-	   __FILE__,__LINE__,(fcn));		       \
-    return NULL;				       \
-  }
-
 Primal primal_create( int nnode, int nface, int ncell );
 Primal primal_from_FAST( char *filename );
 

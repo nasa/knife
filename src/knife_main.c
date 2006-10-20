@@ -30,6 +30,12 @@
     }							      \
   }
 
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == (pointer)) {				      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
+
 int main( int argc, char *argv[] )
 {
   int argument;
@@ -105,13 +111,17 @@ int main( int argc, char *argv[] )
   if (arguments_require_stop) return 0;
 
   surface_primal = primal_from_FAST( surface_filename );
+  NOT_NULL(surface_primal, "surface_primal NULL");
   surface = surface_from( surface_primal, active_bcs, 
 			  inward_pointing_surface_normal );
+  NOT_NULL(surface, "surface NULL");
 
   printf("read in volume grid\n");
   volume_primal = primal_from_FAST( volume_filename );
+  NOT_NULL(volume_primal, "volume_primal NULL");
 
   domain = domain_create( volume_primal, surface );
+  NOT_NULL(domain, "domain NULL");
   TRY( domain_dual_elements( domain ), "dual creation" );
 
   /* if (tecplot_output) domain_tecplot( domain, "orig.t" ); */
