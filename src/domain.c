@@ -559,7 +559,9 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   int poly_index;
   int edge_index, edge_nodes[2];
   int cell_index, cell_nodes[4];
-  double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
+  int tri_index, tri_nodes[3];
+  int node, side;
+  double xyz0[3], xyz1[3], xyz2[3];
   double t, uvw[3];
   double dx, dy, dz;
   KNIFE_STATUS intersection_status;
@@ -672,18 +674,17 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   NOT_NULL( touched, "touched NULL");
   printf("volume triangles intersecting surface segments\n");
   
-  for (cell_index=0;cell_index<primal_ncell(domain->primal);cell_index++)
+  for (tri_index=0;tri_index<primal_ntri(domain->primal);tri_index++)
     {
-      primal_cell(domain->primal,cell_index,cell_nodes);
-      if ( NULL != domain->poly[cell_nodes[0]] &&
-	   NULL != domain->poly[cell_nodes[1]] &&
-	   NULL != domain->poly[cell_nodes[2]] &&
-	   NULL != domain->poly[cell_nodes[3]] ) continue;
-      primal_xyz(domain->primal,cell_nodes[0],xyz0);
-      primal_xyz(domain->primal,cell_nodes[1],xyz1);
-      primal_xyz(domain->primal,cell_nodes[2],xyz2);
-      primal_xyz(domain->primal,cell_nodes[3],xyz3);
-      primal_cell_center( domain->primal, cell_index, center);
+      primal_tri(domain->primal,tri_index,tri_nodes);
+      if ( NULL != domain->poly[tri_nodes[0]] &&
+	   NULL != domain->poly[tri_nodes[1]] &&
+	   NULL != domain->poly[tri_nodes[2]] ) continue;
+      primal_xyz(domain->primal,tri_nodes[0],xyz0);
+      primal_xyz(domain->primal,tri_nodes[1],xyz1);
+      primal_xyz(domain->primal,tri_nodes[2],xyz2);
+
+      primal_tri_center( domain->primal, tri_index, center);
       
       dx = xyz0[0]-center[0];dy = xyz0[1]-center[1];dz = xyz0[2]-center[2];
       diameter = sqrt(dx*dx+dy*dy+dz*dz);
@@ -692,9 +693,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
       diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
 
       dx = xyz2[0]-center[0];dy = xyz2[1]-center[1];dz = xyz2[2]-center[2];
-      diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
-
-      dx = xyz3[0]-center[0];dy = xyz3[1]-center[1];dz = xyz3[2]-center[2];
       diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
 
       near_initialize( &target, 
@@ -707,45 +705,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
 	{
 	  segment = surface_segment(domain->surface,touched[i]);
 
-	  intersection_status = intersection_core( xyz1, xyz2, xyz3,
-						   segment->node0->xyz,
-						   segment->node1->xyz,
-						   &t, uvw );
-	  if ( KNIFE_NO_INT != intersection_status )
-	    TRY( intersection_status, "intersection_core" );
-	  if ( KNIFE_SUCCESS == intersection_status )
-	    {
-	      for (i=0;i<4;i++)
-		if ( NULL == domain->poly[cell_nodes[i]] )
-		  domain->poly[cell_nodes[i]] = poly_create( );
-	      continue;
-	    }
-	  intersection_status = intersection_core( xyz0, xyz2, xyz3,
-						   segment->node0->xyz,
-						   segment->node1->xyz,
-						   &t, uvw );
-	  if ( KNIFE_NO_INT != intersection_status )
-	    TRY( intersection_status, "intersection_core" );
-	  if ( KNIFE_SUCCESS == intersection_status )
-	    {
-	      for (i=0;i<4;i++)
-		if ( NULL == domain->poly[cell_nodes[i]] )
-		  domain->poly[cell_nodes[i]] = poly_create( );
-	      continue;
-	    }
-	  intersection_status = intersection_core( xyz0, xyz1, xyz3,
-						   segment->node0->xyz,
-						   segment->node1->xyz,
-						   &t, uvw );
-	  if ( KNIFE_NO_INT != intersection_status )
-	    TRY( intersection_status, "intersection_core" );
-	  if ( KNIFE_SUCCESS == intersection_status )
-	    {
-	      for (i=0;i<4;i++)
-		if ( NULL == domain->poly[cell_nodes[i]] )
-		  domain->poly[cell_nodes[i]] = poly_create( );
-	      continue;
-	    }
 	  intersection_status = intersection_core( xyz0, xyz1, xyz2,
 						   segment->node0->xyz,
 						   segment->node1->xyz,
@@ -754,11 +713,33 @@ KNIFE_STATUS domain_required_dual( Domain domain )
 	    TRY( intersection_status, "intersection_core" );
 	  if ( KNIFE_SUCCESS == intersection_status )
 	    {
-	      for (i=0;i<4;i++)
-		if ( NULL == domain->poly[cell_nodes[i]] )
-		  domain->poly[cell_nodes[i]] = poly_create( );
+	      if ( KNIFE_SUCCESS == 
+		   primal_find_cell_side( domain->primal, 
+					  tri_nodes[0], 
+					  tri_nodes[1], 
+					  tri_nodes[2], 
+					  &cell_index, &side ) )
+		{
+		  primal_cell(domain->primal,cell_index,cell_nodes);
+		  for (node=0;node<4;node++)
+		    if ( NULL == domain->poly[cell_nodes[node]] )
+		      domain->poly[cell_nodes[node]] = poly_create( );
+		}
+	      if ( KNIFE_SUCCESS == 
+		   primal_find_cell_side( domain->primal, 
+					  tri_nodes[1], 
+					  tri_nodes[0], 
+					  tri_nodes[2], 
+					  &cell_index, &side ) )
+		{
+		  primal_cell(domain->primal,cell_index,cell_nodes);
+		  for (node=0;node<4;node++)
+		    if ( NULL == domain->poly[cell_nodes[node]] )
+		      domain->poly[cell_nodes[node]] = poly_create( );
+		}
 	      continue;
 	    }
+
 	}
     }
 
