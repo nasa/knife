@@ -563,6 +563,7 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   double t, uvw[3];
   double dx, dy, dz;
   KNIFE_STATUS intersection_status;
+  int nrequired;
 
   printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
 	 primal_nnode(domain->primal),
@@ -673,11 +674,11 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   
   for (cell_index=0;cell_index<primal_ncell(domain->primal);cell_index++)
     {
+      primal_cell(domain->primal,cell_index,cell_nodes);
       if ( NULL != domain->poly[cell_nodes[0]] &&
 	   NULL != domain->poly[cell_nodes[1]] &&
 	   NULL != domain->poly[cell_nodes[2]] &&
 	   NULL != domain->poly[cell_nodes[3]] ) continue;
-      primal_cell(domain->primal,cell_index,cell_nodes);
       primal_xyz(domain->primal,cell_nodes[0],xyz0);
       primal_xyz(domain->primal,cell_nodes[1],xyz1);
       primal_xyz(domain->primal,cell_nodes[2],xyz2);
@@ -765,6 +766,35 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   free(touched);
   free(segment_tree);
 
+  touched = (int *) malloc( domain_npoly(domain) * sizeof(int) );
+
+  for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
+    touched[poly_index] = 0;
+
+  for (cell_index=0;cell_index<primal_ncell(domain->primal);cell_index++)
+    {
+      primal_cell(domain->primal,cell_index,cell_nodes);
+      if ( NULL != domain->poly[cell_nodes[0]] ||
+	   NULL != domain->poly[cell_nodes[1]] ||
+	   NULL != domain->poly[cell_nodes[2]] ||
+	   NULL != domain->poly[cell_nodes[3]] ) 
+	for (i=0;i<4;i++)
+	  if ( NULL == domain->poly[cell_nodes[i]] )
+	    touched[cell_nodes[i]] = 1;
+    }
+
+  for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
+    if ( NULL == domain->poly[poly_index] && touched[poly_index] )
+      domain->poly[poly_index] = poly_create( );
+
+  free(touched);
+
+  nrequired = 0;
+  
+  for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
+    if ( NULL != domain->poly[poly_index]) nrequired++;
+
+  printf("poly %d of %d required\n",nrequired,domain_npoly(domain));
 
   TRY( domain_dual_elements( domain ), "domain_dual_elements" );
 
