@@ -75,7 +75,6 @@ void domain_free( Domain );
 #define domain_triangle(domain,triangle_index) \
   (&((domain)->triangle[(triangle_index)]))
 
-KNIFE_STATUS domain_tetrahedral_elements( Domain );
 KNIFE_STATUS domain_dual_elements( Domain );
 
 KNIFE_STATUS domain_boolean_subtract( Domain );
