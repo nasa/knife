@@ -133,6 +133,8 @@ KNIFE_STATUS poly_gather_surf( Poly poly )
   int cut_index;
   Cut cut;
 
+  if ( NULL == poly) return KNIFE_NULL;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
