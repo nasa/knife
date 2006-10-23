@@ -23,17 +23,15 @@ typedef NodeStruct * Node;
 
 struct NodeStruct {
   double xyz[3];
-  int indx;
 };
 
-Node node_create( double x, double y, double z, int indx );
-KNIFE_STATUS node_initialize( Node, double *xyz, int indx );
+Node node_create( double *xyz );
+KNIFE_STATUS node_initialize( Node, double *xyz );
 
 #define node_xyz(node) ((node)->xyz)
 #define node_x(node) ((node)->xyz[0])
 #define node_y(node) ((node)->xyz[1])
 #define node_z(node) ((node)->xyz[2])
-#define node_indx(node) ((node)->indx)
 
 void node_free( Node );
 
