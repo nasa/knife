@@ -288,13 +288,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int other_face, other_side;
   int *f2s;
 
-  printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
-	 primal_nnode(domain->primal),
-	 primal_nface(domain->primal),
-	 primal_ncell(domain->primal),
-	 primal_nedge(domain->primal),
-	 primal_ntri(domain->primal));
-
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
     node_g2l[node] = EMPTY;
@@ -552,8 +545,12 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 KNIFE_STATUS domain_required_dual( Domain domain )
 {
   int triangle_index;
+  Triangle triangle;
+  int segment_index;
+  Segment segment;
   int i;
   NearStruct *triangle_tree;
+  NearStruct *segment_tree;
   double center[3], diameter;
   int max_touched, ntouched;
   int *touched;
@@ -561,11 +558,18 @@ KNIFE_STATUS domain_required_dual( Domain domain )
 
   int poly_index;
   int edge_index, edge_nodes[2];
-  double xyz0[3], xyz1[3];
-  Triangle triangle;
+  int cell_index, cell_nodes[4];
+  double xyz0[3], xyz1[3], xyz2[3], xyz3[3];
   double t, uvw[3];
   double dx, dy, dz;
   KNIFE_STATUS intersection_status;
+
+  printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
+	 primal_nnode(domain->primal),
+	 primal_nface(domain->primal),
+	 primal_ncell(domain->primal),
+	 primal_nedge(domain->primal),
+	 primal_ntri(domain->primal));
 
   printf("create poly for primal nodes\n");
   
@@ -575,7 +579,7 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
     domain->poly[poly_index] = NULL;
   
-  printf("forming surface near tree\n");
+  printf("forming surface triangle near tree\n");
 
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
@@ -641,8 +645,116 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   free(touched);
   free(triangle_tree);
 
-  TRY( domain_dual_elements( domain ), "domain_dual_elements" );
+  printf("forming surface triangle near tree\n");
 
+  segment_tree = (NearStruct *)malloc( surface_nsegment(domain->surface) * 
+				       sizeof(NearStruct));
+  NOT_NULL( segment_tree, "segment_tree NULL");
+
+  for (segment_index=0;
+       segment_index<surface_nsegment(domain->surface);
+       segment_index++)
+    {
+      segment_extent(surface_segment(domain->surface,segment_index),
+		     center, &diameter);
+      near_initialize( &(segment_tree[segment_index]), 
+		       segment_index, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      if (segment_index > 0) near_insert( segment_tree,
+					  &(segment_tree[segment_index]) );
+    }
+
+  max_touched = surface_nsegment(domain->surface);
+  
+  touched = (int *) malloc( max_touched * sizeof(int) );
+  NOT_NULL( touched, "touched NULL");
+  printf("volume triangles intersecting surface segments\n");
+  
+  for (cell_index=0;cell_index<primal_ncell(domain->primal);cell_index++)
+    {
+      primal_cell(domain->primal,cell_index,cell_nodes);
+      primal_xyz(domain->primal,cell_nodes[0],xyz0);
+      primal_xyz(domain->primal,cell_nodes[1],xyz1);
+      primal_xyz(domain->primal,cell_nodes[2],xyz2);
+      primal_xyz(domain->primal,cell_nodes[3],xyz3);
+      primal_cell_center( domain->primal, cell_index, center);
+      
+      dx = xyz0[0]-center[0];dy = xyz0[1]-center[1];dz = xyz0[2]-center[2];
+      diameter = sqrt(dx*dx+dy*dy+dz*dz);
+
+      dx = xyz1[0]-center[0];dy = xyz1[1]-center[1];dz = xyz1[2]-center[2];
+      diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
+
+      dx = xyz2[0]-center[0];dy = xyz2[1]-center[1];dz = xyz2[2]-center[2];
+      diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
+
+      dx = xyz3[0]-center[0];dy = xyz3[1]-center[1];dz = xyz3[2]-center[2];
+      diameter = MAX(diameter,sqrt(dx*dx+dy*dy+dz*dz));
+
+      near_initialize( &target, 
+		       EMPTY, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      ntouched = 0;
+      near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
+      for (i=0;i<ntouched;i++)
+	{
+	  segment = surface_segment(domain->surface,touched[i]);
+
+	  intersection_status = intersection_core( xyz1, xyz2, xyz3,
+						   segment->node0->xyz,
+						   segment->node1->xyz,
+						   &t, uvw );
+	  if ( KNIFE_NO_INT != intersection_status )
+	    TRY( intersection_status, "intersection_core" );
+	  if ( KNIFE_SUCCESS == intersection_status )
+	    for (i=0;i<4;i++)
+	      if ( NULL == domain->poly[cell_nodes[i]] )
+		domain->poly[cell_nodes[i]] = poly_create( );
+	  intersection_status = intersection_core( xyz0, xyz2, xyz3,
+						   segment->node0->xyz,
+						   segment->node1->xyz,
+						   &t, uvw );
+	  if ( KNIFE_NO_INT != intersection_status )
+	    TRY( intersection_status, "intersection_core" );
+	  if ( KNIFE_SUCCESS == intersection_status )
+	    for (i=0;i<4;i++)
+	      if ( NULL == domain->poly[cell_nodes[i]] )
+		domain->poly[cell_nodes[i]] = poly_create( );
+	  intersection_status = intersection_core( xyz0, xyz1, xyz3,
+						   segment->node0->xyz,
+						   segment->node1->xyz,
+						   &t, uvw );
+	  if ( KNIFE_NO_INT != intersection_status )
+	    TRY( intersection_status, "intersection_core" );
+	  if ( KNIFE_SUCCESS == intersection_status )
+	    for (i=0;i<4;i++)
+	      if ( NULL == domain->poly[cell_nodes[i]] )
+		domain->poly[cell_nodes[i]] = poly_create( );
+	  intersection_status = intersection_core( xyz0, xyz1, xyz2,
+						   segment->node0->xyz,
+						   segment->node1->xyz,
+						   &t, uvw );
+	  if ( KNIFE_NO_INT != intersection_status )
+	    TRY( intersection_status, "intersection_core" );
+	  if ( KNIFE_SUCCESS == intersection_status )
+	    for (i=0;i<4;i++)
+	      if ( NULL == domain->poly[cell_nodes[i]] )
+		domain->poly[cell_nodes[i]] = poly_create( );
+	}
+    }
+
+
+
+
+
+
+
+
+
+
+  TRY( domain_dual_elements( domain ), "domain_dual_elements" );
 
   return (KNIFE_SUCCESS);
 }
