@@ -27,13 +27,12 @@ struct NodeStruct {
 
 Node node_create( double *xyz );
 KNIFE_STATUS node_initialize( Node, double *xyz );
+void node_free( Node );
 
 #define node_xyz(node) ((node)->xyz)
 #define node_x(node) ((node)->xyz[0])
 #define node_y(node) ((node)->xyz[1])
 #define node_z(node) ((node)->xyz[2])
-
-void node_free( Node );
 
 END_C_DECLORATION
 
