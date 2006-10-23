@@ -34,7 +34,10 @@ struct SegmentStruct {
   Array triangle;
 };
 
+Segment segment_create( Node node0, Node node1 );
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 );
+void segment_free( Segment );
+
 Node segment_common_node( Segment segment0, Segment segment1 );
 
 #define segment_add_intersection( segment, new_intersection )	\

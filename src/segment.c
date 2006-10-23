@@ -15,11 +15,37 @@
 #include <stdio.h>
 #include "segment.h"
 
+#define TRYN(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return NULL;					      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				      \
   if (NULL == (pointer)) {				      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
     return KNIFE_NULL;					      \
   }
+
+Segment segment_create( Node node0, Node node1 )
+{
+  Segment segment;
+  
+  segment = (Segment)malloc( sizeof(SegmentStruct) );
+  if (NULL == segment) {
+    printf("%s: %d: malloc failed in segment_create\n",
+	   __FILE__,__LINE__);
+    return NULL; 
+  }
+
+  TRYN(segment_initialize( segment, node0, node1 ),"segment_initialize");
+  
+  return segment;
+}
 
 KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 )
 {
@@ -34,6 +60,15 @@ KNIFE_STATUS segment_initialize( Segment segment, Node node0, Node node1 )
 
   return(KNIFE_SUCCESS);
 }
+
+void segment_free( Segment segment )
+{
+  if ( NULL == segment ) return;
+  array_free( segment->intersection );
+  array_free( segment->triangle );
+  free( segment );
+}
+
 
 Node segment_common_node( Segment segment0, Segment segment1 )
 {
