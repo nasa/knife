@@ -37,11 +37,11 @@ struct DomainStruct {
   int nnode;
   Node *node;
 
+  int nsegment;
+  Segment *segment;
+
   int npoly;
   PolyStruct *poly;
-
-  int nsegment;
-  SegmentStruct *segment;
 
   int ntriangle;
   TriangleStruct *triangle;
@@ -63,13 +63,13 @@ void domain_free( Domain );
 #define domain_nnode(domain) ((domain)->nnode)
 Node domain_node( Domain, int node_index );
 
+#define domain_nsegment(domain) ((domain)->nsegment)
+Segment domain_segment( Domain, int segment_index );
+
+
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index) \
   (&((domain)->poly[(poly_index)]))
-
-#define domain_nsegment(domain) ((domain)->nsegment)
-#define domain_segment(domain,segment_index) \
-  (&((domain)->segment[(segment_index)]))
 
 #define domain_ntriangle(domain) ((domain)->ntriangle)
 #define domain_triangle(domain,triangle_index) \

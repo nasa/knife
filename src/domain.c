@@ -62,6 +62,9 @@ Domain domain_create( Primal primal, Surface surface)
   domain->nnode = EMPTY;
   domain->node = NULL;
 
+  domain->nsegment = EMPTY;
+  domain->segment = NULL;
+
   domain->npoly = EMPTY;
   domain->poly = NULL;
 
@@ -100,7 +103,7 @@ Node domain_node( Domain domain, int node_index )
 	  cell = node_index;
 	  TRYN( primal_cell_center( domain->primal, cell, xyz), "cell center" );
 	  domain->node[node_index] = node_create( xyz );
-	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  NOT_NULLN(domain->node[node_index],"node_create NULL");
 	  return domain->node[node_index];
 	}
       if ( node_index < primal_ncell(domain->primal) 
@@ -109,7 +112,7 @@ Node domain_node( Domain domain, int node_index )
 	  tri = node_index - primal_ncell(domain->primal);
 	  TRYN( primal_tri_center( domain->primal, tri, xyz), "tri center" );
 	  domain->node[node_index] = node_create( xyz );
-	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  NOT_NULLN(domain->node[node_index],"node_create NULL");
 	  return domain->node[node_index];
 	}
       if ( node_index < primal_ncell(domain->primal) 
@@ -120,7 +123,7 @@ Node domain_node( Domain domain, int node_index )
 	                    - primal_ntri(domain->primal);
 	  TRYN( primal_edge_center( domain->primal, edge, xyz), "edge center" );
 	  domain->node[node_index] = node_create( xyz );
-	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  NOT_NULLN(domain->node[node_index],"node_create NULL");
 	  return domain->node[node_index];
 	}
       /* boundary nodes should have been added ahead for time */
@@ -130,18 +133,88 @@ Node domain_node( Domain domain, int node_index )
     }
 
   return domain->node[node_index];
-
 }
 
+Segment domain_segment( Domain domain, int segment_index )
+{
+  int cell, side, edge, tri;
+  int edge_index;
+  int tri_center, edge_center, cell_center;
+  int tri_nodes[3];
+
+  if ( 0 > segment_index || domain_nsegment(domain) <= segment_index ) 
+    {
+      printf("%s: %d: domain_segment array bound error %d\n",
+	     __FILE__,__LINE__, segment_index);
+      return NULL;
+    }
+
+  if (NULL == domain->segment[segment_index])
+    {
+      if ( segment_index < 10*primal_ncell(domain->primal) )
+	{
+	  cell = segment_index/10;
+	  cell_center = cell;
+	  side = segment_index - 10*cell;
+	  if ( side < 4 )
+	    {
+	      tri = primal_c2t(domain->primal,cell,side);
+	      tri_center = tri + primal_ncell(domain->primal);
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,cell_center),
+				domain_node(domain,tri_center));
+		NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
+	    }
+	  else
+	    {
+	      edge = side - 4;
+	      edge_index = primal_c2e(domain->primal,cell,edge);
+	      edge_center = edge_index + primal_ntri(domain->primal) 
+		                       + primal_ncell(domain->primal);
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,cell_center),
+				domain_node(domain,edge_center) );
+	      NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
+	    }
+	  return domain->segment[segment_index];
+	}
+      if ( segment_index < 10*primal_ncell(domain->primal) 
+	                 +  3*primal_ntri(domain->primal) )
+	{
+	  tri = ( segment_index - 10 * primal_ncell(domain->primal) ) / 3;
+	  tri_center = tri + primal_ncell(domain->primal);
+	  TRYN( primal_tri(domain->primal,tri,tri_nodes), "primal_tri" );
+	  side = segment_index - 3*tri - 10 * primal_ncell(domain->primal);
+	  TRYN( primal_find_edge( domain->primal, 
+				  tri_nodes[primal_face_side_node0(side)], 
+				  tri_nodes[primal_face_side_node1(side)], 
+				  &edge_index ), "tri seg find edge" );
+	  edge_center = edge_index + primal_ntri(domain->primal) 
+	                           + primal_ncell(domain->primal);
+
+	  domain->segment[segment_index] = 
+	    segment_create( domain_node(domain,tri_center),
+			    domain_node(domain,edge_center) );
+	  NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
+	  return domain->segment[segment_index];
+	}
+      /* boundary nodes should have been added ahead for time */
+      printf("%s: %d: domain_segment face segment not precomputed %d\n",
+	     __FILE__,__LINE__, segment_index);
+      return NULL;
+    }
+
+  return domain->segment[segment_index];
+}
 
 
 
 KNIFE_STATUS domain_dual_elements( Domain domain )
 {
   int node;
-  int cell, edge, tri, face;
+  int cell, tri, face;
   int side;
-  int cell_center, tri_center, edge_center;
+  int tri_center, edge_center;
   int edge_index, segment_index, triangle_index;
   int tri_side, cell_side;
   int tri_nodes[3], cell_nodes[4], face_nodes[4];
@@ -252,55 +325,13 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  }
     }
 
-  domain->segment = (SegmentStruct *)malloc( domain->nsegment * 
-					       sizeof(SegmentStruct));
+  domain->segment = (Segment *)malloc( domain->nsegment * sizeof(Segment));
   domain_test_malloc(domain->segment,
 		     "domain_tetrahedral_elements segment");
+  for ( segment_index = 0 ; 
+	segment_index < domain_nsegment(domain); 
+	segment_index++ ) domain->segment[ segment_index ] = NULL;
   printf("number of dual segments in the volume %d\n",domain->nsegment);
-
-  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
-    {
-      cell_center = cell;
-      for ( side = 0 ; side < 4 ; side++)
-	{
-	  tri = primal_c2t(domain->primal,cell,side);
-	  tri_center = tri + primal_ncell(domain->primal);
-	  segment_index = side + 10 * cell;
-	  TRY( segment_initialize( domain_segment(domain,segment_index),
-				   domain_node(domain,cell_center),
-				   domain_node(domain,tri_center)), "seg init");
-	}
-      for ( edge = 0 ; edge < 6 ; edge++)
-	{
-	  edge_index = primal_c2e(domain->primal,cell,edge);
-	  edge_center = edge_index + primal_ntri(domain->primal) 
-	                           + primal_ncell(domain->primal);
-	  segment_index = edge + 4 + 10 * cell;
-	  TRY( segment_initialize( domain_segment(domain,segment_index),
-				   domain_node(domain,cell_center),
-				   domain_node(domain,edge_center)),"seg init");
-	}
-    }
-
-  for ( tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
-    {
-      tri_center = tri + primal_ncell(domain->primal);;
-      primal_tri(domain->primal,tri,tri_nodes);
-      for ( side = 0 ; side < 3 ; side++)
-	{
-	  TRY( primal_find_edge( domain->primal, 
-				 tri_nodes[primal_face_side_node0(side)], 
-				 tri_nodes[primal_face_side_node1(side)], 
-				 &edge_index ), "tri seg find edge" );
-	  edge_center = edge_index + primal_ntri(domain->primal) 
-	                           + primal_ncell(domain->primal);
-	  segment_index = side + 3 * tri + 10 * primal_ncell(domain->primal);
-	  TRY( segment_initialize( domain_segment(domain,segment_index),
-				   domain_node(domain,tri_center),
-				   domain_node(domain,edge_center)),
-	       "seg init");
-	}
-    }
 
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
     {
@@ -319,9 +350,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    primal_nedge(domain->primal) + 
 	    primal_ntri(domain->primal) + 
 	    primal_ncell(domain->primal);
-	  TRY( segment_initialize( domain_segment(domain,segment_index),
-				   domain_node(domain,tri_center),
-				   domain_node(domain,node_index)), "seg init");
+	  domain->segment[segment_index] = 
+	    segment_create( domain_node(domain,tri_center),
+			    domain_node(domain,node_index) );
 	}
       for ( side = 0 ; side < 3 ; side++)
 	{
@@ -334,27 +365,25 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	      TRY( primal_find_edge( domain->primal, node0, node1, 
 				     &edge_index ), "face seg find edge" );
 	      edge_center = edge_index + primal_ntri(domain->primal) 
-	                  + primal_ncell(domain->primal);
+		                       + primal_ncell(domain->primal);
 	      segment_index = 0 + f2s[side+3*face];
 	      node_index = 
 		node_g2l[node0] + 
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
-	      TRY( segment_initialize( domain_segment(domain,segment_index),
-				       domain_node(domain,node_index),
-				       domain_node(domain,edge_center)), 
-		   "seg init");
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,node_index),
+				domain_node(domain,edge_center) );
 	      segment_index = 1 + f2s[side+3*face];
 	      node_index = 
 		node_g2l[node1] + 
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
-	      TRY( segment_initialize( domain_segment(domain,segment_index),
-				       domain_node(domain,edge_center),
-				       domain_node(domain,node_index)), 
-		   "seg init");
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,edge_center),
+				domain_node(domain,node_index) );
 	    }
 	}
     }
