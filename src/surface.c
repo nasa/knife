@@ -141,7 +141,7 @@ Surface surface_from( Primal primal, Array bcs,
       if ( EMPTY != local_node )
 	{
 	  primal_xyz(primal, global_node, xyz);
-	  node_initialize( surface_node(surface,local_node), xyz, local_node );
+	  node_initialize( surface_node(surface,local_node), xyz );
 	}
     }
 
