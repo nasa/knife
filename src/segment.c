@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "segment.h"
 
 #define TRYN(fcn,msg)					      \
@@ -78,7 +79,6 @@ void segment_free( Segment segment )
   free( segment );
 }
 
-
 Node segment_common_node( Segment segment0, Segment segment1 )
 {
   Node node;
@@ -88,4 +88,25 @@ Node segment_common_node( Segment segment0, Segment segment1 )
   if ( segment0->node1 == segment1->node0 ) node = segment0->node1;
   if ( segment0->node1 == segment1->node1 ) node = segment0->node1;
   return node;
+}
+
+KNIFE_STATUS segment_extent( Segment segment, 
+			      double *center, double *diameter )
+{
+  double dx, dy, dz;
+  int i;
+
+  for(i=0;i<3;i++)
+    center[i] = ( segment->node0->xyz[i] + 
+		  segment->node1->xyz[i] ) / 2.0;
+  dx = segment->node0->xyz[0] - center[0];
+  dy = segment->node0->xyz[1] - center[1];
+  dz = segment->node0->xyz[2] - center[2];
+  *diameter = sqrt(dx*dx+dy*dy+dz*dz);
+  dx = segment->node1->xyz[0] - center[0];
+  dy = segment->node1->xyz[1] - center[1];
+  dz = segment->node1->xyz[2] - center[2];
+  *diameter = MAX(*diameter,sqrt(dx*dx+dy*dy+dz*dz));
+  
+  return KNIFE_SUCCESS;
 }

@@ -40,6 +40,9 @@ void segment_free( Segment );
 
 Node segment_common_node( Segment segment0, Segment segment1 );
 
+KNIFE_STATUS segment_extent( Segment segment, 
+			     double *center, double *diameter );
+
 #define segment_add_intersection( segment, new_intersection )	\
   array_add( (segment)->intersection, (ArrayItem)(new_intersection) )
 
