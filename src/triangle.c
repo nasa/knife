@@ -132,14 +132,6 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
-void triangle_echo( Triangle triangle )
-{
-  printf("node0 %d node1 %d node2 %d\n",
-	 triangle->node0->indx,
-	 triangle->node1->indx,
-	 triangle->node2->indx);
-}
-
 KNIFE_STATUS triangle_extent( Triangle triangle, 
 			      double *center, double *diameter )
 {

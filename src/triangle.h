@@ -50,7 +50,6 @@ KNIFE_STATUS triangle_initialize(Triangle,
 				 Segment segment2,
 				 int boundary_face_index );
 void triangle_free( Triangle );
-void triangle_echo( Triangle );
 
 #define triangle_segment(triangle,segment_index)	\
   ((triangle)->segment[segment_index])
