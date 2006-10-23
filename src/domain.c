@@ -1080,6 +1080,9 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   KnifeBool active, original;
 
+  printf("domain_export_fun3d skipped\n");
+  return KNIFE_SUCCESS;
+
   printf("dump node stuff\n");
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
