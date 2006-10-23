@@ -65,11 +65,11 @@ Domain domain_create( Primal primal, Surface surface)
   domain->nsegment = EMPTY;
   domain->segment = NULL;
 
-  domain->npoly = EMPTY;
-  domain->poly = NULL;
-
   domain->ntriangle = EMPTY;
   domain->triangle = NULL;
+
+  domain->npoly = EMPTY;
+  domain->poly = NULL;
 
   return domain;
 }
@@ -78,8 +78,7 @@ void domain_free( Domain domain )
 {
   if ( NULL == domain ) return;
   
-  if ( NULL != domain->poly ) free(domain->poly);
-  if ( NULL != domain->triangle ) free(domain->triangle);
+  printf("%s: %d: domain_free: memory leak, fix\n",__FILE__,__LINE__);
 
   free(domain);
 }
@@ -296,12 +295,12 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	 primal_ntri(domain->primal));
 
   printf("create poly for primal nodes\n");
-
+  
   domain->npoly = primal_nnode(domain->primal);
-  domain->poly = (PolyStruct *)malloc(domain->npoly * sizeof(PolyStruct));
+  domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
   domain_test_malloc(domain->poly,"domain_dual_elements poly");
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    TRY( poly_initialize(domain_poly(domain,poly)), "poly init");
+    domain->poly[poly] =  poly_create( );
   
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );

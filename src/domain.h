@@ -44,7 +44,7 @@ struct DomainStruct {
   Triangle *triangle;
 
   int npoly;
-  PolyStruct *poly;
+  Poly *poly;
 };
 
 #define domain_test_malloc(ptr,fcn)		       \
@@ -71,7 +71,7 @@ Triangle domain_triangle( Domain, int triangle_index );
 
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index) \
-  (&((domain)->poly[(poly_index)]))
+  ((domain)->poly[(poly_index)])
 
 KNIFE_STATUS domain_dual_elements( Domain );
 
