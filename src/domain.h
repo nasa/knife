@@ -82,13 +82,13 @@ Triangle domain_triangle( Domain, int triangle_index );
   ((domain)->poly[(poly_index)])
 
 #define domain_cut(domain,poly_index) \
-  (POLY_CUT == (domain)->topo[(poly_index)])
+  ((NULL == (domain))?FALSE:POLY_CUT == (domain)->topo[(poly_index)])
 
 #define domain_original(domain,poly_index) \
-  (POLY_INTERIOR == (domain)->topo[(poly_index)])
+  ((NULL == (domain))?TRUE:POLY_INTERIOR == (domain)->topo[(poly_index)])
 
 #define domain_active(domain,poly_index) \
-  ((domain)->topo[(poly_index)])
+  ((NULL == (domain))?TRUE:(domain)->topo[(poly_index)])
 
 
 KNIFE_STATUS domain_dual_elements( Domain );
