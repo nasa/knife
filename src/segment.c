@@ -31,9 +31,18 @@
     return KNIFE_NULL;					      \
   }
 
+#define NOT_NULLN(pointer,msg)				      \
+  if (NULL == (pointer)) {				      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return NULL;					      \
+  }
+
 Segment segment_create( Node node0, Node node1 )
 {
   Segment segment;
+
+  NOT_NULLN(node0,"node0 NULL in segment_create");
+  NOT_NULLN(node1,"node1 NULL in segment_create");
   
   segment = (Segment)malloc( sizeof(SegmentStruct) );
   if (NULL == segment) {
