@@ -34,11 +34,11 @@ struct DomainStruct {
 
   Surface surface;
 
+  int nnode;
+  Node *node;
+
   int npoly;
   PolyStruct *poly;
-
-  int nnode;
-  NodeStruct *node;
 
   int nsegment;
   SegmentStruct *segment;
@@ -58,14 +58,14 @@ Domain domain_create( Primal, Surface );
 void domain_free( Domain );
 
 #define domain_primal(domain) ((domain)->primal)
+#define domain_surface(domain) ((domain)->surface)
+
+#define domain_nnode(domain) ((domain)->nnode)
+Node domain_node( Domain, int node_index );
 
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index) \
   (&((domain)->poly[(poly_index)]))
-
-#define domain_nnode(domain) ((domain)->nnode)
-#define domain_node(domain,node_index) \
-  (&((domain)->node[(node_index)]))
 
 #define domain_nsegment(domain) ((domain)->nsegment)
 #define domain_segment(domain,segment_index) \

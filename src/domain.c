@@ -27,10 +27,26 @@
     }							      \
   }
 
+#define TRYN(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return NULL;					      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				      \
   if (NULL == (pointer)) {				      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
     return KNIFE_NULL;					      \
+  }
+
+#define NOT_NULLN(pointer,msg)				      \
+  if (NULL == (pointer)) {				      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return NULL;					      \
   }
 
 Domain domain_create( Primal primal, Surface surface)
@@ -38,13 +54,13 @@ Domain domain_create( Primal primal, Surface surface)
   Domain domain;
 
   domain = (Domain) malloc( sizeof(DomainStruct) );
-  if (NULL == domain) {
-    printf("%s: %d: malloc failed in domain_create\n",__FILE__,__LINE__);
-    return NULL;
-  }
+  NOT_NULLN(domain,"malloc failed in domain_create");
 
   domain->primal = primal;
   domain->surface = surface;
+
+  domain->nnode = EMPTY;
+  domain->node = NULL;
 
   domain->npoly = EMPTY;
   domain->poly = NULL;
@@ -64,6 +80,61 @@ void domain_free( Domain domain )
 
   free(domain);
 }
+
+Node domain_node( Domain domain, int node_index )
+{
+  int cell, tri, edge;
+  double xyz[3];
+
+  if ( 0 > node_index || domain_nnode(domain) <= node_index ) 
+    {
+      printf("%s: %d: domain_node array bound error %d\n",
+	     __FILE__,__LINE__, node_index);
+      return NULL;
+    }
+
+  if (NULL == domain->node[node_index])
+    {
+      if ( node_index < primal_ncell(domain->primal) )
+	{
+	  cell = node_index;
+	  TRYN( primal_cell_center( domain->primal, cell, xyz), "cell center" );
+	  domain->node[node_index] = node_create( xyz );
+	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  return domain->node[node_index];
+	}
+      if ( node_index < primal_ncell(domain->primal) 
+	              + primal_ntri(domain->primal) )
+	{
+	  tri = node_index - primal_ncell(domain->primal);
+	  TRYN( primal_tri_center( domain->primal, tri, xyz), "tri center" );
+	  domain->node[node_index] = node_create( xyz );
+	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  return domain->node[node_index];
+	}
+      if ( node_index < primal_ncell(domain->primal) 
+	              + primal_ntri(domain->primal) 
+	              + primal_nedge(domain->primal) )
+	{
+	  edge = node_index - primal_ncell(domain->primal) 
+	                    - primal_ntri(domain->primal);
+	  TRYN( primal_edge_center( domain->primal, edge, xyz), "edge center" );
+	  domain->node[node_index] = node_create( xyz );
+	  NOT_NULLN(domain->node[node_index],"node_create NULL;");
+	  return domain->node[node_index];
+	}
+      /* boundary nodes should have been added ahead for time */
+      printf("%s: %d: domain_node face node not precomputed %d\n",
+	     __FILE__,__LINE__, node_index);
+      return NULL;
+    }
+
+  return domain->node[node_index];
+
+}
+
+
+
 
 KNIFE_STATUS domain_dual_elements( Domain domain )
 {
@@ -126,41 +197,27 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     primal_ntri(domain->primal) +
     primal_nedge(domain->primal) +
     surface_nnode;
-  domain->node = (NodeStruct *)malloc( domain->nnode * 
-				       sizeof(NodeStruct));
+  domain->node = (Node *)malloc( domain->nnode * sizeof(Node));
   domain_test_malloc(domain->node,
 		     "domain_tetrahedral_elements node");
   printf("number of dual nodes in the volume %d\n",domain->nnode);
-  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
-    {
-      node = cell;
-      TRY( primal_cell_center( domain->primal, cell, xyz), "cell center" );
-      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
-    }
-  for ( tri = 0 ; tri < primal_ntri(domain->primal) ; tri++)
-    {
-      node = tri + primal_ncell(domain->primal);
-      TRY( primal_tri_center( domain->primal, tri, xyz), "tri center" );
-      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
-    }
-  for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
-    {
-      node = edge + primal_ntri(domain->primal) + primal_ncell(domain->primal);
-      TRY( primal_edge_center( domain->primal, edge, xyz), "edge center" );
-      TRY( node_initialize( domain_node(domain,node), xyz, node), "node init");
-    }
-  for ( node_index = 0 ; 
-	node_index < primal_nnode(domain->primal) ; 
-	node_index++) 
-    if ( EMPTY != node_g2l[node_index] )
+  for ( node =0 ; node < domain->nnode ; node++ )
+    domain->node[node] = NULL;
+
+  /* create boundary nodes even though they may not be needed */
+  for ( node = 0 ; 
+	node < primal_nnode(domain->primal) ; 
+	node++) 
+    if ( EMPTY != node_g2l[node] )
       {
-	node = 
-	  node_g2l[node_index] + 
+	node_index = 
+	  node_g2l[node] + 
 	  primal_nedge(domain->primal) + 
 	  primal_ntri(domain->primal) + 
 	  primal_ncell(domain->primal);
-	primal_xyz(domain->primal,node_index,xyz);
-	TRY( node_initialize( domain_node(domain,node), xyz, node),"node init");
+	primal_xyz(domain->primal,node,xyz);
+	domain->node[node_index] = node_create( xyz );
+	NOT_NULL( domain->node[node_index], "boundary face node create NULL");
       }
 
   printf("create dual segments\n");
