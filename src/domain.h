@@ -40,11 +40,11 @@ struct DomainStruct {
   int nsegment;
   Segment *segment;
 
+  int ntriangle;
+  Triangle *triangle;
+
   int npoly;
   PolyStruct *poly;
-
-  int ntriangle;
-  TriangleStruct *triangle;
 };
 
 #define domain_test_malloc(ptr,fcn)		       \
@@ -66,14 +66,12 @@ Node domain_node( Domain, int node_index );
 #define domain_nsegment(domain) ((domain)->nsegment)
 Segment domain_segment( Domain, int segment_index );
 
+#define domain_ntriangle(domain) ((domain)->ntriangle)
+Triangle domain_triangle( Domain, int triangle_index );
 
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index) \
   (&((domain)->poly[(poly_index)]))
-
-#define domain_ntriangle(domain) ((domain)->ntriangle)
-#define domain_triangle(domain,triangle_index) \
-  (&((domain)->triangle[(triangle_index)]))
 
 KNIFE_STATUS domain_dual_elements( Domain );
 
