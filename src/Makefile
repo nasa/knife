@@ -19,6 +19,13 @@ test: all
 	( cd ../cases/big3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
+val: all
+	( cd ../cases/box5 && \
+	  valgrind ../../`uname`/src/knife -s surface.fgrid -b 1 \
+	                               -v box5.fgrid $(TEC_FLAG) )
+	( cd ../cases/tiny3d && \
+	  valgrind ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
+	                               -v gbumpn.fgrid $(TEC_FLAG) )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
