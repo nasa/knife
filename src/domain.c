@@ -280,7 +280,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int cell_edge;
   int segment0, segment1, segment2;
   int node0, node1;
-  int poly;
   int surface_nnode;
   int *node_g2l;
   int node_index;
@@ -293,15 +292,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	 primal_ncell(domain->primal),
 	 primal_nedge(domain->primal),
 	 primal_ntri(domain->primal));
-
-  printf("create poly for primal nodes\n");
-  
-  domain->npoly = primal_nnode(domain->primal);
-  domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
-  domain_test_malloc(domain->poly,"domain_dual_elements poly");
-  for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    domain->poly[poly] =  poly_create( );
-  
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
@@ -557,21 +547,37 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   return (KNIFE_SUCCESS);
 }
 
-KNIFE_STATUS domain_boolean_subtract( Domain domain )
+KNIFE_STATUS domain_required_dual( Domain domain )
 {
   int triangle_index;
   int i;
-  NearStruct *near_tree;
+  NearStruct *triangle_tree;
   double center[3], diameter;
   int max_touched, ntouched;
   int *touched;
   NearStruct target;
 
+  int poly_index;
+  int edge_index, edge_nodes[2];
+  double xyz0[3], xyz1[3];
+  Triangle triangle;
+  double t, uvw[3];
+  double dx, dy, dz;
+  KNIFE_STATUS intersection_status;
+
+  printf("create poly for primal nodes\n");
+  
+  domain->npoly = primal_nnode(domain->primal);
+  domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
+  domain_test_malloc(domain->poly,"domain_dual_elements poly");
+  for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
+    domain->poly[poly_index] = NULL;
+  
   printf("forming surface near tree\n");
 
-  near_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
-				    sizeof(NearStruct));
-  NOT_NULL( near_tree, "near_tree NULL");
+  triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
+					sizeof(NearStruct));
+  NOT_NULL( triangle_tree, "triangle_tree NULL");
 
   for (triangle_index=0;
        triangle_index<surface_ntriangle(domain->surface);
@@ -579,20 +585,105 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
     {
       triangle_extent(surface_triangle(domain->surface,triangle_index),
 		      center, &diameter);
-      near_initialize( &(near_tree[triangle_index]), 
+      near_initialize( &(triangle_tree[triangle_index]), 
 		       triangle_index, 
 		       center[0], center[1], center[2], 
 		       diameter );
-      if (triangle_index > 0) near_insert( near_tree,
-					   &(near_tree[triangle_index]) );
+      if (triangle_index > 0) near_insert( triangle_tree,
+					   &(triangle_tree[triangle_index]) );
     }
-
-  printf("compute cuts\n");
 
   max_touched = surface_ntriangle(domain->surface);
 
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
+
+  printf("volume segments intersecting surface triangles\n");
+
+  for (edge_index=0;edge_index<primal_nedge(domain->primal);edge_index++)
+    {
+      primal_edge(domain->primal,edge_index,edge_nodes);
+      primal_xyz(domain->primal,edge_nodes[0],xyz0);
+      primal_xyz(domain->primal,edge_nodes[1],xyz1);
+      dx = xyz0[0]-xyz1[0];
+      dy = xyz0[1]-xyz1[1];
+      dz = xyz0[2]-xyz1[2];
+      diameter = 0.5000001*sqrt(dx*dx+dy*dy+dz*dz);
+      primal_edge_center( domain->primal, edge_index, center);
+      near_initialize( &target, 
+		       EMPTY, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      ntouched = 0;
+      near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
+      for (i=0;i<ntouched;i++)
+	{
+	  triangle = surface_triangle(domain->surface,touched[i]);
+	  intersection_status = intersection_core( triangle->node0->xyz,
+						   triangle->node1->xyz,
+						   triangle->node2->xyz,
+						   xyz0, xyz1,
+						   &t, uvw );
+	  if ( KNIFE_NO_INT != intersection_status )
+	    TRY( intersection_status, "intersection_core" );
+	  if ( KNIFE_SUCCESS == intersection_status )
+	    {
+	      if ( NULL == domain->poly[edge_nodes[0]] )
+		domain->poly[edge_nodes[0]] = poly_create( );
+	      if ( NULL == domain->poly[edge_nodes[1]] )
+		domain->poly[edge_nodes[1]] = poly_create( );
+	    }
+	}
+    }
+
+  free(touched);
+  free(triangle_tree);
+
+  TRY( domain_dual_elements( domain ), "domain_dual_elements" );
+
+
+  return (KNIFE_SUCCESS);
+}
+
+
+KNIFE_STATUS domain_boolean_subtract( Domain domain )
+{
+  int triangle_index;
+  int i;
+  NearStruct *triangle_tree;
+  double center[3], diameter;
+  int max_touched, ntouched;
+  int *touched;
+  NearStruct target;
+
+  TRY( domain_required_dual( domain ), "domain_required_dual" );
+
+  printf("forming surface near tree\n");
+
+  triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
+					sizeof(NearStruct));
+  NOT_NULL( triangle_tree, "triangle_tree NULL");
+
+  for (triangle_index=0;
+       triangle_index<surface_ntriangle(domain->surface);
+       triangle_index++)
+    {
+      triangle_extent(surface_triangle(domain->surface,triangle_index),
+		      center, &diameter);
+      near_initialize( &(triangle_tree[triangle_index]), 
+		       triangle_index, 
+		       center[0], center[1], center[2], 
+		       diameter );
+      if (triangle_index > 0) near_insert( triangle_tree,
+					   &(triangle_tree[triangle_index]) );
+    }
+
+  max_touched = surface_ntriangle(domain->surface);
+
+  touched = (int *) malloc( max_touched * sizeof(int) );
+  NOT_NULL( touched, "touched NULL");
+
+  printf("compute cuts\n");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
@@ -605,7 +696,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 		       center[0], center[1], center[2], 
 		       diameter );
       ntouched = 0;
-      near_touched(near_tree, &target, &ntouched, max_touched, touched);
+      near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
       for (i=0;i<ntouched;i++)
 	{
 	  TRY( cut_establish_between( domain_triangle(domain,triangle_index),
@@ -616,7 +707,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
     }
 
   free(touched);
-  free(near_tree);
+  free(triangle_tree);
 
   TRY( domain_triangulate(domain), "domain_triangulate" );
 
@@ -666,10 +757,12 @@ KNIFE_STATUS domain_gather_surf( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
-    {
-      TRY( poly_gather_surf( domain_poly(domain,poly_index) ), "poly_gather_surf" );
-      if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) cut_poly++;
-    }
+    if ( NULL != domain_poly(domain,poly_index) )
+      {
+	TRY( poly_gather_surf( domain_poly(domain,poly_index) ), 
+	     "poly_gather_surf" );
+	if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) cut_poly++;
+      }
 
   printf("polyhedra %d of %d have been cut\n",cut_poly,domain_npoly(domain));
 
@@ -683,9 +776,10 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
-    if ( poly_has_surf( domain_poly( domain, poly_index ) ) )
-      TRY( poly_determine_active_subtri( domain_poly(domain,poly_index) ),
-	   "poly_determine_active_subtri" );
+    if ( NULL != domain_poly(domain,poly_index) )
+      if ( poly_has_surf( domain_poly( domain, poly_index ) ) )
+	TRY( poly_determine_active_subtri( domain_poly(domain,poly_index) ),
+	     "poly_determine_active_subtri" );
 
   return KNIFE_SUCCESS;
 }
@@ -708,10 +802,11 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
-    {
-      if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) 
-	domain_poly(domain,poly_index)->topo = POLY_CUT;
-    }
+    if ( NULL != domain_poly(domain,poly_index) )
+      {
+	if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) 
+	  domain_poly(domain,poly_index)->topo = POLY_CUT;
+      }
 
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
