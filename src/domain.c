@@ -511,17 +511,21 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
 	  triangle_index = 0 + 2 * cell_edge + 12 * cell;
 	  /* triangle normal points from node0 to node1 */
-	  poly_add_triangle( domain_poly(domain,node0),
-			     domain_triangle(domain,triangle_index), FALSE );
-	  poly_add_triangle( domain_poly(domain,node1),
-			     domain_triangle(domain,triangle_index), TRUE );
+	  if ( NULL != domain_poly(domain,node0) )
+	    poly_add_triangle( domain_poly(domain,node0),
+			       domain_triangle(domain,triangle_index), FALSE );
+	  if ( NULL != domain_poly(domain,node1) )
+	    poly_add_triangle( domain_poly(domain,node1),
+			       domain_triangle(domain,triangle_index), TRUE );
 
 	  triangle_index = 1 + 2 * cell_edge + 12 * cell;
 	  /* triangle normal points from node0 to node1 */
-	  poly_add_triangle( domain_poly(domain,node0),
-			     domain_triangle(domain,triangle_index), FALSE );
-	  poly_add_triangle( domain_poly(domain,node1),
-			     domain_triangle(domain,triangle_index), TRUE );
+	  if ( NULL != domain_poly(domain,node0) )
+	    poly_add_triangle( domain_poly(domain,node0),
+			       domain_triangle(domain,triangle_index), FALSE );
+	  if ( NULL != domain_poly(domain,node1) )
+	    poly_add_triangle( domain_poly(domain,node1),
+			       domain_triangle(domain,triangle_index), TRUE );
 	}
     }
 
@@ -534,12 +538,14 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  node1 = face_nodes[primal_face_side_node1(side)];
 
 	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
-	  poly_add_triangle( domain_poly(domain,node0),
-			     domain_triangle(domain,triangle_index), TRUE );
+	  if ( NULL != domain_poly(domain,node0) )
+	    poly_add_triangle( domain_poly(domain,node0),
+			       domain_triangle(domain,triangle_index), TRUE );
 
 	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
-	  poly_add_triangle( domain_poly(domain,node1),
-			     domain_triangle(domain,triangle_index), TRUE );
+	  if ( NULL != domain_poly(domain,node1) )
+	    poly_add_triangle( domain_poly(domain,node1),
+			       domain_triangle(domain,triangle_index), TRUE );
 	}
     }
 	  
