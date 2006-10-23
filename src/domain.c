@@ -690,23 +690,24 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
-    {
-      triangle_extent(domain_triangle(domain,triangle_index),
-		      center, &diameter);
-      near_initialize( &target, 
-		       EMPTY, 
-		       center[0], center[1], center[2], 
-		       diameter );
-      ntouched = 0;
-      near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
-      for (i=0;i<ntouched;i++)
-	{
-	  TRY( cut_establish_between( domain_triangle(domain,triangle_index),
-				      surface_triangle(domain->surface,
-						       touched[i]) ),
-	       "cut establishment failed" );
-	}
-    }
+    if (NULL != domain->triangle[triangle_index] )
+      {
+	triangle_extent(domain_triangle(domain,triangle_index),
+			center, &diameter);
+	near_initialize( &target, 
+			 EMPTY, 
+			 center[0], center[1], center[2], 
+			 diameter );
+	ntouched = 0;
+	near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
+	for (i=0;i<ntouched;i++)
+	  {
+	    TRY( cut_establish_between( domain_triangle(domain,triangle_index),
+					surface_triangle(domain->surface,
+							 touched[i]) ),
+		 "cut establishment failed" );
+	  }
+      }
 
   free(touched);
   free(triangle_tree);
@@ -744,8 +745,10 @@ KNIFE_STATUS domain_triangulate( Domain domain )
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
-    TRY( triangle_triangulate_cuts( domain_triangle(domain, triangle_index) ), 
-	 "volume triangulate_cuts" );
+    if (NULL != domain->triangle[triangle_index] )
+      TRY( triangle_triangulate_cuts( domain_triangle(domain, 
+						      triangle_index) ), 
+	   "volume triangulate_cuts" );
 
   return KNIFE_SUCCESS;
 }

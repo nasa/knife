@@ -57,7 +57,6 @@ KNIFE_STATUS poly_initialize( Poly poly )
 {
 
   poly->primal_node = NULL;
-  poly->topo = POLY_INTERIOR;
 
   poly->mask = array_create(4,40);
   NOT_NULL( poly->mask, "poly mask array null" );

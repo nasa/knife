@@ -29,15 +29,8 @@ END_C_DECLORATION
 
 BEGIN_C_DECLORATION
 
-typedef int POLY_TOPO;
-
-#define POLY_EXTERIOR (0)
-#define POLY_INTERIOR (1)
-#define POLY_CUT      (2)
-
 struct PolyStruct {
   Node primal_node;
-  POLY_TOPO topo;
   Array mask;
   Array surf;
 };
@@ -71,12 +64,6 @@ KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2 );
 KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
                                                   KnifeBool *active );
 
-#define poly_topo( poly ) ((poly)->topo)
-
-#define poly_active( poly ) (POLY_EXTERIOR != poly_topo(poly))
-#define poly_cut( poly ) (POLY_CUT == poly_topo(poly))
-#define poly_original( poly ) (POLY_INTERIOR == poly_topo(poly))
-
 #define poly_add_mask( poly, new_mask )			\
   array_add( (poly)->mask, (ArrayItem)(new_mask) )
 #define poly_nmask( poly )			\
@@ -109,7 +96,6 @@ KNIFE_STATUS poly_lumped_surf( Poly, FILE * );
 
 KNIFE_STATUS poly_tecplot( Poly );
 KNIFE_STATUS poly_tecplot_zone( Poly, FILE * );
-
 
 END_C_DECLORATION
 

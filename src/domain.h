@@ -29,6 +29,12 @@ END_C_DECLORATION
 
 BEGIN_C_DECLORATION
 
+typedef int POLY_TOPO;
+
+#define POLY_EXTERIOR (0)
+#define POLY_INTERIOR (1)
+#define POLY_CUT      (2)
+
 struct DomainStruct {
   Primal primal;
 
@@ -45,6 +51,8 @@ struct DomainStruct {
 
   int npoly;
   Poly *poly;
+
+  POLY_TOPO *topo;
 };
 
 #define domain_test_malloc(ptr,fcn)		       \
@@ -72,6 +80,16 @@ Triangle domain_triangle( Domain, int triangle_index );
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index) \
   ((domain)->poly[(poly_index)])
+
+#define domain_cut(domain,poly_index) \
+  (POLY_CUT == (domain)->topo[(poly_index)])
+
+#define domain_original(domain,poly_index) \
+  (POLY_INTERIOR == (domain)->topo[(poly_index)])
+
+#define domain_active(domain,poly_index) \
+  ((domain)->topo[(poly_index)])
+
 
 KNIFE_STATUS domain_dual_elements( Domain );
 
