@@ -71,6 +71,8 @@ Domain domain_create( Primal primal, Surface surface)
   domain->npoly = EMPTY;
   domain->poly = NULL;
 
+  domain->topo = NULL;
+
   return domain;
 }
 
@@ -799,13 +801,21 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 
   if (NULL == domain) return KNIFE_NULL;
 
+  domain->topo = (POLY_TOPO *)malloc( domain_npoly(domain) * sizeof(POLY_TOPO));
+  NOT_NULL( domain->topo, "domain->topo NULL");
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly(domain); 
+	poly_index++)
+    domain->topo[poly_index] = POLY_INTERIOR;
+
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain); 
 	poly_index++)
     if ( NULL != domain_poly(domain,poly_index) )
       {
 	if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) 
-	  domain_poly(domain,poly_index)->topo = POLY_CUT;
+	  domain->topo[poly_index] = POLY_CUT;
       }
 
   for (edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
@@ -816,22 +826,25 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
       TRY( primal_edge( domain->primal, edge, edge_nodes), 
 	   "dual_topo cut int primal_edge" );
       poly0 = domain_poly(domain,edge_nodes[0]);
-      topo0 = poly_topo(poly0);
       poly1 = domain_poly(domain,edge_nodes[1]);
-      topo1 = poly_topo(poly1);
-
-      if ( POLY_CUT == topo0 && POLY_INTERIOR == topo1 )
+      if ( NULL != poly0 && NULL != poly1 )
 	{
-	  TRY( poly_mask_surrounding_node_activity( poly0, node,
-						    &active ), "active01");
-	  if ( !active ) poly_topo(poly1) = POLY_EXTERIOR;
-	}
+	  topo0 = domain->topo[edge_nodes[0]];
+	  topo1 = domain->topo[edge_nodes[1]];
 
-      if ( POLY_CUT == topo1 && POLY_INTERIOR == topo0 )
-	{
-	  TRY( poly_mask_surrounding_node_activity( poly1, node,
-						    &active ), "active10");
-	  if ( !active ) poly_topo(poly0) = POLY_EXTERIOR;
+	  if ( POLY_CUT == topo0 && POLY_INTERIOR == topo1 )
+	    {
+	      TRY( poly_mask_surrounding_node_activity( poly0, node,
+							&active ), "active01");
+	      if ( !active ) domain->topo[edge_nodes[1]] = POLY_EXTERIOR;
+	    }
+
+	  if ( POLY_CUT == topo1 && POLY_INTERIOR == topo0 )
+	    {
+	      TRY( poly_mask_surrounding_node_activity( poly1, node,
+							&active ), "active10");
+	      if ( !active ) domain->topo[edge_nodes[0]] = POLY_EXTERIOR;
+	    }
 	}
 
     }
@@ -844,24 +857,21 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	{
 	  TRY( primal_edge( domain->primal, edge, edge_nodes), 
 	       "dual_topo ext int primal_edge" );
-	  poly0 = domain_poly(domain,edge_nodes[0]);
-	  topo0 = poly_topo(poly0);
-	  poly1 = domain_poly(domain,edge_nodes[1]);
-	  topo1 = poly_topo(poly1);
+	  topo0 = domain->topo[edge_nodes[0]];
+	  topo1 = domain->topo[edge_nodes[1]];
 
 	  if ( POLY_EXTERIOR == topo0 && POLY_INTERIOR == topo1 )
 	    {
 	      requires_another_sweep = TRUE;
-	      poly_topo(poly1) = POLY_EXTERIOR;
+	      domain->topo[edge_nodes[1]] = POLY_EXTERIOR;
 	    }
 
 	  if ( POLY_EXTERIOR == topo1 && POLY_INTERIOR == topo0 )
 	    {
 	      requires_another_sweep = TRUE;
-	      poly_topo(poly0) = POLY_EXTERIOR;
+	      domain->topo[edge_nodes[0]] = POLY_EXTERIOR;
 	    }
 	}
-
     }
 
   {
@@ -876,11 +886,11 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	  poly_index < domain_npoly(domain);
 	  poly_index++)
       {
-	if ( POLY_INTERIOR == poly_topo( domain_poly( domain, poly_index ) ) )
+	if ( POLY_INTERIOR == domain->topo[poly_index] )
 	  ninterior++;
-	if ( POLY_CUT      == poly_topo( domain_poly( domain, poly_index ) ) )
+	if ( POLY_CUT      == domain->topo[poly_index] )
 	  ncut++;
-	if ( POLY_EXTERIOR == poly_topo( domain_poly( domain, poly_index ) ) )
+	if ( POLY_EXTERIOR == domain->topo[poly_index] )
 	  nexterior++;
       }
 
@@ -924,8 +934,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	poly_index < domain_npoly(domain);
 	poly_index++)
     {
-      poly = domain_poly(domain,poly_index);
-      if (poly_active(poly))
+      if ( domain_active(domain,poly_index) )
 	{
 	  node_g2l[poly_index] = nnode;
 	  nnode++;
@@ -945,7 +954,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  poly = domain_poly(domain,poly_index);
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
-	  if (poly_cut(poly)) 
+	  if ( domain_cut(domain,poly_index) ) 
 	    {
 	      poly_centroid_volume(poly,xyz,center,&volume);
 	      fprintf(f,"%.16e %.16e %.16e\n",
@@ -1074,8 +1083,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       primal_edge(domain->primal, edge, edge_nodes);
       if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
 	   ( EMPTY != node_g2l[edge_nodes[1]] ) &&
-	   !poly_cut(domain_poly(domain,edge_nodes[0])) &&
-	   !poly_cut(domain_poly(domain,edge_nodes[1])) ) norig++; 
+	   !domain_cut(domain,edge_nodes[0]) &&
+	   !domain_cut(domain,edge_nodes[1]) ) norig++; 
     }
 
   fprintf(f,"%d\n",norig);
@@ -1087,8 +1096,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
 	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
 	{
-	  if ( !poly_cut(domain_poly(domain,edge_nodes[0])) &&
-	       !poly_cut(domain_poly(domain,edge_nodes[1])) ) 
+	  if ( !domain_cut(domain,edge_nodes[0]) &&
+	       !domain_cut(domain,edge_nodes[1]) ) 
 	    fprintf(f,"%d\n",1+nedge);
 	  nedge++;
 	} 
@@ -1105,8 +1114,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
 	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
 	{
-	  if ( poly_cut(domain_poly(domain,edge_nodes[0])) ||
-	       poly_cut(domain_poly(domain,edge_nodes[1])) ) ncut++;
+	  if ( domain_cut(domain,edge_nodes[0]) ||
+	       domain_cut(domain,edge_nodes[1]) ) ncut++;
 	} 
     }
 
@@ -1121,8 +1130,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
       primal_edge(domain->primal, edge, edge_nodes);
       if ( ( EMPTY != node_g2l[edge_nodes[0]] ) &&
 	   ( EMPTY != node_g2l[edge_nodes[1]] ) )
-	if ( poly_cut(domain_poly(domain,edge_nodes[0])) ||
-	     poly_cut(domain_poly(domain,edge_nodes[1])) )
+	if ( domain_cut(domain,edge_nodes[0]) ||
+	     domain_cut(domain,edge_nodes[1]) )
 	  {
 	    node_index = edge + 
 	      primal_ntri(domain->primal) + primal_ncell(domain->primal);
@@ -1171,9 +1180,9 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  primal_face(domain->primal,face,face_nodes);
 	  if ( face_id == face_nodes[3] &&
-	       poly_original(domain_poly(domain,face_nodes[0])) &&
-	       poly_original(domain_poly(domain,face_nodes[1])) &&
-	       poly_original(domain_poly(domain,face_nodes[2])) )
+	       domain_original(domain,face_nodes[0]) &&
+	       domain_original(domain,face_nodes[1]) &&
+	       domain_original(domain,face_nodes[2]) )
 	    {
 	      nface++;
 	      for ( i = 0; i < 3 ; i++ )
@@ -1210,9 +1219,9 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  primal_face(domain->primal,face,face_nodes);
 	  if ( face_id == face_nodes[3] &&
-	       poly_original(domain_poly(domain,face_nodes[0])) &&
-	       poly_original(domain_poly(domain,face_nodes[1])) &&
-	       poly_original(domain_poly(domain,face_nodes[2])) )
+	       domain_original(domain,face_nodes[0]) &&
+	       domain_original(domain,face_nodes[1]) &&
+	       domain_original(domain,face_nodes[2]) )
 	    fprintf(f,"%d %d %d\n",
 		    1+face_g2l[face_nodes[0]],
 		    1+face_g2l[face_nodes[1]],
@@ -1235,20 +1244,20 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     {
       primal_face(domain->primal,face,face_nodes);
       
-      active =( poly_active(domain_poly(domain,face_nodes[0])) ||
-		poly_active(domain_poly(domain,face_nodes[1])) ||
-		poly_active(domain_poly(domain,face_nodes[2])) );
+      active =( domain_active(domain,face_nodes[0]) ||
+		domain_active(domain,face_nodes[1]) ||
+		domain_active(domain,face_nodes[2]) );
       
-      original =( poly_original(domain_poly(domain,face_nodes[0])) &&
-		  poly_original(domain_poly(domain,face_nodes[1])) &&
-		  poly_original(domain_poly(domain,face_nodes[2])) );
+      original =( domain_original(domain,face_nodes[0]) &&
+		  domain_original(domain,face_nodes[1]) &&
+		  domain_original(domain,face_nodes[2]) );
       
 
       if (active && !original) 
 	{
-	  if (poly_active(domain_poly(domain,face_nodes[0]))) ntri++;
-	  if (poly_active(domain_poly(domain,face_nodes[1]))) ntri++;
-	  if (poly_active(domain_poly(domain,face_nodes[2]))) ntri++;
+	  if (domain_active(domain,face_nodes[0])) ntri++;
+	  if (domain_active(domain,face_nodes[1])) ntri++;
+	  if (domain_active(domain,face_nodes[2])) ntri++;
 	}
     }
 
@@ -1258,31 +1267,31 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     {
       primal_face(domain->primal,face,face_nodes);
       
-      active = ( poly_active(domain_poly(domain,face_nodes[0])) ||
-		 poly_active(domain_poly(domain,face_nodes[1])) ||
-		 poly_active(domain_poly(domain,face_nodes[2])) );
+      active = ( domain_active(domain,face_nodes[0]) ||
+		 domain_active(domain,face_nodes[1]) ||
+		 domain_active(domain,face_nodes[2]) );
       
-      original = ( poly_original(domain_poly(domain,face_nodes[0])) &&
-		   poly_original(domain_poly(domain,face_nodes[1])) &&
-		   poly_original(domain_poly(domain,face_nodes[2])) );
+      original = ( domain_original(domain,face_nodes[0]) &&
+		   domain_original(domain,face_nodes[1]) &&
+		   domain_original(domain,face_nodes[2]) );
       
       if (active && !original) 
 	{
-	  if (poly_active(domain_poly(domain,face_nodes[0])))
+	  if (domain_active(domain,face_nodes[0]))
 	    {
 	      fprintf(f,"%d\n",1+node_g2l[face_nodes[0]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
 							   face_nodes[0]),
 					       face, f), "poly bound 0");
 	    }
-	  if (poly_active(domain_poly(domain,face_nodes[1])))
+	  if (domain_active(domain,face_nodes[1]))
 	    {
 	      fprintf(f,"%d\n",1+node_g2l[face_nodes[1]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
 							   face_nodes[1]),
 					       face, f), "poly bound 1");
 	    }
-	  if (poly_active(domain_poly(domain,face_nodes[2])))
+	  if (domain_active(domain,face_nodes[2]))
 	    {
 	      fprintf(f,"%d\n",1+node_g2l[face_nodes[2]]);	      
 	      TRY( poly_boundary_face_geometry(domain_poly(domain,
@@ -1296,7 +1305,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain);
 	poly_index++)
-    if ( poly_cut( domain_poly( domain, poly_index ) ) )
+    if ( domain_cut( domain, poly_index ) )
       ncut++;
 
   fprintf(f,"%d\n",ncut);
@@ -1304,7 +1313,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain);
 	poly_index++)
-    if ( poly_cut( domain_poly( domain, poly_index ) ) )
+    if ( domain_cut( domain, poly_index ) )
       {
 	fprintf(f,"%d\n",1+node_g2l[poly_index]);
 	TRY( poly_surf_geometry(domain_poly(domain,poly_index), f),"poly surf");
@@ -1336,7 +1345,7 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
   fprintf(f,"title=domain_geometry\nvariables=x,y,z\n");
   
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
-    if ( poly_active( domain_poly(domain,poly) ) )
+    if ( domain_active(domain,poly) )
       TRY( poly_tecplot_zone(domain_poly(domain,poly), f ), 
 	   "poly_tecplot_zone");
 
