@@ -419,10 +419,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				    domain_segment(domain,segment1),
 				    domain_segment(domain,segment2), EMPTY ), 
 	       "triangle init");
-	  poly_add_triangle( domain_poly(domain,node0),
-			     domain_triangle(domain,triangle_index), FALSE );
-	  poly_add_triangle( domain_poly(domain,node1),
-			     domain_triangle(domain,triangle_index), TRUE );
 
 	  cell_side = primal_cell_edge_right_side(cell_edge);
 	  tri = primal_c2t(domain->primal,cell,cell_side);
@@ -438,6 +434,27 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				    domain_segment(domain,segment1),
 				    domain_segment(domain,segment2), EMPTY ), 
 	       "int tri init");
+
+	}
+    }
+
+  for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
+    {
+      for ( cell_edge = 0 ; cell_edge < 6 ; cell_edge++)
+	{
+	  primal_cell(domain->primal,cell,cell_nodes);
+	  node0 = cell_nodes[primal_cell_edge_node0(cell_edge)];
+	  node1 = cell_nodes[primal_cell_edge_node1(cell_edge)];
+
+	  triangle_index = 0 + 2 * cell_edge + 12 * cell;
+	  /* triangle normal points from node0 to node1 */
+	  poly_add_triangle( domain_poly(domain,node0),
+			     domain_triangle(domain,triangle_index), FALSE );
+	  poly_add_triangle( domain_poly(domain,node1),
+			     domain_triangle(domain,triangle_index), TRUE );
+
+	  triangle_index = 1 + 2 * cell_edge + 12 * cell;
+	  /* triangle normal points from node0 to node1 */
 	  poly_add_triangle( domain_poly(domain,node0),
 			     domain_triangle(domain,triangle_index), FALSE );
 	  poly_add_triangle( domain_poly(domain,node1),
@@ -472,8 +489,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				    domain_segment(domain,segment1),
 				    domain_segment(domain,segment2), face),
 	       "boundary tri init 0");
-	  poly_add_triangle( domain_poly(domain,node0),
-			     domain_triangle(domain,triangle_index), TRUE );
 
 	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
@@ -486,6 +501,25 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				    domain_segment(domain,segment1),
 				    domain_segment(domain,segment2), face),
 	       "boundary tri init 1");
+	}
+    }
+	  
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
+    {
+      primal_face(domain->primal, face, face_nodes);
+      TRY( primal_find_tri( domain->primal, 
+			    face_nodes[0], face_nodes[1], face_nodes[2],
+			    &tri ), "find tri for triangle init" );
+      for ( side = 0 ; side < 3 ; side++)
+	{
+	  node0 = face_nodes[primal_face_side_node0(side)];
+	  node1 = face_nodes[primal_face_side_node1(side)];
+
+	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
+	  poly_add_triangle( domain_poly(domain,node0),
+			     domain_triangle(domain,triangle_index), TRUE );
+
+	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  poly_add_triangle( domain_poly(domain,node1),
 			     domain_triangle(domain,triangle_index), TRUE );
 	}
