@@ -74,7 +74,6 @@ Domain domain_create( Primal primal, Surface surface)
   domain->topo = NULL;
 
   domain->nside = EMPTY;
-  domain->first_side = EMPTY;
   domain->f2s = NULL;
   domain->s2fs = NULL;
 
@@ -262,7 +261,10 @@ Segment domain_segment( Domain domain, int segment_index )
 				  &edge_index ), "face seg find edge" );
 	  edge_center = edge_index + primal_ntri(domain->primal) 
 		+ primal_ncell(domain->primal);
-	  if ( 0 == segment_index - 2*face_side - domain->first_side )
+	  if ( 0 == segment_index - 2*face_side - 
+	       10 * primal_ncell(domain->primal) -
+	       3  * primal_ntri(domain->primal) -
+	       3  * primal_nface(domain->primal) )
 	    {
 	      node_index = 
 		primal_surface_node(domain->primal,node0) +
@@ -306,6 +308,7 @@ Triangle domain_triangle( Domain domain, int triangle_index )
   int face, side;
   int other_face, other_side;
   int face_nodes[4];
+  int first_side;
 
   if ( 0 > triangle_index || domain_ntriangle(domain) <= triangle_index ) 
     {
@@ -366,6 +369,9 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 				&tri ), "find tri for triangle init" );
 	  TRYN( primal_find_tri_side( domain->primal, tri, node0, node1,
 				     &tri_side ), "dual int find rt tri side");
+	  first_side =  10 * primal_ncell(domain->primal) +
+	    3  * primal_ntri(domain->primal) +
+	    3  * primal_nface(domain->primal);
 	  if ( 0 == triangle_index - 2*side - 6*face 
                                   - 12*primal_ncell(domain->primal) )
 	    {
@@ -373,16 +379,16 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 	      segment1 = primal_face_side_node0(side) + 3 * face + 
 		3 *primal_ntri(domain->primal) + 
 		10 * primal_ncell(domain->primal);
-	      segment2 = 0 + domain->first_side + 2*domain->f2s[side+3*face];
+	      segment2 = 0 + first_side + 2*domain->f2s[side+3*face];
 	      if (other_face < face) 
-		segment2 = 1 + domain->first_side + 2*domain->f2s[side+3*face];
+		segment2 = 1 + first_side + 2*domain->f2s[side+3*face];
 	    }
 	  else
 	    {
 	      segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
-	      segment1 = 1 + domain->first_side + 2*domain->f2s[side+3*face];
+	      segment1 = 1 + first_side + 2*domain->f2s[side+3*face];
 	      if (other_face < face) 
-		segment1 = 0 + domain->first_side + 2*domain->f2s[side+3*face];
+		segment1 = 0 + first_side + 2*domain->f2s[side+3*face];
 	      segment2 = primal_face_side_node1(side) + 3 * face + 
 		3 *primal_ntri(domain->primal) + 
 		10 * primal_ncell(domain->primal);
@@ -434,8 +440,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     10 * primal_ncell(domain->primal) +
     3  * primal_ntri(domain->primal) +
     3  * primal_nface(domain->primal);
-
-  domain->first_side = domain->nsegment;
 
   domain->f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
 
