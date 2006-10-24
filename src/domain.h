@@ -53,6 +53,8 @@ struct DomainStruct {
   Poly *poly;
 
   POLY_TOPO *topo;
+
+  int *f2s;
 };
 
 #define domain_test_malloc(ptr,fcn)		       \

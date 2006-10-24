@@ -73,6 +73,8 @@ Domain domain_create( Primal primal, Surface surface)
 
   domain->topo = NULL;
 
+  domain->f2s = NULL;
+
   return domain;
 }
 
@@ -297,7 +299,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int node0, node1;
   int node_index;
   int other_face, other_side;
-  int *f2s;
 
   printf("create dual nodes\n");
 
@@ -320,27 +321,27 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     3  * primal_ntri(domain->primal) +
     3  * primal_nface(domain->primal);
 
-  f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
+  domain->f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
 
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
     {
-      f2s[0+3*face] = EMPTY;
-      f2s[1+3*face] = EMPTY;
-      f2s[2+3*face] = EMPTY;
+      domain->f2s[0+3*face] = EMPTY;
+      domain->f2s[1+3*face] = EMPTY;
+      domain->f2s[2+3*face] = EMPTY;
     }
 
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
     {
       primal_face(domain->primal, face, face_nodes);
       for ( side = 0 ; side<3; side++ )
-	if (EMPTY == f2s[side+3*face])
+	if (EMPTY == domain->f2s[side+3*face])
 	  {
-	    f2s[side+3*face] = domain->nsegment;
+	    domain->f2s[side+3*face] = domain->nsegment;
 	    node0 = face_nodes[primal_face_side_node0(side)];
 	    node1 = face_nodes[primal_face_side_node1(side)];
 	    TRY( primal_find_face_side(domain->primal, node1, node0, 
 				       &other_face, &other_side), "face_side"); 
-	    f2s[other_side+3*other_face] = domain->nsegment;
+	    domain->f2s[other_side+3*other_face] = domain->nsegment;
 	    domain->nsegment += 2; /* a tri side has 2 segments */
 	  }
     }
@@ -386,7 +387,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				     &edge_index ), "face seg find edge" );
 	      edge_center = edge_index + primal_ntri(domain->primal) 
 		                       + primal_ncell(domain->primal);
-	      segment_index = 0 + f2s[side+3*face];
+	      segment_index = 0 + domain->f2s[side+3*face];
 	      node_index = 
 		primal_surface_node(domain->primal,node0) +
 		primal_nedge(domain->primal) + 
@@ -395,7 +396,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	      domain->segment[segment_index] = 
 		segment_create( domain_node(domain,node_index),
 				domain_node(domain,edge_center) );
-	      segment_index = 1 + f2s[side+3*face];
+	      segment_index = 1 + domain->f2s[side+3*face];
 	      node_index = 
 		primal_surface_node(domain->primal,node1) +
 		primal_nedge(domain->primal) + 
@@ -439,8 +440,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
 	  segment1 = primal_face_side_node0(side) + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
-	  segment2 = 0 + f2s[side+3*face];
-	  if (other_face < face) segment2 = 1 + f2s[side+3*face];
+	  segment2 = 0 + domain->f2s[side+3*face];
+	  if (other_face < face) segment2 = 1 + domain->f2s[side+3*face];
 	  domain->triangle[triangle_index] =
 	    triangle_create( domain_segment(domain,segment0),
 			     domain_segment(domain,segment1),
@@ -449,8 +450,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
 	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
-	  segment1 = 1 + f2s[side+3*face];
-	  if (other_face < face) segment1 = 0 + f2s[side+3*face];
+	  segment1 = 1 + domain->f2s[side+3*face];
+	  if (other_face < face) segment1 = 0 + domain->f2s[side+3*face];
 	  segment2 = primal_face_side_node1(side) + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
 	  domain->triangle[triangle_index] =
@@ -511,7 +512,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 	  
-  free(f2s);
+  free(domain->f2s); 
+  domain->f2s = NULL;
   
   printf("dual completed\n");
 
