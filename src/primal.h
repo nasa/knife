@@ -76,9 +76,11 @@ KNIFE_STATUS primal_establish_surface_node( Primal );
 #define primal_c2e(primal,cell,edge) ((primal)->c2e[(edge)+6*(cell)])
 #define primal_c2t(primal,cell,tri)  ((primal)->c2t[(tri) +4*(cell)])
 
+#define primal_surface_nnode(primal) ((primal)->surface_nnode)
 #define primal_surface_node(primal,volume_node) \
   ((primal)->surface_node[(volume_node)])
-#define primal_surface_nnode(primal) ((primal)->surface_nnode)
+#define primal_surface_volume_node(primal,surface_node) \
+  ((primal)->surface_volume_node[(surface_node)])
 
 /* xyz[3] */
 KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz); 
