@@ -409,14 +409,11 @@ Triangle domain_triangle( Domain domain, int triangle_index )
   return domain->triangle[triangle_index];
 }
 
-KNIFE_STATUS domain_dual_elements( Domain domain )
+KNIFE_STATUS domain_face_sides( Domain domain )
 {
-  int node;
-  int cell, face;
+  int face;
   int side;
-  int segment_index, triangle_index;
-  int cell_nodes[4], face_nodes[4];
-  int cell_edge;
+  int face_nodes[4];
   int node0, node1;
   int other_face, other_side;
 
@@ -462,6 +459,21 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  domain->s2fs[0+2*(domain->f2s[side+3*face])] = face;
 	  domain->s2fs[1+2*(domain->f2s[side+3*face])] = side;
 	}
+
+  return (KNIFE_SUCCESS);
+}
+
+KNIFE_STATUS domain_dual_elements( Domain domain )
+{
+  int node;
+  int cell, face;
+  int side;
+  int segment_index, triangle_index;
+  int cell_nodes[4], face_nodes[4];
+  int cell_edge;
+  int node0, node1;
+
+  TRY( domain_face_sides( domain ), "domain_face_sides" );
 
   printf("create dual nodes\n");
 
