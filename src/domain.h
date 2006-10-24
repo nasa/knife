@@ -57,6 +57,7 @@ struct DomainStruct {
   int nside;
   int first_side;
   int *f2s;
+  int *s2fs;
 };
 
 #define domain_test_malloc(ptr,fcn)		       \

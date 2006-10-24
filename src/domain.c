@@ -76,6 +76,7 @@ Domain domain_create( Primal primal, Surface surface)
   domain->nside = EMPTY;
   domain->first_side = EMPTY;
   domain->f2s = NULL;
+  domain->s2fs = NULL;
 
   return domain;
 }
@@ -370,8 +371,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int node0, node1;
   int node_index;
   int other_face, other_side;
-  int domain->nside;
-
+  
   printf("create dual nodes\n");
 
   domain->nnode = 
@@ -419,6 +419,13 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    domain->f2s[other_side+3*other_face] = domain->nside;
 	    (domain->nside)++; 
 	  }
+    }
+
+  domain->s2fs = (int *)malloc( 2*domain->nside*sizeof(int) );
+  for ( side = 0 ; side < domain->nside ; side++ ) 
+    {
+      domain->s2fs[0+2*side] = EMPTY;
+      domain->s2fs[1+2*side] = EMPTY;
     }
   
   domain->nsegment += 2*domain->nside; /* a tri side has 2 segments */
@@ -536,7 +543,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  
   free(domain->f2s); 
   domain->f2s = NULL;
-  
+  free(domain->s2fs); 
+  domain->s2fs = NULL;
+
   printf("dual completed\n");
 
   return (KNIFE_SUCCESS);
