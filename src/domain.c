@@ -371,7 +371,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int node0, node1;
   int node_index;
   int other_face, other_side;
-  
+
   printf("create dual nodes\n");
 
   domain->nnode = 
@@ -427,6 +427,14 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       domain->s2fs[0+2*side] = EMPTY;
       domain->s2fs[1+2*side] = EMPTY;
     }
+
+  for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
+    for ( side = 0 ; side<3; side++ )
+      if (EMPTY == domain->s2fs[0+2*(domain->f2s[side+3*face])] )
+	{
+	  domain->s2fs[0+2*(domain->f2s[side+3*face])] = face;
+	  domain->s2fs[1+2*(domain->f2s[side+3*face])] = side;
+	}
   
   domain->nsegment += 2*domain->nside; /* a tri side has 2 segments */
 
