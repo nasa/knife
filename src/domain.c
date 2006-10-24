@@ -158,6 +158,7 @@ Segment domain_segment( Domain domain, int segment_index )
   int edge_index;
   int tri_center, edge_center, cell_center;
   int tri_nodes[3];
+  int face, node, face_nodes[4], node_index;
 
   if ( 0 > segment_index || domain_nsegment(domain) <= segment_index ) 
     {
@@ -212,6 +213,31 @@ Segment domain_segment( Domain domain, int segment_index )
 	  domain->segment[segment_index] = 
 	    segment_create( domain_node(domain,tri_center),
 			    domain_node(domain,edge_center) );
+	  NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
+	  return domain->segment[segment_index];
+	}
+      if ( segment_index < 10*primal_ncell(domain->primal) 
+	                 +  3*primal_ntri(domain->primal) 
+	                 +  3*primal_nface(domain->primal))
+	{
+	  face = ( segment_index - 3  * primal_ntri(domain->primal) 
+	                         - 10 * primal_ncell(domain->primal)) / 3;
+	  node = segment_index - 3  * face 
+                               - 3  * primal_ntri(domain->primal)
+                               - 10 * primal_ncell(domain->primal); 
+	  primal_face(domain->primal, face, face_nodes);
+	  TRYN( primal_find_tri( domain->primal, 
+				 face_nodes[0], face_nodes[1], face_nodes[2],
+				 &tri ), "find tri for face" );
+	  tri_center = tri + primal_ncell(domain->primal);;
+	  node_index =
+	    primal_surface_node(domain->primal,face_nodes[node]) + 
+	    primal_nedge(domain->primal) + 
+	    primal_ntri(domain->primal) + 
+	    primal_ncell(domain->primal);
+	  domain->segment[segment_index] = 
+	    segment_create( domain_node(domain,tri_center),
+			    domain_node(domain,node_index) );
 	  NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
 	  return domain->segment[segment_index];
 	}
@@ -362,19 +388,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 			    &tri ), "find tri for face" );
       tri_center = tri + primal_ncell(domain->primal);;
       primal_tri(domain->primal,tri,tri_nodes);
-      for ( node = 0 ; node < 3 ; node++)
-	{
-	  segment_index = node + 3 * face + 
-	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
-	  node_index =
-	    primal_surface_node(domain->primal,face_nodes[node]) + 
-	    primal_nedge(domain->primal) + 
-	    primal_ntri(domain->primal) + 
-	    primal_ncell(domain->primal);
-	  domain->segment[segment_index] = 
-	    segment_create( domain_node(domain,tri_center),
-			    domain_node(domain,node_index) );
-	}
       for ( side = 0 ; side < 3 ; side++)
 	{
 	  node0 = face_nodes[primal_face_side_node0(side)];
