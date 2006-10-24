@@ -79,6 +79,9 @@ Primal primal_create(int nnode, int nface, int ncell)
   primal->c2t = NULL;
   primal->t2n = NULL;
 
+  primal->surface_nnode = EMPTY;
+  primal->surface_node = NULL;
+
   return primal;
 }
 
@@ -145,6 +148,7 @@ Primal primal_from_FAST( char *filename )
 
   TRYN( primal_establish_c2e(primal), "c2e" );
   TRYN( primal_establish_c2t(primal), "c2t" );
+  TRYN( primal_establish_surface_node(primal), "surface_node" );
 
   return primal;
 }
@@ -165,6 +169,8 @@ void primal_free( Primal primal )
 
   if ( NULL != primal->c2t ) free( primal->c2t );
   if ( NULL != primal->t2n ) free( primal->t2n );
+
+  if ( NULL != primal->surface_node ) free( primal->surface_node );
 
   free( primal );
 }
@@ -294,6 +300,32 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
 	}
     }
  
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_establish_surface_node( Primal primal )
+{
+  int node;
+  int face_index, face_node;
+
+  primal->surface_node = (int *)malloc( primal_nnode(primal) * sizeof(int) );
+  primal_test_status(primal->surface_node,
+		     "primal_establish_surface_node surface_node");
+  for ( node = 0 ; node < primal_nnode(primal) ; node++) 
+    primal->surface_node[node] = EMPTY;
+
+  primal->surface_nnode = 0;
+  for ( face_index = 0 ; face_index < primal_nface(primal) ; face_index++ )
+    for (face_node=0;face_node<3;face_node++)
+      {
+	node = primal->f2n[face_node+4*face_index];
+	if (EMPTY == primal->surface_node[node]) 
+	  {
+	    primal->surface_node[node] = primal->surface_nnode;
+	    primal->surface_nnode++;
+	  }
+      }
+
   return KNIFE_SUCCESS;
 }
 

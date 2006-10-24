@@ -49,6 +49,9 @@ struct PrimalStruct {
   int *c2t;
   int *t2n;
 
+  int surface_nnode;
+  int *surface_node;
+
 };
 
 Primal primal_create( int nnode, int nface, int ncell );
@@ -67,9 +70,14 @@ void primal_free( Primal );
 
 KNIFE_STATUS primal_establish_c2e( Primal );
 KNIFE_STATUS primal_establish_c2t( Primal );
+KNIFE_STATUS primal_establish_surface_node( Primal );
 
 #define primal_c2e(primal,cell,edge) ((primal)->c2e[(edge)+6*(cell)])
 #define primal_c2t(primal,cell,tri)  ((primal)->c2t[(tri) +4*(cell)])
+
+#define primal_surface_node(primal,volume_node) \
+  ((primal)->surface_node[(volume_node)])
+#define primal_surface_nnode(primal) ((primal)->surface_nnode)
 
 /* xyz[3] */
 KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz); 
