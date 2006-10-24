@@ -81,6 +81,7 @@ Primal primal_create(int nnode, int nface, int ncell)
 
   primal->surface_nnode = EMPTY;
   primal->surface_node = NULL;
+  primal->surface_volume_node = NULL;
 
   return primal;
 }
@@ -171,6 +172,8 @@ void primal_free( Primal primal )
   if ( NULL != primal->t2n ) free( primal->t2n );
 
   if ( NULL != primal->surface_node ) free( primal->surface_node );
+  if ( NULL != primal->surface_volume_node ) 
+    free( primal->surface_volume_node );
 
   free( primal );
 }
@@ -325,6 +328,14 @@ KNIFE_STATUS primal_establish_surface_node( Primal primal )
 	    primal->surface_nnode++;
 	  }
       }
+
+  primal->surface_volume_node = (int *)malloc( primal->surface_nnode * 
+					       sizeof(int) );
+  primal_test_status(primal->surface_volume_node,
+		     "primal_establish_surface_node surface_volume_node");
+  for ( node = 0 ; node < primal_nnode(primal) ; node++)
+    if ( EMPTY != primal->surface_node[node] )
+      primal->surface_volume_node[primal->surface_node[node]] = node;
 
   return KNIFE_SUCCESS;
 }

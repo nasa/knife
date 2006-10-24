@@ -51,6 +51,7 @@ struct PrimalStruct {
 
   int surface_nnode;
   int *surface_node;
+  int *surface_volume_node;
 
 };
 
