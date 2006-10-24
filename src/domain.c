@@ -420,26 +420,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int node0, node1;
   int other_face, other_side;
 
-  printf("create dual nodes\n");
-
-  domain->nnode = 
-    primal_ncell(domain->primal) +
-    primal_ntri(domain->primal) +
-    primal_nedge(domain->primal) +
-    primal_surface_nnode(domain->primal);
-  domain->node = (Node *)malloc( domain->nnode * sizeof(Node));
-  domain_test_malloc(domain->node,
-		     "domain_tetrahedral_elements node");
-  printf("number of dual nodes in the volume %d\n",domain->nnode);
-  for ( node =0 ; node < domain->nnode ; node++ )
-    domain->node[node] = NULL;
-
-  printf("create dual segments\n");
-
-  domain->nsegment = 
-    10 * primal_ncell(domain->primal) +
-    3  * primal_ntri(domain->primal) +
-    3  * primal_nface(domain->primal);
+  printf("unique surface triangle face sides\n");
 
   domain->f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
 
@@ -473,7 +454,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       domain->s2fs[0+2*side] = EMPTY;
       domain->s2fs[1+2*side] = EMPTY;
     }
-
+  
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
     for ( side = 0 ; side<3; side++ )
       if (EMPTY == domain->s2fs[0+2*(domain->f2s[side+3*face])] )
@@ -481,9 +462,29 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  domain->s2fs[0+2*(domain->f2s[side+3*face])] = face;
 	  domain->s2fs[1+2*(domain->f2s[side+3*face])] = side;
 	}
-  
-  domain->nsegment += 2*domain->nside; /* a tri side has 2 segments */
 
+  printf("create dual nodes\n");
+
+  domain->nnode = 
+    primal_ncell(domain->primal) +
+    primal_ntri(domain->primal) +
+    primal_nedge(domain->primal) +
+    primal_surface_nnode(domain->primal);
+  printf("number of dual nodes in the volume %d\n",domain->nnode);
+  domain->node = (Node *)malloc( domain->nnode * sizeof(Node));
+  domain_test_malloc(domain->node,
+		     "domain_tetrahedral_elements node");
+  for ( node =0 ; node < domain->nnode ; node++ )
+    domain->node[node] = NULL;
+
+  printf("create dual segments\n");
+
+  domain->nsegment = 
+    10 * primal_ncell(domain->primal) +
+    3  * primal_ntri(domain->primal) +
+    3  * primal_nface(domain->primal)+
+    2  * domain->nside;
+  printf("number of dual segmentss in the volume %d\n",domain->nsegment);
   domain->segment = (Segment *)malloc( domain->nsegment * sizeof(Segment));
   domain_test_malloc(domain->segment,
 		     "domain_tetrahedral_elements segment");
@@ -495,12 +496,12 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
   domain->ntriangle = 12*primal_ncell(domain->primal)
                     +  6*primal_nface(domain->primal);
+  printf("number of dual triangles in the volume %d\n",domain->ntriangle);
   domain->triangle = (Triangle *)malloc( domain->ntriangle * sizeof(Triangle));
   domain_test_malloc(domain->triangle,"domain_dual_elements triangle");
   for ( triangle_index = 0 ; 
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++ ) domain->triangle[ triangle_index ] = NULL;
-  printf("number of dual triangles in the volume %d\n",domain->ntriangle);
 	  
   printf("fill poly\n");
 
