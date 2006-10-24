@@ -73,6 +73,7 @@ Domain domain_create( Primal primal, Surface surface)
 
   domain->topo = NULL;
 
+  domain->nside = EMPTY;
   domain->first_side = EMPTY;
   domain->f2s = NULL;
 
@@ -369,7 +370,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int node0, node1;
   int node_index;
   int other_face, other_side;
-  int nside;
+  int domain->nside;
 
   printf("create dual nodes\n");
 
@@ -403,24 +404,24 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
       domain->f2s[2+3*face] = EMPTY;
     }
 
-  nside = 0;
+  domain->nside = 0;
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
     {
       primal_face(domain->primal, face, face_nodes);
       for ( side = 0 ; side<3; side++ )
 	if (EMPTY == domain->f2s[side+3*face])
 	  {
-	    domain->f2s[side+3*face] = nside;
+	    domain->f2s[side+3*face] = domain->nside;
 	    node0 = face_nodes[primal_face_side_node0(side)];
 	    node1 = face_nodes[primal_face_side_node1(side)];
 	    TRY( primal_find_face_side(domain->primal, node1, node0, 
 				       &other_face, &other_side), "face_side"); 
-	    domain->f2s[other_side+3*other_face] = nside;
-	    nside++; 
+	    domain->f2s[other_side+3*other_face] = domain->nside;
+	    (domain->nside)++; 
 	  }
     }
   
-  domain->nsegment += 2*nside; /* a tri side has 2 segments */
+  domain->nsegment += 2*domain->nside; /* a tri side has 2 segments */
 
   domain->segment = (Segment *)malloc( domain->nsegment * sizeof(Segment));
   domain_test_malloc(domain->segment,
