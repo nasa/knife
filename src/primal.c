@@ -210,7 +210,7 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
   int edge_index, node0, node1;
 
   primal->c2e = (int *)malloc(6*primal_ncell(primal)*sizeof(int));
-  primal_test_status(primal,"primal_establish_c2e c2e");
+  primal_test_status(primal->c2e,"primal_establish_c2e c2e");
   for(cell=0;cell<6*primal_ncell(primal);cell++) primal->c2e[cell]= EMPTY;
 
   primal->nedge = 0;
@@ -229,7 +229,7 @@ KNIFE_STATUS primal_establish_c2e( Primal primal )
     }
 
   primal->e2n = (int *)malloc(2*primal->nedge*sizeof(int));
-  primal_test_status(primal,"primal_establish_c2e e2n");
+  primal_test_status(primal->e2n,"primal_establish_c2e e2n");
   for(cell=0;cell<primal_ncell(primal);cell++)
     {
       primal_cell(primal, cell, nodes);
@@ -256,7 +256,7 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
   int n0,n1,n2;
 
   primal->c2t = (int *)malloc(4*primal_ncell(primal)*sizeof(int));
-  primal_test_status(primal,"primal_establish_c2t c2t");
+  primal_test_status(primal->c2t,"primal_establish_c2t c2t");
   for(cell=0;cell<4*primal_ncell(primal);cell++) primal->c2t[cell]= EMPTY;
 
   primal->ntri = 0;
@@ -284,7 +284,7 @@ KNIFE_STATUS primal_establish_c2t( Primal primal )
     }
 
   primal->t2n = (int *)malloc(3*primal->ntri*sizeof(int));
-  primal_test_status(primal,"primal_establish_t2n t2n");
+  primal_test_status(primal->t2n,"primal_establish_t2n t2n");
   for(cell=0;cell<primal_ncell(primal);cell++)
     {
       primal_cell(primal, cell, nodes);
