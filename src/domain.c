@@ -88,6 +88,7 @@ void domain_free( Domain domain )
 Node domain_node( Domain domain, int node_index )
 {
   int cell, tri, edge;
+  int surface_node, volume_node;
   double xyz[3];
 
   if ( 0 > node_index || domain_nnode(domain) <= node_index ) 
@@ -127,8 +128,21 @@ Node domain_node( Domain domain, int node_index )
 	  NOT_NULLN(domain->node[node_index],"node_create NULL");
 	  return domain->node[node_index];
 	}
-      /* boundary nodes should have been added ahead of time */
-      printf("%s: %d: domain_node face node not precomputed %d\n",
+      if ( node_index < primal_ncell(domain->primal) 
+	              + primal_ntri(domain->primal) 
+   	              + primal_nedge(domain->primal) 
+	              + primal_surface_nnode(domain->primal) )
+	{
+	  surface_node = node_index - primal_ncell(domain->primal) 
+	                            - primal_ntri(domain->primal)
+                                    - primal_nedge(domain->primal);
+	  volume_node = primal_surface_volume_node(domain->primal,surface_node);
+	  TRYN( primal_xyz(domain->primal,volume_node,xyz), "surf node xyz");
+	  domain->node[node_index] = node_create( xyz );
+	  NOT_NULLN(domain->node[node_index],"node_create NULL");
+	  return domain->node[node_index];
+	}
+      printf("%s: %d: array bound error %d\n",
 	     __FILE__,__LINE__, node_index);
       return NULL;
     }
@@ -278,7 +292,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int edge_index, segment_index, triangle_index;
   int tri_side;
   int tri_nodes[3], cell_nodes[4], face_nodes[4];
-  double xyz[3];
   int cell_edge;
   int segment0, segment1, segment2;
   int node0, node1;
@@ -299,22 +312,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   printf("number of dual nodes in the volume %d\n",domain->nnode);
   for ( node =0 ; node < domain->nnode ; node++ )
     domain->node[node] = NULL;
-
-  /* create boundary nodes even though they may not be needed */
-  for ( node = 0 ; 
-	node < primal_nnode(domain->primal) ; 
-	node++) 
-    if ( EMPTY != primal_surface_node(domain->primal,node) )
-      {
-	node_index = 
-	  primal_surface_node(domain->primal,node) + 
-	  primal_nedge(domain->primal) + 
-	  primal_ntri(domain->primal) + 
-	  primal_ncell(domain->primal);
-	primal_xyz(domain->primal,node,xyz);
-	domain->node[node_index] = node_create( xyz );
-	NOT_NULL( domain->node[node_index], "boundary face node create NULL");
-      }
 
   printf("create dual segments\n");
 
