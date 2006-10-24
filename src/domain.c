@@ -162,6 +162,7 @@ Segment domain_segment( Domain domain, int segment_index )
   int tri_center, edge_center, cell_center;
   int tri_nodes[3];
   int face, node, face_nodes[4], node_index;
+  int face_side, node0, node1;
 
   if ( 0 > segment_index || domain_nsegment(domain) <= segment_index ) 
     {
@@ -244,7 +245,50 @@ Segment domain_segment( Domain domain, int segment_index )
 	  NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
 	  return domain->segment[segment_index];
 	}
-      printf("%s: %d: domain_segment face segment not precomputed %d\n",
+      if ( segment_index < 10*primal_ncell(domain->primal) 
+	                 +  3*primal_ntri(domain->primal) 
+	                 +  3*primal_nface(domain->primal)
+	                 +  2*domain->nside )
+	{
+	  face_side = ( segment_index - 10*primal_ncell(domain->primal) 
+                                      - 3*primal_ntri(domain->primal) 
+                                      - 3*primal_nface(domain->primal) )/2;
+	  face = domain->s2fs[0+2*face_side];
+	  side = domain->s2fs[1+2*face_side];
+	  primal_face(domain->primal, face, face_nodes);
+	  node0 = face_nodes[primal_face_side_node0(side)];
+	  node1 = face_nodes[primal_face_side_node1(side)];
+	  TRYN( primal_find_edge( domain->primal, node0, node1, 
+				  &edge_index ), "face seg find edge" );
+	  edge_center = edge_index + primal_ntri(domain->primal) 
+		+ primal_ncell(domain->primal);
+	  if ( 0 == segment_index - 2*face_side - domain->first_side )
+	    {
+	      node_index = 
+		primal_surface_node(domain->primal,node0) +
+		primal_nedge(domain->primal) + 
+		primal_ntri(domain->primal) + 
+		primal_ncell(domain->primal);
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,node_index),
+				domain_node(domain,edge_center) );
+	      
+	    }
+	  else
+	    {
+	      node_index = 
+		primal_surface_node(domain->primal,node1) +
+		primal_nedge(domain->primal) + 
+		primal_ntri(domain->primal) + 
+		primal_ncell(domain->primal);
+	      domain->segment[segment_index] = 
+		segment_create( domain_node(domain,edge_center),
+				domain_node(domain,node_index) );
+	    }
+	  NOT_NULLN(domain->segment[segment_index],"segment_create NULL");
+	  return domain->segment[segment_index];	  
+	}
+      printf("%s: %d: array bound error %d\n",
 	     __FILE__,__LINE__, segment_index);
       return NULL;
     }
