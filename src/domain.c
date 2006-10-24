@@ -406,14 +406,12 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 KNIFE_STATUS domain_dual_elements( Domain domain )
 {
   int node;
-  int cell, tri, face;
+  int cell, face;
   int side;
-  int tri_center, edge_center;
-  int edge_index, segment_index, triangle_index;
-  int cell_nodes[4], face_nodes[4], tri_nodes[3];
+  int segment_index, triangle_index;
+  int cell_nodes[4], face_nodes[4];
   int cell_edge;
   int node0, node1;
-  int node_index;
   int other_face, other_side;
 
   printf("create dual nodes\n");
@@ -488,49 +486,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   for ( segment_index = 0 ; 
 	segment_index < domain_nsegment(domain); 
 	segment_index++ ) domain->segment[ segment_index ] = NULL;
-  printf("number of dual segments in the volume %d\n",domain->nsegment);
-
-  for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
-    {
-      primal_face(domain->primal, face, face_nodes);
-      TRY( primal_find_tri( domain->primal, 
-			    face_nodes[0], face_nodes[1], face_nodes[2],
-			    &tri ), "find tri for face" );
-      tri_center = tri + primal_ncell(domain->primal);;
-      primal_tri(domain->primal,tri,tri_nodes);
-      for ( side = 0 ; side < 3 ; side++)
-	{
-	  node0 = face_nodes[primal_face_side_node0(side)];
-	  node1 = face_nodes[primal_face_side_node1(side)];
-	  TRY( primal_find_face_side(domain->primal, node1, node0, 
-				     &other_face, &other_side), "i face_side"); 
-	  if ( face < other_face ) /* only init segment once */
-	    {
-	      TRY( primal_find_edge( domain->primal, node0, node1, 
-				     &edge_index ), "face seg find edge" );
-	      edge_center = edge_index + primal_ntri(domain->primal) 
-		                       + primal_ncell(domain->primal);
-	      segment_index = 0 + domain->first_side + 2*domain->f2s[side+3*face];
-	      node_index = 
-		primal_surface_node(domain->primal,node0) +
-		primal_nedge(domain->primal) + 
-		primal_ntri(domain->primal) + 
-		primal_ncell(domain->primal);
-	      domain->segment[segment_index] = 
-		segment_create( domain_node(domain,node_index),
-				domain_node(domain,edge_center) );
-	      segment_index = 1 + domain->first_side + 2*domain->f2s[side+3*face];
-	      node_index = 
-		primal_surface_node(domain->primal,node1) +
-		primal_nedge(domain->primal) + 
-		primal_ntri(domain->primal) + 
-		primal_ncell(domain->primal);
-	      domain->segment[segment_index] = 
-		segment_create( domain_node(domain,edge_center),
-				domain_node(domain,node_index) );
-	    }
-	}
-    }
 
   printf("create dual triangles\n");
 
