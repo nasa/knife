@@ -282,29 +282,9 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int cell_edge;
   int segment0, segment1, segment2;
   int node0, node1;
-  int surface_nnode;
-  int *node_g2l;
   int node_index;
   int other_face, other_side;
   int *f2s;
-
-  node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
-  for ( node = 0 ; node < primal_nnode(domain->primal) ; node++) 
-    node_g2l[node] = EMPTY;
-
-  surface_nnode = 0;
-  for ( face = 0 ; face < primal_nface(domain->primal) ; face++ )
-    {
-      primal_face(domain->primal, face, face_nodes);
-      for (node=0;node<3;node++)
-	if (EMPTY == node_g2l[face_nodes[node]]) 
-	  {
-	    node_g2l[face_nodes[node]] = surface_nnode;
-	    surface_nnode++;
-	  }
-    }
-
-  printf("number of nodes in the surface %d\n",surface_nnode);
 
   printf("create dual nodes\n");
 
@@ -312,7 +292,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     primal_ncell(domain->primal) +
     primal_ntri(domain->primal) +
     primal_nedge(domain->primal) +
-    surface_nnode;
+    primal_surface_nnode(domain->primal);
   domain->node = (Node *)malloc( domain->nnode * sizeof(Node));
   domain_test_malloc(domain->node,
 		     "domain_tetrahedral_elements node");
@@ -324,10 +304,10 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   for ( node = 0 ; 
 	node < primal_nnode(domain->primal) ; 
 	node++) 
-    if ( EMPTY != node_g2l[node] )
+    if ( EMPTY != primal_surface_node(domain->primal,node) )
       {
 	node_index = 
-	  node_g2l[node] + 
+	  primal_surface_node(domain->primal,node) + 
 	  primal_nedge(domain->primal) + 
 	  primal_ntri(domain->primal) + 
 	  primal_ncell(domain->primal);
@@ -388,8 +368,8 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	{
 	  segment_index = node + 3 * face + 
 	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
-	  node_index = 
-	    node_g2l[face_nodes[node]] + 
+	  node_index =
+	    primal_surface_node(domain->primal,face_nodes[node]) + 
 	    primal_nedge(domain->primal) + 
 	    primal_ntri(domain->primal) + 
 	    primal_ncell(domain->primal);
@@ -411,7 +391,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 		                       + primal_ncell(domain->primal);
 	      segment_index = 0 + f2s[side+3*face];
 	      node_index = 
-		node_g2l[node0] + 
+		primal_surface_node(domain->primal,node0) +
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
@@ -420,7 +400,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				domain_node(domain,edge_center) );
 	      segment_index = 1 + f2s[side+3*face];
 	      node_index = 
-		node_g2l[node1] + 
+		primal_surface_node(domain->primal,node1) +
 		primal_nedge(domain->primal) + 
 		primal_ntri(domain->primal) + 
 		primal_ncell(domain->primal);
@@ -534,7 +514,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 	  
-  free(node_g2l);
   free(f2s);
   
   printf("dual completed\n");
