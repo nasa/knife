@@ -54,6 +54,7 @@ struct DomainStruct {
 
   POLY_TOPO *topo;
 
+  int first_side;
   int *f2s;
 };
 

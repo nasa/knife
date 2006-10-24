@@ -73,6 +73,7 @@ Domain domain_create( Primal primal, Surface surface)
 
   domain->topo = NULL;
 
+  domain->first_side = EMPTY;
   domain->f2s = NULL;
 
   return domain;
@@ -256,6 +257,9 @@ Triangle domain_triangle( Domain domain, int triangle_index )
   int cell_nodes[4];
   int node0, node1;
   int segment0, segment1, segment2;
+  int face, side;
+  int other_face, other_side;
+  int face_nodes[4];
 
   if ( 0 > triangle_index || domain_ntriangle(domain) <= triangle_index ) 
     {
@@ -301,8 +305,51 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 	  NOT_NULLN(domain->triangle[triangle_index],"triangle_create NULL");
 	  return domain->triangle[triangle_index];
 	}
-      /* boundary triangles should have been added ahead of time */
-      printf("%s: %d: domain_triangle face triangle not precomputed %d\n",
+      if ( triangle_index < 12*primal_ncell(domain->primal) 
+                          +  6*primal_nface(domain->primal) )
+	{
+	  face = ( triangle_index - 12*primal_ncell(domain->primal) )/6;
+	  side = ( triangle_index - 6*face - 12*primal_ncell(domain->primal))/2;
+	  primal_face(domain->primal, face, face_nodes);
+	  node0 = face_nodes[primal_face_side_node0(side)];
+	  node1 = face_nodes[primal_face_side_node1(side)];
+	  TRYN( primal_find_face_side(domain->primal, node1, node0, 
+				     &other_face, &other_side), "u face_side"); 
+	  TRYN( primal_find_tri( domain->primal, 
+				face_nodes[0], face_nodes[1], face_nodes[2],
+				&tri ), "find tri for triangle init" );
+	  TRYN( primal_find_tri_side( domain->primal, tri, node0, node1,
+				     &tri_side ), "dual int find rt tri side");
+	  if ( 0 == triangle_index - 2*side - 6*face 
+                                  - 12*primal_ncell(domain->primal) )
+	    {
+	      segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	      segment1 = primal_face_side_node0(side) + 3 * face + 
+		3 *primal_ntri(domain->primal) + 
+		10 * primal_ncell(domain->primal);
+	      segment2 = 0 + domain->first_side + 2*domain->f2s[side+3*face];
+	      if (other_face < face) 
+		segment2 = 1 + domain->first_side + 2*domain->f2s[side+3*face];
+	    }
+	  else
+	    {
+	      segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
+	      segment1 = 1 + domain->first_side + 2*domain->f2s[side+3*face];
+	      if (other_face < face) 
+		segment1 = 0 + domain->first_side + 2*domain->f2s[side+3*face];
+	      segment2 = primal_face_side_node1(side) + 3 * face + 
+		3 *primal_ntri(domain->primal) + 
+		10 * primal_ncell(domain->primal);
+
+	    }
+	  domain->triangle[triangle_index] =
+	    triangle_create( domain_segment(domain,segment0),
+			     domain_segment(domain,segment1),
+			     domain_segment(domain,segment2), face);
+	  NOT_NULLN(domain->triangle[triangle_index],"triangle_create NULL");
+	  return domain->triangle[triangle_index];
+	}
+      printf("%s: %d: array bound error %d\n",
 	     __FILE__,__LINE__, triangle_index);
       return NULL;
     }
@@ -317,14 +364,11 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int side;
   int tri_center, edge_center;
   int edge_index, segment_index, triangle_index;
-  int tri_side;
-  int tri_nodes[3], cell_nodes[4], face_nodes[4];
+  int cell_nodes[4], face_nodes[4], tri_nodes[3];
   int cell_edge;
-  int segment0, segment1, segment2;
   int node0, node1;
   int node_index;
   int other_face, other_side;
-  int first_side;
   int nside;
 
   printf("create dual nodes\n");
@@ -348,7 +392,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
     3  * primal_ntri(domain->primal) +
     3  * primal_nface(domain->primal);
 
-  first_side = domain->nsegment;
+  domain->first_side = domain->nsegment;
 
   domain->f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
 
@@ -406,7 +450,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 				     &edge_index ), "face seg find edge" );
 	      edge_center = edge_index + primal_ntri(domain->primal) 
 		                       + primal_ncell(domain->primal);
-	      segment_index = 0 + first_side + 2*domain->f2s[side+3*face];
+	      segment_index = 0 + domain->first_side + 2*domain->f2s[side+3*face];
 	      node_index = 
 		primal_surface_node(domain->primal,node0) +
 		primal_nedge(domain->primal) + 
@@ -415,7 +459,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	      domain->segment[segment_index] = 
 		segment_create( domain_node(domain,node_index),
 				domain_node(domain,edge_center) );
-	      segment_index = 1 + first_side + 2*domain->f2s[side+3*face];
+	      segment_index = 1 + domain->first_side + 2*domain->f2s[side+3*face];
 	      node_index = 
 		primal_surface_node(domain->primal,node1) +
 		primal_nedge(domain->primal) + 
@@ -428,7 +472,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	}
     }
 
-  printf("create interior dual triangles\n");
+  printf("create dual triangles\n");
 
   domain->ntriangle = 12*primal_ncell(domain->primal)
                     +  6*primal_nface(domain->primal);
@@ -438,50 +482,6 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++ ) domain->triangle[ triangle_index ] = NULL;
   printf("number of dual triangles in the volume %d\n",domain->ntriangle);
-
-  printf("create boundary dual triangles\n");
-
-  for ( face = 0 ; face < primal_nface(domain->primal) ; face++)
-    {
-      primal_face(domain->primal, face, face_nodes);
-      TRY( primal_find_tri( domain->primal, 
-			    face_nodes[0], face_nodes[1], face_nodes[2],
-			    &tri ), "find tri for triangle init" );
-      for ( side = 0 ; side < 3 ; side++)
-	{
-	  node0 = face_nodes[primal_face_side_node0(side)];
-	  node1 = face_nodes[primal_face_side_node1(side)];
-	  TRY( primal_find_face_side(domain->primal, node1, node0, 
-				     &other_face, &other_side), "u face_side"); 
-	  TRY( primal_find_tri_side( domain->primal, tri, node0, node1,
-				     &tri_side ), "dual int find rt tri side");
-	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
-	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
-	  segment1 = primal_face_side_node0(side) + 3 * face + 
-	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
-	  segment2 = 0 + first_side + 2*domain->f2s[side+3*face];
-	  if (other_face < face) 
-	    segment2 = 1 + first_side + 2*domain->f2s[side+3*face];
-	  domain->triangle[triangle_index] =
-	    triangle_create( domain_segment(domain,segment0),
-			     domain_segment(domain,segment1),
-			     domain_segment(domain,segment2), face);
-	  NOT_NULL(domain->triangle[triangle_index],"triangle_create NULL");
-
-	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
-	  segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
-	  segment1 = 1 + first_side + 2*domain->f2s[side+3*face];
-	  if (other_face < face) 
-	    segment1 = 0 + first_side + 2*domain->f2s[side+3*face];
-	  segment2 = primal_face_side_node1(side) + 3 * face + 
-	    3 *primal_ntri(domain->primal) + 10 * primal_ncell(domain->primal);
-	  domain->triangle[triangle_index] =
-	    triangle_create( domain_segment(domain,segment0),
-			     domain_segment(domain,segment1),
-			     domain_segment(domain,segment2), face);
-	  NOT_NULL(domain->triangle[triangle_index],"triangle_create NULL");
-	}
-    }
 	  
   printf("fill poly\n");
 
