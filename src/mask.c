@@ -450,19 +450,20 @@ KNIFE_STATUS mask_directed_area_contribution( Mask mask,
     if ( mask_subtri_active(mask,subtri_index) )
       {
 	subtri = triangle_subtri(triangle,subtri_index);
-	TRY( subtri_normal_area( subtri, normal, &area ),
-	     "subtri_normal_area failed");
-	if (mask->inward_pointing_normal)
+	if ( KNIFE_SUCCESS == subtri_normal_area( subtri, normal, &area ) )
 	  {
-	    directed_area[0] -= area*normal[0];
-	    directed_area[1] -= area*normal[1];
-	    directed_area[2] -= area*normal[2];
-	  }
-	else
-	  {
-	    directed_area[0] += area*normal[0];
-	    directed_area[1] += area*normal[1];
-	    directed_area[2] += area*normal[2];
+	    if (mask->inward_pointing_normal)
+	      {
+		directed_area[0] -= area*normal[0];
+		directed_area[1] -= area*normal[1];
+		directed_area[2] -= area*normal[2];
+	      }
+	    else
+	      {
+		directed_area[0] += area*normal[0];
+		directed_area[1] += area*normal[1];
+		directed_area[2] += area*normal[2];
+	      }
 	  }
       }
 
