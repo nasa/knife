@@ -1,4 +1,7 @@
 
+Wednesday, October 25, 2006: Refactored to create only the required duals.
+All duals are created for the file fun input method. At version 0.6.2
+
 Friday, October 20, 2006: 75k ONERA M6 Running, at version 0.6.1
 
 Tuesday, October 17, 2006: Replicated Ruby functionality, at version 0.6.0
