@@ -1113,7 +1113,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   KnifeBool active, original;
 
-  printf("dump node xyz\n");
+  printf("dump node stuff\n");
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
@@ -1131,8 +1131,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	}
     }
 
-  f = fopen("postslice.xyz","w");
-  NOT_NULL(f,"xyz file not open");
+  f = fopen("postslice.nodes","w");
+  NOT_NULL(f,"nodes file not open");
 
   fprintf(f,"%d\n",nnode);
 
@@ -1158,15 +1158,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	}
     }
 
-  fclose(f);
-
-  printf("dump node vol\n");
-
-  f = fopen("postslice.vol","w");
-  NOT_NULL(f,"vol file not open");
-  
-  fprintf(f,"%d\n",nnode);
-
   for ( poly_index = 0;
 	poly_index < domain_npoly(domain);
 	poly_index++)
@@ -1176,14 +1167,13 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	{
 	  primal_xyz(domain_primal(domain),poly_index,xyz);
 	  poly_centroid_volume(poly,xyz,center,&volume);
-	  fprintf(f,"%d\n%.16e\n",
-		  node_g2l[poly_index], volume);	  
+	  fprintf(f,"%.16e\n",volume);	  
 	}
     }
 
   fclose(f);
 
-  printf("dump tet connectivities\n");
+  printf("dump tet stuff\n");
 
   ntet = 0;
   for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
@@ -1195,8 +1185,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	   ( EMPTY != node_g2l[cell_nodes[3]] ) ) ntet++; 
     }
 
-  f = fopen("postslice.tet","w");
-  NOT_NULL(f,"tet file not open");
+  f = fopen("postslice.tets","w");
+  NOT_NULL(f,"tets file not open");
 
   fprintf(f,"%d\n",ntet);
 
@@ -1216,7 +1206,7 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
-  printf("dump edge nodes\n");
+  printf("dump edge stuff\n");
 
   nedge = 0;
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
@@ -1226,8 +1216,8 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 	   ( EMPTY != node_g2l[edge_nodes[1]] ) ) nedge++; 
     }
 
-  f = fopen("postslice.edg","w");
-  NOT_NULL(f,"edg file not open");
+  f = fopen("postslice.edges","w");
+  NOT_NULL(f,"tets file not open");
 
   fprintf(f,"%d\n",nedge);
 
