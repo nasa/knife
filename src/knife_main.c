@@ -123,18 +123,15 @@ int main( int argc, char *argv[] )
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
+  TRY( domain_all_dual( domain ), "domain_all_dual" );
+
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
   if (tecplot_output) domain_tecplot( domain, "cut.t" );
 
-  if (FALSE) 
-    {
-      printf("start dump dual to fun3d\n");
-      TRY( domain_export_fun3d( domain ), "export fun3d" );
-      printf("complete dump dual to fun3d\n");
-    }
-  else
-    printf("skip dump to fun3d\n");
+  printf("start dump dual to fun3d\n");
+  TRY( domain_export_fun3d( domain ), "export fun3d" );
+  printf("complete dump dual to fun3d\n");
 
   /* sleep(2); */
 

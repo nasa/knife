@@ -94,8 +94,8 @@ Triangle domain_triangle( Domain, int triangle_index );
 #define domain_active(domain,poly_index) \
   ((NULL == (domain))?TRUE:(domain)->topo[(poly_index)])
 
-
-KNIFE_STATUS domain_dual_elements( Domain );
+KNIFE_STATUS domain_required_dual( Domain domain );
+KNIFE_STATUS domain_all_dual( Domain domain );
 
 KNIFE_STATUS domain_boolean_subtract( Domain );
 

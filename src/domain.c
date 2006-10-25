@@ -473,6 +473,13 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int cell_edge;
   int node0, node1;
 
+  if ( NULL == domain->poly )
+    {
+      printf("call domain_required_dual or domain_all_dual\n");
+      printf("  before domain_dual_elements");
+      return KNIFE_NULL;
+    }
+
   TRY( domain_face_sides( domain ), "domain_face_sides" );
 
   printf("create dual nodes\n");
@@ -575,6 +582,21 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   return (KNIFE_SUCCESS);
 }
 
+KNIFE_STATUS domain_all_dual( Domain domain )
+{
+  int poly_index;
+
+  printf("create poly for primal nodes\n");
+  
+  domain->npoly = primal_nnode(domain->primal);
+  domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
+  domain_test_malloc(domain->poly,"domain_dual_elements poly");
+  for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
+    domain->poly[poly_index] = poly_create( );
+
+  return (KNIFE_SUCCESS);
+}
+
 KNIFE_STATUS domain_required_dual( Domain domain )
 {
   int triangle_index;
@@ -599,13 +621,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   double dx, dy, dz;
   KNIFE_STATUS intersection_status;
   int nrequired;
-
-  printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
-	 primal_nnode(domain->primal),
-	 primal_nface(domain->primal),
-	 primal_ncell(domain->primal),
-	 primal_nedge(domain->primal),
-	 primal_ntri(domain->primal));
 
   printf("create poly for primal nodes\n");
   
@@ -810,11 +825,8 @@ KNIFE_STATUS domain_required_dual( Domain domain )
 
   printf("poly %d of %d required\n",nrequired,domain_npoly(domain));
 
-  TRY( domain_dual_elements( domain ), "domain_dual_elements" );
-
   return (KNIFE_SUCCESS);
 }
-
 
 KNIFE_STATUS domain_boolean_subtract( Domain domain )
 {
@@ -826,7 +838,14 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   int *touched;
   NearStruct target;
 
-  TRY( domain_required_dual( domain ), "domain_required_dual" );
+  printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
+	 primal_nnode(domain->primal),
+	 primal_nface(domain->primal),
+	 primal_ncell(domain->primal),
+	 primal_nedge(domain->primal),
+	 primal_ntri(domain->primal));
+
+  TRY( domain_dual_elements( domain ), "domain_dual_elements" );
 
   printf("forming surface near tree\n");
 
