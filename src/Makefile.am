@@ -22,7 +22,8 @@ libknife_a_SOURCES = \
 	near.h near.c \
 	subnode.h subnode.c \
 	subtri.h subtri.c \
-	loop.h loop.c
+	loop.h loop.c \
+	knife_fortran.c
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \

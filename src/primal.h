@@ -62,6 +62,10 @@ Primal primal_from_FAST( char *filename );
 
 void primal_free( Primal );
 
+KNIFE_STATUS primal_copy_arrays( Primal, 
+				 double *x, double *y, double *z,
+				 int maxcell, int *c2n );
+
 #define primal_nnode(primal) (primal->nnode)
 #define primal_nface(primal) (primal->nface)
 #define primal_ncell(primal) (primal->ncell)
