@@ -52,7 +52,6 @@ struct PrimalStruct {
   int surface_nnode;
   int *surface_node;
   int *surface_volume_node;
-
 };
 
 Primal primal_create( int nnode, int nface, int ncell );
@@ -65,6 +64,10 @@ void primal_free( Primal );
 KNIFE_STATUS primal_copy_arrays( Primal, 
 				 double *x, double *y, double *z,
 				 int maxcell, int *c2n );
+
+KNIFE_STATUS primal_copy_boundary( Primal, int face_id,
+				   int nnode, int *inode,
+				   int nface, int leading_dim, int *f2n );
 
 #define primal_nnode(primal) (primal->nnode)
 #define primal_nface(primal) (primal->nface)

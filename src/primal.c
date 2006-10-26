@@ -206,6 +206,44 @@ KNIFE_STATUS primal_copy_arrays( Primal primal,
   return KNIFE_SUCCESS;
 }
 
+static int nface_added = 0;
+
+KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id,
+				   int nnode, int *inode,
+				   int nface, int leading_dim, int *f2n )
+{
+  int face;
+  int node0, node1, node2;
+
+  for(face=0;face<nface;face++){
+    if ( nface_added >= primal_nface(primal) )
+      {
+	printf("primal_copy_boundary nface_added array bound\n");
+	return KNIFE_ARRAY_BOUND;
+      }
+    node0 = f2n[face+0*(leading_dim)] - 1;
+    node1 = f2n[face+1*(leading_dim)] - 1;
+    node2 = f2n[face+2*(leading_dim)] - 1;
+    if ( node0 > nnode || node1 > nnode || node2 > nnode )
+      {
+	printf("inode array bound %d %d %d %d\n",node0, node1, node2, nnode);
+	return KNIFE_ARRAY_BOUND;
+      }
+    node0 = inode[node0] - 1;
+    node1 = inode[node1] - 1;
+    node2 = inode[node2] - 1;
+    primal->f2n[0+4*nface_added] = node0;
+    primal->f2n[1+4*nface_added] = node1;
+    primal->f2n[2+4*nface_added] = node2;
+    primal->f2n[3+4*nface_added] = face_id;
+    adj_add( primal->face_adj, primal->f2n[0+4*nface_added], nface_added);
+    adj_add( primal->face_adj, primal->f2n[1+4*nface_added], nface_added);
+    adj_add( primal->face_adj, primal->f2n[2+4*nface_added], nface_added);
+    nface_added++;
+  }
+
+  return KNIFE_SUCCESS;
+}
 
 static void primal_set_cell_edge( Primal primal, 
 				  int node0, int node1, int indx);

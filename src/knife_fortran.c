@@ -61,3 +61,24 @@ void knife_create_( int *part_id, char *project,
 
   primal_copy_arrays( volume_primal, x, y, z, *maxcell, c2n );
 }
+
+void knife_create_boundary_( int *face_id, int *nnode, int *nodedim, int *inode,
+			     int *nface, int *dim1, int *dim2, int *f2n )
+{
+
+  if (*nface > *dim2 )
+    {
+      printf("dim2 array bound %d %d\n",*nface,*dim2);
+      return;
+    }
+
+  if (*nnode > *nodedim )
+    {
+      printf("nodedim array bound %d %d\n",*nnode,*nodedim);
+      return;
+    }
+
+  primal_copy_boundary( volume_primal, *face_id,
+			*nnode, inode,
+			*nface, *dim1, f2n );
+}
