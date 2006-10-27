@@ -192,3 +192,25 @@ void knife_dual_topo_( int *nodedim, int *topo,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
+
+void knife_centroid_volume_( int *node, 
+			     double *x, double *y, double *z, double *volume,
+			     int *knife_status )
+{
+  double xyz[3], center[3];
+
+  primal_xyz(domain_primal(domain),*node,xyz);
+
+  center[0] = xyz[0];
+  center[1] = xyz[1];
+  center[2] = xyz[2];
+
+  poly_centroid_volume(domain_poly(domain,*node),xyz,center,volume);
+  *x = center[0];
+  *y = center[1];
+  *z = center[2];
+
+  fflush(stdout);
+  *knife_status = KNIFE_SUCCESS;
+}
+
