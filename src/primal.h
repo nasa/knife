@@ -61,12 +61,11 @@ Primal primal_from_FAST( char *filename );
 
 void primal_free( Primal );
 
-KNIFE_STATUS primal_copy_arrays( Primal, 
+KNIFE_STATUS primal_copy_volume( Primal, 
 				 double *x, double *y, double *z,
 				 int maxcell, int *c2n );
 
-KNIFE_STATUS primal_copy_boundary( Primal, int face_id,
-				   int nnode, int *inode,
+KNIFE_STATUS primal_copy_boundary( Primal, int face_id, int *inode,
 				   int nface, int leading_dim, int *f2n );
 
 #define primal_nnode(primal) (primal->nnode)
@@ -75,6 +74,8 @@ KNIFE_STATUS primal_copy_boundary( Primal, int face_id,
 
 #define primal_nedge(primal) (primal->nedge)
 #define primal_ntri(primal) (primal->ntri)
+
+KNIFE_STATUS primal_establish_all( Primal );
 
 KNIFE_STATUS primal_establish_c2e( Primal );
 KNIFE_STATUS primal_establish_c2t( Primal );

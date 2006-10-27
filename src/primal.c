@@ -49,6 +49,12 @@
     }							      \
   }
 
+#define NOT_NULL(pointer,msg)				      \
+  if (NULL == pointer){					      \
+    printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
+    return KNIFE_NULL;					      \
+  }
+
 Primal primal_create(int nnode, int nface, int ncell)
 {
   Primal primal;
@@ -147,9 +153,7 @@ Primal primal_from_FAST( char *filename )
 
   fclose(file);
 
-  TRYN( primal_establish_c2e(primal), "c2e" );
-  TRYN( primal_establish_c2t(primal), "c2t" );
-  TRYN( primal_establish_surface_node(primal), "surface_node" );
+  TRYN( primal_establish_all( primal ), "primal_establish_all" );
 
   return primal;
 }
@@ -178,7 +182,7 @@ void primal_free( Primal primal )
   free( primal );
 }
 
-KNIFE_STATUS primal_copy_arrays( Primal primal, 
+KNIFE_STATUS primal_copy_volume( Primal primal, 
 				 double *x, double *y, double *z,
 				 int maxcell, int *c2n )
 {
@@ -208,8 +212,7 @@ KNIFE_STATUS primal_copy_arrays( Primal primal,
 
 static int nface_added = 0;
 
-KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id,
-				   int nnode, int *inode,
+KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
 				   int nface, int leading_dim, int *f2n )
 {
   int face;
@@ -224,11 +227,6 @@ KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id,
     node0 = f2n[face+0*(leading_dim)] - 1;
     node1 = f2n[face+1*(leading_dim)] - 1;
     node2 = f2n[face+2*(leading_dim)] - 1;
-    if ( node0 > nnode || node1 > nnode || node2 > nnode )
-      {
-	printf("inode array bound %d %d %d %d\n",node0, node1, node2, nnode);
-	return KNIFE_ARRAY_BOUND;
-      }
     node0 = inode[node0] - 1;
     node1 = inode[node1] - 1;
     node2 = inode[node2] - 1;
@@ -241,6 +239,17 @@ KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id,
     adj_add( primal->face_adj, primal->f2n[2+4*nface_added], nface_added);
     nface_added++;
   }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_establish_all( Primal primal )
+{
+  NOT_NULL( primal, "primal NULL" );
+
+  TRY( primal_establish_c2e(primal), "c2e" );
+  TRY( primal_establish_c2t(primal), "c2t" );
+  TRY( primal_establish_surface_node(primal), "surface_node" );
 
   return KNIFE_SUCCESS;
 }
