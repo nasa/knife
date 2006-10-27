@@ -61,14 +61,15 @@ void knife_volume_( int *part_id,
   *knife_status = KNIFE_SUCCESS;
 }
 
-void knife_boundary_( int *face_id, int *inode,
-		      int *nface, int *leading_dim, int *f2n, 
+void knife_boundary_( int *face_id, int *nodedim, int *inode,
+		      int *leading_dim, int *nface, int *f2n, 
 		      int *knife_status )
 {
 
-  TRY( primal_copy_boundary( volume_primal, *face_id, inode,
-			     *nface, *leading_dim, f2n ), 
-       "primal_copy_boundary");
+  if ( *nodedim > 0 )
+    TRY( primal_copy_boundary( volume_primal, *face_id, inode,
+			       *leading_dim, *nface, f2n ), 
+	 "primal_copy_boundary");
 
   *knife_status = KNIFE_SUCCESS;
 }

@@ -213,7 +213,7 @@ KNIFE_STATUS primal_copy_volume( Primal primal,
 static int nface_added = 0;
 
 KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
-				   int nface, int leading_dim, int *f2n )
+				   int leading_dim, int nface, int *f2n )
 {
   int face;
   int node0, node1, node2;
