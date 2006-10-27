@@ -83,7 +83,7 @@ void knife_cut_( char *knife_input_file_name,
   KnifeBool orientation_missing;
   KnifeBool inward_pointing_surface_normal;
   Array active_bcs;
-  int *bc;
+  int *bc, bc_found;
 
   f = NULL;
   f = fopen(knife_input_file_name, "r");
@@ -132,9 +132,16 @@ void knife_cut_( char *knife_input_file_name,
     {
       bc = (int *) malloc( sizeof(int) );
       NOT_NULL( bc , "bc NULL" );
-      fscanf( f, "%d", bc );
-      printf(" knife surface bc %d active\n",*bc);
-      TRY( array_add( active_bcs, bc ), "array_add bc");
+      bc_found = fscanf( f, "%d", bc );
+      if ( 1 == bc_found )
+	{
+	  printf(" knife surface bc %d active\n",*bc);
+	  TRY( array_add( active_bcs, bc ), "array_add bc");
+	}
+      else
+	{
+	  free(bc);
+	}
     }
 
   surface = surface_from( surface_primal, active_bcs, 
