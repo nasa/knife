@@ -42,6 +42,7 @@
 static Primal  surface_primal = NULL;
 static Surface surface        = NULL;
 static Primal  volume_primal  = NULL;
+static Domain  domain         = NULL;
 static int partition = EMPTY;
 
 void knife_volume_( int *part_id,
@@ -149,6 +150,15 @@ void knife_cut_( char *knife_input_file_name,
   NOT_NULL(surface, "surface NULL");
 
   TRY( primal_establish_all( volume_primal ), "primal_establish_all" );
+
+  domain = domain_create( volume_primal, surface );
+  NOT_NULL(domain, "domain NULL");
+
+  TRY( domain_required_dual( domain ), "domain_all_dual" );
+
+  TRY( domain_boolean_subtract( domain ), "boolean subtract" );
+
+  domain_tecplot( domain, "cut.t" );
 
   *knife_status = KNIFE_SUCCESS;
 }
