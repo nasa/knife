@@ -85,6 +85,7 @@ void knife_cut_( char *knife_input_file_name,
   KnifeBool inward_pointing_surface_normal;
   Array active_bcs;
   int *bc, bc_found;
+  char tecplot_file_name[1025];
 
   f = NULL;
   f = fopen(knife_input_file_name, "r");
@@ -158,7 +159,9 @@ void knife_cut_( char *knife_input_file_name,
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
-  domain_tecplot( domain, "cut.t" );
+  sprintf( tecplot_file_name, "knife_cut%03d.t", partition );
+  printf(" knife producing %s \n",tecplot_file_name);
+  domain_tecplot( domain, tecplot_file_name );
 
   *knife_status = KNIFE_SUCCESS;
 }
