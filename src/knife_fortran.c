@@ -27,6 +27,7 @@
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      fflush(stdout);					      \
       *knife_status = code;				      \
       return;						      \
     }							      \
@@ -35,6 +36,7 @@
 #define NOT_NULL(pointer,msg)				\
   if (NULL == (pointer)) {				\
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	\
+    fflush(stdout);					\
     *knife_status = KNIFE_FAILURE;			\
     return;						\
   }
@@ -59,6 +61,7 @@ void knife_volume_( int *part_id,
   TRY( primal_copy_volume( volume_primal, x, y, z, *maxcell, c2n ), 
        "primal_copy_volume");
 
+  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 
@@ -72,6 +75,7 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
 			       *leading_dim, *nface, f2n ), 
 	 "primal_copy_boundary");
 
+  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 
@@ -163,6 +167,7 @@ void knife_cut_( char *knife_input_file_name,
   printf(" knife producing %s \n",tecplot_file_name);
   domain_tecplot( domain, tecplot_file_name );
 
+  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 
@@ -184,5 +189,6 @@ void knife_dual_topo_( int *nodedim, int *topo,
       topo[node] = domain_topo(domain,node);
     }
 
+  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
