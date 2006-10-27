@@ -193,9 +193,10 @@ void knife_dual_topo_( int *nodedim, int *topo,
   *knife_status = KNIFE_SUCCESS;
 }
 
-void knife_centroid_volume_( int *node, 
-			     double *x, double *y, double *z, double *volume,
-			     int *knife_status )
+void knife_dual_centroid_volume_( int *node, 
+				  double *x, double *y, double *z, 
+				  double *volume,
+				  int *knife_status )
 {
   double xyz[3], center[3];
 
