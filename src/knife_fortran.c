@@ -200,13 +200,13 @@ void knife_dual_centroid_volume_( int *node,
 {
   double xyz[3], center[3];
 
-  primal_xyz(domain_primal(domain),*node,xyz);
+  primal_xyz(domain_primal(domain),(*node)-1,xyz);
 
   center[0] = xyz[0];
   center[1] = xyz[1];
   center[2] = xyz[2];
 
-  poly_centroid_volume(domain_poly(domain,*node),xyz,center,volume);
+  poly_centroid_volume(domain_poly(domain,(*node)-1),xyz,center,volume);
   *x = center[0];
   *y = center[1];
   *z = center[2];
