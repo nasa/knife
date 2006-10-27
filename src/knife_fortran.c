@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "knife_definitions.h"
 
@@ -20,9 +21,21 @@
 #include "surface.h"
 #include "domain.h"
 
+#define TRY(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      *knife_status = code;				      \
+      return;						      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				\
   if (NULL == (pointer)) {				\
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	\
+    *knife_status = KNIFE_FAILURE;			\
     return;						\
   }
 
@@ -31,54 +44,91 @@ static Surface surface        = NULL;
 static Primal  volume_primal  = NULL;
 static int partition = EMPTY;
 
-void knife_create_( int *part_id, char *project, 
+void knife_volume_( int *part_id,
 		    int *nnode, double *x, double *y, double *z,
-		    int *nface, int *ncell, int *maxcell, int *c2n )
+		    int *nface, int *ncell, int *maxcell, int *c2n, 
+		    int *knife_status )
 {
+
+  partition = *part_id;
+
+  volume_primal = primal_create( *nnode, *nface, *ncell );
+  NOT_NULL(volume_primal, "volume_primal NULL");
+
+  TRY( primal_copy_volume( volume_primal, x, y, z, *maxcell, c2n ), 
+       "primal_copy_volume");
+
+  *knife_status = KNIFE_SUCCESS;
+}
+
+void knife_boundary_( int *face_id, int *inode,
+		      int *nface, int *leading_dim, int *f2n, 
+		      int *knife_status )
+{
+
+  TRY( primal_copy_boundary( volume_primal, *face_id, inode,
+			     *nface, *leading_dim, f2n ), 
+       "primal_copy_boundary");
+
+  *knife_status = KNIFE_SUCCESS;
+}
+
+void knife_cut_( char *knife_input_file_name, 
+		 int *knife_status )
+{
+  FILE *f;
   char surface_filename[1025];
+  char orientation_string[1025];
+  KnifeBool orientation_missing;
   KnifeBool inward_pointing_surface_normal;
   Array active_bcs;
   int *bc;
 
-  partition = *part_id;
-
-  sprintf( surface_filename, "%s_surface.fgrid",project  );
+  f = NULL;
+  f = fopen(knife_input_file_name, "r");
+  NOT_NULL(f , "could not open knife_input_file_name");
+  
+  fscanf( f, "%s\n", surface_filename);
+  printf(" cut surface filename %s\n", surface_filename);
   surface_primal = primal_from_FAST( surface_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
+  
+  inward_pointing_surface_normal = TRUE;
+  orientation_missing = TRUE;
+  
+  fscanf( f, "%s\n", orientation_string );
+  if( strcmp(orientation_string,"outward") == 0 ) {
+    orientation_missing = FALSE;
+    inward_pointing_surface_normal = FALSE;
+  }
+  if( strcmp(orientation_string,"inward") == 0 ) {
+    orientation_missing = FALSE;
+    inward_pointing_surface_normal = TRUE;
+  }
+
+  if (orientation_missing)
+    {
+      printf("%s: %d: knife input file error: orientation\n",__FILE__,__LINE__);
+      *knife_status = KNIFE_FILE_ERROR;
+      return;
+    }
 
   active_bcs = array_create(10,10);
-  bc = (int *) malloc( sizeof(int) ); *bc = 1; array_add( active_bcs, bc );
-  bc = (int *) malloc( sizeof(int) ); *bc = 2; array_add( active_bcs, bc );
+  NOT_NULL(active_bcs, "active_bcs NULL");
 
-  inward_pointing_surface_normal = TRUE;
+  while ( !feof( f ) )
+    {
+      bc = (int *) malloc( sizeof(int) );
+      NOT_NULL( bc , "bc NULL" );
+      fscanf( f, "%d", bc );
+      TRY( array_add( active_bcs, bc ), "array_add bc");
+    }
 
   surface = surface_from( surface_primal, active_bcs, 
 			  inward_pointing_surface_normal );
   NOT_NULL(surface, "surface NULL");
 
-  volume_primal = primal_create( *nnode, *nface, *ncell );
-  NOT_NULL(volume_primal, "volume_primal NULL");
+  TRY( primal_establish_all( volume_primal ), "primal_establish_all" );
 
-  primal_copy_arrays( volume_primal, x, y, z, *maxcell, c2n );
-}
-
-void knife_create_boundary_( int *face_id, int *nnode, int *nodedim, int *inode,
-			     int *nface, int *dim1, int *dim2, int *f2n )
-{
-
-  if (*nface > *dim2 )
-    {
-      printf("dim2 array bound %d %d\n",*nface,*dim2);
-      return;
-    }
-
-  if (*nnode > *nodedim )
-    {
-      printf("nodedim array bound %d %d\n",*nnode,*nodedim);
-      return;
-    }
-
-  primal_copy_boundary( volume_primal, *face_id,
-			*nnode, inode,
-			*nface, *dim1, f2n );
+  *knife_status = KNIFE_SUCCESS;
 }
