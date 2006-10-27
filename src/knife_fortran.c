@@ -165,3 +165,24 @@ void knife_cut_( char *knife_input_file_name,
 
   *knife_status = KNIFE_SUCCESS;
 }
+
+void knife_dual_topo_( int *nodedim, int *topo,
+		       int *knife_status )
+{
+  int node;
+
+  if ( *nodedim != domain_npoly( domain ) )
+    {
+      printf("%s: %d: knife_dual_topo_ wrong nnode %d %d\n",
+	     __FILE__,__LINE__,*nodedim,domain_npoly( domain ));
+      *knife_status = KNIFE_ARRAY_BOUND;
+      return;
+    }
+
+  for ( node = 0; node < domain_npoly(domain); node++ )
+    {
+      topo[node] = domain_topo(domain,node);
+    }
+
+  *knife_status = KNIFE_SUCCESS;
+}
