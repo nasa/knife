@@ -90,7 +90,7 @@ void knife_cut_( char *knife_input_file_name,
   NOT_NULL(f , "could not open knife_input_file_name");
   
   fscanf( f, "%s\n", surface_filename);
-  printf(" cut surface filename %s\n", surface_filename);
+  printf(" knife surface filename %s\n", surface_filename);
   surface_primal = primal_from_FAST( surface_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
   
@@ -114,6 +114,17 @@ void knife_cut_( char *knife_input_file_name,
       return;
     }
 
+  printf(" knife surface filename %s\n", surface_filename);
+
+  if ( inward_pointing_surface_normal ) 
+    {
+      printf(" knife surface points into the domain\n");
+    }
+  else
+    {
+      printf(" knife surface points out of the domain\n");
+    }
+
   active_bcs = array_create(10,10);
   NOT_NULL(active_bcs, "active_bcs NULL");
 
@@ -122,6 +133,7 @@ void knife_cut_( char *knife_input_file_name,
       bc = (int *) malloc( sizeof(int) );
       NOT_NULL( bc , "bc NULL" );
       fscanf( f, "%d", bc );
+      printf(" knife surface bc %d active\n",*bc);
       TRY( array_add( active_bcs, bc ), "array_add bc");
     }
 
