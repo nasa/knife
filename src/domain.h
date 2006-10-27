@@ -82,17 +82,20 @@ Segment domain_segment( Domain, int segment_index );
 Triangle domain_triangle( Domain, int triangle_index );
 
 #define domain_npoly(domain) ((domain)->npoly)
-#define domain_poly(domain,poly_index) \
+#define domain_poly(domain,poly_index)		\
   ((domain)->poly[(poly_index)])
 
+#define domain_topo(domain,poly_index)					\
+  ((NULL == (domain)->topo)?POLY_INTERIOR:(domain)->topo[(poly_index)])
+
 #define domain_cut(domain,poly_index) \
-  ((NULL == (domain))?FALSE:POLY_CUT == (domain)->topo[(poly_index)])
+  (POLY_CUT == domain_topo(domain,poly_index))
 
 #define domain_original(domain,poly_index) \
-  ((NULL == (domain))?TRUE:POLY_INTERIOR == (domain)->topo[(poly_index)])
+  (POLY_INTERIOR == domain_topo(domain,poly_index))
 
 #define domain_active(domain,poly_index) \
-  ((NULL == (domain))?TRUE:(domain)->topo[(poly_index)])
+  (domain_cut(domain,poly_index) || domain_original(domain,poly_index))
 
 KNIFE_STATUS domain_required_dual( Domain domain );
 KNIFE_STATUS domain_all_dual( Domain domain );
