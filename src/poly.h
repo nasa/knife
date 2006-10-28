@@ -91,6 +91,13 @@ KNIFE_STATUS poly_subtri_about( Poly, Node, int nsubtri,
 				double *triangle_node0, 
 				double *triangle_node1,
 				double *triangle_node2 );
+
+KNIFE_STATUS poly_surface_nsubtri( Poly, int *nsubtri );
+KNIFE_STATUS poly_surface_subtri( Poly, int nsubtri, 
+				double *triangle_node0, 
+				double *triangle_node1,
+				double *triangle_node2 );
+
 KNIFE_STATUS poly_face_geometry_about( Poly, Node, FILE * );
 KNIFE_STATUS poly_boundary_face_geometry( Poly, int face_index, FILE * );
 KNIFE_STATUS poly_surf_geometry( Poly, FILE * );

@@ -615,8 +615,7 @@ KNIFE_STATUS poly_directed_area_about( Poly poly, Node node,
 	   !triangle_on_boundary(triangle) )
 	{
 	  TRY( mask_directed_area_contribution( mask, directed_area),
-	       "mask_directed_area_contribution failed" );
-	}
+	       "mask_directed_area_contribution failed" );	}
     }
 
   return KNIFE_SUCCESS;
@@ -688,6 +687,74 @@ KNIFE_STATUS poly_subtri_about( Poly poly, Node node, int nsubtri,
 	    }
     }
 
+
+  if ( n != nsubtri )
+    {
+      printf("%s: %d: not enough subtri found %d of %d\n",
+	     __FILE__,__LINE__, n, nsubtri);
+      return KNIFE_MISSING;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_surface_nsubtri( Poly poly, int *nsubtri )
+{
+  int surf_index;
+  Mask surf;
+  int n;
+
+  n = 0;
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    {
+      surf = poly_surf(poly,surf_index);
+      n += mask_nsubtri( surf );
+    }
+
+  *nsubtri = n;
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_surface_subtri( Poly poly, int nsubtri, 
+				  double *triangle_node0, 
+				  double *triangle_node1,
+				  double *triangle_node2 )
+{
+  int surf_index;
+  Mask surf;
+  Triangle triangle;
+  int subtri_index;
+  Subtri subtri;
+  int n;
+
+  n = 0;
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    {
+      surf = poly_surf(poly,surf_index);
+      triangle = mask_triangle(surf);
+      for ( subtri_index = 0 ; 
+	    subtri_index < triangle_nsubtri( triangle);
+	    subtri_index++ )
+	if ( mask_subtri_active(surf,subtri_index) )
+	  {
+	    if ( n >= nsubtri )
+	      {
+		printf("%s: %d: too many subtri found for argument\n",
+		       __FILE__,__LINE__);
+		return KNIFE_ARRAY_BOUND;
+	      }
+	    subtri = triangle_subtri( triangle, subtri_index );
+	    subnode_xyz( subtri_n0(subtri), &(triangle_node0[3*n]) );
+	    subnode_xyz( subtri_n1(subtri), &(triangle_node1[3*n]) );
+	    subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
+	    n++;
+	  }
+    }
 
   if ( n != nsubtri )
     {
