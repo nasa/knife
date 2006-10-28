@@ -21,6 +21,9 @@
 #include "surface.h"
 #include "domain.h"
 
+#include "node.h"
+#include "poly.h"
+
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -215,51 +218,53 @@ void knife_dual_centroid_volume_( int *node,
   *knife_status = KNIFE_SUCCESS;
 }
 
-void knife_nunber_of_triangles_between_( int *node1, int *node2,
+void knife_number_of_triangles_between_( int *node1, int *node2,
 					 int *nsubtri,
 					 int *knife_status )
 {
   int n;
   int edge;
+  Poly poly;
   Node node;
 
-  poly = domain_poly(domain,(*node1)-1);
-  NOT_NULL(poly, "node1 poly NULL in knife_nunber_of_triangles_between_");
+  poly = domain_poly( domain, (*node1)-1 );
+  NOT_NULL(poly, "node1 poly NULL in knife_number_of_triangles_between_");
 
-  TRY( primal_edge_between( primal, (*node1)-1,  (*node2)-1, &edge ), 
+  TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
 
-  node = domain_node_at_edge_center(domain,edge);
-  NOT_NULL(poly, "edge rimal node NULL in knife_nunber_of_triangles_between_");
+  node = domain_node_at_edge_center( domain, edge );
+  NOT_NULL(node, "edge node NULL in knife_number_of_triangles_between_");
 
-  TRY( poly_nsubtri_around( poly, node, nsubtri ), "poly_nsubtri_around" );
+  TRY( poly_nsubtri_about( poly, node, &n ), "poly_nsubtri_about" );
   
+  *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
 
 void knife_triangles_between_( int *node1, int *node2,
-			       int *nsubtri,
-			       double *triangle_node0,
-			       double *triangle_node1,
-			       double *triangle_node2,
-			       int *knife_status )
+                               int *nsubtri,
+                               double *triangle_node0,
+                               double *triangle_node1,
+                               double *triangle_node2,
+                               int *knife_status )
 {
-  int n;
   int edge;
+  Poly poly;
   Node node;
 
-  poly = domain_poly(domain,(*node1)-1);
+  poly = domain_poly( domain, (*node1)-1 );
   NOT_NULL(poly, "node1 poly NULL in knife_triangles_between_");
 
-  TRY( primal_edge_between( primal, (*node1)-1,  (*node2)-1, &edge ), 
+  TRY( primal_find_edge( volume_primal, (*node1)-1,  (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
 
-  node = domain_node_at_edge_center(domain,edge);
-  NOT_NULL(poly, "edge rimal node NULL in knife_riangles_between_");
+  node = domain_node_at_edge_center( domain, edge );
+  NOT_NULL(node, "edge node NULL in knife_triangles_between_");
 
-  TRY( poly_subtri_around( poly, node, 
-			   triangle_node0, triangle_node1, triangle_node2 ), 
-       "poly_subtri_around" );
+  TRY( poly_subtri_about( poly, node, *nsubtri, 
+			  triangle_node0, triangle_node1, triangle_node2 ), 
+       "poly_nsubtri_about" );
   
   *knife_status = KNIFE_SUCCESS;
 }

@@ -154,6 +154,20 @@ Node domain_node( Domain domain, int node_index )
   return domain->node[node_index];
 }
 
+Node domain_node_at_edge_center( Domain domain, int edge_index )
+{
+  int node_index;
+  Node node;
+
+  node_index = edge_index + primal_ntri(domain->primal) 
+                          + primal_ncell(domain->primal);
+
+  node = domain_node( domain, node_index );
+  NOT_NULLN( node, "domain_node_at_edge_center" );
+
+  return node;
+}
+
 Segment domain_segment( Domain domain, int segment_index )
 {
   int cell, side, edge, tri;

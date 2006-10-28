@@ -74,6 +74,7 @@ void domain_free( Domain );
 
 #define domain_nnode(domain) ((domain)->nnode)
 Node domain_node( Domain, int node_index );
+Node domain_node_at_edge_center( Domain, int edge_index );
 
 #define domain_nsegment(domain) ((domain)->nsegment)
 Segment domain_segment( Domain, int segment_index );
