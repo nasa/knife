@@ -304,3 +304,38 @@ void knife_surface_triangles_( int *node,
   *knife_status = KNIFE_SUCCESS;
 }
 
+void knife_number_of_boundary_triangles_( int *node, int *face,
+					  int *nsubtri,
+					  int *knife_status )
+{
+  int n;
+  Poly poly;
+
+  poly = domain_poly( domain, (*node)-1 );
+  NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
+
+  TRY( poly_boundary_nsubtri( poly, (*face)-1, &n ), "poly_nsubtri_about" );
+  
+  *nsubtri = n;
+  *knife_status = KNIFE_SUCCESS;
+}
+
+void knife_boundary_triangles_( int *node, int *face,
+                               int *nsubtri,
+                               double *triangle_node0,
+                               double *triangle_node1,
+                               double *triangle_node2,
+                               int *knife_status )
+{
+  Poly poly;
+
+  poly = domain_poly( domain, (*node)-1 );
+  NOT_NULL(poly, "poly NULL in knife_boundary_triangles_");
+
+  TRY( poly_boundary_subtri( poly, (*face)-1, *nsubtri, 
+			    triangle_node0, triangle_node1, triangle_node2 ), 
+       "poly_nsubtri_about" );
+  
+  *knife_status = KNIFE_SUCCESS;
+}
+
