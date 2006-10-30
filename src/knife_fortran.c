@@ -49,22 +49,19 @@ static Surface surface        = NULL;
 static Primal  volume_primal  = NULL;
 static Domain  domain         = NULL;
 static int partition = EMPTY;
-static int *part_vect;
 
 void knife_volume_( int *part_id,
-		    int *nnode, double *x, double *y, double *z, int *part,
+		    int *nnode0, int *nnode, double *x, double *y, double *z,
 		    int *nface, int *ncell, int *maxcell, int *c2n, 
 		    int *knife_status )
 {
-  int node;
 
   partition = *part_id;
 
-  part_vect = (int *) malloc( (*nnode) * sizeof( int ) );
-  for ( node = 0 ; node < (*nnode) ; node++ ) part_vect[node] = part[node];
-
   volume_primal = primal_create( *nnode, *nface, *ncell );
   NOT_NULL(volume_primal, "volume_primal NULL");
+
+  volume_primal->nnode0 = *nnode0;
 
   TRY( primal_copy_volume( volume_primal, x, y, z, *maxcell, c2n ), 
        "primal_copy_volume");

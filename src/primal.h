@@ -29,6 +29,8 @@ BEGIN_C_DECLORATION
 
 struct PrimalStruct {
 
+  int nnode0;
+
   int nnode;
   double *xyz;
 
@@ -68,6 +70,7 @@ KNIFE_STATUS primal_copy_volume( Primal,
 KNIFE_STATUS primal_copy_boundary( Primal, int face_id, int *inode,
 				   int leading_dim, int nface, int *f2n );
 
+#define primal_nnode0(primal) (primal->nnode0)
 #define primal_nnode(primal) (primal->nnode)
 #define primal_nface(primal) (primal->nface)
 #define primal_ncell(primal) (primal->ncell)
