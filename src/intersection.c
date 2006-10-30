@@ -97,7 +97,7 @@ void intersection_free( Intersection intersection )
 
 /* replace this with floating point check */
 #define TEST_FOR_SINGULAR_VOLUME(volume_to_test,msg)	\
-  if (ABS(volume_to_test) < 1.0e-20) {			\
+  if (ABS(volume_to_test) <= 1.0e-40) {			\
     printf("%s: %d: %s %.16e singular\n",		\
 	   __FILE__,__LINE__,(msg),(volume_to_test));	\
     return KNIFE_SINGULAR; }
