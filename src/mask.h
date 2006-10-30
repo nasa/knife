@@ -36,6 +36,7 @@ Mask mask_create( Triangle, KnifeBool inward_pointing_normal );
 void mask_free( Mask );
 
 #define mask_triangle( mask )((mask)->triangle)
+#define mask_inward_pointing_normal( mask )((mask)->inward_pointing_normal)
 
 int mask_nsubtri( Mask );
 
