@@ -32,8 +32,8 @@ BEGIN_C_DECLORATION
 typedef int POLY_TOPO;
 
 #define POLY_EXTERIOR (0)
-#define POLY_INTERIOR (1)
-#define POLY_CUT      (2)
+#define POLY_CUT      (1)
+#define POLY_INTERIOR (2)
 #define POLY_GHOST    (3)
 
 struct DomainStruct {
