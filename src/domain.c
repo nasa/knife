@@ -376,8 +376,10 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 	  primal_face(domain->primal, face, face_nodes);
 	  node0 = face_nodes[primal_face_side_node0(side)];
 	  node1 = face_nodes[primal_face_side_node1(side)];
-	  TRYN( primal_find_face_side(domain->primal, node1, node0, 
-				     &other_face, &other_side), "u face_side"); 
+	  /* the other face may not be there if not watertight (parallel) */
+	  other_face = EMPTY;
+	  primal_find_face_side(domain->primal, node1, node0, 
+				&other_face, &other_side);
 	  TRYN( primal_find_tri( domain->primal, 
 				face_nodes[0], face_nodes[1], face_nodes[2],
 				&tri ), "find tri for triangle init" );
@@ -394,14 +396,14 @@ Triangle domain_triangle( Domain domain, int triangle_index )
 		3 *primal_ntri(domain->primal) + 
 		10 * primal_ncell(domain->primal);
 	      segment2 = 0 + first_side + 2*domain->f2s[side+3*face];
-	      if (other_face < face) 
+	      if ( EMPTY != other_face && other_face < face) 
 		segment2 = 1 + first_side + 2*domain->f2s[side+3*face];
 	    }
 	  else
 	    {
 	      segment0 = tri_side + 3 * tri + 10 * primal_ncell(domain->primal);
 	      segment1 = 1 + first_side + 2*domain->f2s[side+3*face];
-	      if (other_face < face) 
+	      if ( EMPTY != other_face && other_face < face) 
 		segment1 = 0 + first_side + 2*domain->f2s[side+3*face];
 	      segment2 = primal_face_side_node1(side) + 3 * face + 
 		3 *primal_ntri(domain->primal) + 
