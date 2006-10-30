@@ -63,6 +63,7 @@ Primal primal_create(int nnode, int nface, int ncell)
   primal_test_malloc(primal,"primal_create primal");
 
   primal->nnode = nnode;
+  primal->nnode0 = primal->nnode;
   primal->xyz = (double *)malloc(3 * MAX(primal->nnode,1) * sizeof(double));
   primal_test_malloc(primal->xyz,"primal_create xyz");
 
