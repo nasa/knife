@@ -540,12 +540,19 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
 	   !triangle_on_boundary(triangle) )
 	{
 	  found = TRUE;
-	  if ( 1 != triangle_nsubtri(triangle) ) return KNIFE_FAILURE;
+	  if ( 1 != triangle_nsubtri(triangle) ) 
+	    {
+	      printf("%s: %d: expected triangle to be uncut\n",
+		     __FILE__,__LINE__);
+	      return KNIFE_FAILURE;
+	    }
 	  if ( mask_subtri_active(mask,0) ) found_active = TRUE;
 	}
     }
 
   if (found) *active = found_active;
+  if (!found) printf("%s: %d: no triangles with node found\n",
+		     __FILE__,__LINE__);
 
   return (found?KNIFE_SUCCESS:KNIFE_NOT_FOUND);
 }
