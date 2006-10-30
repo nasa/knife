@@ -34,6 +34,7 @@ typedef int POLY_TOPO;
 #define POLY_EXTERIOR (0)
 #define POLY_INTERIOR (1)
 #define POLY_CUT      (2)
+#define POLY_GHOST    (3)
 
 struct DomainStruct {
   Primal primal;
@@ -81,6 +82,8 @@ Segment domain_segment( Domain, int segment_index );
 
 #define domain_ntriangle(domain) ((domain)->ntriangle)
 Triangle domain_triangle( Domain, int triangle_index );
+
+#define domain_npoly0(domain) (primal_nnode0(domain_primal(domain)))
 
 #define domain_npoly(domain) ((domain)->npoly)
 #define domain_poly(domain,poly_index)		\

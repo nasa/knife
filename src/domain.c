@@ -987,7 +987,7 @@ KNIFE_STATUS domain_determine_active_subtri( Domain domain )
   int poly_index;
 
   for ( poly_index = 0;
-	poly_index < domain_npoly(domain); 
+	poly_index < domain_npoly0(domain); 
 	poly_index++)
     if ( NULL != domain_poly(domain,poly_index) )
       if ( poly_has_surf( domain_poly( domain, poly_index ) ) )
@@ -1016,12 +1016,17 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
   NOT_NULL( domain->topo, "domain->topo NULL");
 
   for ( poly_index = 0;
-	poly_index < domain_npoly(domain); 
+	poly_index < domain_npoly0(domain); 
 	poly_index++)
     domain->topo[poly_index] = POLY_INTERIOR;
 
-  for ( poly_index = 0;
+  for ( poly_index = domain_npoly0(domain);
 	poly_index < domain_npoly(domain); 
+	poly_index++)
+    domain->topo[poly_index] = POLY_GHOST;
+
+  for ( poly_index = 0;
+	poly_index < domain_npoly0(domain); 
 	poly_index++)
     if ( NULL != domain_poly(domain,poly_index) )
       {
@@ -1043,14 +1048,16 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	  topo0 = domain->topo[edge_nodes[0]];
 	  topo1 = domain->topo[edge_nodes[1]];
 
-	  if ( POLY_CUT == topo0 && POLY_INTERIOR == topo1 )
+	  if ( POLY_CUT == topo0 &&  
+	       ( POLY_INTERIOR == topo1 || POLY_GHOST == topo1 ) )
 	    {
 	      TRY( poly_mask_surrounding_node_activity( poly0, node,
 							&active ), "active01");
 	      if ( !active ) domain->topo[edge_nodes[1]] = POLY_EXTERIOR;
 	    }
 
-	  if ( POLY_CUT == topo1 && POLY_INTERIOR == topo0 )
+	  if ( POLY_CUT == topo1 && 
+	       ( POLY_INTERIOR == topo0 || POLY_GHOST == topo0 ) )
 	    {
 	      TRY( poly_mask_surrounding_node_activity( poly1, node,
 							&active ), "active10");
@@ -1068,19 +1075,23 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	{
 	  TRY( primal_edge( domain->primal, edge, edge_nodes), 
 	       "dual_topo ext int primal_edge" );
-	  topo0 = domain->topo[edge_nodes[0]];
-	  topo1 = domain->topo[edge_nodes[1]];
-
-	  if ( POLY_EXTERIOR == topo0 && POLY_INTERIOR == topo1 )
+	  if ( edge_nodes[0] < domain_npoly0(domain) &&
+	       edge_nodes[1] < domain_npoly0(domain) )
 	    {
-	      requires_another_sweep = TRUE;
-	      domain->topo[edge_nodes[1]] = POLY_EXTERIOR;
-	    }
+	      topo0 = domain->topo[edge_nodes[0]];
+	      topo1 = domain->topo[edge_nodes[1]];
+	      
+	      if ( POLY_EXTERIOR == topo0 && POLY_INTERIOR == topo1 )
+		{
+		  requires_another_sweep = TRUE;
+		  domain->topo[edge_nodes[1]] = POLY_EXTERIOR;
+		}
 
-	  if ( POLY_EXTERIOR == topo1 && POLY_INTERIOR == topo0 )
-	    {
-	      requires_another_sweep = TRUE;
-	      domain->topo[edge_nodes[0]] = POLY_EXTERIOR;
+	      if ( POLY_EXTERIOR == topo1 && POLY_INTERIOR == topo0 )
+		{
+		  requires_another_sweep = TRUE;
+		  domain->topo[edge_nodes[0]] = POLY_EXTERIOR;
+		}
 	    }
 	}
     }

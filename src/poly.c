@@ -542,11 +542,12 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
 	  found = TRUE;
 	  if ( 1 != triangle_nsubtri(triangle) ) 
 	    {
-	      printf("%s: %d: expected triangle to be uncut\n",
-		     __FILE__,__LINE__);
-	      return KNIFE_FAILURE;
+	      found_active = TRUE;
 	    }
-	  if ( mask_subtri_active(mask,0) ) found_active = TRUE;
+	  else
+	    {
+	      if ( mask_subtri_active(mask,0) ) found_active = TRUE;
+	    }
 	}
     }
 
