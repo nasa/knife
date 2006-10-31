@@ -69,6 +69,17 @@ void knife_volume_( int *part_id,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_volume__( int *part_id,
+		     int *nnode0, int *nnode, double *x, double *y, double *z,
+		     int *nface, int *ncell, int *maxcell, int *c2n, 
+		     int *knife_status )
+{
+  knife_volume_( part_id,
+		 nnode0, nnode, x, y, z,
+		 nface, ncell, maxcell, c2n, 
+		 knife_status );
+}
+
 
 void knife_boundary_( int *face_id, int *nodedim, int *inode,
 		      int *leading_dim, int *nface, int *f2n, 
@@ -83,6 +94,15 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_boundary__( int *face_id, int *nodedim, int *inode,
+		      int *leading_dim, int *nface, int *f2n, 
+		      int *knife_status )
+{
+  knife_boundary_( face_id, nodedim, inode,
+		   leading_dim, nface, f2n, 
+		   knife_status );
+}
+
 
 void knife_cut_( char *knife_input_file_name, 
 		 int *knife_status )
@@ -179,6 +199,13 @@ void knife_cut_( char *knife_input_file_name,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_cut__( char *knife_input_file_name, 
+		 int *knife_status )
+{
+  knife_cut__( knife_input_file_name, 
+	       knife_status );
+}
+
 
 void knife_dual_topo_( int *nodedim, int *topo,
 		       int *knife_status )
@@ -201,6 +228,12 @@ void knife_dual_topo_( int *nodedim, int *topo,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_dual_topo__( int *nodedim, int *topo,
+			int *knife_status )
+{
+  knife_dual_topo_( nodedim, topo,
+		    knife_status );
+}
 
 void knife_dual_centroid_volume_( int *node, 
 				  double *x, double *y, double *z, 
@@ -222,6 +255,16 @@ void knife_dual_centroid_volume_( int *node,
 
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
+}
+void knife_dual_centroid_volume__( int *node, 
+				   double *x, double *y, double *z, 
+				   double *volume,
+				   int *knife_status )
+{
+  knife_dual_centroid_volume_( node, 
+			       x, y, z, 
+			       volume,
+			       knife_status );
 }
 
 void knife_number_of_triangles_between_( int *node1, int *node2,
@@ -246,6 +289,14 @@ void knife_number_of_triangles_between_( int *node1, int *node2,
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
+}
+void knife_number_of_triangles_between__( int *node1, int *node2,
+					  int *nsubtri,
+					  int *knife_status )
+{
+  knife_number_of_triangles_between_( node1, node2,
+				      nsubtri,
+				      knife_status );
 }
 
 void knife_triangles_between_( int *node1, int *node2,
@@ -274,6 +325,20 @@ void knife_triangles_between_( int *node1, int *node2,
   
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_triangles_between__( int *node1, int *node2,
+				int *nsubtri,
+				double *triangle_node0,
+				double *triangle_node1,
+				double *triangle_node2,
+				int *knife_status )
+{
+  knife_triangles_between_( node1, node2,
+			    nsubtri,
+			    triangle_node0,
+			    triangle_node1,
+			    triangle_node2,
+			    knife_status );
+}
 
 void knife_number_of_surface_triangles_( int *node,
 					 int *nsubtri,
@@ -289,6 +354,14 @@ void knife_number_of_surface_triangles_( int *node,
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
+}
+void knife_number_of_surface_triangles__( int *node,
+					  int *nsubtri,
+					  int *knife_status )
+{
+  knife_number_of_surface_triangles_( node,
+				      nsubtri,
+				      knife_status );
 }
 
 void knife_surface_triangles_( int *node,
@@ -309,6 +382,20 @@ void knife_surface_triangles_( int *node,
   
   *knife_status = KNIFE_SUCCESS;
 }
+void knife_surface_triangles__( int *node,
+                               int *nsubtri,
+                               double *triangle_node0,
+                               double *triangle_node1,
+                               double *triangle_node2,
+                               int *knife_status )
+{
+  knife_surface_triangles_( node,
+			    nsubtri,
+			    triangle_node0,
+			    triangle_node1,
+			    triangle_node2,
+			    knife_status );
+}
 
 void knife_number_of_boundary_triangles_( int *node, int *face,
 					  int *nsubtri,
@@ -324,6 +411,14 @@ void knife_number_of_boundary_triangles_( int *node, int *face,
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
+}
+void knife_number_of_boundary_triangles__( int *node, int *face,
+					   int *nsubtri,
+					   int *knife_status )
+{
+  knife_number_of_boundary_triangles_( node, face,
+				       nsubtri,
+				       knife_status ); 
 }
 
 void knife_boundary_triangles_( int *node, int *face,
@@ -344,4 +439,17 @@ void knife_boundary_triangles_( int *node, int *face,
   
   *knife_status = KNIFE_SUCCESS;
 }
-
+void knife_boundary_triangles__( int *node, int *face,
+				 int *nsubtri,
+				 double *triangle_node0,
+				 double *triangle_node1,
+				 double *triangle_node2,
+				 int *knife_status )
+{
+  knife_boundary_triangles_( node, face,
+			     nsubtri,
+			     triangle_node0,
+			     triangle_node1,
+			     triangle_node2,
+			     knife_status );
+}
