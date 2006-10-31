@@ -120,7 +120,7 @@ void knife_cut_( char *knife_input_file_name,
   f = fopen(knife_input_file_name, "r");
   if ( NULL == f ) printf("filename: %s\n",knife_input_file_name);
   NOT_NULL(f , "could not open knife_input_file_name");
-  
+
   fscanf( f, "%s\n", surface_filename);
   printf(" knife surface filename %s\n", surface_filename);
   surface_primal = primal_from_FAST( surface_filename );
@@ -202,8 +202,8 @@ void knife_cut_( char *knife_input_file_name,
 void knife_cut__( char *knife_input_file_name, 
 		 int *knife_status )
 {
-  knife_cut__( knife_input_file_name, 
-	       knife_status );
+  knife_cut_( knife_input_file_name, 
+	      knife_status );
 }
 
 
