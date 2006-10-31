@@ -241,14 +241,19 @@ void knife_dual_centroid_volume_( int *node,
 				  int *knife_status )
 {
   double xyz[3], center[3];
+  Poly poly;
 
-  primal_xyz(domain_primal(domain),(*node)-1,xyz);
+  TRY( primal_xyz(domain_primal(domain),(*node)-1,xyz), "primal_xyz" );
 
   center[0] = xyz[0];
   center[1] = xyz[1];
   center[2] = xyz[2];
 
-  poly_centroid_volume(domain_poly(domain,(*node)-1),xyz,center,volume);
+  poly = domain_poly(domain,(*node)-1);
+  NOT_NULL( poly, "poly NULL" );
+
+  TRY( poly_centroid_volume(poly,xyz,center,volume), "poly_centroid_volume" );
+
   *x = center[0];
   *y = center[1];
   *z = center[2];
