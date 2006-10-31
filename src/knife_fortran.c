@@ -169,9 +169,12 @@ void knife_cut_( char *knife_input_file_name,
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
-  sprintf( tecplot_file_name, "knife_cut%03d.t", partition );
-  printf(" knife producing %s \n",tecplot_file_name);
-  domain_tecplot( domain, tecplot_file_name );
+  if (FALSE) 
+    {
+      sprintf( tecplot_file_name, "knife_cut%03d.t", partition );
+      printf(" knife producing %s \n",tecplot_file_name);
+      domain_tecplot( domain, tecplot_file_name );
+    }
 
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
