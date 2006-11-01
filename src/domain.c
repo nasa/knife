@@ -599,13 +599,20 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
 	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  if ( NULL != domain_poly(domain,node0) )
-	    poly_add_triangle( domain_poly(domain,node0),
-			       domain_triangle(domain,triangle_index), TRUE );
-
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
 	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
 	  if ( NULL != domain_poly(domain,node1) )
-	    poly_add_triangle( domain_poly(domain,node1),
-			       domain_triangle(domain,triangle_index), TRUE );
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
 	}
     }
 	  
