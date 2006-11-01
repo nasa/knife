@@ -130,7 +130,7 @@ int main( int argc, char *argv[] )
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
-  if (debug_node)
+  if (debug_mode)
     {
       TRY( domain_required_dual( domain ), "domain_required_dual" );
     }
