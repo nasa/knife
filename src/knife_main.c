@@ -53,6 +53,7 @@ int main( int argc, char *argv[] )
   KnifeBool inward_pointing_surface_normal = TRUE;
   KnifeBool tecplot_output = FALSE;
   KnifeBool arguments_require_stop = FALSE;
+  KnifeBool debug_mode = FALSE;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -69,6 +70,11 @@ int main( int argc, char *argv[] )
       if( strcmp(argv[argument],"-r") == 0 ) {
 	inward_pointing_surface_normal = FALSE;
 	printf("-r\n");
+      }
+
+      if( strcmp(argv[argument],"-d") == 0 ) {
+	debug_mode = TRUE;
+	printf("-d\n");
       }
 
       if( strcmp(argv[argument],"-v") == 0 ) {
@@ -95,6 +101,7 @@ int main( int argc, char *argv[] )
 	printf("-s surface fgrid filename\n");
 	printf("-r surface triangle normals point out of the domain\n");
 	printf("-v volume fgrid filename\n");
+	printf("-d debug mode\n");
 	printf("-h,--help display help info and exit\n");
 	printf("--version display version info and exit\n");
 	arguments_require_stop = TRUE;
@@ -123,7 +130,14 @@ int main( int argc, char *argv[] )
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
-  TRY( domain_all_dual( domain ), "domain_all_dual" );
+  if (debug_node)
+    {
+      TRY( domain_required_dual( domain ), "domain_required_dual" );
+    }
+  else
+    {
+      TRY( domain_all_dual( domain ), "domain_all_dual" );
+    }
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
