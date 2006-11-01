@@ -493,6 +493,7 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   int cell_nodes[4], face_nodes[4];
   int cell_edge;
   int node0, node1;
+  Triangle triangle;
 
   if ( NULL == domain->poly )
     {
@@ -556,20 +557,35 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	  triangle_index = 0 + 2 * cell_edge + 12 * cell;
 	  /* triangle normal points from node0 to node1 */
 	  if ( NULL != domain_poly(domain,node0) )
-	    poly_add_triangle( domain_poly(domain,node0),
-			       domain_triangle(domain,triangle_index), FALSE );
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, FALSE ), "poly_add_triangle");
+	    }
 	  if ( NULL != domain_poly(domain,node1) )
-	    poly_add_triangle( domain_poly(domain,node1),
-			       domain_triangle(domain,triangle_index), TRUE );
-
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
 	  triangle_index = 1 + 2 * cell_edge + 12 * cell;
 	  /* triangle normal points from node0 to node1 */
 	  if ( NULL != domain_poly(domain,node0) )
-	    poly_add_triangle( domain_poly(domain,node0),
-			       domain_triangle(domain,triangle_index), FALSE );
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, FALSE ), "poly_add_triangle");
+	    }
 	  if ( NULL != domain_poly(domain,node1) )
-	    poly_add_triangle( domain_poly(domain,node1),
-			       domain_triangle(domain,triangle_index), TRUE );
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
 	}
     }
 
