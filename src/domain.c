@@ -764,9 +764,9 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
   for (tri_index=0;tri_index<primal_ntri(domain->primal);tri_index++)
     {
       primal_tri(domain->primal,tri_index,tri_nodes);
-      if ( NULL != domain->poly[tri_nodes[0]] &&
-	   NULL != domain->poly[tri_nodes[1]] &&
-	   NULL != domain->poly[tri_nodes[2]] ) continue;
+      if ( 0 != required[tri_nodes[0]] && 
+	   0 != required[tri_nodes[1]] && 
+	   0 != required[tri_nodes[2]]  ) continue;
       primal_xyz(domain->primal,tri_nodes[0],xyz0);
       primal_xyz(domain->primal,tri_nodes[1],xyz1);
       primal_xyz(domain->primal,tri_nodes[2],xyz2);
