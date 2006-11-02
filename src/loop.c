@@ -233,6 +233,8 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
   Subtri subtri;
   Subnode subnode0, subnode1, subnode2;
 
+  loop_tecplot( loop );
+
   if ( NULL == loop->node0 || NULL == loop->node1)
     {
       printf("call loop_split before loop_triangulate\n");
@@ -385,7 +387,7 @@ KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS loop_tecplot( Loop loop)
+KNIFE_STATUS loop_tecplot( Loop loop )
 {
   FILE *f;
   int side_index;
@@ -395,7 +397,7 @@ KNIFE_STATUS loop_tecplot( Loop loop)
 
   char filename[1025];
 
-  sprintf(filename, "loop%04d.t",loop_tecplot_frame );
+  sprintf(filename, "loop%08d.t",loop_tecplot_frame );
   printf("producing %s\n",filename);
   loop_tecplot_frame++;
 
