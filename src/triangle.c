@@ -793,7 +793,7 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle triangle,
   area0 = subnode_area( node2, target, node0 );
   area1 = subnode_area( node1, target, node2 );
 
-  if ( area0 <= 0.0 && area1 <= 0.0 ) return KNIFE_NOT_FOUND;
+  if ( area0 <= 1.0e-14 && area1 <= 1.0e-14 ) return KNIFE_NOT_FOUND;
 
   if ( area1 > area0 )
     {
