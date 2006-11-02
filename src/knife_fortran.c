@@ -22,6 +22,8 @@
 #include "domain.h"
 
 #include "node.h"
+#include "triangle.h"
+#include "loop.h"
 #include "poly.h"
 
 #define TRY(fcn,msg)					      \
