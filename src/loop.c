@@ -399,6 +399,24 @@ KNIFE_STATUS loop_tecplot( Loop loop)
   fprintf(f, "zone t=loop, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  2*loop_nside(loop), loop_nside(loop) );
 
+  subnode = loop->node0;
+  if ( NULL != subnode )
+    {
+      subnode_uvw(subnode,uvw);
+      subnode_xyz(subnode,xyz);
+      fprintf(f, "#node0 %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+    }
+
+  subnode = loop->node1;
+  if ( NULL != subnode )
+    {
+      subnode_uvw(subnode,uvw);
+      subnode_xyz(subnode,xyz);
+      fprintf(f, "#node1 %.16e %.16e %.16e %.16e %.16e\n",
+	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+    }
+
   for ( side_index = 0;
 	side_index < loop_nside(loop); 
 	side_index++)
