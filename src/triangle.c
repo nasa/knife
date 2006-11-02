@@ -950,10 +950,11 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   Cut cut;
   int i;
   int sorted, indx;
+  int indx0, indx1;
   Intersection largest;
   Intersection intersection;
   int nseg;
-  double uvw[3];
+  double uvw[3], uvw0[3], uvw1[3];
 
   for (i = 0; i<3; i++)
     {
@@ -1037,6 +1038,91 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 		 4+array_index( ints, array_item(seg[i],indx-1) ),
 		 4+array_index( ints, array_item(seg[i],indx)   ) );
       }
+
+
+  i = 0;
+  if ( 0 == array_size(seg[i]) )
+    {
+      nseg++;
+      fprintf( f, "%3d %3d %3d\n",nseg, 2, 3 );
+    }
+  else
+    {
+      intersection = array_item(seg[i],0);
+      intersection_uvw( intersection, triangle, uvw0 );
+      indx0 = 4+array_index( ints, intersection );
+
+      intersection = array_item(seg[i],array_size(seg[i])-1);
+      intersection_uvw( intersection, triangle, uvw1 );
+      indx1 = 4+array_index( ints, intersection );
+      if ( uvw1[2] > uvw0[2] )
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 2, indx0 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx1, 3 );
+	}
+      else
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 2, indx1 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx0, 3 );
+	}
+    }
+
+
+  i = 1;
+  if ( 0 == array_size(seg[i]) )
+    {
+      nseg++;
+      fprintf( f, "%3d %3d %3d\n",nseg, 3, 1 );
+    }
+  else
+    {
+      intersection = array_item(seg[i],0);
+      intersection_uvw( intersection, triangle, uvw0 );
+      indx0 = 4+array_index( ints, intersection );
+
+      intersection = array_item(seg[i],array_size(seg[i])-1);
+      intersection_uvw( intersection, triangle, uvw1 );
+      indx1 = 4+array_index( ints, intersection );
+      if ( uvw1[0] > uvw0[0] )
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 3, indx0 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx1, 1 );
+	}
+      else
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 3, indx1 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx0, 1 );
+	}
+    }
+
+
+  i = 2;
+  if ( 0 == array_size(seg[i]) )
+    {
+      nseg++;
+      fprintf( f, "%3d %3d %3d\n",nseg, 1, 2 );
+    }
+  else
+    {
+      intersection = array_item(seg[i],0);
+      intersection_uvw( intersection, triangle, uvw0 );
+      indx0 = 4+array_index( ints, intersection );
+
+      intersection = array_item(seg[i],array_size(seg[i])-1);
+      intersection_uvw( intersection, triangle, uvw1 );
+      indx1 = 4+array_index( ints, intersection );
+      if ( uvw1[1] > uvw0[1] )
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 1, indx0 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx1, 2 );
+	}
+      else
+	{
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 1, indx1 );
+	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, indx0, 2 );
+	}
+    }
+
 
   fprintf(f, "%d\n",0);
 
