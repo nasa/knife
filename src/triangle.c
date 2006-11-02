@@ -949,6 +949,8 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   int cut_index;
   Cut cut;
   int i;
+  int sorted, indx;
+  Intersection largest;
   Intersection intersection;
   double uvw[3];
 
@@ -966,9 +968,17 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 	if (triangle_segment(triangle,i) == intersection_segment(intersection)) 
 	  array_add_uniquely( seg[i], (ArrayItem)intersection );
       }
-      
+      for ( sorted = array_size(seg[i]) ; sorted > 1 ; sorted-- )
+	{
+	  largest = (Intersection)array_item(seg[i],0);
+	  for ( indx = 1; indx < sorted; indx++ )
+	    if ( intersection_t( (Intersection)array_item(seg[i],indx) ) >
+		 intersection_t( largest ) )
+	      largest = (Intersection)array_item(seg[i],indx);
+	  array_remove( seg[i], largest );
+	  array_add( seg[i], largest );
+	}
     }
-
 
   sprintf(filename, "triangle%04d.poly",triangle_export_frame );
   printf("producing %s\n",filename);
