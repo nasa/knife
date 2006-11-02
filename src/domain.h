@@ -101,6 +101,9 @@ Triangle domain_triangle( Domain, int triangle_index );
 #define domain_active(domain,poly_index) \
   (domain_cut(domain,poly_index) || domain_original(domain,poly_index))
 
+KNIFE_STATUS domain_required_local_dual( Domain domain, int *required );
+KNIFE_STATUS domain_create_dual( Domain domain, int *required );
+
 KNIFE_STATUS domain_required_dual( Domain domain );
 KNIFE_STATUS domain_all_dual( Domain domain );
 

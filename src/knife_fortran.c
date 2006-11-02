@@ -103,9 +103,9 @@ void knife_boundary__( int *face_id, int *nodedim, int *inode,
 		   knife_status );
 }
 
-
-void knife_cut_( char *knife_input_file_name, 
-		 int *knife_status )
+void knife_required_local_dual_( char *knife_input_file_name, 
+				 int *nodedim, int *required,
+				 int *knife_status )
 {
   FILE *f;
   char surface_filename[1025];
@@ -114,7 +114,14 @@ void knife_cut_( char *knife_input_file_name,
   KnifeBool inward_pointing_surface_normal;
   Array active_bcs;
   int *bc, bc_found;
-  char tecplot_file_name[1025];
+
+  if ( *nodedim != domain_npoly( domain ) )
+    {
+      printf("%s: %d: knife_required_local_dual_ wrong nnode %d %d\n",
+	     __FILE__,__LINE__,*nodedim,domain_npoly( domain ));
+      *knife_status = KNIFE_ARRAY_BOUND;
+      return;
+    }
 
   f = NULL;
   f = fopen(knife_input_file_name, "r");
@@ -185,7 +192,34 @@ void knife_cut_( char *knife_input_file_name,
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
-  TRY( domain_required_dual( domain ), "domain_all_dual" );
+  TRY( domain_required_local_dual( domain, required ), 
+       "domain_required_local_dual" );
+
+  fflush(stdout);
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_required_local_dual__( char *knife_input_file_name,
+				  int *nodedim, int *required,
+				  int *knife_status )
+{
+  knife_required_local_dual_( knife_input_file_name,
+			      nodedim, required,
+			      knife_status );
+}
+
+void knife_cut_( int *nodedim, int *required,
+		 int *knife_status )
+{
+  char tecplot_file_name[1025];
+  if ( *nodedim != domain_npoly( domain ) )
+    {
+      printf("%s: %d: knife_cut_ wrong nnode %d %d\n",
+	     __FILE__,__LINE__,*nodedim,domain_npoly( domain ));
+      *knife_status = KNIFE_ARRAY_BOUND;
+      return;
+    }
+
+  TRY( domain_create_dual( domain, required ), "domain_required_local_dual" );
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
@@ -199,13 +233,12 @@ void knife_cut_( char *knife_input_file_name,
   fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_cut__( char *knife_input_file_name, 
+void knife_cut__( int *nodedim, int *required,
 		 int *knife_status )
 {
-  knife_cut_( knife_input_file_name, 
+  knife_cut_( nodedim, required, 
 	      knife_status );
 }
-
 
 void knife_dual_topo_( int *nodedim, int *topo,
 		       int *knife_status )
