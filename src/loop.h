@@ -41,6 +41,8 @@ void loop_free( Loop );
 
 #define loop_nside(loop) ((loop)->nside)
 
+KNIFE_STATUS loop_set_tecplot_frame( Loop, int frame );
+
 KNIFE_STATUS loop_add_side( Loop, Subnode, Subnode );
 KNIFE_STATUS loop_remove_side( Loop, Subnode, Subnode );
 KNIFE_STATUS loop_add_to_front( Loop loop, Subnode, Subnode );

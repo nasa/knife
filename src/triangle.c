@@ -132,6 +132,12 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
+KNIFE_STATUS triangle_set_tecplot_frame( Triangle triangle, int frame )
+{
+  triangle_tecplot_frame = frame;
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS triangle_extent( Triangle triangle, 
 			      double *center, double *diameter )
 {
