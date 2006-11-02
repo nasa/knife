@@ -978,7 +978,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     {
       intersection = (Intersection) array_item( ints, i );
       TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
-      fprintf(f, "%d %.20e %.20e\n",i+4,uvw[1],uvw[2]);
+      fprintf(f, "%3d %.20e %.20e\n",i+4,uvw[1],uvw[2]);
     }
 
   fprintf(f, "%d %d\n",triangle_ncut(triangle),0);
@@ -991,6 +991,8 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 	     4+array_index( ints, (ArrayItem)cut_intersection0(cut)),
 	     4+array_index( ints, (ArrayItem)cut_intersection1(cut)) );
   }
+
+  fprintf(f, "%d\n",0);
 
   fclose(f);
 
