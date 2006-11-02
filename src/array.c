@@ -149,3 +149,13 @@ KnifeBool array_contains_item( Array array, ArrayItem target )
  
   return FALSE;
 }
+
+int array_index( Array array, ArrayItem target )
+{
+  int indx;
+
+  for ( indx = 0 ; indx < array_size(array) ; indx++ )
+    if ( target == array_item(array, indx) ) return indx;
+ 
+  return EMPTY;
+}
