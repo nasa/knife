@@ -105,6 +105,16 @@ double subnode_z( Subnode subnode )
 
 double subnode_area( Subnode n0, Subnode n1, Subnode n2 )
 {
+  return ( 0.5 *( n0->uvw[1]*n1->uvw[2] +
+		  n1->uvw[1]*n2->uvw[2] +
+		  n2->uvw[1]*n0->uvw[2] -
+		  n0->uvw[1]*n2->uvw[2] -
+		  n1->uvw[1]*n0->uvw[2] -
+		  n2->uvw[1]*n1->uvw[2] ) );
+}
+
+double subnode_area_old( Subnode n0, Subnode n1, Subnode n2 )
+{
   double a,b,c,d;
   a = n0->uvw[1]-n2->uvw[1];
   b = n0->uvw[2]-n2->uvw[2];
