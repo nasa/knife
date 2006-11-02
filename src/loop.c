@@ -401,7 +401,7 @@ KNIFE_STATUS loop_tecplot( Loop loop )
   printf("producing %s\n",filename);
   loop_tecplot_frame++;
 
-  if ( 0 == loop_nside(loop) ) return NIFE_SUCCESS;
+  if ( 0 == loop_nside(loop) ) return KNIFE_SUCCESS;
 
   f = fopen(filename, "w");
 
