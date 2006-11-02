@@ -444,7 +444,7 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
 	}
     }
 
-  if ( -1.0e-8 > best_min_bary ) 
+  if ( -1.0 > best_min_bary ) /* cannot happen? */
     {
       printf("subnode u %e v %e w %e\n",
 	     subnode->uvw[0],subnode->uvw[1],subnode->uvw[2]);
