@@ -970,9 +970,9 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   fprintf(f, "%d %d %d %d\n",3+array_size(ints),2,0,0);
 
   /* corner nodes */
-  fprintf(f, "%d %.20e %.20e\n",1,0.0,0.0);
-  fprintf(f, "%d %.20e %.20e\n",2,1.0,0.0);
-  fprintf(f, "%d %.20e %.20e\n",3,0.0,1.0);
+  fprintf(f, "%3d %.20e %.20e\n",1,0.0,0.0);
+  fprintf(f, "%3d %.20e %.20e\n",2,1.0,0.0);
+  fprintf(f, "%3d %.20e %.20e\n",3,0.0,1.0);
 
   for ( i = 0 ; i < array_size(ints) ; i++ )
     {
@@ -987,7 +987,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    fprintf( f, "%d %d%d\n",cut_index+1,
+    fprintf( f, "%3d %3d %3d\n",cut_index+1,
 	     4+array_index( ints, (ArrayItem)cut_intersection0(cut)),
 	     4+array_index( ints, (ArrayItem)cut_intersection1(cut)) );
   }
