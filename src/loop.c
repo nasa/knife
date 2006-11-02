@@ -66,7 +66,7 @@ void loop_free( Loop loop )
   free( loop );
 }
 
-KNIFE_STATUS loop_set_tecplot_frame( Loop loop, int frame )
+KNIFE_STATUS loop_set_tecplot_frame( int frame )
 {
   loop_tecplot_frame = frame;
   return KNIFE_SUCCESS;
