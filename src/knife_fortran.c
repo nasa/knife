@@ -115,7 +115,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   Array active_bcs;
   int *bc, bc_found;
 
-  if ( *nodedim != domain_npoly( domain ) )
+  if ( *nodedim != primal_nnode(volume_primal)  )
     {
       printf("%s: %d: knife_required_local_dual_ wrong nnode %d %d\n",
 	     __FILE__,__LINE__,*nodedim,domain_npoly( domain ));
@@ -211,7 +211,7 @@ void knife_cut_( int *nodedim, int *required,
 		 int *knife_status )
 {
   char tecplot_file_name[1025];
-  if ( *nodedim != domain_npoly( domain ) )
+  if ( *nodedim != primal_nnode(volume_primal) )
     {
       printf("%s: %d: knife_cut_ wrong nnode %d %d\n",
 	     __FILE__,__LINE__,*nodedim,domain_npoly( domain ));
