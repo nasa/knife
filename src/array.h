@@ -34,12 +34,14 @@ void array_free( Array );
 #define array_size(array) (array->actual)
 
 KNIFE_STATUS array_add( Array, ArrayItem );
+KNIFE_STATUS array_add_uniquely( Array, ArrayItem );
 KNIFE_STATUS array_remove( Array, ArrayItem );
 
 #define array_item( array,indx ) \
   ((indx>=0 && indx < array->actual)?array->data[indx]:NULL)
 
 KnifeBool array_contains_int( Array, int target );
+KnifeBool array_contains_item( Array, ArrayItem );
 
 END_C_DECLORATION
 
