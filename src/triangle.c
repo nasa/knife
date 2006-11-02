@@ -38,6 +38,7 @@ static int triangle_export_frame = 0;
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       triangle_tecplot(triangle);			      \
+      triangle_export(triangle);			      \
       return code;					      \
     }							      \
   }
