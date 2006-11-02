@@ -944,12 +944,31 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   char filename[1025];
   FILE *f;
 
+  Array seg[3];
   Array ints;
   int cut_index;
   Cut cut;
   int i;
   Intersection intersection;
   double uvw[3];
+
+  for (i = 0; i<3; i++)
+    {
+      seg[i] = array_create( 10, 10 );
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++) {
+	cut = triangle_cut(triangle,cut_index);
+	intersection = cut_intersection0(cut);
+	if (triangle_segment(triangle,i) == intersection_segment(intersection)) 
+	  array_add_uniquely( seg[i], (ArrayItem)intersection );
+	intersection = cut_intersection1(cut);
+	if (triangle_segment(triangle,i) == intersection_segment(intersection)) 
+	  array_add_uniquely( seg[i], (ArrayItem)intersection );
+      }
+      
+    }
+
 
   sprintf(filename, "triangle%04d.poly",triangle_export_frame );
   printf("producing %s\n",filename);
