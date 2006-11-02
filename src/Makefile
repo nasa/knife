@@ -30,7 +30,7 @@ val: all
 debug: all
 	( cd ../cases/om6 && \
 	  time ../../`uname`/src/knife -s om6_surface.fgrid -b 1 -b 2 \
-	                               -v preslice0014.fgrid -d $(TEC_FLAG) )
+	                               -v preslice0014.fgrid -d -t )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
