@@ -233,8 +233,6 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
   Subtri subtri;
   Subnode subnode0, subnode1, subnode2;
 
-  loop_tecplot( loop );
-
   if ( NULL == loop->node0 || NULL == loop->node1)
     {
       printf("call loop_split before loop_triangulate\n");
