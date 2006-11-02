@@ -133,6 +133,7 @@ int main( int argc, char *argv[] )
   if (debug_mode)
     {
       TRY( domain_required_dual( domain ), "domain_required_dual" );
+      if (tecplot_output) domain_tecplot( domain, "orig.t" );
     }
   else
     {
