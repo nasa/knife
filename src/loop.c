@@ -401,6 +401,8 @@ KNIFE_STATUS loop_tecplot( Loop loop )
   printf("producing %s\n",filename);
   loop_tecplot_frame++;
 
+  if ( 0 == loop_nside(loop) ) return NIFE_SUCCESS;
+
   f = fopen(filename, "w");
 
   fprintf(f,"title=loop_geometry\nvariables=v,w,x,y,z\n");
