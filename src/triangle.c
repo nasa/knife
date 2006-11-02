@@ -1013,9 +1013,9 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     }
 
   nseg = triangle_ncut(triangle) + 
-    MAX(0,array_size(seg[0])-1) +
-    MAX(0,array_size(seg[1])-1) +
-    MAX(0,array_size(seg[2])-1);
+    MAX(1,array_size(seg[0])+1) +
+    MAX(1,array_size(seg[1])+1) +
+    MAX(1,array_size(seg[2])+1);
 
   fprintf(f, "%d %d\n",nseg,0);
 
