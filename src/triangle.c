@@ -952,6 +952,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   int sorted, indx;
   Intersection largest;
   Intersection intersection;
+  int nseg;
   double uvw[3];
 
   for (i = 0; i<3; i++)
@@ -1010,16 +1011,32 @@ KNIFE_STATUS triangle_export( Triangle triangle)
       fprintf(f, "%3d %.20e %.20e\n",i+4,uvw[1],uvw[2]);
     }
 
-  fprintf(f, "%d %d\n",triangle_ncut(triangle),0);
+  nseg = triangle_ncut(triangle) + 
+    MAX(0,array_size(seg[0])-1) +
+    MAX(0,array_size(seg[1])-1) +
+    MAX(0,array_size(seg[2])-1);
 
+  fprintf(f, "%d %d\n",nseg,0);
+
+  nseg = 0;
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
-    fprintf( f, "%3d %3d %3d\n",cut_index+1,
+    nseg++;
+    fprintf( f, "%3d %3d %3d\n",nseg,
 	     4+array_index( ints, (ArrayItem)cut_intersection0(cut)),
 	     4+array_index( ints, (ArrayItem)cut_intersection1(cut)) );
   }
+  
+  for (i = 0; i<3; i++)
+    for ( indx = 1; indx < array_size(seg[i]); indx++ )
+      {
+	nseg++;
+	fprintf( f, "%3d %3d %3d\n",nseg,
+		 4+array_index( ints, array_item(seg[i],indx-1) ),
+		 4+array_index( ints, array_item(seg[i],indx)   ) );
+      }
 
   fprintf(f, "%d\n",0);
 
