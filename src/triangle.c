@@ -17,6 +17,7 @@
 
 static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
+static int triangle_export_frame = 0;
 
 #define POSITIVE_AREA( subtri )					\
   if (TRUE) {							\
@@ -936,6 +937,65 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS triangle_export( Triangle triangle)
+{
+  char filename[1025];
+  FILE *f;
+
+  Array ints;
+  int cut_index;
+  Cut cut;
+  int i;
+  Intersection intersection;
+  double uvw[3];
+
+  sprintf(filename, "triangle%04d.poly",triangle_export_frame );
+  printf("producing %s\n",filename);
+
+  triangle_export_frame++;
+
+  f = fopen(filename, "w");
+
+  ints = array_create( 10, 10 );
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    array_add_uniquely( ints, (ArrayItem)cut_intersection0(cut) );
+    array_add_uniquely( ints, (ArrayItem)cut_intersection1(cut) );
+  }
+
+  fprintf(f, "%d %d %d %d\n",3+array_size(ints),2,0,0);
+
+  /* corner nodes */
+  fprintf(f, "%d %.20e %.20e\n",1,0.0,0.0);
+  fprintf(f, "%d %.20e %.20e\n",2,1.0,0.0);
+  fprintf(f, "%d %.20e %.20e\n",3,0.0,1.0);
+
+  for ( i = 0 ; i < array_size(ints) ; i++ )
+    {
+      intersection = (Intersection) array_item( ints, i );
+      TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+      fprintf(f, "%d %.20e %.20e\n",i+4,uvw[1],uvw[2]);
+    }
+
+  fprintf(f, "%d %d\n",triangle_ncut(triangle),0);
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    fprintf( f, "%d %d%d\n",cut_index+1,
+	     4+array_index( ints, (ArrayItem)cut_intersection0(cut)),
+	     4+array_index( ints, (ArrayItem)cut_intersection1(cut)) );
+  }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}
+
 
 KNIFE_STATUS triangle_delaunay( Triangle triangle, Subnode subnode )
 {

@@ -149,6 +149,7 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle,
 
 KNIFE_STATUS triangle_eps( Triangle );
 KNIFE_STATUS triangle_tecplot( Triangle );
+KNIFE_STATUS triangle_export( Triangle );
 
 KNIFE_STATUS triangle_delaunay( Triangle, Subnode );
 KNIFE_STATUS triangle_suspect_edge( Triangle, Subnode, Subtri );
@@ -167,3 +168,4 @@ KNIFE_STATUS triangle_provable_recovery( Triangle,
 END_C_DECLORATION
 
 #endif /* TRIANGLE_H */
+
