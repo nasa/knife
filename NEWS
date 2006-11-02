@@ -1,4 +1,7 @@
 
+Thursday, November 2, 2006: Initial parallel working with FUN3D version 21360.
+At version 0.6.3
+
 Wednesday, October 25, 2006: Refactored to create only the required duals.
 All duals are created for the file fun input method. At version 0.6.2
 

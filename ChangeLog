@@ -1,3 +1,7 @@
+2006-11-02  9:10 Mike Park  <mike.park@nasa.gov>
+
+	* Made 0.6.3 Release. Initial parallel working with FUN3D version 21360.
+
 2006-10-25  8:40 Mike Park  <mike.park@nasa.gov>
 
 	* Made 0.6.2 Release. Refactored to create only the required duals.
