@@ -150,6 +150,7 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle,
 KNIFE_STATUS triangle_eps( Triangle );
 KNIFE_STATUS triangle_tecplot( Triangle );
 KNIFE_STATUS triangle_export( Triangle );
+KNIFE_STATUS triangle_import( Triangle, char *file_name );
 
 KNIFE_STATUS triangle_delaunay( Triangle, Subnode );
 KNIFE_STATUS triangle_suspect_edge( Triangle, Subnode, Subtri );

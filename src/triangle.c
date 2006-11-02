@@ -983,7 +983,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     }
 
   sprintf(filename, "triangle%04d.poly",triangle_export_frame );
-  printf("producing %s\n",filename);
+  printf("exporting %s\n",filename);
 
   triangle_export_frame++;
 
@@ -1131,6 +1131,77 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
+{
+  char export_file_name[1025];
+  FILE *f;
+  Subnode subnode0, subnode1, subnode2;
+  int subnode_index, subtri_index, cut_index;
+  Cut cut;
+  Array ints;
+  int nsubtri, node_per_face, nattr;
+  int indx, n0,n1,n2;
+  f = NULL;
+  if ( NULL == file_name )
+    {
+      sprintf(export_file_name, "triangle%04d.1.poly", triangle_export_frame );
+      printf("importing %s\n",export_file_name);
+      f = fopen(export_file_name, "r");
+    }
+  else
+    {
+      printf("importing %s\n",file_name);
+      f = fopen(file_name, "r");
+    }
+  NOT_NULL(f, "NULL file, unable to open");
+
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
+    subnode_free( triangle_subnode(triangle,subnode_index ) );
+  array_free(triangle->subnode);
+  
+  subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
+  NOT_NULL(subnode0, "NULL sn0");
+  subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
+  NOT_NULL(subnode1, "NULL sn1");
+  subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
+  NOT_NULL(subnode2, "NULL sn2");
+
+  triangle->subnode = array_create( 3, 50 );
+  NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
+  
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    subtri_free( triangle_subtri(triangle,subnode_index ) );
+  array_free(triangle->subtri);
+
+  ints = array_create( 10, 10 );
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    array_add_uniquely( ints, (ArrayItem)cut_intersection0(cut) );
+    array_add_uniquely( ints, (ArrayItem)cut_intersection1(cut) );
+  }
+
+  fscanf(f,"%d %d %d",&nsubtri,&node_per_face,&nattr);
+
+  triangle->subtri  = array_create( nsubtri, 50 );
+
+  for ( subtri_index = 0;
+	subtri_index < nsubtri; 
+	subtri_index++)
+    {
+      fscanf(f,"%d %d %d %d",&indx,&n0,&n1,&n2);
+      /* make subtri*/
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS triangle_delaunay( Triangle triangle, Subnode subnode )
 {
