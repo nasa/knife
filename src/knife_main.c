@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
   KnifeBool inward_pointing_surface_normal = TRUE;
   KnifeBool tecplot_output = FALSE;
   KnifeBool arguments_require_stop = FALSE;
-  KnifeBool debug_mode = FALSE;
+  int nnodes0 = EMPTY;
 
   sprintf( surface_filename, "not_set" );
   active_bcs = array_create(10,10);
@@ -70,11 +70,6 @@ int main( int argc, char *argv[] )
       if( strcmp(argv[argument],"-r") == 0 ) {
 	inward_pointing_surface_normal = FALSE;
 	printf("-r\n");
-      }
-
-      if( strcmp(argv[argument],"-d") == 0 ) {
-	debug_mode = TRUE;
-	printf("-d\n");
       }
 
       if( strcmp(argv[argument],"-v") == 0 ) {
@@ -96,12 +91,18 @@ int main( int argc, char *argv[] )
 	printf("-t\n");
       }
 
+      if( strcmp(argv[argument],"--nnodes0") == 0 ) {
+	argument++;
+	nnodes0 = atoi(argv[argument]);
+	printf("--nnodes0 %d\n", nnodes0 );
+      }
+
       if( (strcmp(argv[argument],"-h") == 0 )    ||
 	  (strcmp(argv[argument],"--help") == 0 ) ) {
 	printf("-s surface fgrid filename\n");
 	printf("-r surface triangle normals point out of the domain\n");
 	printf("-v volume fgrid filename\n");
-	printf("-d debug mode\n");
+	printf("--nnodes0 parallel debug mode, number of local nodes\n");
 	printf("-h,--help display help info and exit\n");
 	printf("--version display version info and exit\n");
 	arguments_require_stop = TRUE;
@@ -126,29 +127,26 @@ int main( int argc, char *argv[] )
   printf("read in volume grid\n");
   volume_primal = primal_from_FAST( volume_filename );
   NOT_NULL(volume_primal, "volume_primal NULL");
+  if (nnodes0>0) volume_primal->nnode0 = nnodes0;
 
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
-  if (debug_mode)
+  if (nnodes0>0)
     {
       TRY( domain_required_dual( domain ), "domain_required_dual" );
-      if (tecplot_output) domain_tecplot( domain, "orig.t" );
+      domain_boolean_subtract( domain );
+      if (tecplot_output) domain_tecplot( domain, "cut.t" );
     }
   else
     {
       TRY( domain_all_dual( domain ), "domain_all_dual" );
+      TRY( domain_boolean_subtract( domain ), "boolean subtract" );
+      if (tecplot_output) domain_tecplot( domain, "cut.t" );
+      printf("start dump dual to fun3d\n");
+      TRY( domain_export_fun3d( domain ), "export fun3d" );
+      printf("complete dump dual to fun3d\n");
     }
-
-  TRY( domain_boolean_subtract( domain ), "boolean subtract" );
-
-  if (tecplot_output) domain_tecplot( domain, "cut.t" );
-
-  printf("start dump dual to fun3d\n");
-  TRY( domain_export_fun3d( domain ), "export fun3d" );
-  printf("complete dump dual to fun3d\n");
-
-  /* sleep(2); */
 
   return 0;
 }
