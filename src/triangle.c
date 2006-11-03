@@ -851,7 +851,7 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
 
 KNIFE_STATUS triangle_next_blocking_side( Triangle triangle, 
 					  Subnode node0, Subnode node1,
-					  Subnode target,
+					  Subnode target0, Subnode target1,
 					  Subnode *s0, Subnode *s1 )
 {
   Subnode node2;
@@ -866,12 +866,14 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle triangle,
   TRY( subtri_orient( subtri, node0, &n0, &n1, &node2 ),
        "orient in next block" );
 
-  if ( target == node2 ) return KNIFE_NO_MAS;
+  if ( target1 == node2 ) return KNIFE_NO_MAS;
 
-  area0 = subnode_area( node1, node2, target );
-  area1 = subnode_area( node2, node0, target );
+  area0 = subnode_area( target0, target1, node2 );
+  area1 = subnode_area( target1, target0, node2 );
 
-  if ( area0 <= 1.0e-14 && area1 <= 1.0e-14 ) return KNIFE_NOT_FOUND;
+  if ( area0 == 0.0 && area1 == 0.0 ) return KNIFE_SINGULAR;
+  if ( area0 >  0.0 && area1 >  0.0 ) return KNIFE_SINGULAR;
+  if ( area0 <  0.0 && area1 <  0.0 ) return KNIFE_SINGULAR;
 
   if ( area1 > area0 )
     {
@@ -1612,7 +1614,7 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
     {
       next_status = triangle_next_blocking_side( triangle, 
 						 side1, side0, 
-						 node1,
+						 node0, node1,
 						 &side0, &side1 );
       if ( KNIFE_NO_MAS == next_status) 
 	{
