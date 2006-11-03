@@ -53,6 +53,17 @@ static int triangle_export_frame = -1;
       return NULL;					      \
     }							      \
   }
+
+#define TRYQ(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return code;					      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				      \
   if (NULL == pointer){					      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
@@ -235,8 +246,6 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   int subnode_index;
   double t_limit;
 
-  if (FALSE) return triangle_shewchuk( triangle );
-
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
 
@@ -369,14 +378,20 @@ KNIFE_STATUS triangle_shewchuk( Triangle triangle )
   Subnode subnode0, subnode1;
   Subtri subtri;
 
+  if ( 0 == triangle_ncut(triangle) ) return KNIFE_SUCCESS;
+
   TRY( triangle_export( triangle ), "export" );
-  sprintf(command, "triangle -p triangle%04d ; sleep 0.1",triangle_export_frame );
+  sprintf(command, "triangle -q -S -p triangle%04d > triangle%04d.out",
+	  triangle_export_frame, triangle_export_frame );
   status = system( command );
   if (0 != status) 
     {
+      printf("%s: %d: triangle exit code %d\n",__FILE__,__LINE__,status);
       return KNIFE_FAILURE;
     }
   TRY( triangle_import( triangle, NULL ), "import" );
+
+  triangle_tecplot( triangle );
 
   /* verify that all cuts are now subtriangle sides (redundant) */
   for ( cut_index = 0;
@@ -926,7 +941,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
     {
       subnode = triangle_subnode(triangle, subnode_index);
       NOT_NULL( subnode, "tecplot subnode NULL" );
-      TRY( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
+      TRYQ( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 	      subnode_v(subnode), subnode_w(subnode), xyz[0], xyz[1], xyz[2] );
     }
@@ -936,9 +951,9 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	subtri_index++)
     {
       subtri = triangle_subtri(triangle, subtri_index);
-      TRY( triangle_subnode_index( triangle, subtri->n0, &node0), "tec sn0");
-      TRY( triangle_subnode_index( triangle, subtri->n1, &node1), "tec sn1");
-      TRY( triangle_subnode_index( triangle, subtri->n2, &node2), "tec sn2");
+      TRYQ( triangle_subnode_index( triangle, subtri->n0, &node0), "tec sn0");
+      TRYQ( triangle_subnode_index( triangle, subtri->n1, &node1), "tec sn1");
+      TRYQ( triangle_subnode_index( triangle, subtri->n2, &node2), "tec sn2");
       fprintf(f, "%6d %6d %6d\n", 1+node0, 1+node1, 1+node2);
     }
 
@@ -953,14 +968,14 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       NOT_NULL( cut, "tecplot cut NULL" );
       intersection = cut_intersection0(cut);
       NOT_NULL( intersection, "tecplot intersection0 NULL" );
-      TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
-      TRY( intersection_xyz( intersection, xyz ), "int xyz" );
+      TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+      TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
       intersection = cut_intersection1(cut);
       NOT_NULL( intersection, "tecplot intersection1 NULL" );
-      TRY( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
-      TRY( intersection_xyz( intersection, xyz ), "int xyz" );
+      TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+      TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
       fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
     }
@@ -1189,7 +1204,7 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
   f = NULL;
   if ( NULL == file_name )
     {
-      sprintf(export_file_name, "triangle%04d.1.poly", triangle_export_frame );
+      sprintf(export_file_name, "triangle%04d.1.ele", triangle_export_frame );
       printf("importing %s\n",export_file_name);
       f = fopen(export_file_name, "r");
     }
@@ -1206,16 +1221,6 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
     subnode_free( triangle_subnode(triangle,subnode_index ) );
   array_free(triangle->subnode);
   
-  subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
-  NOT_NULL(subnode0, "NULL sn0");
-  subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
-  NOT_NULL(subnode1, "NULL sn1");
-  subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
-  NOT_NULL(subnode2, "NULL sn2");
-
-  triangle->subnode = array_create( 3, 50 );
-  NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
-  
   ints = array_create( 10, 10 );
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
@@ -1224,6 +1229,21 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
     array_add_uniquely( ints, (ArrayItem)cut_intersection0(cut) );
     array_add_uniquely( ints, (ArrayItem)cut_intersection1(cut) );
   }
+
+  triangle->subnode = array_create( 3+array_size(ints), 50 );
+  NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
+
+  subnode0 = subnode_create( 1.0, 0.0, 0.0, triangle->node0, NULL );
+  NOT_NULL(subnode0, "NULL sn0");
+  array_add( triangle->subnode, subnode0 );
+
+  subnode1 = subnode_create( 0.0, 1.0, 0.0, triangle->node1, NULL );
+  NOT_NULL(subnode1, "NULL sn1");
+  array_add( triangle->subnode, subnode1 );
+
+  subnode2 = subnode_create( 0.0, 0.0, 1.0, triangle->node2, NULL );
+  NOT_NULL(subnode2, "NULL sn2");
+  array_add( triangle->subnode, subnode2 );
 
   for ( subnode_index = 0;
         subnode_index < array_size(ints);
@@ -1243,7 +1263,7 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
 
   fscanf(f,"%d %d %d",&nsubtri,&node_per_face,&nattr);
 
-  triangle->subtri  = array_create( nsubtri, 50 );
+  triangle->subtri = array_create( nsubtri, 50 );
 
   for ( subtri_index = 0;
 	subtri_index < nsubtri; 
@@ -1252,10 +1272,10 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
       fscanf(f,"%d %d %d %d",&indx,&n0,&n1,&n2);
       subnode0 = (Subnode)array_item(triangle->subnode, n0-1 );
       NOT_NULL(subnode0, "NULL subnode0");
-      subnode0 = (Subnode)array_item(triangle->subnode, n1-1 );
-      NOT_NULL(subnode1, "NULL subnode0");
-      subnode0 = (Subnode)array_item(triangle->subnode, n2-1 );
-      NOT_NULL(subnode2, "NULL subnode0");
+      subnode1 = (Subnode)array_item(triangle->subnode, n1-1 );
+      NOT_NULL(subnode1, "NULL subnode1");
+      subnode2 = (Subnode)array_item(triangle->subnode, n2-1 );
+      NOT_NULL(subnode2, "NULL subnode2");
       subtri = subtri_create( subnode0, subnode1, subnode2 );
       array_add( triangle->subtri, subtri );
     }
