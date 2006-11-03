@@ -104,6 +104,7 @@ KNIFE_STATUS triangle_normal_area( Triangle, double *normal, double *area );
 KNIFE_STATUS triangle_neighbor( Triangle, Segment, Triangle *other );
 
 KNIFE_STATUS triangle_triangulate_cuts( Triangle );
+KNIFE_STATUS triangle_shewchuk( Triangle );
 
 KNIFE_STATUS triangle_verify_subtri_area( Triangle );
 
