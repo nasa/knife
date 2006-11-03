@@ -56,6 +56,8 @@ Loop loop_create( void )
   loop->node0 = NULL;
   loop->node1 = NULL;
 
+  loop->subtri = NULL;
+
   return loop;
 }
 
@@ -63,6 +65,7 @@ void loop_free( Loop loop )
 {
   if ( NULL == loop ) return;
   if ( NULL != loop->side ) free(loop->side);
+  if ( NULL != loop->subtri ) array_free(loop->subtri);
   free( loop );
 }
 
@@ -140,7 +143,9 @@ KNIFE_STATUS loop_add_to_front( Loop loop, Subnode node0, Subnode node1 )
 
 KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
 {
+  if ( NULL == loop->subtri ) loop->subtri = array_create(10,10);
 
+  array_add(loop->subtri, (ArrayItem)subtri);
   TRY( loop_add_to_front( loop, subtri_n1(subtri), subtri_n2(subtri) ), "fnt0");
   TRY( loop_add_to_front( loop, subtri_n2(subtri), subtri_n0(subtri) ), "fnt1");
   TRY( loop_add_to_front( loop, subtri_n0(subtri), subtri_n1(subtri) ), "fnt2");
@@ -386,6 +391,7 @@ KNIFE_STATUS loop_tecplot( Loop loop )
 {
   FILE *f;
   int side_index;
+  int subtri_index;
   Subnode subnode;
   double xyz[3];
   double uvw[3];
@@ -453,6 +459,39 @@ KNIFE_STATUS loop_tecplot( Loop loop )
       fprintf(f, "%6d %6d %6d\n", 
 	      1+2*side_index, 2+2*side_index, 2+2*side_index);
     }
+
+  if ( 0 != array_size(loop->subtri)
+    {
+      fprintf(f, "zone t=loop_subtri, i=%d, j=%d, f=fepoint, et=triangle\n",
+	      3*array_size(loop->subtri), array_size(loop->subtri) );
+
+      for ( subtri_index = 0;
+	    subtri_index < array_size(loop->subtri); 
+	    subtri_index++)
+	{
+	  subnode = subtri_n0(array_item(loop->subtri,subtri_index));
+	  subnode_uvw(subnode,uvw);
+	  subnode_xyz(subnode,xyz);
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+
+	  subnode = subtri_n1(array_item(loop->subtri,subtri_index));
+	  subnode_uvw(subnode,uvw);
+	  subnode_xyz(subnode,xyz);
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+
+	  subnode = subtri_n2(array_item(loop->subtri,subtri_index));
+	  subnode_uvw(subnode,uvw);
+	  subnode_xyz(subnode,xyz);
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+	}
+      for ( subtri_index = 0;
+	    subtri_index < array_size(loop->subtri); 
+	    subtri_index++)
+	fprintf(f, "%6d %6d %6d\n", 
+		1+3*subtri_index, 2+3*subtri_index, 3+3*subtri_index);
 
   fclose(f);
 

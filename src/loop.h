@@ -34,6 +34,7 @@ struct LoopStruct {
   int allocated;
   Subnode *side;
   Subnode node0, node1;
+  Array subtri;
 };
 
 Loop loop_create( void );
