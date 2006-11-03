@@ -4,3 +4,8 @@ force segemnt nodes into triangle sides durring insert
 int->xyz use triangle uvw
 
 int uvw,t use det
+
+ruby wrap for testing
+
+double check and protect predicates in triangle_triangulate
+
