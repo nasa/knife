@@ -875,7 +875,7 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle triangle,
   if ( area0 >  0.0 && area1 >  0.0 ) return KNIFE_SINGULAR;
   if ( area0 <  0.0 && area1 <  0.0 ) return KNIFE_SINGULAR;
 
-  if ( area1 > area0 )
+  if ( area1 < area0 )
     {
       *s0 = node1;
       *s1 = node2;
