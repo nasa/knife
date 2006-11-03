@@ -145,7 +145,7 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle,
 					   Subnode *s0, Subnode *s1 );
 KNIFE_STATUS triangle_next_blocking_side( Triangle, 
 					  Subnode n0, Subnode n1, 
-					  Subnode target,
+					  Subnode target0, Subnode target1,
 					  Subnode *s0, Subnode *s1 );
 
 KNIFE_STATUS triangle_eps( Triangle );
