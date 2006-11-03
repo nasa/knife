@@ -1558,18 +1558,34 @@ double triangle_min_subtri_area( Triangle triangle )
 
 void triangle_examine_subnodes(Triangle triangle)
 {
-  int subnode_index;						
+  int subnode_index;
   int other_index;
   double diff;
+  Subnode subnode;
+  Intersection intersection;
+
   for ( subnode_index = 0;					
 	subnode_index < triangle_nsubnode(triangle);	
 	subnode_index++)					
-    {							
-      printf("%2d   u %f v %f w %f %p\n",	subnode_index,
-	     triangle_subnode(triangle,subnode_index)->uvw[0],
-	     triangle_subnode(triangle,subnode_index)->uvw[1],
-	     triangle_subnode(triangle,subnode_index)->uvw[2],
-	     (void *)triangle_subnode(triangle,subnode_index) );
+    {
+      subnode = triangle_subnode(triangle,subnode_index);
+      intersection =  subnode_intersection( subnode );
+      printf("%2d   u %.15f v %.15f w %.15f %p %p\n",	subnode_index,
+	     subnode->uvw[0],
+	     subnode->uvw[1],
+	     subnode->uvw[2],
+	     (void *)subnode,
+	     (void *)intersection);
+      if (NULL != intersection)
+	{
+	  printf("int u %.15f v %.15f w %.15f t %.15f %p %p\n", 
+		 intersection->uvw[0],
+		 intersection->uvw[1],
+		 intersection->uvw[2],
+		 intersection->t,
+		 (void *)(intersection->triangle),
+		 (void *)(intersection->segment));
+	}
       for ( other_index = 0;					
 	    other_index < triangle_nsubnode(triangle);	
 	    other_index++)					
