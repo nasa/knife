@@ -31,7 +31,7 @@ Array array_from( ArrayItem *data, int size );
 Array array_create( int guess, int chunk );
 void array_free( Array );
 
-#define array_size(array) (array->actual)
+#define array_size(array) (NULL==(array)?0:(array)->actual)
 
 KNIFE_STATUS array_add( Array, ArrayItem );
 KNIFE_STATUS array_add_uniquely( Array, ArrayItem );
