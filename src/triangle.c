@@ -1614,8 +1614,16 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
       TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
     }
 
+  triangle_tecplot(triangle);
+  loop_tecplot( loop0 );
+
   /* split loop between node0 and node1 */
   TRY( loop_split( loop0, node0, node1, &loop1 ), "loop hard edge");
+
+  triangle_tecplot(triangle);
+  loop_tecplot( loop0 );
+  triangle_tecplot(triangle);
+  loop_tecplot( loop1 );
 
   TRY( loop_triangulate( loop0, triangle ), "loop0 triangulate");
   TRY( loop_triangulate( loop1, triangle ), "loop1 triangulate");
