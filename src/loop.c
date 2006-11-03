@@ -321,9 +321,6 @@ KNIFE_STATUS loop_triangulate_old( Loop loop, Triangle triangle )
 
   while (0 < loop_nside(loop))
     { 
-      triangle_tecplot(triangle);
-      loop_tecplot(loop);
-
       TRY( loop_most_convex( loop, &side0, &side1 ), "most convex failed");
       
       node0 = loop->side[0+2*side0];
@@ -405,6 +402,12 @@ KNIFE_STATUS loop_tecplot( Loop loop )
   f = fopen(filename, "w");
 
   fprintf(f,"title=loop_geometry\nvariables=v,w,x,y,z\n");
+  if ( 0 == loop_nside(loop))
+    {
+      fclose(f);
+      return KNIFE_SUCCESS;
+    }
+
   fprintf(f, "zone t=loop, i=%d, j=%d, f=fepoint, et=triangle\n",
 	  2*loop_nside(loop), loop_nside(loop) );
 
