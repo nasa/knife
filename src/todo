@@ -1,6 +1,8 @@
 
 force segemnt nodes into triangle sides durring insert
 
+make sure that split edge is not a cut
+
 int->xyz use triangle uvw
 
 int uvw,t use det
