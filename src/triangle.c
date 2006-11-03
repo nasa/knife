@@ -1570,7 +1570,7 @@ void triangle_examine_subnodes(Triangle triangle)
     {
       subnode = triangle_subnode(triangle,subnode_index);
       intersection =  subnode_intersection( subnode );
-      printf("%2d   u %.15f v %.15f w %.15f %p %p\n",	subnode_index,
+      printf("%2d   u %.15f v %.15f w %.15f sn %p int %p\n",subnode_index,
 	     subnode->uvw[0],
 	     subnode->uvw[1],
 	     subnode->uvw[2],
