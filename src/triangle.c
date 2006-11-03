@@ -351,13 +351,13 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 						      cut_intersection0(cut));
 	subnode1 = triangle_subnode_with_intersection(triangle, 
 						      cut_intersection1(cut));
-	if ( KNIFE_SUCCESS != triangle_provable_recovery( triangle, 
-							  subnode0, subnode1 ) )
+	recover_status = triangle_provable_recovery(triangle,subnode0,subnode1);
+	if ( KNIFE_SUCCESS != recover_status )
 	  {
 	    free(cut_recovered);
-	    printf("%s: %d: triangle_provable_recovery failed, use shewchuk\n",
+	    printf("%s: %d: triangle_provable_recovery failed\n",
 		   __FILE__,__LINE__);
-	    return triangle_shewchuk( triangle );
+	    return recover_status;
 	  }
 	/* enforce delaunay after recovery */
 	for ( subnode_index = 0;
