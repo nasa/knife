@@ -389,7 +389,7 @@ KNIFE_STATUS triangle_shewchuk( Triangle triangle )
   if ( 0 == triangle_ncut(triangle) ) return KNIFE_SUCCESS;
 
   TRY( triangle_export( triangle ), "export" );
-  sprintf(command, "triangle -q -S -p triangle%04d > triangle%04d.out",
+  sprintf(command, "triangle -q -S -p triangle%08d > triangle%08d.out",
 	  triangle_export_frame, triangle_export_frame );
   status = system( command );
   if (0 != status) 
@@ -884,7 +884,7 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
   fprintf(f,"set term postscript eps\n");
 
   triangle_eps_frame++;
-  fprintf(f,"set output 'triangle%04d.eps'\n",triangle_eps_frame);
+  fprintf(f,"set output 'triangle%08d.eps'\n",triangle_eps_frame);
 
   fprintf(f,"set size ratio -1\n");
   fprintf(f,"set xlabel 'V'\n");
@@ -933,7 +933,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   FILE *f;
 
   triangle_tecplot_frame++;
-  sprintf(filename, "triangle%04d.t",triangle_tecplot_frame );
+  sprintf(filename, "triangle%08d.t",triangle_tecplot_frame );
   printf("producing %s\n",filename);
 
   f = fopen(filename, "w");
@@ -1045,7 +1045,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 
   triangle_export_frame++;
 
-  sprintf(filename, "triangle%04d.poly",triangle_export_frame );
+  sprintf(filename, "triangle%08d.poly",triangle_export_frame );
   printf("exporting %s\n",filename);
 
 
@@ -1211,7 +1211,7 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
   f = NULL;
   if ( NULL == file_name )
     {
-      sprintf(export_file_name, "triangle%04d.1.ele", triangle_export_frame );
+      sprintf(export_file_name, "triangle%08d.1.ele", triangle_export_frame );
       printf("importing %s\n",export_file_name);
       f = fopen(export_file_name, "r");
     }

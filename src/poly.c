@@ -1067,10 +1067,11 @@ KNIFE_STATUS poly_tecplot( Poly poly )
 {
   char filename[1025];
   FILE *f;
-  sprintf(filename, "poly%04d.t",poly_tecplot_frame );
-  printf("producing %s\n",filename);
 
   poly_tecplot_frame++;
+
+  sprintf(filename, "poly%08d.t",poly_tecplot_frame );
+  printf("producing %s\n",filename);
 
   f = fopen(filename, "w");
   

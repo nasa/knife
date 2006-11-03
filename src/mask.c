@@ -483,10 +483,10 @@ KNIFE_STATUS mask_tecplot( Mask mask)
 
   triangle = mask_triangle(mask);
 
-  sprintf(filename, "mask%04d.t",mask_tecplot_frame );
-  printf("producing %s\n",filename);
-
   mask_tecplot_frame++;
+
+  sprintf(filename, "mask%08d.t",mask_tecplot_frame );
+  printf("producing %s\n",filename);
 
   f = fopen(filename, "w");
 
