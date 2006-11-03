@@ -1586,6 +1586,10 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
        "no first subtri found" );
 
   loop0 = loop_create( );
+
+  triangle_tecplot(triangle);
+  loop_tecplot( loop0 );
+
   NOT_NULL( loop0, "loop creation" );
   TRY( loop_add_subtri( loop0, subtri ), "subtri not added to loop" );
   TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
