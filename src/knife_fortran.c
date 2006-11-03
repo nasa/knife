@@ -60,8 +60,8 @@ void knife_volume_( int *part_id,
 
   partition = *part_id;
 
-  triangle_set_tecplot_frame( 100*partition);
-  loop_set_tecplot_frame( 10000*partition);
+  triangle_set_frame( 10000*partition);
+  loop_set_frame( 10000*partition);
 
   volume_primal = primal_create( *nnode, *nface, *ncell );
   NOT_NULL(volume_primal, "volume_primal NULL");

@@ -17,7 +17,7 @@
 
 static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
-static int triangle_export_frame = -1;
+static int triangle_export_frame = 0;
 
 #define POSITIVE_AREA( subtri )					\
   if (TRUE) {							\
@@ -145,9 +145,11 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
-KNIFE_STATUS triangle_set_tecplot_frame( int frame )
+KNIFE_STATUS triangle_set_frame( int frame )
 {
+  triangle_eps_frame     = frame;
   triangle_tecplot_frame = frame;
+  triangle_export_frame  = frame;
   return KNIFE_SUCCESS;
 }
 
@@ -880,9 +882,9 @@ KNIFE_STATUS triangle_eps( Triangle triangle)
   f = fopen("gnuplot_mesh_command","w");
   fprintf(f,"reset\n");
   fprintf(f,"set term postscript eps\n");
-  fprintf(f,"set output 'triangle%04d.eps'\n",triangle_eps_frame);
 
   triangle_eps_frame++;
+  fprintf(f,"set output 'triangle%04d.eps'\n",triangle_eps_frame);
 
   fprintf(f,"set size ratio -1\n");
   fprintf(f,"set xlabel 'V'\n");
@@ -930,10 +932,9 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   char filename[1025];
   FILE *f;
 
+  triangle_tecplot_frame++;
   sprintf(filename, "triangle%04d.t",triangle_tecplot_frame );
   printf("producing %s\n",filename);
-
-  triangle_tecplot_frame++;
 
   f = fopen(filename, "w");
 

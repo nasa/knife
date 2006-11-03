@@ -66,7 +66,7 @@ void loop_free( Loop loop )
   free( loop );
 }
 
-KNIFE_STATUS loop_set_tecplot_frame( int frame )
+KNIFE_STATUS loop_set_frame( int frame )
 {
   loop_tecplot_frame = frame;
   return KNIFE_SUCCESS;
@@ -395,9 +395,10 @@ KNIFE_STATUS loop_tecplot( Loop loop )
 
   char filename[1025];
 
+  loop_tecplot_frame++;
+
   sprintf(filename, "loop%08d.t",loop_tecplot_frame );
   printf("producing %s\n",filename);
-  loop_tecplot_frame++;
 
   if ( 0 == loop_nside(loop) ) return KNIFE_SUCCESS;
 
