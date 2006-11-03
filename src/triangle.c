@@ -1606,6 +1606,7 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
 
   NOT_NULL( loop0, "loop creation" );
   TRY( loop_add_subtri( loop0, subtri ), "subtri not added to loop" );
+  /* do not delete, loop will tecplot them KNIFE_MEMORY_LEAK */
   TRY( triangle_remove_subtri( triangle, subtri ), "subtri remove" );
 
   next_status = KNIFE_SUCCESS;
