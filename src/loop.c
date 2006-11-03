@@ -460,7 +460,7 @@ KNIFE_STATUS loop_tecplot( Loop loop )
 	      1+2*side_index, 2+2*side_index, 2+2*side_index);
     }
 
-  if ( 0 != array_size(loop->subtri)
+  if ( 0 != array_size(loop->subtri) )
     {
       fprintf(f, "zone t=loop_subtri, i=%d, j=%d, f=fepoint, et=triangle\n",
 	      3*array_size(loop->subtri), array_size(loop->subtri) );
@@ -469,19 +469,19 @@ KNIFE_STATUS loop_tecplot( Loop loop )
 	    subtri_index < array_size(loop->subtri); 
 	    subtri_index++)
 	{
-	  subnode = subtri_n0(array_item(loop->subtri,subtri_index));
+	  subnode = subtri_n0((Subtri)array_item(loop->subtri,subtri_index));
 	  subnode_uvw(subnode,uvw);
 	  subnode_xyz(subnode,xyz);
 	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
 
-	  subnode = subtri_n1(array_item(loop->subtri,subtri_index));
+	  subnode = subtri_n1((Subtri)array_item(loop->subtri,subtri_index));
 	  subnode_uvw(subnode,uvw);
 	  subnode_xyz(subnode,xyz);
 	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
 		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
 
-	  subnode = subtri_n2(array_item(loop->subtri,subtri_index));
+	  subnode = subtri_n2((Subtri)array_item(loop->subtri,subtri_index));
 	  subnode_uvw(subnode,uvw);
 	  subnode_xyz(subnode,xyz);
 	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
@@ -492,6 +492,7 @@ KNIFE_STATUS loop_tecplot( Loop loop )
 	    subtri_index++)
 	fprintf(f, "%6d %6d %6d\n", 
 		1+3*subtri_index, 2+3*subtri_index, 3+3*subtri_index);
+    }
 
   fclose(f);
 
