@@ -247,12 +247,14 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   KnifeBool improvement;
   int subnode_index;
   double t_limit;
+  double side_tolerence;
 
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
 
   /* add to boundary first */
 
+  side_tolerence = 2.0; /* force into side */
   for ( t_limit = 0.45 ; t_limit >= -0.11 ; t_limit -= 0.1 ) 
     for ( cut_index = 0;
 	  cut_index < triangle_ncut(triangle); 
@@ -261,25 +263,30 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
       if ( triangle != intersection_triangle( cut_intersection0(cut) ) &&
 	   intersection_t( cut_intersection0(cut) ) > t_limit &&
 	   intersection_t( cut_intersection0(cut) ) < (1.0-t_limit) )
-	TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
+	TRY( triangle_insert_unique_subnode( triangle, cut_intersection0(cut),
+					     side_tolerence ),
 	     "insert side subnode0 in triangle_triangulate_cuts" );
       if ( triangle != intersection_triangle( cut_intersection1(cut) ) &&
 	   intersection_t( cut_intersection1(cut) ) > t_limit &&
 	   intersection_t( cut_intersection1(cut) ) < (1.0-t_limit)  )
-	TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
+	TRY( triangle_insert_unique_subnode( triangle, cut_intersection1(cut),
+					     side_tolerence ),
 	     "insert subnode1 in triangle_triangulate_cuts" );
     }
 
   /* now triangle interior */
+  side_tolerence = 1.0e-15; /* allow into side rarely */
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
     if ( triangle == intersection_triangle( cut_intersection0(cut) ) )
-      TRY( triangle_insert_unique_subnode(triangle, cut_intersection0(cut) ),
+      TRY( triangle_insert_unique_subnode( triangle, cut_intersection0(cut),
+					   side_tolerence ),
 	   "insert subnode0 in triangle_triangulate_cuts" );
     if ( triangle == intersection_triangle( cut_intersection1(cut) ) )
-      TRY( triangle_insert_unique_subnode(triangle, cut_intersection1(cut) ),
+      TRY( triangle_insert_unique_subnode( triangle, cut_intersection1(cut),
+					   side_tolerence ),
 	   "insert subnode1 in triangle_triangulate_cuts" );
   }
 
@@ -476,7 +483,8 @@ Subnode triangle_subnode_with_intersection( Triangle triangle,
 }
 
 KNIFE_STATUS triangle_insert_unique_subnode( Triangle triangle, 
-					     Intersection intersection)
+					     Intersection intersection, 
+					     double side_tolerence )
 {
   Subnode subnode;
   double uvw[3];
@@ -490,7 +498,7 @@ KNIFE_STATUS triangle_insert_unique_subnode( Triangle triangle,
   subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
   NOT_NULL( subnode, "new subnode NULL");
   TRY( triangle_add_subnode( triangle, subnode ), "add subnode" );
-  TRY( triangle_insert( triangle, subnode), "insert" );
+  TRY( triangle_insert( triangle, subnode, side_tolerence), "insert" );
 
   return KNIFE_SUCCESS;
 }
@@ -544,12 +552,12 @@ KNIFE_STATUS triangle_enclosing_subtri( Triangle triangle, Subnode subnode,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
+KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode, 
+			      double side_tolerence)
 {
   Subtri subtri;
   double bary[3];
   double min_bary;
-  double side_tolerence;
   int insert_side;
 
   if( NULL == triangle ) return KNIFE_NULL;
@@ -559,7 +567,6 @@ KNIFE_STATUS triangle_insert( Triangle triangle, Subnode subnode)
   TRY( triangle_enclosing_subtri( triangle, subnode, &subtri, bary ), 
        "triangle_enclosing_subtri not found" );
 
-  side_tolerence = 1.0e-12;
   min_bary = MIN3(bary);
 
   if ( min_bary < side_tolerence )

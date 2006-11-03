@@ -108,14 +108,15 @@ KNIFE_STATUS triangle_shewchuk( Triangle );
 
 KNIFE_STATUS triangle_verify_subtri_area( Triangle );
 
-KNIFE_STATUS triangle_insert_unique_subnode( Triangle, Intersection );
+KNIFE_STATUS triangle_insert_unique_subnode( Triangle, Intersection, 
+					     double side_tolerence );
 
 Subnode triangle_subnode_with_intersection( Triangle, Intersection );
 
 KNIFE_STATUS triangle_enclosing_subtri( Triangle, Subnode,
 					Subtri *enclosing, double *bary );
 
-KNIFE_STATUS triangle_insert( Triangle, Subnode );
+KNIFE_STATUS triangle_insert( Triangle, Subnode, double side_tolerence );
 KNIFE_STATUS triangle_insert_into_side( Triangle, Subnode, 
 					Subnode n0, Subnode n1 );
 
