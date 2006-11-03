@@ -1141,6 +1141,11 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
   Array ints;
   int nsubtri, node_per_face, nattr;
   int indx, n0,n1,n2;
+  Intersection intersection;
+  double uvw[3];
+  Subnode subnode;
+  Subtri subtri;
+
   f = NULL;
   if ( NULL == file_name )
     {
@@ -1171,12 +1176,6 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
   triangle->subnode = array_create( 3, 50 );
   NOT_NULL(triangle->subnode, "triangle->subnode NULL in init");
   
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
-    subtri_free( triangle_subtri(triangle,subnode_index ) );
-  array_free(triangle->subtri);
-
   ints = array_create( 10, 10 );
   for ( cut_index = 0;
 	cut_index < triangle_ncut(triangle); 
@@ -1185,6 +1184,22 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
     array_add_uniquely( ints, (ArrayItem)cut_intersection0(cut) );
     array_add_uniquely( ints, (ArrayItem)cut_intersection1(cut) );
   }
+
+  for ( subnode_index = 0;
+        subnode_index < array_size(ints);
+        subnode_index++)
+    {
+      intersection = (Intersection)array_item(ints,subnode_index);
+      intersection_uvw( intersection, triangle, uvw);
+      subnode = subnode_create( uvw[0], uvw[1], uvw[2], NULL, intersection );
+      array_add( triangle->subnode, subnode );
+    }
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++ )
+    subtri_free( triangle_subtri(triangle,subnode_index ) );
+  array_free(triangle->subtri);
 
   fscanf(f,"%d %d %d",&nsubtri,&node_per_face,&nattr);
 
@@ -1195,7 +1210,14 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
 	subtri_index++)
     {
       fscanf(f,"%d %d %d %d",&indx,&n0,&n1,&n2);
-      /* make subtri*/
+      subnode0 = (Subnode)array_item(triangle->subnode, n0-1 );
+      NOT_NULL(subnode0, "NULL subnode0");
+      subnode0 = (Subnode)array_item(triangle->subnode, n1-1 );
+      NOT_NULL(subnode1, "NULL subnode0");
+      subnode0 = (Subnode)array_item(triangle->subnode, n2-1 );
+      NOT_NULL(subnode2, "NULL subnode0");
+      subtri = subtri_create( subnode0, subnode1, subnode2 );
+      array_add( triangle->subtri, subtri );
     }
 
   fclose(f);
