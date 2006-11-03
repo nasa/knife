@@ -318,11 +318,26 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	      {
 		cut_recovered[cut_index] = TRUE;
 		improvement = TRUE;
+		if (TRUE)
+		  {
+		    TRY( triangle_delaunay( triangle, subnode0 ), "re-d 0");
+		    TRY( triangle_delaunay( triangle, subnode1 ), "re-d 1");
+		  }
 	      }
 	    if ( KNIFE_NOT_IMPROVED != recover_status )
 	      TRY( recover_status, "recover_side failure" );
 
 	  }
+    }
+
+  /* enforce delaunay after recovery */
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
+    {
+      TRY( triangle_delaunay( triangle, 
+			      triangle_subnode(triangle,subnode_index ) ),
+	   "re-d");
     }
 
   for ( cut_index = 0;
@@ -344,19 +359,18 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 		   __FILE__,__LINE__);
 	    return triangle_shewchuk( triangle );
 	  }
+	/* enforce delaunay after recovery */
+	for ( subnode_index = 0;
+	      subnode_index < triangle_nsubnode(triangle); 
+	      subnode_index++)
+	  {
+	    TRY( triangle_delaunay( triangle, 
+				    triangle_subnode(triangle,subnode_index ) ),
+		 "re-d");
+	  }
       }
 
   free(cut_recovered);
-
-  /* enforce delaunay after recovery */
-  for ( subnode_index = 0;
-	subnode_index < triangle_nsubnode(triangle); 
-	subnode_index++)
-    {
-      TRY( triangle_delaunay( triangle, 
-			      triangle_subnode(triangle,subnode_index ) ),
-	   "re-d");
-    }
 
   /* verify that all cuts are now subtriangle sides (redundant) */
   for ( cut_index = 0;
