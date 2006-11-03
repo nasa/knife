@@ -1624,6 +1624,11 @@ KNIFE_STATUS triangle_provable_recovery( Triangle triangle,
 	}
       else
 	{
+	  if ( KNIFE_SUCCESS != next_status )
+	    {
+	      triangle_tecplot(triangle);
+	      loop_tecplot( loop0 );      
+	    }
 	  TRY( next_status, "next block" );
 	  TRY( triangle_subtri_with_subnodes( triangle, side0, side1, &subtri ),
 	       "no next subtri found" );
