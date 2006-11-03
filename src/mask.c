@@ -325,6 +325,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 		  {
 		    printf("%s: %d: consistent 20\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
+		    triangle_examine_subnodes(triangle);
 		    return KNIFE_INCONSISTENT;
 		  }
 		
