@@ -1558,10 +1558,11 @@ void triangle_examine_subnodes(Triangle triangle)
 	subnode_index < triangle_nsubnode(triangle);	
 	subnode_index++)					
     {							
-      printf("%2d   u %f v %f w %f\n",	subnode_index,
+      printf("%2d   u %f v %f w %f %p\n",	subnode_index,
 	     triangle_subnode(triangle,subnode_index)->uvw[0],
 	     triangle_subnode(triangle,subnode_index)->uvw[1],
-	     triangle_subnode(triangle,subnode_index)->uvw[2]);
+	     triangle_subnode(triangle,subnode_index)->uvw[2],
+	     (void *)triangle_subnode(triangle,subnode_index) );
       for ( other_index = 0;					
 	    other_index < triangle_nsubnode(triangle);	
 	    other_index++)					
