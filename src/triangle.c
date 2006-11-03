@@ -1578,7 +1578,7 @@ void triangle_examine_subnodes(Triangle triangle)
 	     (void *)intersection);
       if (NULL != intersection)
 	{
-	  printf("int u %.15f v %.15f w %.15f t %.15f %p %p\n", 
+	  printf("int u %.15f v %.15f w %.15f t %.15f tri %p seg %p\n", 
 		 intersection->uvw[0],
 		 intersection->uvw[1],
 		 intersection->uvw[2],
