@@ -17,7 +17,7 @@
 
 static int triangle_eps_frame = 0;
 static int triangle_tecplot_frame = 0;
-static int triangle_export_frame = 0;
+static int triangle_export_frame = -1;
 
 #define POSITIVE_AREA( subtri )					\
   if (TRUE) {							\
@@ -235,6 +235,8 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
   int subnode_index;
   double t_limit;
 
+  if (FALSE) return triangle_shewchuk( triangle );
+
   /* insert all nodes once (uniquely) */
   /* Delaunay poroperty is maintained with swaps after each insert */
 
@@ -338,6 +340,43 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 			      triangle_subnode(triangle,subnode_index ) ),
 	   "re-d");
     }
+
+  /* verify that all cuts are now subtriangle sides (redundant) */
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++) {
+    cut = triangle_cut(triangle,cut_index);
+    subnode0 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection0(cut));
+    subnode1 = triangle_subnode_with_intersection(triangle, 
+						  cut_intersection1(cut));
+    TRY( triangle_subtri_with_subnodes( triangle, 
+					subnode0, subnode1, 
+					&subtri ), "edge was not recovered" );
+  }
+
+  /* verify that all subtriangle have a positive area in uvw space */
+  return triangle_verify_subtri_area( triangle );
+}
+
+KNIFE_STATUS triangle_shewchuk( Triangle triangle )
+{
+  int status;
+  char command[1025];
+
+  int cut_index;
+  Cut cut;
+  Subnode subnode0, subnode1;
+  Subtri subtri;
+
+  TRY( triangle_export( triangle ), "export" );
+  sprintf(command, "triangle -p triangle%04d ; sleep 0.1",triangle_export_frame );
+  status = system( command );
+  if (0 != status) 
+    {
+      return KNIFE_FAILURE;
+    }
+  TRY( triangle_import( triangle, NULL ), "import" );
 
   /* verify that all cuts are now subtriangle sides (redundant) */
   for ( cut_index = 0;
@@ -982,10 +1021,11 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 	}
     }
 
+  triangle_export_frame++;
+
   sprintf(filename, "triangle%04d.poly",triangle_export_frame );
   printf("exporting %s\n",filename);
 
-  triangle_export_frame++;
 
   f = fopen(filename, "w");
 
