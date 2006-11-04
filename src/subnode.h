@@ -42,6 +42,7 @@ KNIFE_STATUS subnode_uvw( Subnode, double *uvw );
 #define subnode_v( subnode ) ((subnode)->uvw[1]) 
 #define subnode_w( subnode ) ((subnode)->uvw[2]) 
 
+#define subnode_node( subnode ) ((subnode)->node) 
 #define subnode_intersection( subnode ) ((subnode)->intersection) 
 
 KNIFE_STATUS subnode_xyz( Subnode, double *xyz );
