@@ -115,10 +115,6 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
   top_volume = intersection_volume6(t0, t1, t2, s0);
   bot_volume = intersection_volume6(t0, t1, t2, s1);
 
-  /* raise exception if degeneracy detected */
-  TEST_FOR_SINGULAR_VOLUME(top_volume,"top volume");
-  TEST_FOR_SINGULAR_VOLUME(bot_volume,"bot volume");
-
   /* if signs match, segment is entirely above or below triangle */
   if (top_volume > 0.0 && bot_volume > 0.0 ) return KNIFE_NO_INT;
   if (top_volume < 0.0 && bot_volume < 0.0 ) return KNIFE_NO_INT;
@@ -128,29 +124,28 @@ KNIFE_STATUS intersection_core( double *t0, double *t1, double *t2,
   side0_volume = intersection_volume6(t1, t2, s0, s1);
   side1_volume = intersection_volume6(t2, t0, s0, s1);
 
+  /* if signs match segment ray passes inside of triangle */
+  if ( !( (side0_volume > 0.0 && side1_volume > 0.0 && side2_volume > 0.0 ) ||
+	  (side0_volume < 0.0 && side1_volume < 0.0 && side2_volume < 0.0 ) ) )
+    return KNIFE_NO_INT;
+
   /* raise exception if degeneracy detected */
+  TEST_FOR_SINGULAR_VOLUME(top_volume,"top volume");
+  TEST_FOR_SINGULAR_VOLUME(bot_volume,"bot volume");
   TEST_FOR_SINGULAR_VOLUME(side0_volume,"side0 volume");
   TEST_FOR_SINGULAR_VOLUME(side1_volume,"side1 volume");
   TEST_FOR_SINGULAR_VOLUME(side2_volume,"side2 volume");
 
-  /* if signs match segment ray passes inside of triangle */
-  if ( (side0_volume > 0.0 && side1_volume > 0.0 && side2_volume > 0.0 ) ||
-       (side0_volume < 0.0 && side1_volume < 0.0 && side2_volume < 0.0 ) )
-    {
-      /* compute intersection parameter, can be replaced with det ratios? */
-      total_volume = top_volume - bot_volume;
-      *t = top_volume/total_volume;
+  /* compute intersection parameter, can be replaced with det ratios? */
+  total_volume = top_volume - bot_volume;
+  *t = top_volume/total_volume;
       
-      total_volume = side0_volume + side1_volume + side2_volume;
-      uvw[0] = side0_volume/total_volume;
-      uvw[1] = side1_volume/total_volume;
-      uvw[2] = side2_volume/total_volume;
-      return KNIFE_SUCCESS;
-    } 
-  else 
-    {
-      return KNIFE_NO_INT;
-    }
+  total_volume = side0_volume + side1_volume + side2_volume;
+  uvw[0] = side0_volume/total_volume;
+  uvw[1] = side1_volume/total_volume;
+  uvw[2] = side2_volume/total_volume;
+  return KNIFE_SUCCESS;
+
 }
 
 double intersection_volume6( double *a, double *b, double *c, double *d )
