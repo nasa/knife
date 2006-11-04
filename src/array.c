@@ -142,12 +142,7 @@ KnifeBool array_contains_int( Array array, int target )
 
 KnifeBool array_contains_item( Array array, ArrayItem target )
 {
-  int indx;
-
-  for ( indx = 0 ; indx < array_size(array) ; indx++ )
-    if ( target == array_item(array, indx) ) return TRUE;
- 
-  return FALSE;
+  return ( EMPTY != array_index_of( array, target ) ? TRUE : FALSE );
 }
 
 int array_index_of( Array array, ArrayItem target )
