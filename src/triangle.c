@@ -949,6 +949,9 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
   int cut_index;
   Cut cut;
   Intersection intersection;
+  Node node;
+  int i;
+  Segment segment;
 
   double uvw[3];
 
@@ -1016,6 +1019,64 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
     {
       fprintf(f, "%6d %6d %6d\n", 
 	      1+2*cut_index, 2+2*cut_index, 2+2*cut_index);
+    }
+
+  fprintf(f, "zone t=parent, i=%d, j=%d, f=fepoint, et=triangle\n",
+	  3*triangle_nsubnode(triangle), triangle_nsubnode(triangle) );
+
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++ )
+    {
+      subnode = triangle_subnode(triangle, subnode_index);
+      node = subnode_node( subnode );
+      if ( NULL != node )
+	for ( i = 0 ; i < 3; i++ )
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  subnode_v(subnode), subnode_w(subnode), 
+		  node_x(node), node_y(node), node_z(node) );
+      intersection = subnode_intersection( subnode );
+      if ( NULL != intersection )
+	{
+	  if ( triangle == intersection_triangle( intersection ) )
+	    {
+	      segment = intersection_segment( intersection );
+	      node = segment_node0(segment);
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	      node = segment_node1(segment);
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	    }
+	  else
+	    {
+	      node = triangle_node0(intersection_triangle( intersection ));
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	      node = triangle_node1(intersection_triangle( intersection ));
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	      node = triangle_node2(intersection_triangle( intersection ));
+	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		      subnode_v(subnode), subnode_w(subnode),
+		      node_x(node), node_y(node), node_z(node) );
+	    }
+	}
+    }
+
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    {
+      fprintf(f, "%6d %6d %6d\n", 
+	      1+3*subnode_index, 2+3*subnode_index, 3+3*subnode_index);
     }
 
   fclose(f);
