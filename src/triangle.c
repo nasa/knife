@@ -1631,7 +1631,7 @@ void triangle_examine_subnodes(Triangle triangle)
     {
       subnode = triangle_subnode(triangle,subnode_index);
       intersection =  subnode_intersection( subnode );
-      printf("%2d   u %.15f v %.15f w %.15f sn %p int %p\n",subnode_index,
+      printf("%2d   u %.17f v %.17f w %.17f sn %p int %p\n",subnode_index,
 	     subnode->uvw[0],
 	     subnode->uvw[1],
 	     subnode->uvw[2],
@@ -1639,7 +1639,7 @@ void triangle_examine_subnodes(Triangle triangle)
 	     (void *)intersection);
       if (NULL != intersection)
 	{
-	  printf("int u %.15f v %.15f w %.15f t %.15f tri %p seg %p\n", 
+	  printf("int u %.17f v %.17f w %.17f t %.17f tri %p seg %p\n", 
 		 intersection->uvw[0],
 		 intersection->uvw[1],
 		 intersection->uvw[2],
@@ -1658,7 +1658,7 @@ void triangle_examine_subnodes(Triangle triangle)
 	    ABS(triangle_subnode(triangle,  other_index)->uvw[2]-
 		triangle_subnode(triangle,subnode_index)->uvw[2]);
 	  if (subnode_index != other_index && diff < 1.0e-8)
-	    printf("  %2d u %f v %f w %f\n",	other_index,
+	    printf("  %2d u %.17f v %.17f w %.17f\n",	other_index,
 		   triangle_subnode(triangle,other_index)->uvw[0],
 		   triangle_subnode(triangle,other_index)->uvw[1],
 		   triangle_subnode(triangle,other_index)->uvw[2]);
