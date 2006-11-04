@@ -1071,9 +1071,9 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	}
     }
 
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
+  for ( subnode_index = 0;
+	subnode_index < triangle_nsubnode(triangle); 
+	subnode_index++)
     {
       fprintf(f, "%6d %6d %6d\n", 
 	      1+3*subnode_index, 2+3*subnode_index, 3+3*subnode_index);
