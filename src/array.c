@@ -150,7 +150,7 @@ KnifeBool array_contains_item( Array array, ArrayItem target )
   return FALSE;
 }
 
-int array_index( Array array, ArrayItem target )
+int array_index_of( Array array, ArrayItem target )
 {
   int indx;
 

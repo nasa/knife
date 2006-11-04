@@ -42,7 +42,7 @@ KNIFE_STATUS array_remove( Array, ArrayItem );
 
 KnifeBool array_contains_int( Array, int target );
 KnifeBool array_contains_item( Array, ArrayItem );
-int array_index( Array, ArrayItem );
+int array_index_of( Array, ArrayItem );
 
 END_C_DECLORATION
 

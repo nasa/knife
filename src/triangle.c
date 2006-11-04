@@ -1111,8 +1111,8 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     cut = triangle_cut(triangle,cut_index);
     nseg++;
     fprintf( f, "%3d %3d %3d\n",nseg,
-	     4+array_index( ints, (ArrayItem)cut_intersection0(cut)),
-	     4+array_index( ints, (ArrayItem)cut_intersection1(cut)) );
+	     4+array_index_of( ints, (ArrayItem)cut_intersection0(cut)),
+	     4+array_index_of( ints, (ArrayItem)cut_intersection1(cut)) );
   }
   
   for (i = 0; i<3; i++)
@@ -1120,8 +1120,8 @@ KNIFE_STATUS triangle_export( Triangle triangle)
       {
 	nseg++;
 	fprintf( f, "%3d %3d %3d\n",nseg,
-		 4+array_index( ints, array_item(seg[i],indx-1) ),
-		 4+array_index( ints, array_item(seg[i],indx)   ) );
+		 4+array_index_of( ints, array_item(seg[i],indx-1) ),
+		 4+array_index_of( ints, array_item(seg[i],indx)   ) );
       }
 
 
@@ -1135,11 +1135,11 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     {
       intersection = array_item(seg[i],0);
       intersection_uvw( intersection, triangle, uvw0 );
-      indx0 = 4+array_index( ints, intersection );
+      indx0 = 4+array_index_of( ints, intersection );
 
       intersection = array_item(seg[i],array_size(seg[i])-1);
       intersection_uvw( intersection, triangle, uvw1 );
-      indx1 = 4+array_index( ints, intersection );
+      indx1 = 4+array_index_of( ints, intersection );
       if ( uvw1[2] > uvw0[2] )
 	{
 	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 2, indx0 );
@@ -1163,11 +1163,11 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     {
       intersection = array_item(seg[i],0);
       intersection_uvw( intersection, triangle, uvw0 );
-      indx0 = 4+array_index( ints, intersection );
+      indx0 = 4+array_index_of( ints, intersection );
 
       intersection = array_item(seg[i],array_size(seg[i])-1);
       intersection_uvw( intersection, triangle, uvw1 );
-      indx1 = 4+array_index( ints, intersection );
+      indx1 = 4+array_index_of( ints, intersection );
       if ( uvw1[0] > uvw0[0] )
 	{
 	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 3, indx0 );
@@ -1191,11 +1191,11 @@ KNIFE_STATUS triangle_export( Triangle triangle)
     {
       intersection = array_item(seg[i],0);
       intersection_uvw( intersection, triangle, uvw0 );
-      indx0 = 4+array_index( ints, intersection );
+      indx0 = 4+array_index_of( ints, intersection );
 
       intersection = array_item(seg[i],array_size(seg[i])-1);
       intersection_uvw( intersection, triangle, uvw1 );
-      indx1 = 4+array_index( ints, intersection );
+      indx1 = 4+array_index_of( ints, intersection );
       if ( uvw1[1] > uvw0[1] )
 	{
 	  nseg++; fprintf( f, "%3d %3d %3d\n", nseg, 1, indx0 );
