@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-warning_flags=-pedantic-errors -Wall -Werror
+warning_flags=-pedantic-errors -Wall -Wextra -Werror
 
 lib_LIBRARIES = libknife.a
 
