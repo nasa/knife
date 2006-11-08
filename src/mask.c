@@ -353,58 +353,6 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS mask_lumped_area( Mask mask, FILE *f )
-{
-  Triangle triangle;
-  int subtri_index;
-  double area, xyz[3], normal[3];
-  double subtri_area, subtri_center[3];
-  double diameter;
-
-  triangle = mask_triangle(mask);
-
-  TRY( triangle_normal_area( triangle, normal, &area ), "tri norm" );
-  if ( mask->inward_pointing_normal )
-    {
-      normal[0] = -normal[0];
-      normal[1] = -normal[1];
-      normal[2] = -normal[2];
-    }
-  
-  area   = 0.0;
-  xyz[0] = 0.0;
-  xyz[1] = 0.0;
-  xyz[2] = 0.0;
-  for ( subtri_index = 0;
-	subtri_index < triangle_nsubtri(triangle); 
-	subtri_index++)
-    if ( mask_subtri_active(mask,subtri_index) ) 
-      {
-	subtri_centroid_area( triangle_subtri(triangle,subtri_index),
-			      subtri_center, &subtri_area );
-	xyz[0] += subtri_area*subtri_center[0];
-	xyz[1] += subtri_area*subtri_center[1];
-	xyz[2] += subtri_area*subtri_center[2];
-	area   += subtri_area;
-      }
-
-  if ( area > 1.0e-14 ) 
-    {
-      xyz[0] /= area;
-      xyz[1] /= area;
-      xyz[2] /= area;
-    }
-  else
-    {
-      triangle_extent( mask_triangle(mask), xyz, &diameter );
-    }
-  
-  fprintf(f," %.16e %.16e %.16e %.16e %.16e %.16e %.16e\n",
-	  xyz[0], xyz[1], xyz[2], area, normal[0], normal[1], normal[2] );
-
-  return KNIFE_SUCCESS;
-}
-
 KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, 
 						double *origin,
 						double *centroid, 

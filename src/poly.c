@@ -900,47 +900,6 @@ KNIFE_STATUS poly_face_geometry_about( Poly poly, Node node, FILE *f )
 
   return KNIFE_SUCCESS;
 }
-
-KNIFE_STATUS poly_lumped_face_about( Poly poly, Node node, FILE *f )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-  int nlump;
-
-  nlump = 0;
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	{
-	  nlump++;
-	}
-    }
-
-  fprintf(f,"%d\n",nlump);
-
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	{
-	  TRY( mask_lumped_area( mask, f),
-	       "mask_lumped_area" );
-	}
-    }
-
-  return KNIFE_SUCCESS;
-}
-
 KNIFE_STATUS poly_boundary_face_geometry( Poly poly, int face_index, FILE *f )
 {
   int mask_index;
@@ -978,45 +937,6 @@ KNIFE_STATUS poly_boundary_face_geometry( Poly poly, int face_index, FILE *f )
 
   return KNIFE_SUCCESS;
 }
-
-KNIFE_STATUS poly_lumped_boundary_face( Poly poly, int face_index, FILE *f )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-  int nlump;
-
-  nlump = 0;
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( face_index == triangle_boundary_face_index(triangle) )
-	{
-	  nlump++;
-	}
-    }
-
-  fprintf(f,"%d\n",nlump);
-
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( face_index == triangle_boundary_face_index(triangle) )
-	{
-	  TRY( mask_lumped_area( mask, f),
-	       "mask_lumped_area" );
-	}
-    }
-
-  return KNIFE_SUCCESS;
-}
-
 KNIFE_STATUS poly_surf_geometry( Poly poly, FILE *f )
 {
   int surf_index;
@@ -1035,29 +955,6 @@ KNIFE_STATUS poly_surf_geometry( Poly poly, FILE *f )
 	surf_index++)
     {
       TRY( mask_dump_geom( poly_surf(poly,surf_index), f), "mask_dump_geom" );
-    }
-
-  return KNIFE_SUCCESS;
-}
-
-KNIFE_STATUS poly_lumped_surf( Poly poly, FILE *f )
-{
-  int surf_index;
-  int nlump;
-
-  nlump = 0;
-  for ( surf_index = 0;
-	surf_index < poly_nsurf(poly); 
-	surf_index++)
-    nlump++;
-
-  fprintf(f,"%d\n",nlump);
-
-  for ( surf_index = 0;
-	surf_index < poly_nsurf(poly); 
-	surf_index++)
-    {
-      TRY( mask_lumped_area( poly_surf(poly,surf_index), f), "mask_lumped" );
     }
 
   return KNIFE_SUCCESS;
