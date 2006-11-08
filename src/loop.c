@@ -108,7 +108,7 @@ KNIFE_STATUS loop_remove_side( Loop loop, Subnode node0, Subnode node1 )
   KnifeBool found;
 
   found = FALSE;
-  for ( existing_side = 0 ; existing_side < loop_nside(loop) ; existing_side++ )
+  for ( existing_side = 0; existing_side < loop_nside(loop) ; existing_side++ )
     if ( node0 == loop->side[0+2*existing_side] &&
 	 node1 == loop->side[1+2*existing_side] ) 
       {
@@ -146,9 +146,9 @@ KNIFE_STATUS loop_add_subtri( Loop loop, Subtri subtri )
   if ( NULL == loop->subtri ) loop->subtri = array_create(10,10);
 
   array_add(loop->subtri, (ArrayItem)subtri);
-  TRY( loop_add_to_front( loop, subtri_n1(subtri), subtri_n2(subtri) ), "fnt0");
-  TRY( loop_add_to_front( loop, subtri_n2(subtri), subtri_n0(subtri) ), "fnt1");
-  TRY( loop_add_to_front( loop, subtri_n0(subtri), subtri_n1(subtri) ), "fnt2");
+  TRY( loop_add_to_front(loop, subtri_n1(subtri), subtri_n2(subtri)), "fnt0");
+  TRY( loop_add_to_front(loop, subtri_n2(subtri), subtri_n0(subtri)), "fnt1");
+  TRY( loop_add_to_front(loop, subtri_n0(subtri), subtri_n1(subtri)), "fnt2");
   
   return KNIFE_SUCCESS;
 }
@@ -188,10 +188,10 @@ KNIFE_STATUS loop_split( Loop old_loop, Subnode node0, Subnode node1,
       move0 = move1;
     }
 
-  TRY( loop_add_to_front(  old_loop, node0, node1 ), "old_loop add hard side" );
+  TRY( loop_add_to_front( old_loop, node0, node1 ), "old_loop add hard side" );
   old_loop->node0 = node0;
   old_loop->node1 = node1;
-  TRY( loop_add_to_front( *new_loop, node1, node0 ), "new_loop add hard side" );
+  TRY( loop_add_to_front(*new_loop, node1, node0 ), "new_loop add hard side" );
   (*new_loop)->node0 = node1;
   (*new_loop)->node1 = node0;
 
@@ -314,75 +314,6 @@ KNIFE_STATUS loop_triangulate( Loop loop, Triangle triangle )
   TRY( loop_triangulate( loop,  triangle ), "fill loop" );
   TRY( loop_triangulate( loop0, triangle ), "fill loop0" );
   TRY( loop_triangulate( loop1, triangle ), "fill loop1" );
-
-  return KNIFE_SUCCESS;
-}
-
-KNIFE_STATUS loop_triangulate_old( Loop loop, Triangle triangle )
-{
-  int side0, side1;
-  Subnode node0, node1, node2;
-  Subtri subtri;
-
-  while (0 < loop_nside(loop))
-    { 
-      TRY( loop_most_convex( loop, &side0, &side1 ), "most convex failed");
-      
-      node0 = loop->side[0+2*side0];
-      node1 = loop->side[1+2*side0];
-      if ( node1 != loop->side[0+2*side1] ) return KNIFE_FAILURE;
-      node2 = loop->side[1+2*side1];
-      
-      /* add the subtri sides in reverse */
-      TRY( loop_add_to_front( loop, node2, node1 ), "triangulate front 0");
-      TRY( loop_add_to_front( loop, node0, node2 ), "triangulate front 1");
-      TRY( loop_add_to_front( loop, node1, node0 ), "triangulate front 2");
-
-      subtri = subtri_create( node0, node1, node2 );
-      NOT_NULL( subtri, "subtri creation failed" );
-      TRY( triangle_add_subtri(triangle,subtri), "add new subtri");
-    }
-
-  return KNIFE_SUCCESS;
-}
-
-KNIFE_STATUS loop_most_convex( Loop loop, int *side0_index, int *side1_index )
-{
-  int side0, side1;
-  Subnode node0, node1, node2;
-  double area, best_area;
-  int best_side0, best_side1;
-  
-  best_area = -1.0;
-  best_side0 = EMPTY;
-  best_side1 = EMPTY;
-
-  for ( side0 = 0 ; side0 < loop_nside(loop) ; side0++ )
-    for ( side1 = 0 ; side1 < loop_nside(loop) ; side1++ )
-      if ( loop->side[1+2*side0] == loop->side[0+2*side1] )
-	{
-	  node0 = loop->side[0+2*side0];
-	  node1 = loop->side[1+2*side0];
-	  node2 = loop->side[1+2*side1];
-	  
-	  area = subnode_area( node0, node1, node2 );
-	  if ( area > best_area )
-	    {
-	      best_area = area;
-	      best_side0 = side0;
-	      best_side1 = side1;
-	    }
-	}
-
-  if (best_area < 0.0) 
-    {
-      printf("%s: %d: best area in find convex %.16e\n",__FILE__,__LINE__,
-	     best_area);
-      return KNIFE_NOT_FOUND;
-    }
-
-  *side0_index = best_side0;
-  *side1_index = best_side1;
 
   return KNIFE_SUCCESS;
 }

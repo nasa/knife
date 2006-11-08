@@ -56,8 +56,6 @@ KNIFE_STATUS loop_split( Loop, Subnode node0, Subnode node1, Loop *new_loop );
 
 KNIFE_STATUS loop_triangulate( Loop, Triangle );
 
-KNIFE_STATUS loop_most_convex( Loop, int *side0_index, int *side1_index );
-
 KNIFE_STATUS loop_tecplot( Loop );
 
 END_C_DECLORATION
