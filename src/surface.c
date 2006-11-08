@@ -66,8 +66,6 @@ Surface surface_from( Primal primal, Array bcs,
 	}
     }
 
-  printf("number of triangular faces in the surface %d\n",local_nface);
-
   face_l2g = (int *)malloc( local_nface*sizeof(int) );
   for (global_iface=0;
        global_iface<primal_nface(primal);
@@ -112,8 +110,6 @@ Surface surface_from( Primal primal, Array bcs,
 	  }
     }
 
-  printf("number of segments in the surface %d\n",surface->nsegment);
-
   node_g2l = (int *)malloc( primal_nnode(primal)*sizeof(int) );
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
     node_g2l[global_node] = EMPTY;
@@ -130,8 +126,6 @@ Surface surface_from( Primal primal, Array bcs,
 	    (surface->nnode)++;
 	  }
     }
-
-  printf("number of nodes in the surface %d\n",surface_nnode(surface));
 
   surface->node = (NodeStruct *) malloc( surface_nnode(surface) * 
 					 sizeof(NodeStruct) );
