@@ -71,7 +71,6 @@ void knife_volume_( int *part_id,
   TRY( primal_copy_volume( volume_primal, x, y, z, *maxcell, c2n ), 
        "primal_copy_volume");
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_volume__( int *part_id,
@@ -96,7 +95,6 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
 			       *leading_dim, *nface, f2n ), 
 	 "primal_copy_boundary");
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_boundary__( int *face_id, int *nodedim, int *inode,
@@ -134,8 +132,9 @@ void knife_required_local_dual_( char *knife_input_file_name,
   NOT_NULL(f , "could not open knife_input_file_name");
 
   fscanf( f, "%s\n", surface_filename);
-  printf(" knife surface filename %s\n", surface_filename);
   surface_primal = primal_from_FAST( surface_filename );
+  if ( NULL == surface_primal ) 
+    printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");
   
   inward_pointing_surface_normal = TRUE;
@@ -158,17 +157,6 @@ void knife_required_local_dual_( char *knife_input_file_name,
       return;
     }
 
-  printf(" knife surface filename %s\n", surface_filename);
-
-  if ( inward_pointing_surface_normal ) 
-    {
-      printf(" knife surface points into the domain\n");
-    }
-  else
-    {
-      printf(" knife surface points out of the domain\n");
-    }
-
   active_bcs = array_create(10,10);
   NOT_NULL(active_bcs, "active_bcs NULL");
 
@@ -179,7 +167,6 @@ void knife_required_local_dual_( char *knife_input_file_name,
       bc_found = fscanf( f, "%d", bc );
       if ( 1 == bc_found )
 	{
-	  printf(" knife surface bc %d active\n",*bc);
 	  TRY( array_add( active_bcs, bc ), "array_add bc");
 	}
       else
@@ -200,7 +187,6 @@ void knife_required_local_dual_( char *knife_input_file_name,
   TRY( domain_required_local_dual( domain, required ), 
        "domain_required_local_dual" );
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_required_local_dual__( char *knife_input_file_name,
@@ -231,11 +217,9 @@ void knife_cut_( int *nodedim, int *required,
   if (FALSE) 
     {
       sprintf( tecplot_file_name, "knife_cut%03d.t", partition );
-      printf(" knife producing %s \n",tecplot_file_name);
       domain_tecplot( domain, tecplot_file_name );
     }
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_cut__( int *nodedim, int *required,
@@ -263,7 +247,6 @@ void knife_dual_topo_( int *nodedim, int *topo,
       topo[node] = domain_topo(domain,node);
     }
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_dual_topo__( int *nodedim, int *topo,
@@ -296,7 +279,6 @@ void knife_dual_centroid_volume_( int *node,
   *y = center[1];
   *z = center[2];
 
-  fflush(stdout);
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_dual_centroid_volume__( int *node, 
