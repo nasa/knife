@@ -433,8 +433,6 @@ KNIFE_STATUS domain_face_sides( Domain domain )
   int node0, node1;
   int other_face, other_side;
 
-  printf("unique surface triangle face sides\n");
-
   domain->f2s = (int *)malloc( 3*primal_nface(domain->primal)*sizeof(int) );
 
   for ( face = 0 ; face < primal_nface(domain->primal) ; face++ ) 
@@ -504,28 +502,24 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 
   TRY( domain_face_sides( domain ), "domain_face_sides" );
 
-  printf("create dual nodes\n");
-
   domain->nnode = 
     primal_ncell(domain->primal) +
     primal_ntri(domain->primal) +
     primal_nedge(domain->primal) +
     primal_surface_nnode(domain->primal);
-  printf("number of dual nodes in the volume %d\n",domain->nnode);
+
   domain->node = (Node *)malloc( domain->nnode * sizeof(Node));
   domain_test_malloc(domain->node,
 		     "domain_tetrahedral_elements node");
   for ( node =0 ; node < domain->nnode ; node++ )
     domain->node[node] = NULL;
 
-  printf("create dual segments\n");
-
   domain->nsegment = 
     10 * primal_ncell(domain->primal) +
     3  * primal_ntri(domain->primal) +
     3  * primal_nface(domain->primal)+
     2  * domain->nside;
-  printf("number of dual segmentss in the volume %d\n",domain->nsegment);
+
   domain->segment = (Segment *)malloc( domain->nsegment * sizeof(Segment));
   domain_test_malloc(domain->segment,
 		     "domain_tetrahedral_elements segment");
@@ -533,19 +527,15 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	segment_index < domain_nsegment(domain); 
 	segment_index++ ) domain->segment[ segment_index ] = NULL;
 
-  printf("create dual triangles\n");
-
   domain->ntriangle = 12*primal_ncell(domain->primal)
                     +  6*primal_nface(domain->primal);
-  printf("number of dual triangles in the volume %d\n",domain->ntriangle);
+
   domain->triangle = (Triangle *)malloc( domain->ntriangle * sizeof(Triangle));
   domain_test_malloc(domain->triangle,"domain_dual_elements triangle");
   for ( triangle_index = 0 ; 
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++ ) domain->triangle[ triangle_index ] = NULL;
 	  
-  printf("fill poly\n");
-
   for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
     {
       for ( cell_edge = 0 ; cell_edge < 6 ; cell_edge++)
@@ -621,16 +611,12 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
   free(domain->s2fs); 
   domain->s2fs = NULL;
 
-  printf("dual completed\n");
-
   return (KNIFE_SUCCESS);
 }
 
 KNIFE_STATUS domain_all_dual( Domain domain )
 {
   int poly_index;
-
-  printf("create poly for primal nodes\n");
   
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
@@ -671,8 +657,6 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
 	poly_index++)
     required[poly_index] = 0;
 
-  printf("forming surface triangle near tree\n");
-
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
   NOT_NULL( triangle_tree, "triangle_tree NULL");
@@ -695,8 +679,6 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
 
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
-
-  printf("volume segments intersecting surface triangles\n");
 
   for (edge_index=0;edge_index<primal_nedge(domain->primal);edge_index++)
     {
@@ -735,8 +717,6 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
   free(touched);
   free(triangle_tree);
 
-  printf("forming surface triangle near tree\n");
-
   segment_tree = (NearStruct *)malloc( surface_nsegment(domain->surface) * 
 				       sizeof(NearStruct));
   NOT_NULL( segment_tree, "segment_tree NULL");
@@ -759,7 +739,6 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
   
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
-  printf("volume triangles intersecting surface segments\n");
   
   for (tri_index=0;tri_index<primal_ntri(domain->primal);tri_index++)
     {
@@ -838,9 +817,6 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
         poly_index++)
     if ( 0 != required[poly_index]) nrequired++;
 
-  printf("poly %d of %d locally required\n",
-	 nrequired,primal_nnode(domain->primal));
-
   return (KNIFE_SUCCESS);
 }
 
@@ -885,8 +861,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   double dx, dy, dz;
   KNIFE_STATUS intersection_status;
   int nrequired;
-
-  printf("create poly for primal nodes\n");
   
   domain->npoly = primal_nnode(domain->primal);
   domain->poly = (Poly *)malloc(domain->npoly * sizeof(Poly));
@@ -894,8 +868,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
     domain->poly[poly_index] = NULL;
   
-  printf("forming surface triangle near tree\n");
-
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
   NOT_NULL( triangle_tree, "triangle_tree NULL");
@@ -918,8 +890,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
 
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
-
-  printf("volume segments intersecting surface triangles\n");
 
   for (edge_index=0;edge_index<primal_nedge(domain->primal);edge_index++)
     {
@@ -960,8 +930,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   free(touched);
   free(triangle_tree);
 
-  printf("forming surface triangle near tree\n");
-
   segment_tree = (NearStruct *)malloc( surface_nsegment(domain->surface) * 
 				       sizeof(NearStruct));
   NOT_NULL( segment_tree, "segment_tree NULL");
@@ -984,7 +952,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
-  printf("volume triangles intersecting surface segments\n");
   
   for (tri_index=0;tri_index<primal_ntri(domain->primal);tri_index++)
     {
@@ -1087,8 +1054,6 @@ KNIFE_STATUS domain_required_dual( Domain domain )
   for (poly_index = 0 ; poly_index < domain_npoly(domain) ; poly_index++)
     if ( NULL != domain->poly[poly_index]) nrequired++;
 
-  printf("poly %d of %d required\n",nrequired,domain_npoly(domain));
-
   return (KNIFE_SUCCESS);
 }
 
@@ -1102,16 +1067,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   int *touched;
   NearStruct target;
 
-  printf("primal: nnode %d nface %d ncell %d nedge %d ntri %d\n",
-	 primal_nnode(domain->primal),
-	 primal_nface(domain->primal),
-	 primal_ncell(domain->primal),
-	 primal_nedge(domain->primal),
-	 primal_ntri(domain->primal));
-
   TRY( domain_dual_elements( domain ), "domain_dual_elements" );
-
-  printf("forming surface near tree\n");
 
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
@@ -1135,8 +1091,6 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
-
-  printf("compute cuts\n");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
@@ -1165,20 +1119,12 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   TRY( domain_triangulate(domain), "domain_triangulate" );
 
-  printf("gather surface\n");
-
   TRY( domain_gather_surf(domain), "domain_gather_surf" );
-
-  printf("determine active subtris\n");
 
   TRY( domain_determine_active_subtri(domain), 
        "domain_determine_active_subtri" );
 
-  printf("establish dual topology\n");
-
   TRY( domain_set_dual_topology( domain ), "domain_set_dual_topology" );
-
-  printf("boolean subtract completed\n");
 
   return (KNIFE_SUCCESS);
 }
@@ -1187,11 +1133,7 @@ KNIFE_STATUS domain_triangulate( Domain domain )
 {
   int triangle_index;
 
-  printf("triangulate surface\n");
-
   TRY( surface_triangulate(domain->surface), "surface_triangulate" );
-
-  printf("triangulate volume\n");
 
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
@@ -1219,8 +1161,6 @@ KNIFE_STATUS domain_gather_surf( Domain domain )
 	     "poly_gather_surf" );
 	if ( poly_has_surf( domain_poly( domain, poly_index ) ) ) cut_poly++;
       }
-
-  printf("polyhedra %d of %d have been cut\n",cut_poly,domain_npoly(domain));
 
   return KNIFE_SUCCESS;
 }
@@ -1359,8 +1299,6 @@ KNIFE_STATUS domain_set_dual_topology( Domain domain )
 	  nexterior++;
       }
 
-    printf( "poly: %d interior %d cut %d exterior\n",
-	    ninterior, ncut, nexterior);
   }
   
   return KNIFE_SUCCESS;
@@ -1387,8 +1325,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   int i;
 
   KnifeBool active, original;
-
-  printf("dump node stuff\n");
 
   node_g2l = (int *)malloc( primal_nnode(domain->primal)*sizeof(int) );
   for ( node = 0 ; node < primal_nnode(domain->primal) ; node++)
@@ -1448,8 +1384,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
-  printf("dump tet stuff\n");
-
   ntet = 0;
   for ( cell = 0 ; cell < primal_ncell(domain->primal) ; cell++)
     {
@@ -1480,8 +1414,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     }
 
   fclose(f);
-
-  printf("dump edge stuff\n");
 
   nedge = 0;
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
@@ -1570,8 +1502,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
 
   fclose(f);
 
-  printf("dump face stuff\n");
-
   ncut = 0;
   for ( edge = 0 ; edge < primal_nedge(domain->primal) ; edge++)
     {
@@ -1620,8 +1550,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
     }
 
   fclose(f);
-
-  printf("dump bound stuff\n");
 
   TRY( primal_max_face_id(domain->primal, &max_face_id), "max_face_id");;
 
@@ -1698,8 +1626,6 @@ KNIFE_STATUS domain_export_fun3d( Domain domain )
   free(face_g2l);
 
   fclose(f);
-
-  printf("dump surf stuff\n");
 
   f = fopen("postslice.surf","w");
   NOT_NULL(f,"surf file not open");
@@ -1798,12 +1724,10 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
 
   if (NULL == filename) 
     {
-      printf("tecplot output to domain.t\n");
       f = fopen("domain.t", "w");
     }
   else
     {
-      printf("tecplot output to %s\n",filename);
       f = fopen(filename, "w");
     }
   
@@ -1816,8 +1740,6 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
 	     "poly_tecplot_zone");
 
   fclose(f);
-
-  printf("tecplot output complete\n");
   
   return KNIFE_SUCCESS;
 }
