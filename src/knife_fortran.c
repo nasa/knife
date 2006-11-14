@@ -273,13 +273,11 @@ void knife_dual_centroid_volume_( int *node,
   poly = domain_poly(domain,(*node)-1);
   NOT_NULL( poly, "poly NULL" );
 
-  TRY( poly_centroid_volume(poly,xyz,center,volume), "poly_centroid_volume" );
+  *knife_status = poly_centroid_volume(poly,xyz,center,volume);
 
   *x = center[0];
   *y = center[1];
   *z = center[2];
-
-  *knife_status = KNIFE_SUCCESS;
 }
 void knife_dual_centroid_volume__( int *node, 
 				   double *x, double *y, double *z, 
