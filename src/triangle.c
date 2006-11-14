@@ -352,7 +352,6 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	cut_index++) 
     if ( !cut_recovered[cut_index] ) 
       {
-	printf("using provable subtri side recovery\n");
 	cut = triangle_cut(triangle,cut_index);
 	subnode0 = triangle_subnode_with_intersection(triangle, 
 						      cut_intersection0(cut));
