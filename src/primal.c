@@ -711,7 +711,7 @@ KNIFE_STATUS primal_scale_about( Primal primal,
       dz *= scale;
       primal->xyz[0+3*node] = x+dx;
       primal->xyz[1+3*node] = y+dy;
-      primal->xyz[2+3*node] = y+dz;
+      primal->xyz[2+3*node] = z+dz;
     }
 
   return KNIFE_NOT_FOUND;
