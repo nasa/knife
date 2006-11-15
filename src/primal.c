@@ -694,3 +694,26 @@ KNIFE_STATUS primal_find_tri_side( Primal primal, int tri, int node0, int node1,
 
   return KNIFE_NOT_FOUND;
 }
+
+KNIFE_STATUS primal_scale_about( Primal primal, 
+				 double x, double y, double z, double scale )
+{
+  int node;
+  double dx, dy, dz;
+
+  for( node=0; node<primal->nnode ; node++ ) 
+    {
+      dx = primal->xyz[0+3*node] - x;
+      dy = primal->xyz[1+3*node] - y;
+      dz = primal->xyz[2+3*node] - z;
+      dx *= scale;
+      dy *= scale;
+      dz *= scale;
+      primal->xyz[0+3*node] = x+dx;
+      primal->xyz[1+3*node] = y+dy;
+      primal->xyz[2+3*node] = y+dz;
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+

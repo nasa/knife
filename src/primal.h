@@ -148,6 +148,10 @@ KNIFE_STATUS primal_find_tri_side( Primal, int tri, int node0, int node1,
 #define primal_cell_side_node1(side) ((0==side)?3:(1==side)?2:(2==side)?3:1)
 #define primal_cell_side_node2(side) ((0==side)?2:(1==side)?3:(2==side)?1:2)
 
+
+KNIFE_STATUS primal_scale_about( Primal, 
+				 double x, double y, double z, double scale );
+
 END_C_DECLORATION
 
 #endif /* PRIMAL_H */
