@@ -137,6 +137,11 @@ void knife_required_local_dual_( char *knife_input_file_name,
     printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");
   
+  if( strcmp(surface_filename,"bump.fgrid") == 0 ) {
+    printf("%s: %d: debug scale!!!\n",__FILE__,__LINE__);
+    primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0e-7 );
+  }
+
   inward_pointing_surface_normal = TRUE;
   orientation_missing = TRUE;
   
