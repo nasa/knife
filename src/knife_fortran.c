@@ -493,6 +493,11 @@ void knife_free_( int *knife_status )
   primal_free( volume_primal );
   volume_primal = NULL;
 
+  domain_free( domain );
+  domain = NULL;
+
+  partition = EMPTY;
+
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_free__( int *knife_status )
