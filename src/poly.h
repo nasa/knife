@@ -30,7 +30,6 @@ END_C_DECLORATION
 BEGIN_C_DECLORATION
 
 struct PolyStruct {
-  Node primal_node;
   Array mask;
   Array surf;
 };
