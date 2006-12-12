@@ -481,3 +481,17 @@ void knife_boundary_triangles__( int *node, int *face,
 			     triangle_node2,
 			     knife_status );
 }
+
+void knife_free_( void )
+{
+  primal_free( surface_primal );
+  surface_primal = NULL;
+  surface_free( surface );
+  surface = NULL;
+  primal_free( volume_primal );
+  volume_primal = NULL;
+}
+void knife_free__( void )
+{
+  knife_free_( );
+}
