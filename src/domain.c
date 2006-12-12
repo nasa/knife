@@ -85,7 +85,7 @@ void domain_free( Domain domain )
   int i;
   if ( NULL == domain ) return;
 
-  printf("FIXME find a consistant way to free cuts and intersections\n");
+  /* FIXME find a consistant way to free cuts and intersections */
   /* segments have list of intersections */
   /* triangles have list of cuts */
 
