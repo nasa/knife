@@ -82,9 +82,45 @@ Domain domain_create( Primal primal, Surface surface)
 
 void domain_free( Domain domain )
 {
+  int i;
   if ( NULL == domain ) return;
+
+  printf("FIXME find a consistant way to free cuts and intersections\n");
+  /* segments have list of intersections */
+  /* triangles have list of cuts */
+
+  if ( NULL != domain->node )
+    {
+      for ( i = 0 ; i < domain->nnode ; i++ ) 
+	node_free(domain->node[i]);
+      free( domain->node );
+    }
+
+  if ( NULL != domain->segment )
+    {
+      for ( i = 0 ; i < domain->nsegment ; i++ ) 
+	segment_free(domain->segment[i]);
+      free( domain->segment );
+    }
+
+  if ( NULL != domain->triangle )
+    {
+      for ( i = 0 ; i < domain->ntriangle ; i++ ) 
+	triangle_free(domain->triangle[i]);
+      free( domain->triangle );
+    }
+
+  if ( NULL != domain->poly )
+    {
+      for ( i = 0 ; i < domain->npoly ; i++ ) 
+	poly_free(domain->poly[i]);
+      free( domain->poly );
+    }
+
+  if ( NULL != domain->topo ) free( domain->topo );
   
-  printf("%s: %d: domain_free: memory leak, fix\n",__FILE__,__LINE__);
+  if ( NULL != domain->f2s )  free( domain->f2s );
+  if ( NULL != domain->s2fs ) free( domain->s2fs );
 
   free(domain);
 }
