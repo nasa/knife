@@ -482,16 +482,20 @@ void knife_boundary_triangles__( int *node, int *face,
 			     knife_status );
 }
 
-void knife_free_( void )
+void knife_free_( int *knife_status )
 {
   primal_free( surface_primal );
   surface_primal = NULL;
+
   surface_free( surface );
   surface = NULL;
+
   primal_free( volume_primal );
   volume_primal = NULL;
+
+  *knife_status = KNIFE_SUCCESS;
 }
-void knife_free__( void )
+void knife_free__( int *knife_status )
 {
-  knife_free_( );
+  knife_free_( knife_status );
 }
