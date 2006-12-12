@@ -138,10 +138,20 @@ KNIFE_STATUS triangle_initialize(Triangle triangle,
 
 void triangle_free( Triangle triangle )
 {
+  int i;
   if ( NULL == triangle ) return;
+
+  for ( i = 0; i < triangle_nsubnode(triangle); i++) 
+    subnode_free( triangle_subnode( triangle, i ) );
   array_free( triangle->subnode );
+
+  for ( i = 0; i < triangle_nsubtri(triangle); i++) 
+    subtri_free( triangle_subtri( triangle, i ) );
   array_free( triangle->subtri );
+
+  /* FIXME find a consistant way to free cuts and intersections */
   array_free( triangle->cut );
+
   free( triangle );
 }
 
