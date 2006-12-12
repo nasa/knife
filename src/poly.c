@@ -67,9 +67,18 @@ KNIFE_STATUS poly_initialize( Poly poly )
 
 void poly_free( Poly poly )
 {
+  int mask_index;
+
   if ( NULL == poly ) return;
+
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    mask_free( poly_mask(poly, mask_index) );
   array_free( poly->mask );
+
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    mask_free( poly_surf(poly, mask_index) );
   array_free( poly->surf );
+
   free( poly );
 }
 
