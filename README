@@ -1,15 +1,15 @@
 
-knife: polyhedra boolean subtraction for cut cells
+knife v1.0: Boolean Subtraction of Polyhedra for Cut Cell Applications
 
 CVS package release tag (version) : $Name$
 
 
-The knife libray calculates the boolean subtraction of arbitrary
+The knife library calculates the boolean subtraction of arbitrary
 watertight triangular polyhedra. The result of this subtraction is
 also watertight triangular polyhedra. The triangular faces of the
 resultant polyhedra are created with a Delaunay triangle mesher.
 These polyhedra are suitable for performing cut cell partial
-differential equation solutions (i.e., computaional fluid flow
+differential equation solutions (i.e., computational fluid flow
 simulations). Tetrahedra as well as the median dual of a tetrahedral
 mesh are standard inputs. The knife library is implemented with an
 object-oriented flavor in the C language.
