@@ -52,6 +52,7 @@ int main( int argc, char *argv[] )
 
   KnifeBool inward_pointing_surface_normal = TRUE;
   KnifeBool tecplot_output = FALSE;
+  KnifeBool fun3d_output = FALSE;
   KnifeBool arguments_require_stop = FALSE;
   int nnodes0 = EMPTY;
 
@@ -91,6 +92,11 @@ int main( int argc, char *argv[] )
 	printf("-t\n");
       }
 
+      if( strcmp(argv[argument],"-f") == 0 ) {
+	fun3d_output = TRUE;
+	printf("-f\n");
+      }
+
       if( strcmp(argv[argument],"--nnodes0") == 0 ) {
 	argument++;
 	nnodes0 = atoi(argv[argument]);
@@ -104,6 +110,7 @@ int main( int argc, char *argv[] )
 	printf("-b face index of surface grid used to cut\n");
 	printf("-v volume fgrid filename\n");
 	printf("-t tecplot output\n");
+	printf("-f fun3d cut cell data\n");
 	printf("--nnodes0 parallel debug mode, number of local nodes\n");
 	printf("-h,--help display help info and exit\n");
 	printf("--version display version info and exit\n");
@@ -145,9 +152,11 @@ int main( int argc, char *argv[] )
       TRY( domain_all_dual( domain ), "domain_all_dual" );
       TRY( domain_boolean_subtract( domain ), "boolean subtract" );
       if (tecplot_output) domain_tecplot( domain, "cut.t" );
-      printf("start dump dual to fun3d\n");
-      TRY( domain_export_fun3d( domain ), "export fun3d" );
-      printf("complete dump dual to fun3d\n");
+      if (fun3d_output) {
+	printf("start dump dual to fun3d\n");
+	TRY( domain_export_fun3d( domain ), "export fun3d" );
+	printf("complete dump dual to fun3d\n");
+      }
     }
 
   return 0;
