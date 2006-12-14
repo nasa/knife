@@ -103,6 +103,7 @@ int main( int argc, char *argv[] )
 	printf("-r surface triangle normals point out of the domain\n");
 	printf("-b face index of surface grid used to cut\n");
 	printf("-v volume fgrid filename\n");
+	printf("-t tecplot output\n");
 	printf("--nnodes0 parallel debug mode, number of local nodes\n");
 	printf("-h,--help display help info and exit\n");
 	printf("--version display version info and exit\n");
