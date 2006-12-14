@@ -1,15 +1,25 @@
 
+knife: polyhedra boolean subtraction for cut cells
+
 CVS package release tag (version) : $Name$
 
-knife: polyhedra boolean subtraction for cut cells
-implemented with an object-oriented flavor in the C language.
+
+The knife libray calculates the boolean subtraction of arbitrary
+watertight triangular polyhedra. The result of this subtraction is
+also watertight triangular polyhedra. The triangular faces of the
+resultant polyhedra are created with a Delaunay triangle mesher.
+These polyhedra are suitable for performing cut cell partial
+differential equation solutions (i.e., computaional fluid flow
+simulations). Tetrahedra as well as the median dual of a tetrahedral
+mesh are standard inputs. The knife library is implemented with an
+object-oriented flavor in the C language.
 
 The knife library can be called by FUN3D <http://fun3d.larc.nasa.gov/>
-to perform cut cell flow and adjoint solutions.
+to perform dual tetrahedra cut cell flow and adjoint solutions.
 
 See the INSTALL file for build instructions.
 
-Contact Mike Park <Mike.Park@NASA.Gov> (757) 864-6604
+Contact Mike Park <Mike.Park@NASA.Gov> (757) 864-6604 for more information.
 
 To gain cvs access, you will need a NASA Langley CFDLAB account. Then
 run:
