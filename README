@@ -1,5 +1,7 @@
 
-knife v1.0: Boolean Subtraction of Polyhedra for Cut Cell Applications
+knife
+
+Boolean Subtraction Library for Polyhedra
 
 CVS package release tag (version) : $Name$
 
