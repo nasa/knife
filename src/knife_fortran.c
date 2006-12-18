@@ -305,7 +305,9 @@ void knife_number_of_triangles_between_( int *node1, int *node2,
   Node node;
 
   poly = domain_poly( domain, (*node1)-1 );
-  NOT_NULL(poly, "node1 poly NULL in knife_number_of_triangles_between_");
+  if ( NULL == poly ) poly = domain_poly( domain, (*node2)-1 );
+  NOT_NULL( poly, 
+	    "node1 and node2 poly NULL in knife_number_of_triangles_between_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
@@ -339,7 +341,9 @@ void knife_triangles_between_( int *node1, int *node2,
   Node node;
 
   poly = domain_poly( domain, (*node1)-1 );
-  NOT_NULL(poly, "node1 poly NULL in knife_triangles_between_");
+  if ( NULL == poly ) poly = domain_poly( domain, (*node2)-1 );
+  NOT_NULL( poly, 
+	    "node1 and node2 poly NULL in knife_triangles_between_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1,  (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
