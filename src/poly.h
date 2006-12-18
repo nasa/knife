@@ -47,6 +47,7 @@ KNIFE_STATUS poly_mask_with_triangle( Poly, Triangle, Mask * );
 
 KNIFE_STATUS poly_gather_surf( Poly );
 
+KNIFE_STATUS poly_activate_all_subtri( Poly );
 KNIFE_STATUS poly_determine_active_subtri( Poly );
 
 KNIFE_STATUS poly_activate_subtri_at_cuts( Poly );

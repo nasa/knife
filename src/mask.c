@@ -75,6 +75,21 @@ int mask_nsubtri( Mask mask )
   return nsubtri;
 }
 
+KNIFE_STATUS mask_activate_all_subtri( Mask mask )
+{
+  int nsubtri;
+  int subtri_index;
+
+  TRY( mask_deactivate_all_subtri( mask ), 
+       "mask_deactivate_all_subtri in mask_activate_all_subtri" );
+  
+  nsubtri = triangle_nsubtri( mask_triangle(mask) );
+  for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
+    mask->active[subtri_index] = TRUE;
+  
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
 {
   int nsubtri;
