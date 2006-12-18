@@ -677,8 +677,6 @@ KNIFE_STATUS domain_add_interior_poly( Domain domain, int poly_index )
 
   domain->poly[poly_index] = poly_create( );
 
-  TRY( domain_face_sides( domain ), "domain_face_sides" );
-
   for ( it = adj_first(primal_cell_adj(domain->primal), poly_index);
 	adj_valid(it);
 	it = adj_next(it) )
