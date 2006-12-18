@@ -437,7 +437,13 @@ void knife_number_of_boundary_triangles_( int *node, int *face,
   Poly poly;
 
   poly = domain_poly( domain, (*node)-1 );
-  NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
+  if ( NULL == poly ) 
+    {
+      TRY( domain_add_interior_poly( domain, (*node)-1 ), 
+	   "domain_add_interior_poly" );
+      poly = domain_poly( domain, (*node)-1 );      
+      NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
+    }
 
   TRY( poly_boundary_nsubtri( poly, (*face)-1, &n ), "poly_nsubtri_about" );
   
