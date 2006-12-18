@@ -104,6 +104,8 @@ Triangle domain_triangle( Domain, int triangle_index );
 KNIFE_STATUS domain_required_local_dual( Domain domain, int *required );
 KNIFE_STATUS domain_create_dual( Domain domain, int *required );
 
+KNIFE_STATUS domain_add_interior_poly( Domain domain, int index );
+
 KNIFE_STATUS domain_required_dual( Domain domain );
 KNIFE_STATUS domain_all_dual( Domain domain );
 

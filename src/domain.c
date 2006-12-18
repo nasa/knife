@@ -641,12 +641,123 @@ KNIFE_STATUS domain_dual_elements( Domain domain )
 	    }
 	}
     }
-	  
-  free(domain->f2s); 
-  domain->f2s = NULL;
-  free(domain->s2fs); 
-  domain->s2fs = NULL;
 
+  return (KNIFE_SUCCESS);
+}
+
+KNIFE_STATUS domain_add_interior_poly( Domain domain, int poly_index )
+{
+  int cell, face;
+  int side;
+  int triangle_index;
+  int cell_nodes[4], face_nodes[4];
+  int cell_edge;
+  int node0, node1;
+  Triangle triangle;
+
+  AdjIterator it;
+
+  if ( NULL == domain->poly || 
+       NULL == domain->node || 
+       NULL == domain->segment || 
+       NULL == domain->triangle ||
+       NULL == domain->f2s ||
+       NULL == domain->s2fs )
+    {
+      printf("call domain_add_interior_poly after domain_dual_elements\n");
+      return KNIFE_NULL;
+    }
+
+  if ( NULL != domain_poly(domain,poly_index) )
+    {
+      printf("%s: %d: domain_add_interior_poly: poly at poly_index not NULL \n",
+	     __FILE__,__LINE__);
+      return KNIFE_INCONSISTENT;
+    }
+
+  domain->poly[poly_index] = poly_create( );
+
+  TRY( domain_face_sides( domain ), "domain_face_sides" );
+
+  for ( it = adj_first(primal_cell_adj(domain->primal), poly_index);
+	adj_valid(it);
+	it = adj_next(it) )
+    {
+      cell = adj_item(it);
+      for ( cell_edge = 0 ; cell_edge < 6 ; cell_edge++)
+	{
+	  primal_cell(domain->primal,cell,cell_nodes);
+	  node0 = cell_nodes[primal_cell_edge_node0(cell_edge)];
+	  node1 = cell_nodes[primal_cell_edge_node1(cell_edge)];
+
+	  triangle_index = 0 + 2 * cell_edge + 12 * cell;
+	  /* triangle normal points from node0 to node1 */
+	  if ( poly_index == node0 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, FALSE ), "poly_add_triangle");
+	    }
+	  if ( poly_index == node1 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
+	  triangle_index = 1 + 2 * cell_edge + 12 * cell;
+	  /* triangle normal points from node0 to node1 */
+	  if ( poly_index == node0 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, FALSE ), "poly_add_triangle");
+	    }
+	  if ( poly_index == node1 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
+	}
+    }
+
+  for ( it = adj_first(primal_face_adj(domain->primal), poly_index);
+	adj_valid(it);
+	it = adj_next(it) )
+    {
+      face = adj_item(it);
+      primal_face(domain->primal, face, face_nodes);
+      for ( side = 0 ; side < 3 ; side++)
+	{
+	  node0 = face_nodes[primal_face_side_node0(side)];
+	  node1 = face_nodes[primal_face_side_node1(side)];
+
+	  triangle_index= 0 + 2*side + 6*face + 12*primal_ncell(domain->primal);
+	  if ( poly_index == node0 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node0),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
+	  triangle_index= 1 + 2*side + 6*face + 12*primal_ncell(domain->primal);
+	  if ( poly_index == node1 )
+	    {
+	      triangle = domain_triangle(domain,triangle_index);
+	      NOT_NULL(triangle,"triangle NULL");
+	      TRY( poly_add_triangle( domain_poly(domain,node1),
+				      triangle, TRUE ), "poly_add_triangle");
+	    }
+	}
+    }
+	 
+  TRY( poly_activate_all_subtri( domain_poly(domain,poly_index) ), 
+       "poly_activate_all_subtri");
+ 
   return (KNIFE_SUCCESS);
 }
 
