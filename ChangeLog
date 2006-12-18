@@ -1,6 +1,11 @@
+2006-12-18 16:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_make_dual_required_) Added code to
+	ensure that duals are flagged when needed for faces.
+
 2006-12-12 11:20 Mike Park  <mike.park@nasa.gov>
 
-	* Made 0.7.0 Release. Added code to relase resources. 
+	* Made 0.7.0 Release. Added code to release resources. 
 	FUN3D version 22043.
 
 2006-11-02  9:10 Mike Park  <mike.park@nasa.gov>

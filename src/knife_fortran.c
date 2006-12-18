@@ -261,6 +261,20 @@ void knife_dual_topo__( int *nodedim, int *topo,
 		    knife_status );
 }
 
+void knife_make_dual_required_( int *node, int *knife_status )
+{
+
+  *knife_status = KNIFE_SUCCESS;
+
+  if ( NULL != domain_poly(domain,(*node)-1) ) return;
+  TRY( domain_add_interior_poly( domain, (*node)-1 ), 
+       "domain_add_interior_poly" );
+}
+void knife_make_dual_required__( int *node, int *knife_status )
+{
+  knife_make_dual_required_( node, knife_status );
+}
+
 void knife_dual_centroid_volume_( int *node, 
 				  double *x, double *y, double *z, 
 				  double *volume,
@@ -276,7 +290,7 @@ void knife_dual_centroid_volume_( int *node,
   center[2] = xyz[2];
 
   poly = domain_poly(domain,(*node)-1);
-  NOT_NULL( poly, "poly NULL" );
+  NOT_NULL( poly, "poly NULL in knife_dual_centroid_volume_");
 
   *knife_status = poly_centroid_volume(poly,xyz,center,volume);
 
@@ -305,9 +319,7 @@ void knife_number_of_triangles_between_( int *node1, int *node2,
   Node node;
 
   poly = domain_poly( domain, (*node1)-1 );
-  if ( NULL == poly ) poly = domain_poly( domain, (*node2)-1 );
-  NOT_NULL( poly, 
-	    "node1 and node2 poly NULL in knife_number_of_triangles_between_");
+  NOT_NULL( poly, "poly NULL in knife_number_of_triangles_between_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
@@ -341,9 +353,7 @@ void knife_triangles_between_( int *node1, int *node2,
   Node node;
 
   poly = domain_poly( domain, (*node1)-1 );
-  if ( NULL == poly ) poly = domain_poly( domain, (*node2)-1 );
-  NOT_NULL( poly, 
-	    "node1 and node2 poly NULL in knife_triangles_between_");
+  NOT_NULL( poly, "poly NULL in knife_triangles_between_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1,  (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
@@ -437,13 +447,7 @@ void knife_number_of_boundary_triangles_( int *node, int *face,
   Poly poly;
 
   poly = domain_poly( domain, (*node)-1 );
-  if ( NULL == poly ) 
-    {
-      TRY( domain_add_interior_poly( domain, (*node)-1 ), 
-	   "domain_add_interior_poly" );
-      poly = domain_poly( domain, (*node)-1 );      
-      NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
-    }
+  NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
 
   TRY( poly_boundary_nsubtri( poly, (*face)-1, &n ), "poly_nsubtri_about" );
   
