@@ -98,11 +98,13 @@ KNIFE_STATUS primal_xyz( Primal, int node_index, double *xyz);
 
 /* face[4] : face[0-2] face node indexes, face[3] boundary group id  */
 KNIFE_STATUS primal_face( Primal, int face_index, int *face); 
+#define primal_face_adj(primal)  ((primal)->face_adj)
 
 KNIFE_STATUS primal_max_face_id( Primal, int *max_face_id); 
 
 KNIFE_STATUS primal_cell( Primal, int cell_index, int *nodes); 
 KNIFE_STATUS primal_cell_center( Primal, int cell_index, double *xyz); 
+#define primal_cell_adj(primal)  ((primal)->cell_adj)
 
 KNIFE_STATUS primal_edge( Primal, int edge_index, int *nodes); 
 KNIFE_STATUS primal_edge_center( Primal, int edge_index, double *xyz); 
