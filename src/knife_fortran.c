@@ -42,7 +42,7 @@
   if (NULL == (pointer)) {				\
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	\
     fflush(stdout);					\
-    *knife_status = KNIFE_FAILURE;			\
+    *knife_status = KNIFE_NULL;				\
     return;						\
   }
 
