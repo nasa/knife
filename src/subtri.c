@@ -172,10 +172,11 @@ KNIFE_STATUS subtri_contained_volume6( Subtri subtri, Subtri other,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, 
+			       KnifeBool reverse, int region, FILE *f )
 {
-  char format[]=" %.16e %.16e %.16e";
-  char formatl[]=" %.16e %.16e %.16e\n";
+  char format[]=" %.16e %.16e %.16e %4d";
+  char formatl[]=" %.16e %.16e %.16e %4d\n";
   if (NULL == subtri) return KNIFE_NULL;
 
   if (reverse)
@@ -183,27 +184,32 @@ KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f )
       fprintf(f,format,
 	      subnode_x(subtri_n1(subtri)),
 	      subnode_y(subtri_n1(subtri)),
-	      subnode_z(subtri_n1(subtri)));
+	      subnode_z(subtri_n1(subtri)),
+	      region);
       fprintf(f,format,
 	      subnode_x(subtri_n0(subtri)),
 	      subnode_y(subtri_n0(subtri)),
-	      subnode_z(subtri_n0(subtri)));
+	      subnode_z(subtri_n0(subtri)),
+	      region);
     }
   else
     {
       fprintf(f,format,
 	      subnode_x(subtri_n0(subtri)),
 	      subnode_y(subtri_n0(subtri)),
-	      subnode_z(subtri_n0(subtri)));
+	      subnode_z(subtri_n0(subtri)),
+	      region);
       fprintf(f,format,
 	      subnode_x(subtri_n1(subtri)),
 	      subnode_y(subtri_n1(subtri)),
-	      subnode_z(subtri_n1(subtri)));
+	      subnode_z(subtri_n1(subtri)),
+	      region);
     }
   fprintf(f,formatl,
 	  subnode_x(subtri_n2(subtri)),
 	  subnode_y(subtri_n2(subtri)),
-	  subnode_z(subtri_n2(subtri)));
+	  subnode_z(subtri_n2(subtri)),
+	      region);
   return KNIFE_SUCCESS;
 }
 

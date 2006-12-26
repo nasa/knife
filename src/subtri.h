@@ -57,7 +57,8 @@ double subtri_reference_area( Subtri );
 
 KNIFE_STATUS subtri_contained_volume6( Subtri, Subtri, double *volume6 );
 
-KNIFE_STATUS subtri_dump_geom( Subtri subtri, KnifeBool reverse, FILE *f );
+KNIFE_STATUS subtri_dump_geom( Subtri subtri, 
+			       KnifeBool reverse, int region, FILE *f );
 KNIFE_STATUS subtri_echo_uvw( Subtri subtri );
 
 KNIFE_STATUS subtri_normal_area( Subtri subtri, 

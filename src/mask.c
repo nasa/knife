@@ -363,7 +363,9 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 	subtri_index++)
     if ( mask_subtri_active(mask,subtri_index) ) 
       subtri_dump_geom( triangle_subtri(triangle, subtri_index), 
-			mask->inward_pointing_normal, f );
+			mask->inward_pointing_normal, 
+			mask_subtri_region(mask,subtri_index),
+			f );
 
   return KNIFE_SUCCESS;
 }

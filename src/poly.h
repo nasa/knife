@@ -54,8 +54,8 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly );
 KNIFE_STATUS poly_paint( Poly );
 KNIFE_STATUS poly_paint_surf( Poly, Mask surf, 
 			      Segment, KnifeBool *another_pass );
-KNIFE_STATUS poly_relax_region( Poly poly );
 KNIFE_STATUS poly_verify_painting( Poly );
+KNIFE_STATUS poly_relax_region( Poly poly );
 
 KNIFE_STATUS poly_gather_active_surf( Poly, Triangle, int region,
 				      KnifeBool *true_if_added );

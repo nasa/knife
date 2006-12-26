@@ -1036,7 +1036,7 @@ KNIFE_STATUS poly_tecplot( Poly poly )
 
   f = fopen(filename, "w");
   
-  fprintf(f,"title=poly_geometry\nvariables=x,y,z\n");
+  fprintf(f,"title=poly_geometry\nvariables=x,y,z,r\n");
 
   poly_tecplot_zone( poly, f );
 
