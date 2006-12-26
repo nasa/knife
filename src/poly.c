@@ -404,7 +404,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
-  /* activate poly surfaces that were not cut (with NULL region) */
+  /* activate poly surfaces that were not cut */
   another_coat_of_paint = TRUE;
   while (another_coat_of_paint)
     {
@@ -429,6 +429,11 @@ KNIFE_STATUS poly_paint( Poly poly )
       printf("verify failed after uncut neighbor search\n");
       poly_tecplot( poly );
     }
+
+  /* everyone is active now, relax regions */
+
+  /* compact region indexes (set counter?) */
+
 
   return verify_code;
 }
