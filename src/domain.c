@@ -1880,7 +1880,7 @@ KNIFE_STATUS domain_tecplot( Domain domain, char *filename )
   
   for (poly = 0 ; poly < domain_npoly(domain) ; poly++)
     if ( NULL != domain->poly[poly] )
-      if ( domain_active(domain,poly) )
+      if ( domain_cut(domain,poly) )
 	TRY( poly_tecplot_zone(domain_poly(domain,poly), f ), 
 	     "poly_tecplot_zone");
 
