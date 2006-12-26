@@ -428,14 +428,16 @@ KNIFE_STATUS poly_paint( Poly poly )
     {
       printf("verify failed after uncut neighbor search\n");
       poly_tecplot( poly );
+      return verify_code;
     }
 
   /* everyone is active now, relax regions */
+  TRY( poly_relax_region( poly ), "region relax" );
 
   /* compact region indexes (set counter?) */
 
 
-  return verify_code;
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS poly_verify_painting( Poly poly )
@@ -452,6 +454,43 @@ KNIFE_STATUS poly_verify_painting( Poly poly )
 	mask_index++)
     TRY( mask_verify_paint( poly_surf(poly, mask_index) ), "surf verify");
 
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_relax_region( Poly poly )
+{
+  int mask_index, cut_index;
+  Mask mask;
+  Triangle triangle;
+
+  KnifeBool more_relaxation;
+
+  more_relaxation = FALSE;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    TRY( mask_paint( poly_mask(poly, mask_index) ), "mask paint");
+  for ( mask_index = 0;
+	mask_index < poly_nsurf(poly); 
+	mask_index++)
+    TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
+  /* cuts */
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	}
+    }      
+
+  /* uncut segments */
+
+  if ( more_relaxation ) return poly_relax_region( poly );
   return KNIFE_SUCCESS;
 }
 
