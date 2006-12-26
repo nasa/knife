@@ -640,18 +640,18 @@ KNIFE_STATUS triangle_insert_into_center( Triangle triangle,
 KNIFE_STATUS triangle_subtri_index( Triangle triangle, Subtri subtri,
 				    int *subtri_index )
 {
-  int canidate;
+  int candidate;
 
   if( NULL == triangle ) return KNIFE_NULL;
   if( NULL == subtri ) return KNIFE_NULL;
 
-  for ( canidate = 0;
-	canidate < triangle_nsubtri(triangle); 
-	canidate++)
+  for ( candidate = 0;
+	candidate < triangle_nsubtri(triangle); 
+	candidate++)
     {
-      if ( subtri == triangle_subtri(triangle, canidate) )
+      if ( subtri == triangle_subtri(triangle, candidate) )
 	{
-	  *subtri_index = canidate;
+	  *subtri_index = candidate;
 	  return KNIFE_SUCCESS;
 	}
     }
@@ -662,17 +662,17 @@ KNIFE_STATUS triangle_subtri_index( Triangle triangle, Subtri subtri,
 KNIFE_STATUS triangle_subnode_index( Triangle triangle, Subnode subnode,
 				    int *subnode_index )
 {
-  int canidate;
+  int candidate;
 
   if( NULL == triangle ) return KNIFE_NULL;
 
-  for ( canidate = 0;
-	canidate < triangle_nsubnode(triangle); 
-	canidate++)
+  for ( candidate = 0;
+	candidate < triangle_nsubnode(triangle); 
+	candidate++)
     {
-      if ( subnode == triangle_subnode(triangle, canidate) )
+      if ( subnode == triangle_subnode(triangle, candidate) )
 	{
-	  *subnode_index = canidate;
+	  *subnode_index = candidate;
 	  return KNIFE_SUCCESS;
 	}
     }
@@ -684,7 +684,7 @@ KNIFE_STATUS triangle_subtri_with_subnodes( Triangle triangle,
 					    Subnode n0, Subnode n1,
 					    Subtri *subtri )
 {
-  Subtri canidate;
+  Subtri candidate;
   int subtri_index;
 
   if( NULL == triangle ) return KNIFE_NULL;
@@ -693,10 +693,34 @@ KNIFE_STATUS triangle_subtri_with_subnodes( Triangle triangle,
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
     {
-      canidate = triangle_subtri(triangle, subtri_index);
-      if ( subtri_has2(canidate,n0,n1) )
+      candidate = triangle_subtri(triangle, subtri_index);
+      if ( subtri_has2(candidate,n0,n1) )
 	{
-	  *subtri = canidate;
+	  *subtri = candidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
+KNIFE_STATUS triangle_subtri_index_with_subnodes( Triangle triangle, 
+						  Subnode n0, Subnode n1,
+						  int *subtri_index )
+{
+  Subtri candidate;
+  int candidate_index;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( candidate_index = 0;
+	candidate_index < triangle_nsubtri(triangle); 
+	candidate_index++)
+    {
+      candidate = triangle_subtri(triangle, candidate_index);
+      if ( subtri_has2(candidate,n0,n1) )
+	{
+	  *subtri_index = candidate_index;
 	  return KNIFE_SUCCESS;
 	}
     }
@@ -709,15 +733,15 @@ KNIFE_STATUS triangle_subtri_index_with_nodes( Triangle triangle,
 					       int *subtri_index )
 {
   Subtri subtri;
-  int canidate;
+  int candidate;
 
   if( NULL == triangle ) return KNIFE_NULL;
 
-  for ( canidate = 0;
-	canidate < triangle_nsubtri(triangle); 
-	canidate++)
+  for ( candidate = 0;
+	candidate < triangle_nsubtri(triangle); 
+	candidate++)
     {
-      subtri = triangle_subtri(triangle, canidate);
+      subtri = triangle_subtri(triangle, candidate);
       if ( ( n0 == subtri->n0->node ||
 	     n0 == subtri->n1->node ||
 	     n0 == subtri->n2->node ) &&
@@ -725,33 +749,7 @@ KNIFE_STATUS triangle_subtri_index_with_nodes( Triangle triangle,
 	     n1 == subtri->n1->node ||
 	     n1 == subtri->n2->node ))
 	{
-	  *subtri_index = canidate;
-	  return KNIFE_SUCCESS;
-	}
-    }
-
-  return KNIFE_NOT_FOUND;
-}
-
-KNIFE_STATUS triangle_cut_with_subnodes( Triangle triangle, 
-					 Subnode n0, Subnode n1,
-					 Cut *cut )
-{
-  Cut canidate;
-  int cut_index;
-
-  if( NULL == triangle ) return KNIFE_NULL;
-
-  for ( cut_index = 0;
-	cut_index < triangle_ncut(triangle); 
-	cut_index++)
-    {
-      canidate = triangle_cut(triangle, cut_index);
-      if ( cut_has_intersections( canidate,
-				  subnode_intersection(n0),
-				  subnode_intersection(n1) ) )
-	{
-	  *cut = canidate;
+	  *subtri_index = candidate;
 	  return KNIFE_SUCCESS;
 	}
     }
@@ -774,6 +772,49 @@ KNIFE_STATUS triangle_subtri_with_intersections( Triangle triangle,
    if( NULL == s0 ||  NULL == s1 ) return KNIFE_NOT_FOUND;
 
    return triangle_subtri_with_subnodes(triangle, s0, s1, subtri);
+}
+
+KNIFE_STATUS triangle_subtri_index_with_intersections( Triangle triangle, 
+						       Intersection i0,
+						       Intersection i1,
+						       int *subtri_index )
+{
+  Subnode s0, s1;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  s0 = triangle_subnode_with_intersection( triangle, i0 );
+  s1 = triangle_subnode_with_intersection( triangle, i1 );
+
+   if( NULL == s0 ||  NULL == s1 ) return KNIFE_NOT_FOUND;
+
+   return triangle_subtri_index_with_subnodes(triangle, s0, s1, subtri_index);
+}
+
+KNIFE_STATUS triangle_cut_with_subnodes( Triangle triangle, 
+					 Subnode n0, Subnode n1,
+					 Cut *cut )
+{
+  Cut candidate;
+  int cut_index;
+
+  if( NULL == triangle ) return KNIFE_NULL;
+
+  for ( cut_index = 0;
+	cut_index < triangle_ncut(triangle); 
+	cut_index++)
+    {
+      candidate = triangle_cut(triangle, cut_index);
+      if ( cut_has_intersections( candidate,
+				  subnode_intersection(n0),
+				  subnode_intersection(n1) ) )
+	{
+	  *cut = candidate;
+	  return KNIFE_SUCCESS;
+	}
+    }
+
+  return KNIFE_NOT_FOUND;
 }
 
 KNIFE_STATUS triangle_first_blocking_side( Triangle triangle, 
