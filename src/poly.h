@@ -56,6 +56,8 @@ KNIFE_STATUS poly_paint_surf( Poly, Mask surf,
 			      Segment, KnifeBool *another_pass );
 KNIFE_STATUS poly_verify_painting( Poly );
 KNIFE_STATUS poly_relax_region( Poly poly );
+KNIFE_STATUS poly_relax_nodes( Poly poly, Mask mask, Node, Node,
+			       KnifeBool *more_relaxation );
 KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment, 
 				 KnifeBool *more_relaxation );
 

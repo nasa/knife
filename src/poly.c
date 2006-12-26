@@ -525,6 +525,26 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 	}
     }
 
+  /* uncut mask segments */
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( segment_index = 0; segment_index < 3; segment_index++ )
+	{
+	  segment = triangle_segment(triangle, segment_index);
+	  if ( 0 == segment_nintersection( segment  ) ) 
+	    TRY( poly_relax_nodes( poly, mask, 
+				   segment_node0(segment),
+				   segment_node1(segment),
+				   &more_relaxation ),
+		 "relax_nodes" );
+	}
+    }
+
   /* uncut surf segments */
 
   for ( mask_index = 0;
@@ -545,6 +565,46 @@ KNIFE_STATUS poly_relax_region( Poly poly )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_relax_nodes( Poly poly, Mask mask, Node node0, Node node1,
+			       KnifeBool *more_relaxation )
+{
+  Triangle triangle, other_triangle;
+  Mask other_mask;
+  int mask_index;
+  int subtri_index0, subtri_index1;
+  int region0, region1, region;
+
+  triangle = mask_triangle(mask);
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      other_mask = poly_mask(poly, mask_index);
+      other_triangle = mask_triangle(mask);
+      if (triangle != other_triangle)
+	{
+	  TRY( triangle_subtri_index_with_nodes( triangle, node0, node1,
+						 &subtri_index0 ), "st0" );
+	  region0 = mask_subtri_region(mask, subtri_index0);
+
+	  TRY( triangle_subtri_index_with_nodes( other_triangle, node0, node1,
+						 &subtri_index1 ), "st1" );
+	  region1 = mask_subtri_region(other_mask, subtri_index1);
+
+	  if ( region0 != region1 )
+	    {
+	      *more_relaxation = TRUE;
+	      region = MAX( region0, region1 );
+	      mask->region[subtri_index0] = region;
+	      other_mask->region[subtri_index1] = region;
+	      return KNIFE_SUCCESS;
+	    }
+	}
+    }
+  
+
+  return KNIFE_SUCCESS;
+}
 KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment, 
 				      KnifeBool *more_relaxation )
 {
@@ -595,6 +655,7 @@ KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment,
 
   return KNIFE_SUCCESS;
 }
+
 
 KnifeBool poly_active_mask_with_nodes( Poly poly, 
 				       Node n0, Node n1, Node n2,
