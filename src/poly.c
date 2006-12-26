@@ -336,6 +336,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 
   KNIFE_STATUS verify_code;
 
+  /* paint poly mask */
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
@@ -351,6 +352,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
 
+  /* paint poly surf */
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
@@ -375,6 +377,7 @@ KNIFE_STATUS poly_paint( Poly poly )
       return verify_code;
     }
 
+  /* activate poly masks that were not cut */
   another_coat_of_paint = TRUE;
   while (another_coat_of_paint)
     {
@@ -401,6 +404,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
+  /* activate poly surfaces that were not cut (with NULL region) */
   another_coat_of_paint = TRUE;
   while (another_coat_of_paint)
     {
