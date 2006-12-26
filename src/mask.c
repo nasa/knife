@@ -135,6 +135,59 @@ KNIFE_STATUS mask_activate_subtri_index( Mask mask,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS mask_intersection_region( Mask mask,
+				       Intersection intersection0, 
+				       Intersection intersection1,
+				       int *region )
+{
+  Triangle triangle;
+  int subtri_index;
+  triangle = mask_triangle(mask);
+
+  *region = 0;
+
+  TRY ( triangle_subtri_index_with_intersections( triangle,
+						  intersection0, 
+						  intersection1,
+						  &subtri_index ), "st01");
+  *region = MAX( *region, mask_subtri_region(mask,subtri_index) );
+
+  TRY ( triangle_subtri_index_with_intersections( triangle,
+						  intersection1, 
+						  intersection0,
+						  &subtri_index ), "st10");
+  *region = MAX( *region, mask_subtri_region(mask,subtri_index) );
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS mask_set_intersection_region( Mask mask,
+					   Intersection intersection0, 
+					   Intersection intersection1,
+					   int region )
+{
+  Triangle triangle;
+  int subtri_index;
+  triangle = mask_triangle(mask);
+
+  TRY ( triangle_subtri_index_with_intersections( triangle,
+						  intersection0, 
+						  intersection1,
+						  &subtri_index ), "st01");
+  if ( mask_subtri_active(mask,subtri_index) )
+    mask->region[subtri_index] = region;
+
+  TRY ( triangle_subtri_index_with_intersections( triangle,
+						  intersection1, 
+						  intersection0,
+						  &subtri_index ), "st10");
+  if ( mask_subtri_active(mask,subtri_index) )
+    mask->region[subtri_index] = region;
+
+  return KNIFE_SUCCESS;
+}
+
+
 KNIFE_STATUS mask_paint( Mask mask )
 {
   Triangle triangle;
