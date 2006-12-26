@@ -459,34 +459,25 @@ KNIFE_STATUS poly_verify_painting( Poly poly )
 
 KNIFE_STATUS poly_relax_region( Poly poly )
 {
-  int mask_index, cut_index;
-  Mask mask;
-  Triangle triangle;
+  int mask_index;
 
   KnifeBool more_relaxation;
 
   more_relaxation = FALSE;
+
+  /* mask interiors */
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
     TRY( mask_paint( poly_mask(poly, mask_index) ), "mask paint");
+
+  /* surf interiors */
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
     TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
+
   /* cuts */
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly, mask_index);
-      triangle = mask_triangle(mask);
-      for ( cut_index = 0;
-	    cut_index < triangle_ncut(triangle); 
-	    cut_index++)
-	{
-	}
-    }      
 
   /* uncut segments */
 
