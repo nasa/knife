@@ -82,11 +82,12 @@ KNIFE_STATUS mask_activate_all_subtri( Mask mask )
 
   TRY( mask_deactivate_all_subtri( mask ), 
        "mask_deactivate_all_subtri in mask_activate_all_subtri" );
-  
+
   nsubtri = triangle_nsubtri( mask_triangle(mask) );
+
   for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
-    mask->region[subtri_index] = 1;
-  
+    TRY( mask_activate_subtri_index( mask, subtri_index, 1 ), "activate_all" ); 
+
   return KNIFE_SUCCESS;
 }
 
@@ -110,7 +111,7 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
+KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri, int region )
 {
   int subtri_index;
 
@@ -119,16 +120,17 @@ KNIFE_STATUS mask_activate_subtri( Mask mask, Subtri subtri)
   TRY( triangle_subtri_index( mask_triangle(mask), subtri, &subtri_index ),
        "no index for subtri" );
 
-  return mask_activate_subtri_index( mask, subtri_index ); 
+  return mask_activate_subtri_index( mask, subtri_index, region ); 
 }
 
-KNIFE_STATUS mask_activate_subtri_index( Mask mask, int subtri_index )
+KNIFE_STATUS mask_activate_subtri_index( Mask mask, 
+					 int subtri_index, int region )
 {
 
   if ( NULL == mask ) return KNIFE_NULL;
   if ( NULL == mask->region ) return KNIFE_ARRAY_BOUND;
 
-  mask->region[subtri_index] = 1;
+  mask->region[subtri_index] = region;
 
   return KNIFE_SUCCESS;
 }

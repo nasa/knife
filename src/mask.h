@@ -43,11 +43,14 @@ int mask_nsubtri( Mask );
 KNIFE_STATUS mask_activate_all_subtri( Mask );
 KNIFE_STATUS mask_deactivate_all_subtri( Mask );
 
-KNIFE_STATUS mask_activate_subtri( Mask, Subtri );
-KNIFE_STATUS mask_activate_subtri_index( Mask, int subtri_index );
+KNIFE_STATUS mask_activate_subtri( Mask, Subtri, int region );
+KNIFE_STATUS mask_activate_subtri_index( Mask, int subtri_index, int region );
 
 #define mask_subtri_active(mask,subtri_index)	\
   ( NULL == (mask)->region ? TRUE : ( 0 != (mask)->region[(subtri_index)] ) )
+
+#define mask_subtri_region(mask,subtri_index)	\
+  ( NULL == (mask)->region ? 0 : (mask)->region[(subtri_index)] )
 
 KNIFE_STATUS mask_paint( Mask );
 KNIFE_STATUS mask_verify_paint( Mask );

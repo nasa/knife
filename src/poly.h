@@ -59,7 +59,8 @@ KNIFE_STATUS poly_verify_painting( Poly );
 KNIFE_STATUS poly_gather_active_surf( Poly, Triangle, 
 				      KnifeBool *true_if_added );
 
-KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2 );
+KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2, 
+				       int *region );
 
 KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
                                                   KnifeBool *active );

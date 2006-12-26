@@ -269,15 +269,16 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	      return KNIFE_INCONSISTENT;
 	    }
 
-
 	  if ( (  surf->inward_pointing_normal && volume01 > volume10 ) || 
 	       ( !surf->inward_pointing_normal && volume01 < volume10 ) )
 	    {
-	      TRY( mask_activate_subtri(mask, triang_subtri01), "active m01");
+	      TRY( mask_activate_subtri(mask, triang_subtri01, cut_index+1 ), 
+		   "active m01");
 	    }
 	  else
 	    {
-	      TRY( mask_activate_subtri(mask, triang_subtri10), "active m10");
+	      TRY( mask_activate_subtri(mask, triang_subtri10, cut_index+1 ), 
+		   "active m10");
 	    }
 
 	  subtri = triang_subtri01;
@@ -308,11 +309,13 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	  if ( (  mask->inward_pointing_normal && volume01 > volume10 ) || 
 	       ( !mask->inward_pointing_normal && volume01 < volume10 ) )
 	    {
-	      TRY( mask_activate_subtri(surf, cutter_subtri01), "active s01");
+	      TRY( mask_activate_subtri(surf, cutter_subtri01, cut_index+1 ), 
+		   "active s01");
 	    }
 	  else
 	    {
-	      TRY( mask_activate_subtri(surf, cutter_subtri10), "active s10");
+	      TRY( mask_activate_subtri(surf, cutter_subtri10, cut_index+1 ), 
+		   "active s10");
 	    }
 
 	}
@@ -328,6 +331,8 @@ KNIFE_STATUS poly_paint( Poly poly )
   Triangle triangle;
   KnifeBool another_coat_of_paint;
   int segment_index;
+
+  int region;
 
   KNIFE_STATUS verify_code;
 
@@ -386,9 +391,10 @@ KNIFE_STATUS poly_paint( Poly poly )
 	      if ( poly_active_mask_with_nodes( poly, 
 						triangle->node0,
 						triangle->node1,
-						triangle->node2)  )
+						triangle->node2,
+						&region )  )
 		{
-		  mask_activate_subtri_index( mask, 0 );
+		  mask_activate_subtri_index( mask, 0, region );
 		  another_coat_of_paint = TRUE;
 		}	       
 	    }
@@ -441,12 +447,15 @@ KNIFE_STATUS poly_verify_painting( Poly poly )
 }
 
 KnifeBool poly_active_mask_with_nodes( Poly poly, 
-				       Node n0, Node n1, Node n2  )
+				       Node n0, Node n1, Node n2,
+				       int *region )
 {
   int mask_index, subtri_index;
   Mask mask;
   Triangle triangle;
   
+  *region = 0;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
@@ -464,7 +473,10 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 	      return FALSE;
 	    }
 	  if ( mask_subtri_active(mask,subtri_index ) )
-	    return TRUE;
+	    {
+	      *region = mask_subtri_region(mask,subtri_index);
+	      return TRUE;
+	    }
 	}
       if ( triangle_has2(triangle,n1,n2) )
 	{
@@ -477,7 +489,10 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 	      return FALSE;
 	    }
 	  if ( mask_subtri_active(mask,subtri_index ) )
-	    return TRUE;
+	    {
+	      *region = mask_subtri_region(mask,subtri_index);
+	      return TRUE;
+	    }
 	}
       if ( triangle_has2(triangle,n2,n0) )
 	{
@@ -490,7 +505,10 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
 	      return FALSE;
 	    }
 	  if ( mask_subtri_active(mask,subtri_index ) )
-	    return TRUE;
+	    {
+	      *region = mask_subtri_region(mask,subtri_index);
+	      return TRUE;
+	    }
 	}
     }
 
