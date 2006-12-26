@@ -29,7 +29,7 @@ BEGIN_C_DECLORATION
 struct MaskStruct {
   Triangle triangle;
   KnifeBool inward_pointing_normal;
-  KnifeBool *active;
+  int *region;
 };
 
 Mask mask_create( Triangle, KnifeBool inward_pointing_normal );
@@ -47,7 +47,7 @@ KNIFE_STATUS mask_activate_subtri( Mask, Subtri );
 KNIFE_STATUS mask_activate_subtri_index( Mask, int subtri_index );
 
 #define mask_subtri_active(mask,subtri_index)	\
-  ( NULL == (mask)->active ? TRUE : (mask)->active[(subtri_index)] )
+  ( NULL == (mask)->region ? TRUE : ( 0 != (mask)->region[(subtri_index)] ) )
 
 KNIFE_STATUS mask_paint( Mask );
 KNIFE_STATUS mask_verify_paint( Mask );

@@ -47,7 +47,7 @@ Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
 
   mask->triangle = traingle;
   mask->inward_pointing_normal = inward_pointing_normal;
-  mask->active   = NULL;
+  mask->region   = NULL;
 
   return mask;
 }
@@ -55,7 +55,7 @@ Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
 void mask_free( Mask mask )
 {
   if ( NULL == mask ) return;
-  if ( NULL != mask->active )free( mask->active );
+  if ( NULL != mask->region ) free( mask->region );
   free( mask );
 }
 
@@ -64,13 +64,13 @@ int mask_nsubtri( Mask mask )
   int nsubtri;
   int subtri_index;
 
-  if ( NULL == mask->active ) return triangle_nsubtri(mask_triangle(mask));
+  if ( NULL == mask->region ) return triangle_nsubtri(mask_triangle(mask));
 
   nsubtri = 0;
   for (subtri_index = 0;
        subtri_index < triangle_nsubtri(mask_triangle(mask));
        subtri_index++)
-    if (mask->active[subtri_index]) nsubtri++;
+    if ( mask_subtri_active(mask,subtri_index) ) nsubtri++;
 
   return nsubtri;
 }
@@ -85,7 +85,7 @@ KNIFE_STATUS mask_activate_all_subtri( Mask mask )
   
   nsubtri = triangle_nsubtri( mask_triangle(mask) );
   for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
-    mask->active[subtri_index] = TRUE;
+    mask->region[subtri_index] = 1;
   
   return KNIFE_SUCCESS;
 }
@@ -97,15 +97,15 @@ KNIFE_STATUS mask_deactivate_all_subtri( Mask mask )
 
   nsubtri = triangle_nsubtri( mask_triangle(mask) );
 
-  mask->active = (KnifeBool *) malloc( nsubtri * sizeof(int) );
-  if (NULL == mask->active) {
-    printf("%s: %d: malloc mask->active failed in mask_deactivate_all_subtri\n",
+  mask->region = (int *) malloc( nsubtri * sizeof(int) );
+  if (NULL == mask->region) {
+    printf("%s: %d: malloc mask->region failed in mask_deactivate_all_subtri\n",
 	   __FILE__,__LINE__);
     return KNIFE_MEMORY; 
   }
   
   for (subtri_index = 0; subtri_index < nsubtri; subtri_index++)
-    mask->active[subtri_index] = FALSE;
+    mask->region[subtri_index] = 0;
   
   return KNIFE_SUCCESS;
 }
@@ -126,9 +126,9 @@ KNIFE_STATUS mask_activate_subtri_index( Mask mask, int subtri_index )
 {
 
   if ( NULL == mask ) return KNIFE_NULL;
-  if ( NULL == mask->active ) return KNIFE_ARRAY_BOUND;
+  if ( NULL == mask->region ) return KNIFE_ARRAY_BOUND;
 
-  mask->active[subtri_index] = TRUE;
+  mask->region[subtri_index] = 1;
 
   return KNIFE_SUCCESS;
 }
@@ -137,6 +137,7 @@ KNIFE_STATUS mask_paint( Mask mask )
 {
   Triangle triangle;
   int subtri_index, neighbor_index;
+  int common;
   Subtri subtri, neighbor;
   Subnode subnode0, subnode1;
   Cut cut;
@@ -164,15 +165,13 @@ KNIFE_STATUS mask_paint( Mask mask )
 	    {
 	      TRY( triangle_subtri_index( triangle, neighbor,
 					  &neighbor_index ), "neighbor_index");
-	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+	      if ( mask->region[subtri_index] != mask->region[neighbor_index] )
 		{
-		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] ) 
-		   {
-		     more_paint = TRUE;
-		     mask->active[subtri_index] = TRUE;
-		     mask->active[neighbor_index] = TRUE;
-		   }
+		  more_paint = TRUE;
+		  common = MAX( mask->region[subtri_index],
+				mask->region[neighbor_index] );
+		  mask->region[subtri_index]   = common;
+		  mask->region[neighbor_index] = common;
 		}
 	    }
 	}
@@ -188,15 +187,13 @@ KNIFE_STATUS mask_paint( Mask mask )
 	    {
 	      TRY( triangle_subtri_index( triangle, neighbor,
 					  &neighbor_index ), "neighbor_index");
-	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+	      if ( mask->region[subtri_index] != mask->region[neighbor_index] )
 		{
-		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] ) 
-		   {
-		     more_paint = TRUE;
-		     mask->active[subtri_index] = TRUE;
-		     mask->active[neighbor_index] = TRUE;
-		   }
+		  more_paint = TRUE;
+		  common = MAX( mask->region[subtri_index],
+				mask->region[neighbor_index] );
+		  mask->region[subtri_index]   = common;
+		  mask->region[neighbor_index] = common;
 		}
 	    }
 	}
@@ -212,15 +209,13 @@ KNIFE_STATUS mask_paint( Mask mask )
 	    {
 	      TRY( triangle_subtri_index( triangle, neighbor,
 					  &neighbor_index ), "neighbor_index");
-	      if ( mask->active[subtri_index] || mask->active[neighbor_index] )
+	      if ( mask->region[subtri_index] != mask->region[neighbor_index] )
 		{
-		 if ( !mask->active[subtri_index] || 
-		      !mask->active[neighbor_index] )
-		   {
-		     more_paint = TRUE;
-		     mask->active[subtri_index] = TRUE;
-		     mask->active[neighbor_index] = TRUE;
-		   }
+		  more_paint = TRUE;
+		  common = MAX( mask->region[subtri_index],
+				mask->region[neighbor_index] );
+		  mask->region[subtri_index]   = common;
+		  mask->region[neighbor_index] = common;
 		}
 	    }
 	}
@@ -261,7 +256,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 						   &cut );
 	    if ( KNIFE_NOT_FOUND == cut_status )
 	      {
-		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		if (mask->region[subtri_index] != mask->region[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 01\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
@@ -271,7 +266,8 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] && mask->active[neighbor_index])
+		if ( mask_subtri_active(mask,subtri_index) &&
+		     mask_subtri_active(mask,neighbor_index) )
 		  {
 		    printf("%s: %d: consistent 01\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
@@ -294,7 +290,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 						   &cut );
 	    if ( KNIFE_NOT_FOUND == cut_status )
 	      {
-		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		if (mask->region[subtri_index] != mask->region[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 12\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
@@ -304,7 +300,8 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] && mask->active[neighbor_index])
+		if ( mask_subtri_active(mask,subtri_index) &&
+		     mask_subtri_active(mask,neighbor_index) )
 		  {
 		    printf("%s: %d: consistent 12\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
@@ -326,7 +323,7 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 						   &cut );
 	    if ( KNIFE_NOT_FOUND == cut_status )
 	      {
-		if (mask->active[subtri_index] != mask->active[neighbor_index])
+		if (mask->region[subtri_index] != mask->region[neighbor_index])
 		  {
 		    printf("%s: %d: inconsistent 20\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
@@ -336,7 +333,8 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
 	    else
 	      {
 		TRY( cut_status, "cut stat");
-		if (mask->active[subtri_index] && mask->active[neighbor_index])
+		if ( mask_subtri_active(mask,subtri_index) &&
+		     mask_subtri_active(mask,neighbor_index) )
 		  {
 		    printf("%s: %d: consistent 20\n",__FILE__,__LINE__);
 		    triangle_tecplot(triangle);
