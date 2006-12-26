@@ -103,7 +103,6 @@ void triangle_free( Triangle );
 KNIFE_STATUS triangle_set_frame( int frame );
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
-KNIFE_STATUS triangle_normal_area( Triangle, double *normal, double *area );
 
 KNIFE_STATUS triangle_neighbor( Triangle, Segment, Triangle *other );
 

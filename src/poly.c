@@ -622,33 +622,6 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS poly_directed_area_about( Poly poly, Node node,
-				       double *directed_area )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-
-  directed_area[0] = 0.0;
-  directed_area[1] = 0.0;
-  directed_area[2] = 0.0;
-
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	{
-	  TRY( mask_directed_area_contribution( mask, directed_area),
-	       "mask_directed_area_contribution failed" );	}
-    }
-
-  return KNIFE_SUCCESS;
-}
-
 KNIFE_STATUS poly_nsubtri_about( Poly poly, Node node, int *nsubtri )
 {
   int mask_index;

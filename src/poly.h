@@ -84,8 +84,6 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 KNIFE_STATUS poly_centroid_volume( Poly, double *origin, 
 				   double *centroid, double *volume );
 
-KNIFE_STATUS poly_directed_area_about( Poly, Node, double *directed_area );
-
 KNIFE_STATUS poly_nsubtri_about( Poly, Node, int *nsubtri );
 KNIFE_STATUS poly_subtri_about( Poly, Node, int nsubtri, 
 				double *triangle_node0, 
