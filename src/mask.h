@@ -30,7 +30,6 @@ struct MaskStruct {
   Triangle triangle;
   KnifeBool inward_pointing_normal;
   KnifeBool *active;
-  int *region;
 };
 
 Mask mask_create( Triangle, KnifeBool inward_pointing_normal );

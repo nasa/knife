@@ -48,7 +48,6 @@ Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
   mask->triangle = traingle;
   mask->inward_pointing_normal = inward_pointing_normal;
   mask->active   = NULL;
-  mask->region   = NULL;
 
   return mask;
 }
@@ -57,7 +56,6 @@ void mask_free( Mask mask )
 {
   if ( NULL == mask ) return;
   if ( NULL != mask->active )free( mask->active );
-  if ( NULL != mask->region )free( mask->region );
   free( mask );
 }
 
