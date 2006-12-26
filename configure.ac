@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.53)
 AC_INIT([src/knife_definitions.h])
-AM_INIT_AUTOMAKE([knife],[0.7.1])
+AM_INIT_AUTOMAKE([knife],[0.8.0_rc1])
 
 AC_PROG_RANLIB
 
