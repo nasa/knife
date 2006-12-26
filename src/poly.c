@@ -541,7 +541,8 @@ KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf,
     {
       TRY( triangle_neighbor( triangle, segment, &other_triangle), 
 	   "other tri" );
-      TRY( poly_gather_active_surf( poly, other_triangle, 
+      TRY( poly_gather_active_surf( poly, other_triangle,
+				    mask_subtri_region(surf,subtri_index),
 				    another_pass ), "gather act surf");
     }
 
@@ -549,6 +550,7 @@ KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf,
 }
 
 KNIFE_STATUS poly_gather_active_surf( Poly poly, Triangle triangle,
+				      int region,
 				      KnifeBool *true_if_added )
 {
   Mask surf;
@@ -556,6 +558,9 @@ KNIFE_STATUS poly_gather_active_surf( Poly poly, Triangle triangle,
   if ( poly_has_surf_triangle( poly, triangle ) ) return KNIFE_SUCCESS;
 
   surf = mask_create( triangle, TRUE );
+
+  TRY( mask_deactivate_all_subtri( surf ), "deact");
+  TRY( mask_activate_subtri_index( surf, 0, region ), "set region");
 
   TRY( poly_add_surf(poly,surf), "add surf" );
 
