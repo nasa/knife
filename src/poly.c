@@ -466,6 +466,10 @@ KNIFE_STATUS poly_relax_region( Poly poly )
   int cut_index;
   Cut cut;
   int mask_region, surf_region, region;
+
+  int segment_index;
+  Segment segment;
+
   KnifeBool more_relaxation;
 
   more_relaxation = FALSE;
@@ -523,7 +527,72 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 
   /* uncut segments */
 
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( segment_index = 0; segment_index < 3; segment_index++ )
+	{
+	  segment = triangle_segment(triangle, segment_index);
+	  TRY( poly_relax_segment( poly, mask, segment, &more_relaxation ), 
+	       "relax_segment" );
+	}
+    }
+
   if ( more_relaxation ) return poly_relax_region( poly );
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment, 
+				 KnifeBool *more_relaxation )
+{
+  Triangle triangle, other_triangle;
+  Mask other_mask;
+  int triangle_index;
+  int subtri_index0, subtri_index1;
+  KNIFE_STATUS status;
+  int region0, region1, region;
+
+  if ( 0 != segment_nintersection( segment  ) ) return KNIFE_SUCCESS;
+
+  triangle = mask_triangle(mask);
+  for ( triangle_index = 0;
+	triangle_index < segment_ntriangle(segment); 
+	triangle_index++)
+    {
+      other_triangle = segment_triangle(segment, triangle_index);
+      if (triangle != other_triangle)
+	{
+	  status = poly_mask_with_triangle( poly, other_triangle, &other_mask );
+	  if ( KNIFE_NOT_FOUND == status ) continue;
+	  TRY( status, "poly mask from triangle" );
+
+	  TRY( triangle_subtri_index_with_nodes( triangle, 
+						 segment_node0(segment),
+						 segment_node1(segment),
+						 &subtri_index0 ), "st0" );
+	  region0 = mask_subtri_region(mask, subtri_index0);
+
+	  TRY( triangle_subtri_index_with_nodes( other_triangle, 
+						 segment_node0(segment),
+						 segment_node1(segment),
+						 &subtri_index1 ), "st1" );
+	  region1 = mask_subtri_region(other_mask, subtri_index1);
+	  printf("regions %d %d\n",region0,region1);
+	  if ( region0 != region1 )
+	    {
+	      *more_relaxation = TRUE;
+	      region = MAX( region0, region1 );
+	      mask->region[subtri_index0] = region;
+	      other_mask->region[subtri_index1] = region;
+	      return KNIFE_SUCCESS;
+	    }
+	}
+    }
+  
+
   return KNIFE_SUCCESS;
 }
 
