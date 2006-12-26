@@ -525,18 +525,18 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 	}
     }
 
-  /* uncut segments */
+  /* uncut surf segments */
 
   for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
+	mask_index < poly_nsurf(poly); 
 	mask_index++)
     {
-      mask = poly_mask(poly, mask_index);
+      mask = poly_surf(poly, mask_index);
       triangle = mask_triangle(mask);
       for ( segment_index = 0; segment_index < 3; segment_index++ )
 	{
 	  segment = triangle_segment(triangle, segment_index);
-	  TRY( poly_relax_segment( poly, mask, segment, &more_relaxation ), 
+	  TRY( poly_relax_segment( poly, mask, segment, &more_relaxation ),
 	       "relax_segment" );
 	}
     }
@@ -546,7 +546,7 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 }
 
 KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment, 
-				 KnifeBool *more_relaxation )
+				      KnifeBool *more_relaxation )
 {
   Triangle triangle, other_triangle;
   Mask other_mask;
@@ -580,7 +580,7 @@ KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment,
 						 segment_node1(segment),
 						 &subtri_index1 ), "st1" );
 	  region1 = mask_subtri_region(other_mask, subtri_index1);
-	  printf("regions %d %d\n",region0,region1);
+
 	  if ( region0 != region1 )
 	    {
 	      *more_relaxation = TRUE;
