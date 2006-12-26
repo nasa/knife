@@ -461,6 +461,11 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 {
   int mask_index;
 
+  Triangle triangle, cutter;
+  Mask mask, surf;
+  int cut_index;
+  Cut cut;
+  int mask_region, surf_region, region;
   KnifeBool more_relaxation;
 
   more_relaxation = FALSE;
@@ -478,6 +483,43 @@ KNIFE_STATUS poly_relax_region( Poly poly )
     TRY( mask_paint( poly_surf(poly, mask_index) ), "surf paint");
 
   /* cuts */
+  
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	  cut = triangle_cut(triangle,cut_index);
+	  cutter = cut_other_triangle(cut,triangle);
+	  TRY( poly_mask_with_triangle(poly, cutter, &surf), "cutter mask" );
+	  TRY( mask_intersection_region( mask,
+					 cut_intersection0(cut), 
+					 cut_intersection1(cut),
+					 &mask_region), "mask region" );
+	  TRY( mask_intersection_region( surf,
+					 cut_intersection0(cut), 
+					 cut_intersection1(cut),
+					 &surf_region), "surf region" );
+	  if ( mask_region != surf_region )
+	    {
+	      more_relaxation = TRUE;
+	      region = MAX( mask_region, surf_region );
+	      mask_set_intersection_region( mask,
+					    cut_intersection0(cut), 
+					    cut_intersection1(cut),
+					    region);
+	      mask_set_intersection_region( surf,
+					    cut_intersection0(cut), 
+					    cut_intersection1(cut),
+					    region);
+	    }
+	}
+    }
 
   /* uncut segments */
 
