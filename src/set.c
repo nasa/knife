@@ -111,3 +111,15 @@ int set_index_of( Set set, int target )
  
   return EMPTY;
 }
+
+KNIFE_STATUS set_echo( Set set )
+{
+  int indx;
+
+  if ( NULL == set) return KNIFE_NULL;
+
+  for ( indx = 0 ; indx < set_size(set) ; indx++ )
+    printf(" %6d: %6d\n", indx, set_item(set, indx) );
+ 
+  return KNIFE_SUCCESS;
+}

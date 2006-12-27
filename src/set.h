@@ -40,6 +40,8 @@ KNIFE_STATUS set_remove( Set, int );
 KnifeBool set_contains( Set, int target );
 int set_index_of( Set, int );
 
+KNIFE_STATUS set_echo( Set );
+
 END_C_DECLORATION
 
 #endif /* SET_H */
