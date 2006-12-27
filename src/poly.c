@@ -443,21 +443,30 @@ KNIFE_STATUS poly_paint( Poly poly )
   for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
     {
       mask = poly_mask(poly, mask_index);
-      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
 	set_insert( regions, mask_subtri_region(mask,subtri_index) );
     }
 
   for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
     {
       mask = poly_surf(poly, mask_index);
-      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
 	set_insert( regions, mask_subtri_region(mask,subtri_index) );
     }
 
   for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
     {
       mask = poly_mask(poly, mask_index);
-      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
 	mask->region[subtri_index] = set_index_of( regions, 
 						   mask->region[subtri_index] );
     }
@@ -465,7 +474,10 @@ KNIFE_STATUS poly_paint( Poly poly )
   for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
     {
       mask = poly_surf(poly, mask_index);
-      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
 	mask->region[subtri_index] = set_index_of( regions, 
 						   mask->region[subtri_index] );
     }
