@@ -9,6 +9,7 @@ libknife_a_SOURCES = \
 	knife_definitions.h \
 	adj.h adj.c \
 	array.h array.c \
+	set.h set.c \
 	primal.h primal.c \
 	node.h node.c \
 	segment.h segment.c \
@@ -30,6 +31,7 @@ libknife_a_include_HEADERS = \
 	knife_definitions.h \
 	adj.h \
 	array.h \
+	set.h \
 	primal.h \
 	node.h \
 	segment.h \
