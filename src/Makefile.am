@@ -1,11 +1,12 @@
 # -*- Makefile -*-
 
-warning_flags=-pedantic-errors -Wall -Wextra -Werror
+lib_LIBRARIES    = libknife.a
+noinst_LIBRARIES = libknife-profile.a
 
-lib_LIBRARIES = libknife.a
+warning_flags = -pedantic-errors -Wall -Wextra -Werror
+profiling_flags = -pg $(warning_flags)
 
-libknife_a_CFLAGS=$(warning_flags)
-libknife_a_SOURCES = \
+library_sources = \
 	knife_definitions.h \
 	adj.h adj.c \
 	array.h array.c \
@@ -25,6 +26,12 @@ libknife_a_SOURCES = \
 	subtri.h subtri.c \
 	loop.h loop.c \
 	knife_fortran.c
+
+libknife_a_CFLAGS  = $(warning_flags)
+libknife_a_SOURCES = $(library_sources)
+
+libknife_profile_a_CFLAGS  = $(profiling_flags)
+libknife_profile_a_SOURCES = $(library_sources)
 
 libknife_a_includedir = @prefix@/include
 libknife_a_include_HEADERS = \
@@ -47,11 +54,16 @@ libknife_a_include_HEADERS = \
 	subtri.h \
 	loop.h
 
-bin_PROGRAMS = knife
+bin_PROGRAMS = knife knife-profile
 
-knife_CFLAGS=$(warning_flags)
+knife_CFLAGS  = $(warning_flags)
 knife_SOURCES = knife_main.c
-knife_LDADD = libknife.a -lm
+knife_LDADD   = libknife.a -lm
+
+knife_profile_CFLAGS  = $(profiling_flags)
+knife_profile_SOURCES = knife_main.c
+knife_profile_LDFLAGS = -pg
+knife_profile_LDADD   = libknife-profile.a -lm
 
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
 	adj_ruby.c adj_test.rb \
