@@ -35,7 +35,7 @@ KNIFE_STATUS set_insert( Set, int );
 KNIFE_STATUS set_remove( Set, int );
 
 #define set_item( set,indx ) \
-  ((indx>=0 && indx < set->actual)?set->data[indx]:EMPTY)
+  (((indx)>=0 && (indx) < (set)->actual)?(set)->data[(indx)]:EMPTY)
 
 KnifeBool set_contains( Set, int target );
 int set_index_of( Set, int );
