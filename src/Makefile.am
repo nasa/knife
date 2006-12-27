@@ -54,11 +54,13 @@ libknife_a_include_HEADERS = \
 	subtri.h \
 	loop.h
 
-bin_PROGRAMS = knife knife-profile
+bin_PROGRAMS    = knife
 
 knife_CFLAGS  = $(warning_flags)
 knife_SOURCES = knife_main.c
 knife_LDADD   = libknife.a -lm
+
+noinst_PROGRAMS = knife-profile
 
 knife_profile_CFLAGS  = $(profiling_flags)
 knife_profile_SOURCES = knife_main.c

@@ -27,10 +27,12 @@ val: all
 	  valgrind ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
 
-debug: all
-	( cd ../cases/om6 && \
-	  time ../../`uname`/src/knife -s om6_surface.fgrid -b 1 -b 2 \
-	                               -v preslice0001.fgrid --nnodes0 17592 )
+profile: all
+	( cd ../cases/om6box && \
+	  time ../../`uname`/src/knife-profile -s om6.fgrid -b 1 -b 2 \
+	                                       -v om6box.fgrid )
+	( cd ../cases/om6box && \
+	  gprof ../../`uname`/src/knife-profile > profile )
 
 all:
 	( cd ../`uname` && $(MAKE) all )
