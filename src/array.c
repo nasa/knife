@@ -64,7 +64,7 @@ Array array_create( int guess, int chunk )
 void array_free( Array array )
 {
   if ( NULL == array ) return;
-  free( array->data );
+  if ( NULL != array->data ) free( array->data );
   free( array );
 }
 
