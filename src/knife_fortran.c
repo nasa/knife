@@ -115,8 +115,8 @@ void knife_required_local_dual_( char *knife_input_file_name,
   char orientation_string[1025];
   KnifeBool orientation_missing;
   KnifeBool inward_pointing_surface_normal;
-  Array active_bcs;
-  int *bc, bc_found;
+  Set bcs;
+  int bc, bc_found;
 
   if ( *nodedim != primal_nnode(volume_primal)  )
     {
@@ -162,25 +162,17 @@ void knife_required_local_dual_( char *knife_input_file_name,
       return;
     }
 
-  active_bcs = array_create(10,10);
-  NOT_NULL(active_bcs, "active_bcs NULL");
+  bcs = set_create(10,10);
+  NOT_NULL(bcs, "Set bcs NULL");
 
   while ( !feof( f ) )
     {
-      bc = (int *) malloc( sizeof(int) );
-      NOT_NULL( bc , "bc NULL" );
-      bc_found = fscanf( f, "%d", bc );
+      bc_found = fscanf( f, "%d", &bc );
       if ( 1 == bc_found )
-	{
-	  TRY( array_add( active_bcs, bc ), "array_add bc");
-	}
-      else
-	{
-	  free(bc);
-	}
+	TRY( set_insert( bcs, bc ), "set_insert bc into bcs");
     }
 
-  surface = surface_from( surface_primal, active_bcs, 
+  surface = surface_from( surface_primal, bcs, 
 			  inward_pointing_surface_normal );
   NOT_NULL(surface, "surface NULL");
 

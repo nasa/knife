@@ -130,16 +130,6 @@ KNIFE_STATUS array_remove( Array array, ArrayItem item )
   return ( found ? KNIFE_SUCCESS : KNIFE_NOT_FOUND );
 }
 
-KnifeBool array_contains_int( Array array, int target )
-{
-  int indx;
-
-  for ( indx = 0 ; indx < array_size(array) ; indx++ )
-    if (target == *((int *)array_item(array, indx))) return TRUE;
- 
-  return FALSE;
-}
-
 KnifeBool array_contains_item( Array array, ArrayItem target )
 {
   return ( EMPTY != array_index_of( array, target ) ? TRUE : FALSE );

@@ -25,7 +25,7 @@
     }							      \
   }
 
-Surface surface_from( Primal primal, Array bcs, 
+Surface surface_from( Primal primal, Set bcs, 
 		      KnifeBool inward_pointing_normal  )
 {
   Surface surface;
@@ -59,7 +59,7 @@ Surface surface_from( Primal primal, Array bcs,
 	global_iface++ )
     {
       primal_face(primal, global_iface, face);
-      if (array_contains_int(bcs,face[3])) 
+      if (set_contains(bcs,face[3])) 
 	{
 	  face_g2l[global_iface] = local_nface;
 	  local_nface++;

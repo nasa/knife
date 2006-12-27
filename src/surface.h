@@ -21,7 +21,7 @@ typedef struct SurfaceStruct SurfaceStruct;
 typedef SurfaceStruct * Surface;
 END_C_DECLORATION
 
-#include "array.h"
+#include "set.h"
 #include "primal.h"
 #include "node.h"
 #include "segment.h"
@@ -38,7 +38,7 @@ struct SurfaceStruct {
   TriangleStruct *triangle;
 };
 
-Surface surface_from( Primal, Array of_bcs, KnifeBool inward_pointing_normal );
+Surface surface_from( Primal, Set of_bcs, KnifeBool inward_pointing_normal );
 
 void surface_free( Surface );
 

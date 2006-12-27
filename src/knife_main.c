@@ -42,8 +42,8 @@ int main( int argc, char *argv[] )
 
   char surface_filename[1025];
   Primal surface_primal;
-  Array active_bcs;
-  int *bc;
+  int bc;
+  Set bcs;
   Surface surface;
 
   char volume_filename[1025];
@@ -56,7 +56,9 @@ int main( int argc, char *argv[] )
   int nnodes0 = EMPTY;
 
   sprintf( surface_filename, "not_set" );
-  active_bcs = array_create(10,10);
+
+  bcs = set_create(10,10);
+  NOT_NULL(bcs, "Set bcs NULL");
 
   argument = 1;
   while ( argument < argc )
@@ -80,10 +82,9 @@ int main( int argc, char *argv[] )
 
       if( strcmp(argv[argument],"-b") == 0 ) {
 	argument++;
-	bc = (int *) malloc( sizeof(int) );
-	*bc = atoi(argv[argument]);
-	array_add( active_bcs, bc );
-	printf("-b %d\n", *bc );
+	bc = atoi(argv[argument]);
+	set_insert( bcs, bc );
+	printf("-b %d\n", bc );
       }
 
       if( strcmp(argv[argument],"-t") == 0 ) {
@@ -122,7 +123,7 @@ int main( int argc, char *argv[] )
 
   surface_primal = primal_from_FAST( surface_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
-  surface = surface_from( surface_primal, active_bcs, 
+  surface = surface_from( surface_primal, bcs, 
 			  inward_pointing_surface_normal );
   NOT_NULL(surface, "surface NULL");
 
