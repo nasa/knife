@@ -208,6 +208,9 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
   Subtri triang_subtri01, triang_subtri10;
   Mask mask, surf;
   double volume01, volume10;
+  int region;
+
+  region = 0;
 
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -219,6 +222,7 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	    cut_index < triangle_ncut(triangle); 
 	    cut_index++)
 	{
+	  region += 1;
 	  cut = triangle_cut(triangle,cut_index);
 	  cutter = cut_other_triangle(cut,triangle);
 	  TRY( poly_mask_with_triangle(poly, cutter, &surf), "cutter mask" );
@@ -273,12 +277,12 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	  if ( (  surf->inward_pointing_normal && volume01 > volume10 ) || 
 	       ( !surf->inward_pointing_normal && volume01 < volume10 ) )
 	    {
-	      TRY( mask_activate_subtri(mask, triang_subtri01, cut_index+1 ), 
+	      TRY( mask_activate_subtri(mask, triang_subtri01, region ), 
 		   "active m01");
 	    }
 	  else
 	    {
-	      TRY( mask_activate_subtri(mask, triang_subtri10, cut_index+1 ), 
+	      TRY( mask_activate_subtri(mask, triang_subtri10, region ), 
 		   "active m10");
 	    }
 
@@ -310,17 +314,17 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	  if ( (  mask->inward_pointing_normal && volume01 > volume10 ) || 
 	       ( !mask->inward_pointing_normal && volume01 < volume10 ) )
 	    {
-	      TRY( mask_activate_subtri(surf, cutter_subtri01, cut_index+1 ), 
+	      TRY( mask_activate_subtri(surf, cutter_subtri01, region ), 
 		   "active s01");
 	    }
 	  else
 	    {
-	      TRY( mask_activate_subtri(surf, cutter_subtri10, cut_index+1 ), 
+	      TRY( mask_activate_subtri(surf, cutter_subtri10, region ), 
 		   "active s10");
 	    }
 
-	}
-    }
+	}/* cut loop */
+    } /* mask loop */
 
   return KNIFE_SUCCESS;
 }
