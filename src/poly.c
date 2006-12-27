@@ -12,6 +12,7 @@
  */
 
 #include "poly.h"
+#include "set.h"
 #include "cut.h"
 
 static int poly_tecplot_frame = 0;
@@ -326,13 +327,14 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 
 KNIFE_STATUS poly_paint( Poly poly )
 {
-  int mask_index;
+  int mask_index, subtri_index;
   Mask mask;
   Triangle triangle;
   KnifeBool another_coat_of_paint;
   int segment_index;
 
   int region;
+  Set regions;
 
   KNIFE_STATUS verify_code;
 
@@ -435,7 +437,40 @@ KNIFE_STATUS poly_paint( Poly poly )
   TRY( poly_relax_region( poly ), "region relax" );
 
   /* compact region indexes (set counter?) */
+  regions = set_create( 10, 10 );
+  set_insert( regions, 0 ); /* so inactive regions stay inactive */
 
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+	set_insert( regions, mask_subtri_region(mask,subtri_index) );
+    }
+
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+	set_insert( regions, mask_subtri_region(mask,subtri_index) );
+    }
+
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+	mask->region[subtri_index] = set_index_of( regions, 
+						   mask->region[subtri_index] );
+    }
+  
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      for ( subtri_index = 0; subtri_index < mask_nsubtri(mask); subtri_index++)
+	mask->region[subtri_index] = set_index_of( regions, 
+						   mask->region[subtri_index] );
+    }
+
+  set_free( regions );
 
   return KNIFE_SUCCESS;
 }
