@@ -267,6 +267,22 @@ void knife_make_dual_required__( int *node, int *knife_status )
   knife_make_dual_required_( node, knife_status );
 }
 
+void knife_dual_regions_( int *node, int *regions, int *knife_status )
+{
+  Poly poly;
+
+  poly = domain_poly( domain, (*node)-1 );
+  NOT_NULL( poly, "poly NULL in knife_dual_regions_");
+
+  TRY( poly_regions( poly, regions ), "poly_nregions" );
+
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_dual_regions__( int *node, int *regions, int *knife_status )
+{
+  knife_dual_regions_( node, regions, knife_status );
+}
+
 void knife_dual_centroid_volume_( int *node, 
 				  double *x, double *y, double *z, 
 				  double *volume,

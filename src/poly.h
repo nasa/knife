@@ -87,6 +87,7 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 #define poly_has_surf( poly ) \
   ( 0 < poly_nsurf( poly ) )
 
+KNIFE_STATUS poly_regions( Poly, int *regions );
 KNIFE_STATUS poly_centroid_volume( Poly, double *origin, 
 				   double *centroid, double *volume );
 

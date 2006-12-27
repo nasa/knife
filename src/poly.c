@@ -873,6 +873,36 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly poly, Node node,
   return (found?KNIFE_SUCCESS:KNIFE_NOT_FOUND);
 }
 
+KNIFE_STATUS poly_regions( Poly poly, int *regions )
+{
+  int mask_index, subtri_index;
+  Mask mask;
+  Triangle triangle;
+
+  *regions = EMPTY;
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
+	*regions = MAX( *regions, mask_subtri_region(mask,subtri_index) );
+    }
+
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
+	*regions = MAX( *regions, mask_subtri_region(mask,subtri_index) );
+    }
+
+  return (KNIFE_SUCCESS);
+}
+
 KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin, 
 				   double *centroid, double *volume )
 {
