@@ -944,6 +944,40 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_regions_about( Poly poly, Node node, int *nregions )
+{
+  int mask_index, subtri_index;
+  Mask mask;
+  Triangle triangle;
+
+  Set regions;
+
+  regions = set_create( 10, 10 );  NOT_NULL(regions,"set_create failed");
+  set_insert( regions, 0 ); /* account for possible inactive region 0 */
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  for ( subtri_index = 0; 
+		subtri_index < triangle_nsubtri(triangle); 
+		subtri_index++)
+	    set_insert( regions, mask_subtri_region(mask,subtri_index) );
+	}
+    }
+
+  *nregions = set_size( regions ) - 1; /* -1 for inactive region 0 */
+
+  set_free( regions );
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_nsubtri_about( Poly poly, Node node, int *nsubtri )
 {
   int mask_index;
