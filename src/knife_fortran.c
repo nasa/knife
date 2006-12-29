@@ -317,17 +317,21 @@ void knife_dual_centroid_volume__( int *node,
 			       knife_status );
 }
 
-void knife_number_of_triangles_between_( int *node1, int *node2,
-					 int *nsubtri,
-					 int *knife_status )
+void knife_ntriangles_between_poly_( int *node1, int *region1, 
+				     int *node2, int *region2,
+				     int *nsubtri,
+				     int *knife_status )
 {
   int n;
   int edge;
-  Poly poly;
+  Poly poly1, poly2;
   Node node;
 
-  poly = domain_poly( domain, (*node1)-1 );
-  NOT_NULL( poly, "poly NULL in knife_number_of_triangles_between_");
+  poly1 = domain_poly( domain, (*node1)-1 );
+  NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_poly_");
+
+  poly2 = domain_poly( domain, (*node2)-1 );
+  NOT_NULL( poly2, "poly2 NULL in knife_ntriangles_between_poly_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
@@ -335,33 +339,40 @@ void knife_number_of_triangles_between_( int *node1, int *node2,
   node = domain_node_at_edge_center( domain, edge );
   NOT_NULL(node, "edge node NULL in knife_number_of_triangles_between_");
 
-  TRY( poly_nsubtri_about( poly, node, &n ), "poly_nsubtri_about" );
+  TRY( poly_nsubtri_between( poly1, *region1, poly2, *region2, node, &n ), 
+       "poly_nsubtri_between" );
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_number_of_triangles_between__( int *node1, int *node2,
-					  int *nsubtri,
-					  int *knife_status )
+void knife_ntriangles_between_poly__( int *node1, int *region1, 
+				      int *node2, int *region2,
+				      int *nsubtri,
+				      int *knife_status )
 {
-  knife_number_of_triangles_between_( node1, node2,
-				      nsubtri,
-				      knife_status );
+  knife_ntriangles_between_poly_( node1, region1,
+				  node2, region2,
+				  nsubtri,
+				  knife_status );
 }
 
-void knife_triangles_between_( int *node1, int *node2,
-                               int *nsubtri,
-                               double *triangle_node0,
-                               double *triangle_node1,
-                               double *triangle_node2,
-                               int *knife_status )
+void knife_triangles_between_poly_( int *node1, int *region1,
+				    int *node2, int *region2,
+				    int *nsubtri,
+				    double *triangle_node0,
+				    double *triangle_node1,
+				    double *triangle_node2,
+				    int *knife_status )
 {
   int edge;
-  Poly poly;
+  Poly poly1, poly2;
   Node node;
 
-  poly = domain_poly( domain, (*node1)-1 );
-  NOT_NULL( poly, "poly NULL in knife_triangles_between_");
+  poly1 = domain_poly( domain, (*node1)-1 );
+  NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_poly_");
+
+  poly2 = domain_poly( domain, (*node2)-1 );
+  NOT_NULL( poly2, "poly2 NULL in knife_ntriangles_between_poly_");
 
   TRY( primal_find_edge( volume_primal, (*node1)-1,  (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
@@ -369,25 +380,27 @@ void knife_triangles_between_( int *node1, int *node2,
   node = domain_node_at_edge_center( domain, edge );
   NOT_NULL(node, "edge node NULL in knife_triangles_between_");
 
-  TRY( poly_subtri_about( poly, node, *nsubtri, 
-			  triangle_node0, triangle_node1, triangle_node2 ), 
-       "poly_nsubtri_about" );
+  TRY( poly_subtri_between( poly1, *region1, poly2, *region2, node, *nsubtri, 
+			    triangle_node0, triangle_node1, triangle_node2 ), 
+       "poly_subtri_between" );
   
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_triangles_between__( int *node1, int *node2,
-				int *nsubtri,
-				double *triangle_node0,
-				double *triangle_node1,
-				double *triangle_node2,
-				int *knife_status )
+void knife_triangles_between_poly__( int *node1, int *region1,
+				     int *node2, int *region2,
+				     int *nsubtri,
+				     double *triangle_node0,
+				     double *triangle_node1,
+				     double *triangle_node2,
+				     int *knife_status )
 {
-  knife_triangles_between_( node1, node2,
-			    nsubtri,
+  knife_triangles_between_poly_( node1, region1,
+				 node2, region2,
+				 nsubtri,
 			    triangle_node0,
-			    triangle_node1,
-			    triangle_node2,
-			    knife_status );
+				 triangle_node1,
+				 triangle_node2,
+				 knife_status );
 }
 
 void knife_number_of_surface_triangles_( int *node,

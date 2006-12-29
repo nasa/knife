@@ -944,6 +944,103 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_nsubtri_between( Poly poly1, int region1, 
+				   Poly poly2, int region2,
+				   Node node, int *nsubtri )
+{
+  int mask_index, subtri_index;
+  Mask mask1, mask2;
+  Triangle triangle;
+  int n;
+
+  n = 0;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly1); 
+	mask_index++)
+    {
+      mask1 = poly_mask(poly1,mask_index);
+      triangle = mask_triangle(mask1);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  TRY( poly_mask_with_triangle( poly2, triangle, &mask2 ), "mask2");
+	  for ( subtri_index = 0 ; 
+		subtri_index < triangle_nsubtri( triangle);
+		subtri_index++ )
+	    if ( region1 == mask_subtri_region(mask1,subtri_index) &&
+		 region2 == mask_subtri_region(mask2,subtri_index) ) n++;
+	} /* shared triangle */
+    } /* poly1 masks */
+
+  *nsubtri = n;
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_subtri_between( Poly poly1, int region1, 
+				  Poly poly2, int region2,
+				  Node node, int nsubtri,
+				  double *triangle_node0, 
+				  double *triangle_node1,
+				  double *triangle_node2 )
+{
+  int mask_index, subtri_index;
+  Mask mask1, mask2;
+  Triangle triangle;
+  Subtri subtri;
+  int n;
+
+  n = 0;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly1); 
+	mask_index++)
+    {
+      mask1 = poly_mask(poly1,mask_index);
+      triangle = mask_triangle(mask1);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  TRY( poly_mask_with_triangle( poly2, triangle, &mask2 ), "mask2");
+	  for ( subtri_index = 0 ; 
+		subtri_index < triangle_nsubtri( triangle);
+		subtri_index++ )
+	    if ( region1 == mask_subtri_region(mask1,subtri_index) &&
+		 region2 == mask_subtri_region(mask2,subtri_index) ) 
+	      {
+		if ( n >= nsubtri )
+		  {
+		    printf("%s: %d: too many subtri found for argument\n",
+			   __FILE__,__LINE__);
+		    return KNIFE_ARRAY_BOUND;
+		  }
+		subtri = triangle_subtri( triangle, subtri_index );
+		if ( mask_inward_pointing_normal( mask1 ) )
+		  {
+		    subnode_xyz( subtri_n1(subtri), &(triangle_node0[3*n]) );
+		    subnode_xyz( subtri_n0(subtri), &(triangle_node1[3*n]) );
+		    subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
+		  }
+		else
+		  {
+		    subnode_xyz( subtri_n0(subtri), &(triangle_node0[3*n]) );
+		    subnode_xyz( subtri_n1(subtri), &(triangle_node1[3*n]) );
+		    subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
+		  }
+		n++;
+	      }
+	} /* shared triangle */
+    } /* poly1 masks */
+
+  if ( n != nsubtri )
+    {
+      printf("%s: %d: not enough subtri found %d of %d\n",
+	     __FILE__,__LINE__, n, nsubtri);
+      return KNIFE_MISSING;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_nsubtri_about( Poly poly, Node node, int *nsubtri )
 {
   int mask_index;
