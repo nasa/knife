@@ -107,8 +107,8 @@ KNIFE_STATUS poly_subtri_about( Poly, Node, int nsubtri,
 				double *triangle_node1,
 				double *triangle_node2 );
 
-KNIFE_STATUS poly_surface_nsubtri( Poly, int *nsubtri );
-KNIFE_STATUS poly_surface_subtri( Poly, int nsubtri, 
+KNIFE_STATUS poly_surface_nsubtri( Poly, int region, int *nsubtri );
+KNIFE_STATUS poly_surface_subtri( Poly, int region, int nsubtri, 
 				  double *triangle_node0, 
 				  double *triangle_node1,
 				  double *triangle_node2 );

@@ -1127,10 +1127,12 @@ KNIFE_STATUS poly_subtri_about( Poly poly, Node node, int nsubtri,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS poly_surface_nsubtri( Poly poly, int *nsubtri )
+KNIFE_STATUS poly_surface_nsubtri( Poly poly, int region, int *nsubtri )
 {
   int surf_index;
   Mask surf;
+  Triangle triangle;
+  int subtri_index;
   int n;
 
   n = 0;
@@ -1139,7 +1141,11 @@ KNIFE_STATUS poly_surface_nsubtri( Poly poly, int *nsubtri )
 	surf_index++)
     {
       surf = poly_surf(poly,surf_index);
-      n += mask_nsubtri( surf );
+      triangle = mask_triangle(surf);
+      for ( subtri_index = 0 ; 
+	    subtri_index < triangle_nsubtri( triangle);
+	    subtri_index++ )
+	if ( region == mask_subtri_region(surf,subtri_index) ) n++;
     }
 
   *nsubtri = n;
@@ -1147,7 +1153,7 @@ KNIFE_STATUS poly_surface_nsubtri( Poly poly, int *nsubtri )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS poly_surface_subtri( Poly poly, int nsubtri, 
+KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri, 
 				  double *triangle_node0, 
 				  double *triangle_node1,
 				  double *triangle_node2 )
@@ -1169,7 +1175,7 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int nsubtri,
       for ( subtri_index = 0 ; 
 	    subtri_index < triangle_nsubtri( triangle);
 	    subtri_index++ )
-	if ( mask_subtri_active(surf,subtri_index) )
+	if ( region == mask_subtri_region(surf,subtri_index) )
 	  {
 	    if ( n >= nsubtri )
 	      {
