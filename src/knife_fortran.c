@@ -460,7 +460,7 @@ void knife_surface_triangles__( int *node, int *region,
 			    knife_status );
 }
 
-void knife_number_of_boundary_triangles_( int *node, int *face,
+void knife_number_of_boundary_triangles_( int *node, int *face, int *region,
 					  int *nsubtri,
 					  int *knife_status )
 {
@@ -470,21 +470,22 @@ void knife_number_of_boundary_triangles_( int *node, int *face,
   poly = domain_poly( domain, (*node)-1 );
   NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
 
-  TRY( poly_boundary_nsubtri( poly, (*face)-1, &n ), "poly_nsubtri_about" );
+  TRY( poly_boundary_nsubtri( poly, (*face)-1, *region, &n ), 
+       "poly_nsubtri_about" );
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_number_of_boundary_triangles__( int *node, int *face,
+void knife_number_of_boundary_triangles__( int *node, int *face, int *region,
 					   int *nsubtri,
 					   int *knife_status )
 {
-  knife_number_of_boundary_triangles_( node, face,
+  knife_number_of_boundary_triangles_( node, face, region,
 				       nsubtri,
 				       knife_status ); 
 }
 
-void knife_boundary_triangles_( int *node, int *face,
+void knife_boundary_triangles_( int *node, int *face, int *region,
                                int *nsubtri,
                                double *triangle_node0,
                                double *triangle_node1,
@@ -496,20 +497,20 @@ void knife_boundary_triangles_( int *node, int *face,
   poly = domain_poly( domain, (*node)-1 );
   NOT_NULL(poly, "poly NULL in knife_boundary_triangles_");
 
-  TRY( poly_boundary_subtri( poly, (*face)-1, *nsubtri, 
+  TRY( poly_boundary_subtri( poly, (*face)-1, *region, *nsubtri, 
 			    triangle_node0, triangle_node1, triangle_node2 ), 
        "poly_nsubtri_about" );
   
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_boundary_triangles__( int *node, int *face,
+void knife_boundary_triangles__( int *node, int *face, int *region,
 				 int *nsubtri,
 				 double *triangle_node0,
 				 double *triangle_node1,
 				 double *triangle_node2,
 				 int *knife_status )
 {
-  knife_boundary_triangles_( node, face,
+  knife_boundary_triangles_( node, face, region,
 			     nsubtri,
 			     triangle_node0,
 			     triangle_node1,
