@@ -978,6 +978,41 @@ KNIFE_STATUS poly_regions_about( Poly poly, Node node, int *nregions )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_area_about( Poly poly, Node node, int region, double *area )
+{
+  int mask_index, subtri_index;
+  Mask mask;
+  Triangle triangle;
+  double subtri_area;
+  double normal[3];
+  KNIFE_STATUS status;
+
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( triangle_has1(triangle,node) &&
+	   !triangle_on_boundary(triangle) )
+	{
+	  for ( subtri_index = 0; 
+		subtri_index < triangle_nsubtri(triangle); 
+		subtri_index++)
+	    {
+	      if ( mask_subtri_region(mask,subtri_index) != region ) continue;
+	      status = subtri_normal_area( triangle_subtri( triangle,
+							    subtri_index),
+					   normal, &subtri_area );
+	      if ( KNIFE_DIV_ZERO != status ) TRY( status,"subtri_normal_area");
+	      (*area) += subtri_area;
+	    } /* subtri */
+	} /* triangle has node */
+    } /* mash (triangle) */
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_nsubtri_about( Poly poly, Node node, int *nsubtri )
 {
   int mask_index;

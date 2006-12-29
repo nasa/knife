@@ -349,6 +349,38 @@ void knife_dual_regions_between__( int *node1, int *node2,
 			       knife_status );
 }
 
+void knife_dual_area_between_( int *node1, int *node2, int *region,
+			       double *area,
+			       int *knife_status )
+{
+  int edge;
+  Poly poly;
+  Node node;
+  double local_area;
+
+  poly = domain_poly( domain, (*node1)-1 );
+  NOT_NULL( poly, "poly NULL in knife_dual_regions_between_");
+
+  TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
+       "no edge found by primal_edge_between"); 
+
+  node = domain_node_at_edge_center( domain, edge );
+  NOT_NULL(node, "edge node NULL in knife_dual_regions_between_");
+
+  TRY( poly_area_about( poly, node, *region, &local_area ), "poly_area_about" );
+  
+  *area = local_area;
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_dual_area_between__( int *node1, int *node2, int *region,
+			       double *area,
+			       int *knife_status )
+{
+  knife_dual_area_between_( node1, node2, region,
+			    area,
+			    knife_status );
+}
+
 void knife_number_of_triangles_between_( int *node1, int *node2,
 					 int *nsubtri,
 					 int *knife_status )

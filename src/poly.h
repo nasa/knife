@@ -92,6 +92,7 @@ KNIFE_STATUS poly_centroid_volume( Poly, double *origin,
 				   double *centroid, double *volume );
 
 KNIFE_STATUS poly_regions_about( Poly, Node, int *regions );
+KNIFE_STATUS poly_area_about( Poly, Node, int region, double *area );
 
 KNIFE_STATUS poly_nsubtri_about( Poly, Node, int *nsubtri );
 KNIFE_STATUS poly_subtri_about( Poly, Node, int nsubtri, 
