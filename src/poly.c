@@ -987,6 +987,8 @@ KNIFE_STATUS poly_area_about( Poly poly, Node node, int region, double *area )
   double normal[3];
   KNIFE_STATUS status;
 
+  *area = 0.0;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
