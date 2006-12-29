@@ -283,7 +283,7 @@ void knife_dual_regions__( int *node, int *regions, int *knife_status )
   knife_dual_regions_( node, regions, knife_status );
 }
 
-void knife_dual_centroid_volume_( int *node, 
+void knife_poly_centroid_volume_( int *node, int *region,
 				  double *x, double *y, double *z, 
 				  double *volume,
 				  int *knife_status )
@@ -300,18 +300,18 @@ void knife_dual_centroid_volume_( int *node,
   poly = domain_poly(domain,(*node)-1);
   NOT_NULL( poly, "poly NULL in knife_dual_centroid_volume_");
 
-  *knife_status = poly_centroid_volume(poly,xyz,center,volume);
+  *knife_status = poly_centroid_volume(poly,*region,xyz,center,volume);
 
   *x = center[0];
   *y = center[1];
   *z = center[2];
 }
-void knife_dual_centroid_volume__( int *node, 
+void knife_poly_centroid_volume__( int *node, int *region,
 				   double *x, double *y, double *z, 
 				   double *volume,
 				   int *knife_status )
 {
-  knife_dual_centroid_volume_( node, 
+  knife_poly_centroid_volume_( node, region, 
 			       x, y, z, 
 			       volume,
 			       knife_status );

@@ -423,7 +423,7 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, 
+KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, int region,
 						double *origin,
 						double *centroid, 
 						double *volume )
@@ -439,7 +439,7 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask,
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
-    if ( mask_subtri_active(mask,subtri_index) )
+    if ( region == mask_subtri_region(mask,subtri_index) )
       {
 	subtri = triangle_subtri(triangle,subtri_index);
 	TRY( subtri_centroid_volume_contribution( subtri, origin,

@@ -903,7 +903,7 @@ KNIFE_STATUS poly_regions( Poly poly, int *regions )
   return (KNIFE_SUCCESS);
 }
 
-KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin, 
+KNIFE_STATUS poly_centroid_volume( Poly poly, int region, double *origin, 
 				   double *centroid, double *volume )
 {
   int mask_index;
@@ -918,14 +918,14 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, double *origin,
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
-    TRY(mask_centroid_volume_contribution( poly_mask(poly, mask_index),
+    TRY(mask_centroid_volume_contribution( poly_mask(poly, mask_index), region,
 					   origin, centroid, volume),
 	"cent vol mask");
 
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
-    TRY(mask_centroid_volume_contribution( poly_surf(poly, mask_index),
+    TRY(mask_centroid_volume_contribution( poly_surf(poly, mask_index), region,
 					   origin, centroid, volume),
 	"cent vol surf");
 

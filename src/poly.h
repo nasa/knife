@@ -88,7 +88,7 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
   ( 0 < poly_nsurf( poly ) )
 
 KNIFE_STATUS poly_regions( Poly, int *regions );
-KNIFE_STATUS poly_centroid_volume( Poly, double *origin, 
+KNIFE_STATUS poly_centroid_volume( Poly, int region, double *origin, 
 				   double *centroid, double *volume );
 
 KNIFE_STATUS poly_nsubtri_between( Poly poly1, int region1, 
