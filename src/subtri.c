@@ -305,14 +305,7 @@ KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri,
   for(i=0;i<3;i++) xyz1[i] -= origin[i];
   for(i=0;i<3;i++) xyz2[i] -= origin[i];
 
-  if ( KNIFE_SUCCESS != subtri_normal_area( subtri, normal, &area ) )
-    {
-      /*
-	printf("%s: %d: warning subtri area %e (%e) omitted\n",
-	__FILE__,__LINE__,area,subtri_reference_area( subtri ));
-      */
-      return KNIFE_SUCCESS;
-    }
+  TRY( subtri_normal_area( subtri, normal, &area ), "subtri_normal_area" );
 
   for (iquad = 0; iquad<nquad; iquad++)
     {
