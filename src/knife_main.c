@@ -123,6 +123,12 @@ int main( int argc, char *argv[] )
 
   surface_primal = primal_from_FAST( surface_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
+
+  if( strcmp(surface_filename,"bump.fgrid") == 0 ) {
+    printf("%s: %d: debug scale!!!\n",__FILE__,__LINE__);
+    primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0+0.05 );
+  }
+
   surface = surface_from( surface_primal, bcs, 
 			  inward_pointing_surface_normal );
   NOT_NULL(surface, "surface NULL");

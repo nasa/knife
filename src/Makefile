@@ -13,6 +13,9 @@ test: all
 	( cd ../cases/tiny3d && \
 	  time ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
+	( cd ../cases/bump && \
+	  time ../../`uname`/src/knife -s bump.fgrid -b 1 \
+	                               -v bump.fgrid $(TEC_FLAG) )
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife -s om6.fgrid -b 1 -b 2 \
 	                               -v om6box.fgrid $(TEC_FLAG) )
