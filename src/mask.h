@@ -47,10 +47,10 @@ KNIFE_STATUS mask_activate_subtri( Mask, Subtri, int region );
 KNIFE_STATUS mask_activate_subtri_index( Mask, int subtri_index, int region );
 
 #define mask_subtri_active(mask,subtri_index)	\
-  ( NULL == (mask)->region ? TRUE : ( 0 != (mask)->region[(subtri_index)] ) )
+  ( 0 != mask_subtri_region(mask,subtri_index) )
 
 #define mask_subtri_region(mask,subtri_index)	\
-  ( NULL == (mask)->region ? 0 : (mask)->region[(subtri_index)] )
+  ( NULL == (mask)->region ? 1 : (mask)->region[(subtri_index)] )
 
 KNIFE_STATUS mask_intersection_region( Mask, Intersection, Intersection,
 				       int *region );
