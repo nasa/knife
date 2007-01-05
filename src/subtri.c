@@ -241,6 +241,7 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 {
   double xyz0[3], xyz1[3], xyz2[3];
   double edge1[3], edge2[3];
+  double length;
 
   TRY( subnode_xyz( subtri_n0(subtri), xyz0), "norm area subnode0 xyz" );
   TRY( subnode_xyz( subtri_n1(subtri), xyz1), "norm area subnode1 xyz" );
@@ -262,17 +263,24 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 		  normal[1]*normal[1] +
 		  normal[2]*normal[2] );
 
-  if ( (*area) < 1.0e-14 ) {
-    /* printf("%s: %d: subtri physical area is %e\n",
-       __FILE__,__LINE__,(*area)); */
-    return KNIFE_DIV_ZERO;
-  }
-
   normal[0] /= (*area);
   normal[1] /= (*area);
   normal[2] /= (*area);
   
   (*area) *= 0.5;
+
+  length = sqrt( normal[0]*normal[0] + 
+		 normal[1]*normal[1] + 
+		 normal[2]*normal[2]);
+
+  if ( ABS( length - 1.0 ) > 0.1 )
+    {
+      printf("%s: %d: subtri area %15.7e normal len %10.2e out of tolerance\n",
+	     __FILE__,__LINE__,(*area), length);
+      normal[0] = 0.0;
+      normal[1] = 0.0;
+      normal[2] = 0.0;
+    }
 
   return KNIFE_SUCCESS;
 }
