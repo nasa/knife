@@ -298,7 +298,7 @@ void knife_poly_centroid_volume_( int *node, int *region,
   center[2] = xyz[2];
 
   poly = domain_poly(domain,(*node)-1);
-  NOT_NULL( poly, "poly NULL in knife_dual_centroid_volume_");
+  NOT_NULL( poly, "poly NULL in knife_poly_centroid_volume_");
 
   *knife_status = poly_centroid_volume(poly,*region,xyz,center,volume);
 
