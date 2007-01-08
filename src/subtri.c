@@ -285,6 +285,19 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_center( Subtri subtri, double *center )
+{
+  center[0] = ( subnode_x(subtri_n0(subtri)) +
+		subnode_x(subtri_n1(subtri)) +
+		subnode_x(subtri_n2(subtri)) ) / 3.0;
+  center[1] = ( subnode_y(subtri_n0(subtri)) +
+		subnode_y(subtri_n1(subtri)) +
+		subnode_y(subtri_n2(subtri)) ) / 3.0;
+  center[2] = ( subnode_z(subtri_n0(subtri)) +
+		subnode_z(subtri_n1(subtri)) +
+		subnode_z(subtri_n2(subtri)) ) / 3.0;
+  return KNIFE_SUCCESS;
+}
 
 /* need 3 point quadrature rule for quadratic function (centroid) */
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri subtri, 

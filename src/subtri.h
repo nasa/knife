@@ -65,6 +65,8 @@ KNIFE_STATUS subtri_normal_area( Subtri subtri,
 				 double *normal,
 				 double *area);
 
+KNIFE_STATUS subtri_center( Subtri subtri, double *center );
+
 KNIFE_STATUS subtri_centroid_volume_contribution( Subtri, 
 						  double *origin,
 						  double *centroid,
