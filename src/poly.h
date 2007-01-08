@@ -90,6 +90,7 @@ KNIFE_STATUS poly_mask_surrounding_node_activity( Poly, Node,
 KNIFE_STATUS poly_regions( Poly, int *regions );
 KNIFE_STATUS poly_centroid_volume( Poly, int region, double *origin, 
 				   double *centroid, double *volume );
+KNIFE_STATUS poly_average_face_center( Poly, int region, double *centroid );
 
 KNIFE_STATUS poly_nsubtri_between( Poly poly1, int region1, 
 				   Poly poly2, int region2, 

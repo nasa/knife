@@ -931,15 +931,78 @@ KNIFE_STATUS poly_centroid_volume( Poly poly, int region, double *origin,
 
   if ( (*volume) < 1.0e-14 )
     {
-      centroid[0] = origin[0];
-      centroid[1] = origin[1];
-      centroid[2] = origin[2];
+      TRY( poly_average_face_center( poly, region, centroid ), "avg face cent");
+    }
+  else
+    {
+      centroid[0] = centroid[0] / (*volume) + origin[0];
+      centroid[1] = centroid[1] / (*volume) + origin[1];
+      centroid[2] = centroid[2] / (*volume) + origin[2];
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_average_face_center( Poly poly, int region, double *centroid )
+{
+  int mask_index;
+  int subtri_index;
+  Mask mask;
+  Triangle triangle;
+  double center[3];
+  double contributions;
+
+  centroid[0] = 0.0;
+  centroid[1] = 0.0;
+  centroid[2] = 0.0;
+  contributions = 0.0;
+
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    {
+      mask = poly_mask(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
+	if ( region == mask_subtri_region(mask,subtri_index) )
+	  {
+	    TRY( subtri_center( triangle_subtri(triangle,subtri_index),center ),
+		 "subtri_center");
+	    centroid[0] += center[0];
+	    centroid[1] += center[1];
+	    centroid[2] += center[2];
+	    contributions += 1.0;
+	  }
+    }
+
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    {
+      mask = poly_surf(poly, mask_index);
+      triangle = mask_triangle(mask);
+      for ( subtri_index = 0; 
+	    subtri_index < triangle_nsubtri(triangle); 
+	    subtri_index++)
+	if ( region == mask_subtri_region(mask,subtri_index) )
+	  {
+	    TRY( subtri_center( triangle_subtri(triangle,subtri_index),center ),
+		 "subtri_center");
+	    centroid[0] += center[0];
+	    centroid[1] += center[1];
+	    centroid[2] += center[2];
+	    contributions += 1.0;
+	  }
+    }
+
+  if ( contributions < 0.5 ) 
+    {
+      printf("%s: %d: poly has no subtris in region %d\n",
+	     __FILE__,__LINE__,region);
       return KNIFE_DIV_ZERO;
     }
 
-  centroid[0] = centroid[0] / (*volume) + origin[0];
-  centroid[1] = centroid[1] / (*volume) + origin[1];
-  centroid[2] = centroid[2] / (*volume) + origin[2];
+  centroid[0] /= contributions;
+  centroid[1] /= contributions;
+  centroid[2] /= contributions;
 
   return KNIFE_SUCCESS;
 }
