@@ -139,7 +139,10 @@ void knife_required_local_dual_( char *knife_input_file_name,
   
   if( strcmp(surface_filename,"bump.fgrid") == 0 ) {
     printf("%s: %d: debug scale!!!\n",__FILE__,__LINE__);
-    primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0+0.05 );
+    /* create small volumes */
+    /* primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0+0.05 ); */
+    /* compare to body */
+     primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0e-7 );
   }
 
   inward_pointing_surface_normal = TRUE;
