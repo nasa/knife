@@ -86,8 +86,9 @@ Triangle domain_triangle( Domain, int triangle_index );
 #define domain_npoly0(domain) (primal_nnode0(domain_primal(domain)))
 
 #define domain_npoly(domain) ((domain)->npoly)
-#define domain_poly(domain,poly_index)		\
-  ((domain)->poly[(poly_index)])
+#define domain_poly(domain,poly_index)					\
+  ( ((poly_index) < 0 || (poly_index) > domain_npoly(domain) ) ?	\
+    NULL:(domain)->poly[(poly_index)])
 
 #define domain_topo(domain,poly_index)					\
   ((NULL == (domain)->topo)?POLY_INTERIOR:(domain)->topo[(poly_index)])
