@@ -17,7 +17,7 @@ function f = vl_flux(left,right)
   ubp2a = -ubar + 2.0*c;
 
   if (abs(mach) < 1.0)
-    fluxp1 = 0.25*rho*c*(mach + 1.0)**2;
+    fluxp1 = 0.25*rho*c*(mach + 1.0)^2;
     fluxp2 = fluxp1*(ubp2a/gamma + u);
     fluxp3 = fluxp1*((-gm1*ubar*ubar                                     ...
                       + 2.0*gm1*ubar*c + 2.0*c*c)/(gamma*gamma - 1.0)    ...
@@ -46,7 +46,7 @@ function f = vl_flux(left,right)
   ubp2a = -ubar - 2.0*c;
 
   if (abs(mach) < 1.0)
-    fluxm1 = 0.25*rho*c*(mach + 1.0)**2;
+    fluxm1 = 0.25*rho*c*(mach + 1.0)^2;
     fluxm2 = fluxp1*(ubp2a/gamma + u);
     fluxm3 = fluxp1*((-gm1*ubar*ubar                                     ...
                       + 2.0*gm1*ubar*c + 2.0*c*c)/(gamma*gamma - 1.0)    ...
