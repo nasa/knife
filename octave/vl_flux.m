@@ -34,22 +34,22 @@ function f = vl_flux(left,right)
     end
   end
 
-  rho = left(1);
-  u = left(2);
-  p = left(3);
+  rho = right(1);
+  u = right(2);
+  p = right(3);
   u2 = u*u;
   e = p/gm1 + 0.5*rho*u2;
   c = sqrt(gamma*p/rho);
 
   ubar = u;
   mach = ubar/c;
-  ubp2a = -ubar - 2.0*c;
+  ubm2a = -ubar - 2.0*c;
 
   if (abs(mach) < 1.0)
-    fluxm1 = 0.25*rho*c*(mach + 1.0)^2;
-    fluxm2 = fluxp1*(ubp2a/gamma + u);
-    fluxm3 = fluxp1*((-gm1*ubar*ubar                                     ...
-                      + 2.0*gm1*ubar*c + 2.0*c*c)/(gamma*gamma - 1.0)    ...
+    fluxm1 = -0.25*rho*c*(mach - 1.0)^2;
+    fluxm2 = fluxm1*(ubm2a/gamma + u);
+    fluxm3 = fluxm1*((-gm1*ubar*ubar                                     ...
+                      - 2.0*gm1*ubar*c + 2.0*c*c)/(gamma*gamma - 1.0)    ...
                      + 0.5*u2 );
   else 
     if (mach >= 1.0)
