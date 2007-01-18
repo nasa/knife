@@ -3,7 +3,7 @@ function f = vl_flux(left,right)
   xnorm = 1;
 
   gamma = 1.4;
-  gm1 = 1.0 - gamma;
+  gm1 = gamma - 1.0;
 
   rho = left(1);
   u = left(2);
