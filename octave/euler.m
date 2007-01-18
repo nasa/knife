@@ -9,6 +9,7 @@ x = 0.5*(xi(1:n)+xi(2:n+1));
 
 dh = 0.05
 h = 1.0-dh+dh*cos(2*pi*xi);
+h = h./h;
 
 vol = (xi(2:n+1)-xi(1:n)).*0.5.*(h(2:n+1)+h(1:n));
 
@@ -22,7 +23,7 @@ cu = [ rho0*ones(n,1) rho0*u0*ones(n,1) e0*ones(n,1) ];
 
 for iter = 1:1
   for subiter = 1:1
-    res = euler_res(x,xi,h,cu);
+    res = euler_res(x,xi,h,cu)
     cu = cu + res;
 
 res_l2 = norm(res)/n
