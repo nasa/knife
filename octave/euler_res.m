@@ -8,9 +8,10 @@ function res = euler_res(x,xi,h,cu)
   p0 = rho0*c0*c0 / gamma;
 
   n = length(cu);
-  res = zeros(size(cu));
 
   up = c2p(cu);
+
+  res = [ zeros(n,1) up(:,3).*(h(2:n+1)-h(1:n)) zeros(n,1) ];
   
   f = [ rho0*u0 (rho0*u0*u0+up(1,3)) u0*(cu(1,3)+up(1,3))];
   res(1,:) = res(1,:) + h(1).*f;
