@@ -52,7 +52,7 @@ function f = vl_flux(left,right)
                       - 2.0*gm1*ubar*c + 2.0*c*c)/(gamma*gamma - 1.0)    ...
                      + 0.5*u2 );
   else 
-    if (mach >= 1.0)
+    if (mach < -1.0)
       fluxm1 = rho;
       fluxm2 = rho*u*ubar + p;
       fluxm3 = (e + p)*ubar;
