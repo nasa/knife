@@ -1,9 +1,9 @@
-function cu = euler(dh,cu)
+function cu = euler(t,cu)
 
-  n = 10;
+  n = 30;
 
   if (nargin < 1 )
-    dh = 0.05;
+    t = 0.95;
   end
 
   if (nargin < 2 )
@@ -19,23 +19,23 @@ function cu = euler(dh,cu)
     cu = [ rho0*ones(n,1) rho0*u0*ones(n,1) e0*ones(n,1) ];
   end
 
-  xi = linspace(0,1,n+1)';
+  xi = linspace(-1.5,1.5,n+1)';
+  sigma = 0.2;
+  h = 1.0 - (1.0-t)*exp(-xi.^2./2.0/sigma/sigma);
+
   x = 0.5*(xi(1:n)+xi(2:n+1));
-
-  h = 1.0-dh+dh*cos(2*pi*xi);
-
   vol = (xi(2:n+1)-xi(1:n)).*0.5.*(h(2:n+1)+h(1:n));
 
-  for iter = 1:500
-    for subiter = 1:10
+  for iter = 1:100
+    for subiter = 1:n
       res = euler_res(x,xi,h,cu);
-      cu = cu + res/n;
+      cu = cu + 0.8*res/n;
     end
 
     res_l2 = norm(res)/n;
     up = c2p(cu);
     plot(x,up(:,1),"-;rho;",x,up(:,2),"-;u;",x,up(:,3),"-;p;",xi,h,"-;h;");
-    axis([0 1 0 2])
+    axis([-1.5 1.5 0 2])
   end
 
 end
