@@ -233,6 +233,9 @@ KNIFE_STATUS triangle_triangulate_cuts( Triangle triangle )
 	  cut_index < triangle_ncut(triangle); 
 	  cut_index++) {
       cut = triangle_cut(triangle,cut_index);
+      NOT_NULL(cut,"triangle_triangulate_cuts: cut NULL");
+      NOT_NULL(cut_intersection0(cut),"triangle_triangulate_cuts: int0");
+      NOT_NULL(cut_intersection1(cut),"triangle_triangulate_cuts: int1");
       if ( triangle != intersection_triangle( cut_intersection0(cut) ) &&
 	   intersection_t( cut_intersection0(cut) ) > t_limit &&
 	   intersection_t( cut_intersection0(cut) ) < (1.0-t_limit) )
