@@ -67,6 +67,8 @@ KNIFE_STATUS cut_establish_between( Triangle triangle0, Triangle triangle1 )
     { 
       printf("%s: %d: cut_between improper intersection = 1\n",
 	     __FILE__,__LINE__); 
+      triangle_tecplot(triangle0);
+      triangle_tecplot(triangle1);
       return KNIFE_IMPROPER; 
     }
 
