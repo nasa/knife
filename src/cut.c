@@ -63,9 +63,9 @@ KNIFE_STATUS cut_establish_between( Triangle triangle0, Triangle triangle1 )
       cut_gather_intersection;
     }
 
-  if ( NULL != intersection0 && NULL == intersection0 )
+  if ( NULL != intersection0 && NULL == intersection1 )
     { 
-      printf("%s: %d: cut_between improper intersection =1 \n",
+      printf("%s: %d: cut_between improper intersection = 1\n",
 	     __FILE__,__LINE__); 
       return KNIFE_IMPROPER; 
     }
