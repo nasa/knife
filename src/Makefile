@@ -30,11 +30,20 @@ val: all
 	  valgrind ../../`uname`/src/knife -s cylinder.fgrid -b 1 -b 2 -r \
 	                               -v gbumpn.fgrid $(TEC_FLAG) )
 
-profile: all
+prof_om6: all
 	( cd ../cases/om6box && \
 	  time ../../`uname`/src/knife-profile -s om6.fgrid -b 1 -b 2 \
 	                                       -v om6box.fgrid )
 	( cd ../cases/om6box && \
+	  gprof ../../`uname`/src/knife-profile > profile )
+
+profile: all
+	( cd ../cases/bump && \
+	  octave bump.m )
+	( cd ../cases/bump && \
+	  time ../../`uname`/src/knife-profile -s bump_surface.fgrid -b 1 \
+	                                       -v bump.fgrid )
+	( cd ../cases/bump && \
 	  gprof ../../`uname`/src/knife-profile > profile )
 
 all:
