@@ -58,6 +58,7 @@
 Primal primal_create(int nnode, int nface, int ncell)
 {
   Primal primal;
+  int i;
 
   primal = (Primal) malloc( sizeof(PrimalStruct) );
   primal_test_malloc(primal,"primal_create primal");
@@ -69,14 +70,16 @@ Primal primal_create(int nnode, int nface, int ncell)
 
   primal->nface = nface;
   primal->f2n = (int *)malloc(4 * MAX(primal->nface,1) * sizeof(int));
+  for(i=0;i<4 * MAX(primal->nface,1);i++) primal->f2n[i] = EMPTY;
   primal_test_malloc(primal->f2n,"primal_create f2n");
 
   primal->ncell = ncell;
   primal->c2n = (int *)malloc(4 * MAX(primal->ncell,1) * sizeof(int));
+  for(i=0;i<4 * MAX(primal->ncell,1);i++) primal->c2n[i] = EMPTY;
   primal_test_malloc(primal->c2n,"primal_create c2n");
 
-  primal->face_adj = adj_create( primal->nnode, primal->nface, 1000 );
-  primal->cell_adj = adj_create( primal->nnode, primal->ncell, 1000 );
+  primal->face_adj = adj_create( primal->nnode, 3*primal->nface, 1000 );
+  primal->cell_adj = adj_create( primal->nnode, 4*primal->ncell, 1000 );
 
   primal->nedge = EMPTY;
   primal->c2e = NULL;
@@ -218,6 +221,7 @@ KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
 {
   int face;
   int node0, node1, node2;
+  int face_node, node;
 
   for(face=0;face<nface;face++){
     if ( nface_added >= primal_nface(primal) )
@@ -238,6 +242,19 @@ KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
     adj_add( primal->face_adj, primal->f2n[0+4*nface_added], nface_added);
     adj_add( primal->face_adj, primal->f2n[1+4*nface_added], nface_added);
     adj_add( primal->face_adj, primal->f2n[2+4*nface_added], nface_added);
+
+    for (face_node=0;face_node<3;face_node++)
+      {
+	node = primal->f2n[face_node+4*nface_added];
+	if ( node < 0 || node >= primal_nnode(primal) ) 
+	  {
+	    printf("%s: %d: %s: node out ot range %d %d %d\n",
+		   __FILE__,__LINE__,
+		   "primal_copy_boundary", face, node, primal_nnode(primal));
+	    return KNIFE_ARRAY_BOUND;
+	  }
+      }
+
     nface_added++;
   }
 
@@ -399,6 +416,13 @@ KNIFE_STATUS primal_establish_surface_node( Primal primal )
     for (face_node=0;face_node<3;face_node++)
       {
 	node = primal->f2n[face_node+4*face_index];
+	if ( node < 0 || node >= primal_nnode(primal) ) 
+	  {
+	    printf("%s: %d: %s: node out ot range %d %d\n",
+		   __FILE__,__LINE__,
+		   "primal_establish_surface_node", node, primal_nnode(primal));
+	    return KNIFE_ARRAY_BOUND;
+	  }
 	if (EMPTY == primal->surface_node[node]) 
 	  {
 	    primal->surface_node[node] = primal->surface_nnode;
