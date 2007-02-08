@@ -91,7 +91,8 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
 {
 
   if ( *nodedim > 0 )
-    TRY( primal_copy_boundary( volume_primal, *face_id, inode,
+    TRY( primal_copy_boundary( volume_primal, *face_id, 
+			       *nodedim, inode,
 			       *leading_dim, *nface, f2n ), 
 	 "primal_copy_boundary");
 

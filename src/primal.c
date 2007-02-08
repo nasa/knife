@@ -216,7 +216,8 @@ KNIFE_STATUS primal_copy_volume( Primal primal,
 
 static int nface_added = 0;
 
-KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
+KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, 
+				   int nboundnode, int *inode,
 				   int leading_dim, int nface, int *f2n )
 {
   int face;
@@ -232,9 +233,10 @@ KNIFE_STATUS primal_copy_boundary( Primal primal, int face_id, int *inode,
     node0 = f2n[face+0*(leading_dim)] - 1;
     node1 = f2n[face+1*(leading_dim)] - 1;
     node2 = f2n[face+2*(leading_dim)] - 1;
-    node0 = inode[node0] - 1;
-    node1 = inode[node1] - 1;
-    node2 = inode[node2] - 1;
+    /* fun3d load balancing does not use inode map */
+    if ( node0 < nboundnode ) node0 = inode[node0] - 1;
+    if ( node1 < nboundnode ) node1 = inode[node1] - 1;
+    if ( node2 < nboundnode ) node2 = inode[node2] - 1;
     primal->f2n[0+4*nface_added] = node0;
     primal->f2n[1+4*nface_added] = node1;
     primal->f2n[2+4*nface_added] = node2;

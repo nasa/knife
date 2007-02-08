@@ -67,7 +67,8 @@ KNIFE_STATUS primal_copy_volume( Primal,
 				 double *x, double *y, double *z,
 				 int maxcell, int *c2n );
 
-KNIFE_STATUS primal_copy_boundary( Primal, int face_id, int *inode,
+KNIFE_STATUS primal_copy_boundary( Primal, int face_id, 
+				   int nboundnode, int *inode,
 				   int leading_dim, int nface, int *f2n );
 
 #define primal_nnode0(primal) (primal->nnode0)
