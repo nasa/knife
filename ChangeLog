@@ -1,3 +1,8 @@
+2007-02-26 12:30 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_ntriangles_between_poly_) create a
+	missing poly to represent dual when missing.
+
 2007-02-07 12:08 Mike Park  <mike.park@nasa.gov>
 
 	* Made 0.8.0 Release. Multiple cut regions complete. Tag before

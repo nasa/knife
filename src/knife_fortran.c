@@ -331,17 +331,31 @@ void knife_ntriangles_between_poly_( int *node1, int *region1,
   Poly poly1, poly2;
   Node node;
 
-  poly1 = domain_poly( domain, (*node1)-1 );
-  NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_poly_");
-
-  poly2 = domain_poly( domain, (*node2)-1 );
-  NOT_NULL( poly2, "poly2 NULL in knife_ntriangles_between_poly_");
-
   TRY( primal_find_edge( volume_primal, (*node1)-1, (*node2)-1, &edge ), 
        "no edge found by primal_edge_between"); 
 
   node = domain_node_at_edge_center( domain, edge );
   NOT_NULL(node, "edge node NULL in knife_number_of_triangles_between_");
+
+  poly1 = domain_poly( domain, (*node1)-1 );
+  if ( NULL == poly1 )
+    {
+      printf("%s: %d: knife_ntriangles_between_poly_: poly1 warning\n",
+	     __FILE__,__LINE__);
+      TRY( domain_add_interior_poly( domain, (*node1)-1 ), "add int poly1");
+      poly1 = domain_poly( domain, (*node1)-1 );
+    }
+  NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_poly_");
+
+  poly2 = domain_poly( domain, (*node2)-1 );
+  if ( NULL == poly2 )
+    {
+      printf("%s: %d: knife_ntriangles_between_poly_: poly2 warning\n",
+	     __FILE__,__LINE__);
+      TRY( domain_add_interior_poly( domain, (*node2)-1 ), "add int poly2");
+      poly2 = domain_poly( domain, (*node2)-1 );
+    }
+  NOT_NULL( poly2, "poly2 NULL in knife_ntriangles_between_poly_");
 
   TRY( poly_nsubtri_between( poly1, *region1, poly2, *region2, node, &n ), 
        "poly_nsubtri_between" );
