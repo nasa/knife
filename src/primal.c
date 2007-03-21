@@ -188,7 +188,7 @@ void primal_free( Primal primal )
 
 KNIFE_STATUS primal_copy_volume( Primal primal, 
 				 double *x, double *y, double *z,
-				 int maxcell, int *c2n )
+				 int *c2n )
 {
   int node, cell;
 
@@ -201,10 +201,10 @@ KNIFE_STATUS primal_copy_volume( Primal primal,
 
   for( cell=0; cell<primal_ncell(primal) ; cell++ ) 
     {
-      primal->c2n[0+4*cell] = c2n[cell+maxcell*0]-1;
-      primal->c2n[1+4*cell] = c2n[cell+maxcell*1]-1;
-      primal->c2n[2+4*cell] = c2n[cell+maxcell*2]-1;
-      primal->c2n[3+4*cell] = c2n[cell+maxcell*3]-1;
+      primal->c2n[0+4*cell] = c2n[0+4*cell]-1;
+      primal->c2n[1+4*cell] = c2n[1+4*cell]-1;
+      primal->c2n[2+4*cell] = c2n[2+4*cell]-1;
+      primal->c2n[3+4*cell] = c2n[3+4*cell]-1;
       adj_add( primal->cell_adj, primal->c2n[0+4*cell], cell);
       adj_add( primal->cell_adj, primal->c2n[1+4*cell], cell);
       adj_add( primal->cell_adj, primal->c2n[2+4*cell], cell);

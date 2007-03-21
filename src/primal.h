@@ -65,7 +65,7 @@ void primal_free( Primal );
 
 KNIFE_STATUS primal_copy_volume( Primal, 
 				 double *x, double *y, double *z,
-				 int maxcell, int *c2n );
+				 int *c2n );
 
 KNIFE_STATUS primal_copy_boundary( Primal, int face_id, 
 				   int nboundnode, int *inode,

@@ -54,7 +54,7 @@ static int partition = EMPTY;
 
 void knife_volume_( int *part_id,
 		    int *nnode0, int *nnode, double *x, double *y, double *z,
-		    int *nface, int *ncell, int *maxcell, int *c2n, 
+		    int *nface, int *ncell, int *c2n, 
 		    int *knife_status )
 {
 
@@ -68,19 +68,19 @@ void knife_volume_( int *part_id,
 
   volume_primal->nnode0 = *nnode0;
 
-  TRY( primal_copy_volume( volume_primal, x, y, z, *maxcell, c2n ), 
+  TRY( primal_copy_volume( volume_primal, x, y, z, c2n ), 
        "primal_copy_volume");
 
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_volume__( int *part_id,
 		     int *nnode0, int *nnode, double *x, double *y, double *z,
-		     int *nface, int *ncell, int *maxcell, int *c2n, 
+		     int *nface, int *ncell, int *c2n, 
 		     int *knife_status )
 {
   knife_volume_( part_id,
 		 nnode0, nnode, x, y, z,
-		 nface, ncell, maxcell, c2n, 
+		 nface, ncell, c2n, 
 		 knife_status );
 }
 
