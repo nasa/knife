@@ -745,3 +745,18 @@ KNIFE_STATUS primal_scale_about( Primal primal,
   return KNIFE_NOT_FOUND;
 }
 
+KNIFE_STATUS primal_translate( Primal primal, 
+			       double dx, double dy, double dz )
+{
+  int node;
+
+  for( node=0; node<primal->nnode ; node++ ) 
+    {
+      primal->xyz[0+3*node] += dx;
+      primal->xyz[1+3*node] += dy;
+      primal->xyz[2+3*node] += dz;
+    }
+
+  return KNIFE_NOT_FOUND;
+}
+
