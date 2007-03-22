@@ -849,13 +849,34 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
 						   triangle->node2->xyz,
 						   xyz0, xyz1,
 						   &t, uvw );
-	  if ( KNIFE_NO_INT != intersection_status )
-	    TRY( intersection_status, "intersection_core" );
+
 	  if ( KNIFE_SUCCESS == intersection_status )
 	    {
 	      required[edge_nodes[0]] = 1;
 	      required[edge_nodes[1]] = 1;
 	    }
+	  else
+	    if (KNIFE_NO_INT != intersection_status)
+	      {
+		printf("xyz0  %f %f %f\n",xyz0[0],xyz0[1],xyz0[2]);
+		printf("xyz1  %f %f %f\n",xyz1[0],xyz1[1],xyz1[2]);
+		printf("node0 %f %f %f\n",
+		       (triangle->node0->xyz)[0],
+		       (triangle->node0->xyz)[1],
+		       (triangle->node0->xyz)[2]);
+		printf("node1 %f %f %f\n",
+		       (triangle->node1->xyz)[0],
+		       (triangle->node1->xyz)[1],
+		       (triangle->node1->xyz)[2]);
+		printf("node2 %f %f %f\n",
+		       (triangle->node2->xyz)[0],
+		       (triangle->node2->xyz)[1],
+		       (triangle->node2->xyz)[2]);
+		printf("%s: %d: %d intersection_core\n",
+		       __FILE__,__LINE__,intersection_status); 
+		return intersection_status;
+	      }
+	    
 	}
     }
 
