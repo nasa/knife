@@ -742,7 +742,7 @@ KNIFE_STATUS primal_scale_about( Primal primal,
       primal->xyz[2+3*node] = z+dz;
     }
 
-  return KNIFE_SUCESS;
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS primal_translate( Primal primal, 
@@ -757,6 +757,6 @@ KNIFE_STATUS primal_translate( Primal primal,
       primal->xyz[2+3*node] += dz;
     }
 
-  return KNIFE_SUCESS;
+  return KNIFE_SUCCESS;
 }
 
