@@ -113,9 +113,9 @@ void knife_required_local_dual_( char *knife_input_file_name,
 {
   FILE *f;
   char surface_filename[1025];
-  char orientation_string[1025];
-  KnifeBool orientation_missing;
+  char string[1025];
   KnifeBool inward_pointing_surface_normal;
+  KnifeBool read_faces;
   Set bcs;
   int bc, bc_found;
 
@@ -146,22 +146,35 @@ void knife_required_local_dual_( char *knife_input_file_name,
     /* primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0e-7 ); */
   }
 
-  inward_pointing_surface_normal = TRUE;
-  orientation_missing = TRUE;
-  
-  fscanf( f, "%s\n", orientation_string );
-  if( strcmp(orientation_string,"outward") == 0 ) {
-    orientation_missing = FALSE;
-    inward_pointing_surface_normal = FALSE;
-  }
-  if( strcmp(orientation_string,"inward") == 0 ) {
-    orientation_missing = FALSE;
-    inward_pointing_surface_normal = TRUE;
-  }
 
-  if (orientation_missing)
+  inward_pointing_surface_normal = FALSE;
+  read_faces = FALSE;
+
+  while ( !( feof( f ) || read_faces ) )
     {
-      printf("%s: %d: knife input file error: orientation\n",__FILE__,__LINE__);
+      double dx, dy, dz;
+
+      fscanf( f, "%s\n", string );
+      if( strcmp(string,"outward") == 0 ) {
+	inward_pointing_surface_normal = FALSE;
+      }
+      if( strcmp(string,"inward") == 0 ) {
+	inward_pointing_surface_normal = TRUE;
+      }
+      if( strcmp(string,"translate") == 0 ) {
+	fscanf( f, "%lf %lf %lf\n", &dx, &dy, &dz );
+	TRY( primal_translate( surface_primal, dx, 2.0e-7, 3.0e-7 ), 
+	     "primal_translate ping" );
+      }
+      if( strcmp(string,"faces") == 0 ) {
+	read_faces = TRUE;
+      }
+    }
+
+  if ( !read_faces )
+    {
+      printf("%s: %d: knife input file error: missing faces keyword \n",
+	     __FILE__,__LINE__);
       *knife_status = KNIFE_FILE_ERROR;
       return;
     }
