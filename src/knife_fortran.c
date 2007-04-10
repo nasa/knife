@@ -393,6 +393,8 @@ void knife_triangles_between_poly_( int *node1, int *region1,
 				    double *triangle_node0,
 				    double *triangle_node1,
 				    double *triangle_node2,
+				    double *triangle_normal,
+				    double *triangle_area,
 				    int *knife_status )
 {
   int edge;
@@ -412,7 +414,8 @@ void knife_triangles_between_poly_( int *node1, int *region1,
   NOT_NULL(node, "edge node NULL in knife_triangles_between_");
 
   TRY( poly_subtri_between( poly1, *region1, poly2, *region2, node, *nsubtri, 
-			    triangle_node0, triangle_node1, triangle_node2 ), 
+			    triangle_node0, triangle_node1, triangle_node2,
+			    triangle_normal, triangle_area ), 
        "poly_subtri_between" );
   
   *knife_status = KNIFE_SUCCESS;
@@ -423,6 +426,8 @@ void knife_triangles_between_poly__( int *node1, int *region1,
 				     double *triangle_node0,
 				     double *triangle_node1,
 				     double *triangle_node2,
+				     double *triangle_normal,
+				     double *triangle_area,
 				     int *knife_status )
 {
   knife_triangles_between_poly_( node1, region1,
@@ -431,6 +436,8 @@ void knife_triangles_between_poly__( int *node1, int *region1,
 				 triangle_node0,
 				 triangle_node1,
 				 triangle_node2,
+				 triangle_normal,
+				 triangle_area,
 				 knife_status );
 }
 

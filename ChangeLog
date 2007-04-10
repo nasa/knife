@@ -1,5 +1,12 @@
 2007-04-10 10:10 Mike Park  <mike.park@nasa.gov>
 
+	* src/poly.c (poly_subtri_between) provide accurate triangle-based
+	area and normal calculations.
+	* src/knife_fortran.c (knife_triangles_between_poly_) to include
+	precomupted normal and area, reflected in fun3d-24233.
+
+2007-04-10 10:10 Mike Park  <mike.park@nasa.gov>
+
 	* src/triangle.c (triangle_area_normal) added.
 	* src/triangle.c (subtri_normal_area,subtri_centroid_volume_contribution) deleted.
 	* src/mask.c (mask_centroid_volume_contribution) refactored to use
