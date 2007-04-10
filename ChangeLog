@@ -1,4 +1,9 @@
-2007-04-10 10:10 Mike Park  <mike.park@nasa.gov>
+2007-04-10 16:04 Mike Park  <mike.park@nasa.gov>
+
+	* src/subtri.c (subtri_reference_area) now returns the area as a
+	portion of triangle area.
+
+2007-04-10 13:28 Mike Park  <mike.park@nasa.gov>
 
 	* src/poly.c (poly_subtri_between) provide accurate triangle-based
 	area and normal calculations.

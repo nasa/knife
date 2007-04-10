@@ -141,7 +141,9 @@ KNIFE_STATUS subtri_bary( Subtri subtri, Subnode node, double *bary )
 
 double subtri_reference_area( Subtri subtri )
 {
-  return subnode_area(subtri_n0(subtri), subtri_n1(subtri), subtri_n2(subtri));
+  return ( 2.0 * subnode_area( subtri_n0(subtri), 
+			       subtri_n1(subtri), 
+			       subtri_n2(subtri) ) );
 }
 
 KNIFE_STATUS subtri_contained_volume6( Subtri subtri, Subtri other, 
