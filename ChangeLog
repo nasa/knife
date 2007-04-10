@@ -1,3 +1,7 @@
+2007-04-10  8:45 Mike Park  <mike.park@nasa.gov>
+
+	* Made 0.8.1 Release. Accounted for fun3d-23948 c2n index flip.
+
 2007-03-21 16:58 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_volume_) to account for fun3d-23948 c2n
