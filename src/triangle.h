@@ -100,6 +100,7 @@ void triangle_free( Triangle );
 #define triangle_subtri( triangle, subtri_index )		\
   ((Subtri)array_item( (triangle)->subtri, (subtri_index) ))
 
+
 KNIFE_STATUS triangle_set_frame( int frame );
 
 KNIFE_STATUS triangle_extent( Triangle, double *center, double *radius );
@@ -108,6 +109,8 @@ KNIFE_STATUS triangle_neighbor( Triangle, Segment, Triangle *other );
 
 KNIFE_STATUS triangle_triangulate_cuts( Triangle );
 KNIFE_STATUS triangle_shewchuk( Triangle );
+
+KNIFE_STATUS triangle_area_normal( Triangle, double *area, double *normal );
 
 KNIFE_STATUS triangle_verify_subtri_area( Triangle );
 

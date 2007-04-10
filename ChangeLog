@@ -1,3 +1,11 @@
+2007-04-10 10:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/triangle.c (triangle_area_normal) added.
+	* src/triangle.c (subtri_normal_area,subtri_centroid_volume_contribution) deleted.
+	* src/mask.c (mask_centroid_volume_contribution) refactored to use
+	triangle normal and area, not subtri_centroid_volume_contribution.
+	to reduce normal calculation error for small subtri.
+
 2007-04-10  8:45 Mike Park  <mike.park@nasa.gov>
 
 	* Made 0.8.1 Release. Accounted for fun3d-23948 c2n index flip.

@@ -415,6 +415,50 @@ KNIFE_STATUS triangle_shewchuk( Triangle triangle )
   return triangle_verify_subtri_area( triangle );
 }
 
+KNIFE_STATUS triangle_area_normal( Triangle triangle, 
+				   double *area, double *normal )
+{
+  double edge1[3], edge2[3];
+  double length;
+
+  edge1[0] = triangle_xyz1(triangle)[0] - triangle_xyz0(triangle)[0];
+  edge1[1] = triangle_xyz1(triangle)[1] - triangle_xyz0(triangle)[1];
+  edge1[2] = triangle_xyz1(triangle)[2] - triangle_xyz0(triangle)[2];
+
+  edge2[0] = triangle_xyz2(triangle)[0] - triangle_xyz0(triangle)[0];
+  edge2[1] = triangle_xyz2(triangle)[1] - triangle_xyz0(triangle)[1];
+  edge2[2] = triangle_xyz2(triangle)[2] - triangle_xyz0(triangle)[2];
+
+  normal[0] = edge1[1]*edge2[2] - edge1[2]*edge2[1];
+  normal[1] = edge1[2]*edge2[0] - edge1[0]*edge2[2];
+  normal[2] = edge1[0]*edge2[1] - edge1[1]*edge2[0];
+  
+  (*area) = sqrt( normal[0]*normal[0] +
+		  normal[1]*normal[1] +
+		  normal[2]*normal[2] );
+
+  normal[0] /= (*area);
+  normal[1] /= (*area);
+  normal[2] /= (*area);
+  
+  (*area) *= 0.5;
+
+  length = sqrt( normal[0]*normal[0] + 
+		 normal[1]*normal[1] + 
+		 normal[2]*normal[2]);
+
+  if ( ABS( length - 1.0 ) > 0.1 )
+    {
+      printf("%s: %d: triangle area %15.7e norm len %10.2e out of tolerance\n",
+	     __FILE__,__LINE__,(*area), length);
+      normal[0] = 0.0;
+      normal[1] = 0.0;
+      normal[2] = 0.0;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS triangle_verify_subtri_area( Triangle triangle )
 {
   double min_area;

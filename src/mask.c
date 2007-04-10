@@ -432,20 +432,71 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, int region,
   Subtri subtri;
   int subtri_index;
 
+  double xyz0[3], xyz1[3], xyz2[3];
+  double normal[3], triangle_area, area;
+  double bary[3];
+  double xyz[3];
+  int i;
+
+  int iquad;
+  int nquad = 3;
+  double bary0[]  = {4.0/6.0, 1.0/6.0, 1.0/6.0};
+  double bary1[]  = {1.0/6.0, 4.0/6.0, 1.0/6.0};
+  double bary2[]  = {1.0/6.0, 1.0/6.0, 4.0/6.0};
+  double weight[] = {1.0/3.0, 1.0/3.0, 1.0/3.0};
+
   if ( NULL == mask ) return KNIFE_NULL;
 
   triangle = mask_triangle(mask);
   
+  TRY( triangle_area_normal( triangle, &triangle_area, normal ), 
+       "triangle area normal" );
+  if ( mask->inward_pointing_normal )
+    {
+      normal[0] = -normal[0];
+      normal[1] = -normal[1];
+      normal[2] = -normal[2];
+    }
+
+  for(i=0;i<3;i++) xyz0[i] = triangle_xyz0(triangle)[i] - origin[i];
+  for(i=0;i<3;i++) xyz1[i] = triangle_xyz1(triangle)[i] - origin[i];
+  for(i=0;i<3;i++) xyz2[i] = triangle_xyz2(triangle)[i] - origin[i];
+
   for ( subtri_index = 0;
 	subtri_index < triangle_nsubtri(triangle); 
 	subtri_index++)
     if ( region == mask_subtri_region(mask,subtri_index) )
       {
 	subtri = triangle_subtri(triangle,subtri_index);
-	TRY( subtri_centroid_volume_contribution( subtri, origin,
-						  centroid, volume,
-				    !(mask->inward_pointing_normal) ),
-	     "subtri_centroid_volume_contribution failed");
+	area = triangle_area * subtri_reference_area( subtri );
+	for (iquad = 0; iquad<nquad; iquad++)
+	  {
+	    bary[0] = 
+	      bary0[iquad]*subnode_u( subtri_n0(subtri) ) +
+	      bary1[iquad]*subnode_u( subtri_n1(subtri) ) +
+	      bary2[iquad]*subnode_u( subtri_n2(subtri) );
+	    bary[1] = 
+	      bary0[iquad]*subnode_v( subtri_n0(subtri) ) +
+	      bary1[iquad]*subnode_v( subtri_n1(subtri) ) +
+	      bary2[iquad]*subnode_v( subtri_n2(subtri) );
+	    bary[2] = 
+	      bary0[iquad]*subnode_w( subtri_n0(subtri) ) +
+	      bary1[iquad]*subnode_w( subtri_n1(subtri) ) +
+	      bary2[iquad]*subnode_w( subtri_n2(subtri) );
+
+	    for(i=0;i<3;i++) xyz[i] = 
+			       bary0[iquad]*xyz0[i] + 
+			       bary1[iquad]*xyz1[i] + 
+			       bary2[iquad]*xyz2[i];
+
+	    (*volume) += weight[iquad]*area*( xyz[0]*normal[0] + 
+					      xyz[1]*normal[1] + 
+					      xyz[2]*normal[2] ) / 3.0;
+	    centroid[0] += weight[iquad]*area*(xyz[0]*xyz[0]*normal[0]) / 2.0;
+	    centroid[1] += weight[iquad]*area*(xyz[1]*xyz[1]*normal[1]) / 2.0;
+	    centroid[2] += weight[iquad]*area*(xyz[2]*xyz[2]*normal[2]) / 2.0;
+
+	  }
       }
 
   return KNIFE_SUCCESS;
