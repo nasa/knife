@@ -714,7 +714,6 @@ KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment,
   return KNIFE_SUCCESS;
 }
 
-
 KnifeBool poly_active_mask_with_nodes( Poly poly, 
 				       Node n0, Node n1, Node n2,
 				       int *region )
