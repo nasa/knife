@@ -1103,92 +1103,6 @@ KNIFE_STATUS poly_subtri_between( Poly poly1, int region1,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS poly_nsubtri_about( Poly poly, Node node, int *nsubtri )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-  int n;
-
-  n = 0;
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	{
-	  n += mask_nsubtri( mask );
-	}
-    }
-
-  *nsubtri = n;
-
-  return KNIFE_SUCCESS;
-}
-
-KNIFE_STATUS poly_subtri_about( Poly poly, Node node, int nsubtri, 
-				double *triangle_node0, 
-				double *triangle_node1,
-				double *triangle_node2 )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-  int subtri_index;
-  Subtri subtri;
-  int n;
-
-  n = 0;
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	for ( subtri_index = 0 ; 
-	      subtri_index < triangle_nsubtri( triangle);
-	      subtri_index++ )
-	  if ( mask_subtri_active(mask,subtri_index) )
-	    {
-	      if ( n >= nsubtri )
-		{
-		  printf("%s: %d: too many subtri found for argument\n",
-			 __FILE__,__LINE__);
-		  return KNIFE_ARRAY_BOUND;
-		}
-	      subtri = triangle_subtri( triangle, subtri_index );
-	      if ( mask_inward_pointing_normal( mask ) )
-		{
-		  subnode_xyz( subtri_n1(subtri), &(triangle_node0[3*n]) );
-		  subnode_xyz( subtri_n0(subtri), &(triangle_node1[3*n]) );
-		  subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
-		}
-	      else
-		{
-		  subnode_xyz( subtri_n0(subtri), &(triangle_node0[3*n]) );
-		  subnode_xyz( subtri_n1(subtri), &(triangle_node1[3*n]) );
-		  subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
-		}
-	      n++;
-	    }
-    }
-
-
-  if ( n != nsubtri )
-    {
-      printf("%s: %d: not enough subtri found %d of %d\n",
-	     __FILE__,__LINE__, n, nsubtri);
-      return KNIFE_MISSING;
-    }
-
-  return KNIFE_SUCCESS;
-}
-
 KNIFE_STATUS poly_surface_nsubtri( Poly poly, int region, int *nsubtri )
 {
   int surf_index;
@@ -1359,33 +1273,6 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS poly_face_geometry_about( Poly poly, Node node, FILE *f )
-{
-  int mask_index;
-  Mask mask;
-  Triangle triangle;
-  int nsubtri;
-
-  TRY( poly_nsubtri_about( poly, node, &nsubtri ), "poly_nsubtri_about" );
-
-  fprintf(f,"%d\n",nsubtri);
-
-  for ( mask_index = 0;
-	mask_index < poly_nmask(poly); 
-	mask_index++)
-    {
-      mask = poly_mask(poly,mask_index);
-      triangle = mask_triangle(mask);
-      if ( triangle_has1(triangle,node) &&
-	   !triangle_on_boundary(triangle) )
-	{
-	  TRY( mask_dump_geom( mask, f),
-	       "mask_dump_geom" );
-	}
-    }
-
-  return KNIFE_SUCCESS;
-}
 KNIFE_STATUS poly_boundary_face_geometry( Poly poly, int face_index, FILE *f )
 {
   int mask_index;
