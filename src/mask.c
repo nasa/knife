@@ -416,7 +416,7 @@ KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 	subtri_index++)
     if ( mask_subtri_active(mask,subtri_index) ) 
       subtri_dump_geom( triangle_subtri(triangle, subtri_index), 
-			mask->inward_pointing_normal, 
+			mask_inward_pointing_normal( mask ), 
 			mask_subtri_region(mask,subtri_index),
 			f );
 
@@ -451,7 +451,7 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, int region,
   
   TRY( triangle_area_normal( triangle, &triangle_area, normal ), 
        "triangle area normal" );
-  if ( mask->inward_pointing_normal )
+  if ( mask_inward_pointing_normal( mask ) )
     {
       normal[0] = -normal[0];
       normal[1] = -normal[1];
