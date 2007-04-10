@@ -444,7 +444,7 @@ void knife_number_of_surface_triangles_( int *node, int *region,
   poly = domain_poly( domain, (*node)-1 );
   NOT_NULL(poly, "poly NULL in knife_number_of_surface_triangles_");
 
-  TRY( poly_surface_nsubtri( poly, *region, &n ), "poly_nsubtri_about" );
+  TRY( poly_surface_nsubtri( poly, *region, &n ), "poly_surface_nsubtri" );
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
@@ -472,7 +472,7 @@ void knife_surface_triangles_( int *node, int *region,
 
   TRY( poly_surface_subtri( poly, *region, *nsubtri, 
 			    triangle_node0, triangle_node1, triangle_node2 ), 
-       "poly_nsubtri_about" );
+       "poly_surface_subtri" );
   
   *knife_status = KNIFE_SUCCESS;
 }
@@ -502,7 +502,7 @@ void knife_number_of_boundary_triangles_( int *node, int *face, int *region,
   NOT_NULL(poly, "poly NULL in knife_number_of_boundary_triangles_");
 
   TRY( poly_boundary_nsubtri( poly, (*face)-1, *region, &n ), 
-       "poly_nsubtri_about" );
+       "poly_boundary_nsubtri" );
   
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
@@ -530,7 +530,7 @@ void knife_boundary_triangles_( int *node, int *face, int *region,
 
   TRY( poly_boundary_subtri( poly, (*face)-1, *region, *nsubtri, 
 			    triangle_node0, triangle_node1, triangle_node2 ), 
-       "poly_nsubtri_about" );
+       "poly_boundary_subtri" );
   
   *knife_status = KNIFE_SUCCESS;
 }
