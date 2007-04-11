@@ -1,3 +1,10 @@
+2007-04-11  9:35 Mike Park  <mike.park@nasa.gov>
+
+	* src/poly.c (poly_surface_subtri,poly_boundary_subtri) provide
+	accurate triangle-based area and normal calculations.
+	* src/knife_fortran.c (knife_surface_triangles_,knife_boundary_triangles_)
+	to include precomupted normal and area, reflected in fun3d-24275.
+
 2007-04-10 16:04 Mike Park  <mike.park@nasa.gov>
 
 	* src/subtri.c (subtri_reference_area) now returns the area as a

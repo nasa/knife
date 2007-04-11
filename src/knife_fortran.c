@@ -470,6 +470,8 @@ void knife_surface_triangles_( int *node, int *region,
                                double *triangle_node0,
                                double *triangle_node1,
                                double *triangle_node2,
+			       double *triangle_normal,
+			       double *triangle_area,
                                int *knife_status )
 {
   Poly poly;
@@ -478,7 +480,8 @@ void knife_surface_triangles_( int *node, int *region,
   NOT_NULL(poly, "poly NULL in knife_surface_triangles_");
 
   TRY( poly_surface_subtri( poly, *region, *nsubtri, 
-			    triangle_node0, triangle_node1, triangle_node2 ), 
+			    triangle_node0, triangle_node1, triangle_node2,
+			    triangle_normal, triangle_area ), 
        "poly_surface_subtri" );
   
   *knife_status = KNIFE_SUCCESS;
@@ -488,6 +491,8 @@ void knife_surface_triangles__( int *node, int *region,
                                double *triangle_node0,
                                double *triangle_node1,
                                double *triangle_node2,
+			       double *triangle_normal,
+			       double *triangle_area,
                                int *knife_status )
 {
   knife_surface_triangles_( node, region,
@@ -495,6 +500,8 @@ void knife_surface_triangles__( int *node, int *region,
 			    triangle_node0,
 			    triangle_node1,
 			    triangle_node2,
+			    triangle_normal,
+			    triangle_area,
 			    knife_status );
 }
 
@@ -524,11 +531,13 @@ void knife_number_of_boundary_triangles__( int *node, int *face, int *region,
 }
 
 void knife_boundary_triangles_( int *node, int *face, int *region,
-                               int *nsubtri,
-                               double *triangle_node0,
-                               double *triangle_node1,
-                               double *triangle_node2,
-                               int *knife_status )
+				int *nsubtri,
+				double *triangle_node0,
+				double *triangle_node1,
+				double *triangle_node2,
+				double *triangle_normal,
+				double *triangle_area,
+				int *knife_status )
 {
   Poly poly;
 
@@ -536,7 +545,8 @@ void knife_boundary_triangles_( int *node, int *face, int *region,
   NOT_NULL(poly, "poly NULL in knife_boundary_triangles_");
 
   TRY( poly_boundary_subtri( poly, (*face)-1, *region, *nsubtri, 
-			    triangle_node0, triangle_node1, triangle_node2 ), 
+			    triangle_node0, triangle_node1, triangle_node2,
+			    triangle_normal, triangle_area ), 
        "poly_boundary_subtri" );
   
   *knife_status = KNIFE_SUCCESS;
@@ -546,6 +556,8 @@ void knife_boundary_triangles__( int *node, int *face, int *region,
 				 double *triangle_node0,
 				 double *triangle_node1,
 				 double *triangle_node2,
+				 double *triangle_normal,
+				 double *triangle_area,
 				 int *knife_status )
 {
   knife_boundary_triangles_( node, face, region,
@@ -553,6 +565,8 @@ void knife_boundary_triangles__( int *node, int *face, int *region,
 			     triangle_node0,
 			     triangle_node1,
 			     triangle_node2,
+			     triangle_normal,
+			     triangle_area,
 			     knife_status );
 }
 

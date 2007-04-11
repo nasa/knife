@@ -1149,7 +1149,9 @@ KNIFE_STATUS poly_surface_nsubtri( Poly poly, int region, int *nsubtri )
 KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri, 
 				  double *triangle_node0, 
 				  double *triangle_node1,
-				  double *triangle_node2 )
+				  double *triangle_node2,
+				  double *triangle_normal,
+				  double *triangle_area )
 {
   int surf_index;
   Mask surf;
@@ -1158,6 +1160,8 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
   Subtri subtri;
   int n;
 
+  double normal[3], entire_triangle_area, area;
+
   n = 0;
   for ( surf_index = 0;
 	surf_index < poly_nsurf(poly); 
@@ -1165,6 +1169,14 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
     {
       surf = poly_surf(poly,surf_index);
       triangle = mask_triangle(surf);
+      TRY( triangle_area_normal( triangle, &entire_triangle_area, normal ),
+	   "triangle area normal" );
+      if ( mask_inward_pointing_normal( surf ) )
+	{
+	  normal[0] = -normal[0];
+	  normal[1] = -normal[1];
+	  normal[2] = -normal[2];
+	}
       for ( subtri_index = 0 ; 
 	    subtri_index < triangle_nsubtri( triangle);
 	    subtri_index++ )
@@ -1189,6 +1201,11 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
 		subnode_xyz( subtri_n1(subtri), &(triangle_node1[3*n]) );
 		subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
 	      }
+	    triangle_normal[0+3*n]=normal[0];
+	    triangle_normal[1+3*n]=normal[1];
+	    triangle_normal[2+3*n]=normal[2];
+	    area = entire_triangle_area * subtri_reference_area( subtri );
+	    triangle_area[n] = area;
 	    n++;
 	  }
     }
@@ -1235,7 +1252,9 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
 				   int nsubtri, 
 				   double *triangle_node0, 
 				   double *triangle_node1,
-				   double *triangle_node2 )
+				   double *triangle_node2,
+				   double *triangle_normal,
+				   double *triangle_area )
 {
   int mask_index;
   Mask mask;
@@ -1244,6 +1263,8 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
   Subtri subtri;
   int n;
 
+  double normal[3], entire_triangle_area, area;
+
   n = 0;
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
@@ -1251,6 +1272,14 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
     {
       mask = poly_mask(poly,mask_index);
       triangle = mask_triangle(mask);
+      TRY( triangle_area_normal( triangle, &entire_triangle_area, normal ),
+	   "triangle area normal" );
+      if ( mask_inward_pointing_normal( mask ) )
+	{
+	  normal[0] = -normal[0];
+	  normal[1] = -normal[1];
+	  normal[2] = -normal[2];
+	}
       if ( face_index == triangle_boundary_face_index(triangle) )
 	for ( subtri_index = 0 ; 
 	      subtri_index < triangle_nsubtri( triangle);
@@ -1276,6 +1305,11 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
 		  subnode_xyz( subtri_n1(subtri), &(triangle_node1[3*n]) );
 		  subnode_xyz( subtri_n2(subtri), &(triangle_node2[3*n]) );
 		}
+	      triangle_normal[0+3*n]=normal[0];
+	      triangle_normal[1+3*n]=normal[1];
+	      triangle_normal[2+3*n]=normal[2];
+	      area = entire_triangle_area * subtri_reference_area( subtri );
+	      triangle_area[n] = area;
 	      n++;
 	    }
     }
