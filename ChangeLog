@@ -1,3 +1,9 @@
+2007-04-12 16:25 Mike Park  <mike.park@nasa.gov>
+
+	* src/intersection.c (intersection_x,intersection_y,
+	intersection_z,intersection_xyz) use triangle uvw interpolation to
+	find xyz instead of segment t interpolation for beter consistency.
+
 2007-04-11  9:35 Mike Park  <mike.park@nasa.gov>
 
 	* src/poly.c (poly_surface_subtri,poly_boundary_subtri) provide

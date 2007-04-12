@@ -214,19 +214,22 @@ KNIFE_STATUS intersection_xyz( Intersection intersection,double *xyz)
 
 double intersection_x( Intersection intersection )
 {
-  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[0] +
-	         intersection->t * intersection->segment->node1->xyz[0] );
+  return ( intersection->uvw[0] * triangle_xyz0(intersection->triangle)[0] +
+	   intersection->uvw[1] * triangle_xyz1(intersection->triangle)[0] +
+	   intersection->uvw[2] * triangle_xyz2(intersection->triangle)[0] );
 }
 
 double intersection_y( Intersection intersection )
 {
-  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[1] +
-	         intersection->t * intersection->segment->node1->xyz[1] );
+  return ( intersection->uvw[0] * triangle_xyz0(intersection->triangle)[1] +
+	   intersection->uvw[1] * triangle_xyz1(intersection->triangle)[1] +
+	   intersection->uvw[2] * triangle_xyz2(intersection->triangle)[1] );
 }
 
 double intersection_z( Intersection intersection )
 {
-  return ( (1.0-intersection->t) * intersection->segment->node0->xyz[2] +
-	         intersection->t * intersection->segment->node1->xyz[2] );
+  return ( intersection->uvw[0] * triangle_xyz0(intersection->triangle)[2] +
+	   intersection->uvw[1] * triangle_xyz1(intersection->triangle)[2] +
+	   intersection->uvw[2] * triangle_xyz2(intersection->triangle)[2] );
 }
 
