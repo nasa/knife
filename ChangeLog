@@ -1,3 +1,9 @@
+2007-04-12 16:40 Mike Park  <mike.park@nasa.gov>
+
+	* src/mask.c (mask_centroid_volume_contribution) repaired calculation
+	of xyz location with barycentric coordinates that caused wild errors
+	in centroid and volume calculations.
+
 2007-04-12 16:25 Mike Park  <mike.park@nasa.gov>
 
 	* src/intersection.c (intersection_x,intersection_y,

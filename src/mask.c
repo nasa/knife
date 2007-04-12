@@ -485,9 +485,9 @@ KNIFE_STATUS mask_centroid_volume_contribution( Mask mask, int region,
 	      bary2[iquad]*subnode_w( subtri_n2(subtri) );
 
 	    for(i=0;i<3;i++) xyz[i] = 
-			       bary0[iquad]*xyz0[i] + 
-			       bary1[iquad]*xyz1[i] + 
-			       bary2[iquad]*xyz2[i];
+			       bary[0]*xyz0[i] + 
+			       bary[1]*xyz1[i] + 
+			       bary[2]*xyz2[i];
 
 	    (*volume) += weight[iquad]*area*( xyz[0]*normal[0] + 
 					      xyz[1]*normal[1] + 
