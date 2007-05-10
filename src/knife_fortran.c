@@ -138,15 +138,6 @@ void knife_required_local_dual_( char *knife_input_file_name,
     printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");
   
-  if( strcmp(surface_filename,"bump.fgrid") == 0 ) {
-    printf("%s: %d: debug scale!!!\n",__FILE__,__LINE__);
-    /* create small volumes */
-    primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0+0.05 ); 
-    /* compare to body */
-    /* primal_scale_about( surface_primal, 0.0, 1.0, -1.0, 1.0+1.0e-7 ); */
-  }
-
-
   inward_pointing_surface_normal = FALSE;
   read_faces = FALSE;
 
@@ -163,7 +154,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
       }
       if( strcmp(string,"translate") == 0 ) {
 	fscanf( f, "%lf %lf %lf\n", &dx, &dy, &dz );
-	TRY( primal_translate( surface_primal, dx, 2.0e-7, 3.0e-7 ), 
+	TRY( primal_translate( surface_primal, dx, dy, dz ), 
 	     "primal_translate ping" );
       }
       if( strcmp(string,"faces") == 0 ) {
