@@ -28,6 +28,17 @@ static int poly_tecplot_frame = 0;
     }							      \
   }
 
+#define TRYT(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      poly_tecplot( poly );                                   \
+      return code;					      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				      \
   if (NULL == (pointer)) {				      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
@@ -184,15 +195,15 @@ KNIFE_STATUS poly_determine_active_subtri( Poly poly )
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
-    TRY(mask_deactivate_all_subtri( poly_mask(poly, mask_index) ),"deact mask");
+    TRYT(mask_deactivate_all_subtri( poly_mask(poly, mask_index) ),"deact mask");
 
   for ( mask_index = 0;
 	mask_index < poly_nsurf(poly); 
 	mask_index++)
-    TRY(mask_deactivate_all_subtri( poly_surf(poly, mask_index) ),"deact surf");
+    TRYT(mask_deactivate_all_subtri( poly_surf(poly, mask_index) ),"deact surf");
 
-   TRY( poly_activate_subtri_at_cuts( poly ), "activate at cuts");
-   TRY( poly_paint( poly ), "paint");
+   TRYT( poly_activate_subtri_at_cuts( poly ), "activate at cuts");
+   TRYT( poly_paint( poly ), "paint");
 
   return KNIFE_SUCCESS;
 }
