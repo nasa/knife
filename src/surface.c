@@ -170,13 +170,15 @@ Surface surface_from( Primal primal, Set bcs,
 						 sizeof(TriangleStruct));
   for ( local_iface = 0 ; local_iface < local_nface ; local_iface++ )
     {
+      global_iface = face_l2g[local_iface];
+      primal_face(primal, global_iface, face);
       if ( inward_pointing_normal )
 	{
 	  triangle_initialize( surface_triangle(surface,local_iface),
 			       surface_segment(surface,f2s[0+3*local_iface]),
 			       surface_segment(surface,f2s[1+3*local_iface]),
 			       surface_segment(surface,f2s[2+3*local_iface]),
-			       TRUE );
+			       face[3] );
 	}
       else
 	{
@@ -184,7 +186,7 @@ Surface surface_from( Primal primal, Set bcs,
 			       surface_segment(surface,f2s[1+3*local_iface]),
 			       surface_segment(surface,f2s[0+3*local_iface]),
 			       surface_segment(surface,f2s[2+3*local_iface]),
-			       TRUE );
+			       face[3] );
 	}
       segment_add_triangle( surface_segment(surface,f2s[0+3*local_iface]), 
 			    surface_triangle(surface,local_iface) );
