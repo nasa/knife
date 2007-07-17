@@ -1,3 +1,10 @@
+2007-07-17 12:20 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_surface_triangles_) to return triangle_tag
+	compatable with FUN3D r25733 and later
+	* src/poly.c (poly_surface_subtri) return each surface
+	boundary_face_index in triangle_tag array.
+
 2007-07-10 14:05 Mike Park  <mike.park@nasa.gov>
 
 	* src/surface.c (surface_from) store face tag for each triangle's

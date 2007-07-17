@@ -1162,7 +1162,8 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
 				  double *triangle_node1,
 				  double *triangle_node2,
 				  double *triangle_normal,
-				  double *triangle_area )
+				  double *triangle_area,
+				  int *triangle_tag )
 {
   int surf_index;
   Mask surf;
@@ -1217,6 +1218,7 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
 	    triangle_normal[2+3*n]=normal[2];
 	    area = entire_triangle_area * subtri_reference_area( subtri );
 	    triangle_area[n] = area;
+	    triangle_tag[n] = triangle_boundary_face_index(triangle);
 	    n++;
 	  }
     }
