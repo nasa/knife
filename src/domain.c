@@ -804,7 +804,7 @@ KNIFE_STATUS domain_required_local_dual( Domain domain, int *required )
 
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
-  NOT_NULL( triangle_tree, "triangle_tree NULL");
+  NOT_NULL( triangle_tree, "out of memory, could not malloc triangle_tree");
 
   for (triangle_index=0;
        triangle_index<surface_ntriangle(domain->surface);
