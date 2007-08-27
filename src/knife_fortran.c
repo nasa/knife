@@ -60,8 +60,11 @@ void knife_volume_( int *part_id,
 
   partition = *part_id;
 
+  /* so tecplot filenames will include processor id */
   triangle_set_frame( 10000*partition);
   loop_set_frame( 10000*partition);
+  mask_set_frame( 10000*partition);
+  poly_set_frame( 10000*partition);
 
   volume_primal = primal_create( *nnode, *nface, *ncell );
   NOT_NULL(volume_primal, "volume_primal NULL");

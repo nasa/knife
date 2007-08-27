@@ -59,6 +59,12 @@ void mask_free( Mask mask )
   free( mask );
 }
 
+KNIFE_STATUS mask_set_frame( int frame )
+{
+  mask_tecplot_frame = frame;
+  return KNIFE_SUCCESS;
+}
+
 int mask_nsubtri( Mask mask )
 {
   int nsubtri;

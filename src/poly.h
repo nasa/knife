@@ -38,6 +38,8 @@ Poly poly_create( void );
 KNIFE_STATUS poly_initialize( Poly );
 void poly_free( Poly );
 
+KNIFE_STATUS poly_set_frame( int frame );
+
 KNIFE_STATUS poly_add_triangle( Poly, Triangle, 
 				KnifeBool inward_pointing_normal );
 

@@ -17,7 +17,6 @@
 
 static int poly_tecplot_frame = 0;
 
-
 #define TRY(fcn,msg)					      \
   {							      \
     int code;						      \
@@ -92,6 +91,12 @@ void poly_free( Poly poly )
   array_free( poly->surf );
 
   free( poly );
+}
+
+KNIFE_STATUS poly_set_frame( int frame )
+{
+  poly_tecplot_frame = frame;
+  return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS poly_add_triangle( Poly poly, Triangle triangle, 

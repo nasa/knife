@@ -38,6 +38,8 @@ void mask_free( Mask );
 #define mask_triangle( mask )((mask)->triangle)
 #define mask_inward_pointing_normal( mask )((mask)->inward_pointing_normal)
 
+KNIFE_STATUS mask_set_frame( int frame );
+
 int mask_nsubtri( Mask );
 
 KNIFE_STATUS mask_activate_all_subtri( Mask );
