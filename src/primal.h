@@ -155,6 +155,7 @@ KNIFE_STATUS primal_scale_about( Primal,
 				 double x, double y, double z, double scale );
 KNIFE_STATUS primal_translate( Primal, 
 			       double dx, double dy, double dz );
+KNIFE_STATUS primal_flip_yz( Primal );
 
 END_C_DECLORATION
 

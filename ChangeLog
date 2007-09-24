@@ -1,3 +1,9 @@
+2007-09-24 16:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_required_local_dual_) to read flip_yz
+	option from .knife file.
+	* src/primal.c (primal_flip_yz) to flip yz axes.
+
 2007-07-17 12:20 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_surface_triangles_) to return triangle_tag

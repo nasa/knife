@@ -160,6 +160,10 @@ void knife_required_local_dual_( char *knife_input_file_name,
 	TRY( primal_translate( surface_primal, dx, dy, dz ), 
 	     "primal_translate ping" );
       }
+      if( strcmp(string,"flip_yz") == 0 ) {
+	TRY( primal_flip_yz( surface_primal ), 
+	     "primal_flip_yz ping" );
+      }
       if( strcmp(string,"faces") == 0 ) {
 	read_faces = TRUE;
       }
