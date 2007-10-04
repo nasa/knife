@@ -147,6 +147,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   while ( !( feof( f ) || read_faces ) )
     {
       double dx, dy, dz;
+      double scale;
 
       fscanf( f, "%s\n", string );
       if( strcmp(string,"outward") == 0 ) {
@@ -158,11 +159,16 @@ void knife_required_local_dual_( char *knife_input_file_name,
       if( strcmp(string,"translate") == 0 ) {
 	fscanf( f, "%lf %lf %lf\n", &dx, &dy, &dz );
 	TRY( primal_translate( surface_primal, dx, dy, dz ), 
-	     "primal_translate ping" );
+	     "primal_translate error" );
+      }
+      if( strcmp(string,"scale") == 0 ) {
+	fscanf( f, "%lf\n", &scale );
+	TRY( primal_scale_about( surface_primal, 0.0, 0.0, 0.0, scale ), 
+	     "primal_scale_about error" );
       }
       if( strcmp(string,"flip_yz") == 0 ) {
 	TRY( primal_flip_yz( surface_primal ), 
-	     "primal_flip_yz ping" );
+	     "primal_flip_yz error" );
       }
       if( strcmp(string,"faces") == 0 ) {
 	read_faces = TRUE;
