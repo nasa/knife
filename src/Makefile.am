@@ -54,11 +54,15 @@ libknife_a_include_HEADERS = \
 	subtri.h \
 	loop.h
 
-bin_PROGRAMS    = knife
+bin_PROGRAMS    = knife knife-convert
 
 knife_CFLAGS  = $(warning_flags)
 knife_SOURCES = knife_main.c
 knife_LDADD   = libknife.a -lm
+
+knife_convert_CFLAGS  = $(warning_flags)
+knife_convert_SOURCES = knife_convert.c
+knife_convert_LDADD   = libknife.a -lm
 
 noinst_PROGRAMS = knife-profile
 

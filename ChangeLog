@@ -1,3 +1,7 @@
+2007-10-25  9:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/knive_convert.c (main) made a trivial fast to tri converter.
+
 2007-10-25  9:55 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_export_tri) to export tri surface format.
