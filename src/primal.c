@@ -815,7 +815,7 @@ KNIFE_STATUS primal_export_tri( Primal primal, char *filename )
   for ( node = 0 ; node < primal_nnode(primal) ; node++ )
     {
       primal_xyz( primal, node, xyz );
-      fprintf( f, "%f %f %f\n", xyz[0], xyz[1], xyz[2] );
+      fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
     }
 
   for ( face = 0 ; face < primal_nface(primal) ; face++ )
