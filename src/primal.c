@@ -794,3 +794,44 @@ KNIFE_STATUS primal_flip_zy( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_export_tri( Primal primal, char *filename )
+{
+  FILE *f;
+  int node, face;
+  double xyz[3];
+  int nodes[4];
+
+  if (NULL == filename)
+    {
+      f = fopen( "primal.tri", "w" );
+    } else {
+      f = fopen( filename, "w" );
+    }
+
+  if ( NULL == f ) return KNIFE_FILE_ERROR;
+
+  fprintf( f, "%d %d\n", primal_nnode(primal), primal_nface(primal) );
+
+  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+    {
+      primal_xyz( primal, node, xyz );
+      fprintf( f, "%f %f %f\n", xyz[0], xyz[1], xyz[2] );
+    }
+
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      primal_face( primal, face, nodes );
+      fprintf( f, "%d %d %d\n", nodes[0]+1, nodes[1]+1, nodes[2]+1 );
+    }
+
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      primal_face( primal, face, nodes );
+      fprintf( f, "%d\n", nodes[3] );
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+
+}

@@ -1,3 +1,7 @@
+2007-10-25  9:55 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_export_tri) to export tri surface format.
+
 2007-09-24 16:25 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_required_local_dual_) to read flip_zy
