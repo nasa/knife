@@ -846,5 +846,44 @@ KNIFE_STATUS primal_export_tri( Primal primal, char *filename )
   fclose(f);
 
   return KNIFE_SUCCESS;
+}
 
+KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
+{
+  FILE *f;
+  int node, face;
+  double xyz[3];
+  int nodes[4];
+
+  if (NULL == filename)
+    {
+      f = fopen( "primal.t", "w" );
+    } else {
+      f = fopen( filename, "w" );
+    }
+
+  fprintf( f, "title=\"tecplot knife primal geometry file\"\n" );
+  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
+
+  if ( NULL == f ) return KNIFE_FILE_ERROR;
+
+  fprintf( f,
+	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
+	   primal_nnode(primal), primal_nface(primal) );
+
+  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+    {
+      primal_xyz( primal, node, xyz );
+      fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
+    }
+
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      primal_face( primal, face, nodes );
+      fprintf( f, "%d %d %d\n", nodes[0]+1, nodes[1]+1, nodes[2]+1 );
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
 }

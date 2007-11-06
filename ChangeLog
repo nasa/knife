@@ -1,3 +1,7 @@
+2007-11-06  9:30 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_export_tec) to export tecplot surface format.
+
 2007-11-06  8:35 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_flip_face_normals) flip n0 and n1 of triangle.
