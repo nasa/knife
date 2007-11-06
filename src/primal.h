@@ -155,6 +155,9 @@ KNIFE_STATUS primal_scale_about( Primal,
 				 double x, double y, double z, double scale );
 KNIFE_STATUS primal_translate( Primal, 
 			       double dx, double dy, double dz );
+KNIFE_STATUS primal_rotate( Primal, 
+			    double nx, double ny, double nz, 
+			    double angle_in_radians );
 KNIFE_STATUS primal_flip_yz( Primal ); /* (y=>z,z=>-y) */
 KNIFE_STATUS primal_flip_zy( Primal ); /* (z=>y,y=>-z) */
 

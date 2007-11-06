@@ -148,6 +148,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
     {
       double dx, dy, dz;
       double scale;
+      double angle;
 
       fscanf( f, "%s\n", string );
       if( strcmp(string,"outward") == 0 ) {
@@ -159,6 +160,13 @@ void knife_required_local_dual_( char *knife_input_file_name,
       if( strcmp(string,"translate") == 0 ) {
 	fscanf( f, "%lf %lf %lf\n", &dx, &dy, &dz );
 	TRY( primal_translate( surface_primal, dx, dy, dz ), 
+	     "primal_translate error" );
+      }
+#define KNIFE_CONVERT_DEGREE_TO_RADIAN(degree) ((degree)*0.0174532925199433)
+      if( strcmp(string,"rotate") == 0 ) {
+	fscanf( f, "%lf %lf %lf %lf\n", &dx, &dy, &dz, &angle );
+	angle = KNIFE_CONVERT_DEGREE_TO_RADIAN(angle);
+	TRY( primal_rotate( surface_primal, dx, dy, dz, angle ), 
 	     "primal_translate error" );
       }
       if( strcmp(string,"scale") == 0 ) {

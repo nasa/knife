@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "primal.h"
 
 #define primal_test_malloc(ptr,fcn)		       \
@@ -755,6 +756,43 @@ KNIFE_STATUS primal_translate( Primal primal,
       primal->xyz[0+3*node] += dx;
       primal->xyz[1+3*node] += dy;
       primal->xyz[2+3*node] += dz;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_rotate( Primal primal, 
+			    double nx, double ny, double nz, 
+			    double angle_in_radians )
+{
+  int i;
+  int node;
+  double xyz[3];
+  double norm[3];
+  double dot, cross[3];
+  double cos_angle, sin_angle;
+
+  norm[0] = nx;
+  norm[1] = ny;
+  norm[2] = nz;
+  
+  cos_angle = cos(angle_in_radians);
+  sin_angle = sin(angle_in_radians);
+
+  for( node=0; node<primal->nnode ; node++ ) 
+    {
+      for( i=0; i<3 ; i++ ) 
+	xyz[i] = primal->xyz[i+3*node];
+
+      dot = ( xyz[0]*norm[0] + xyz[1]*norm[1] + xyz[2]*norm[2] );
+      
+      cross[0] = xyz[1]*norm[2] - xyz[2]*norm[1];
+      cross[1] = xyz[2]*norm[0] - xyz[0]*norm[2];
+      cross[2] = xyz[0]*norm[1] - xyz[1]*norm[0];
+
+      for( i=0; i<3 ; i++ ) 
+	primal->xyz[i+3*node] = 
+	  xyz[i]*cos_angle + norm[i]*dot*(1.0-cos_angle) + cross[i]*sin_angle;
     }
 
   return KNIFE_SUCCESS;

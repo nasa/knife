@@ -1,3 +1,9 @@
+2007-11-06 10:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_rotate) to rotate about axis at origin.
+	* src/knife_fortran.c (knife_required_local_dual_) to read rotate
+	option from .knife file.
+
 2007-11-06  9:30 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_export_tec) to export tecplot surface format.
