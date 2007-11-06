@@ -1,3 +1,7 @@
+2007-11-06  8:35 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_flip_face_normals) flip n0 and n1 of triangle.
+
 2007-10-25  9:10 Mike Park  <mike.park@nasa.gov>
 
 	* src/knive_convert.c (main) made a trivial fast to tri converter.

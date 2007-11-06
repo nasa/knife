@@ -158,6 +158,8 @@ KNIFE_STATUS primal_translate( Primal,
 KNIFE_STATUS primal_flip_yz( Primal ); /* (y=>z,z=>-y) */
 KNIFE_STATUS primal_flip_zy( Primal ); /* (z=>y,y=>-z) */
 
+KNIFE_STATUS primal_flip_face_normals( Primal );
+
 KNIFE_STATUS primal_export_tri( Primal, char *filename );
 
 END_C_DECLORATION

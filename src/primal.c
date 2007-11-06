@@ -794,6 +794,19 @@ KNIFE_STATUS primal_flip_zy( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_flip_face_normals( Primal primal )
+{
+  int face, temp;
+  for( face=0; face<primal->nface ; face++ ) 
+    {
+      temp = primal->f2n[0+4*face];
+      primal->f2n[0+4*face] = primal->f2n[1+4*face];
+      primal->f2n[1+4*face] = temp;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_export_tri( Primal primal, char *filename )
 {
   FILE *f;
