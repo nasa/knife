@@ -845,6 +845,100 @@ KNIFE_STATUS primal_flip_face_normals( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+Primal primal_subset( Primal primal, Set bcs )
+{
+  Primal subset;
+  int max_face_id;
+  int nnode, nface, nbcs;
+  int *node_o2n, *face_o2n, *bcs_o2n;
+  int face, node, i;
+  int nodes[4];
+
+  TRYN( primal_max_face_id( primal, &max_face_id ), 
+	"primal_max_face_id failed" );
+
+  node_o2n = (int *)malloc(MAX(primal_nnode(primal),1) * sizeof(int));
+  primal_test_malloc(node_o2n,"primal_subset node_o2n");
+  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+    node_o2n[node] = EMPTY;
+
+  face_o2n = (int *)malloc(MAX(primal_nface(primal),1) * sizeof(int));
+  if ( NULL == face_o2n ) free( node_o2n );
+  primal_test_malloc(node_o2n,"primal_subset face_o2n");
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    face_o2n[face] = EMPTY;
+
+  bcs_o2n = (int *)malloc(MAX(max_face_id,1) * sizeof(int));
+  if ( NULL == bcs_o2n ) { free( node_o2n ); free( face_o2n ); }
+  primal_test_malloc(node_o2n,"primal_subset bcs_o2n");
+  for ( i = 0 ; i < max_face_id ; i++ )
+    bcs_o2n[i] = EMPTY;
+
+  nface = 0;
+  nnode = 0;
+  nbcs = 0;
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      primal_face( primal, face, nodes );
+      if (set_contains(bcs,nodes[3])) 
+	{
+	  face_o2n[face] = nface;
+	  nface++;
+	  for( i=0; i<3 ; i++ ) 
+	    {
+	      if ( EMPTY == node_o2n[nodes[i]] )
+		{
+		  node_o2n[nodes[i]] = nnode;
+		  nnode++;
+		}
+	    }
+	  if ( EMPTY == bcs_o2n[nodes[3]] )
+	    {
+	      bcs_o2n[nodes[3]] = nbcs+1; /* one-based numbering */
+	      nbcs++;
+	    }
+	}
+    }
+
+  /* to keep the face ids in order */
+  nbcs = 0;
+  for ( i = 0 ; i < max_face_id ; i++ )
+    if ( EMPTY != bcs_o2n[i] )
+      {
+	bcs_o2n[i] = nbcs+1; /* one-based numbering */
+	nbcs++;
+      }
+
+  subset = primal_create( nnode, nface, 0 );
+  if ( NULL == subset ) { free( node_o2n ); free( face_o2n ); free( bcs_o2n );}
+  primal_test_malloc(node_o2n,"primal_subset subset");
+
+  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+    {
+      if ( EMPTY != node_o2n[node] )
+	{
+	  for( i=0; i<3 ; i++ )	  
+	    subset->xyz[i+3*node_o2n[node]] = primal->xyz[i+3*node];
+	}
+    }
+
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      if ( EMPTY != face_o2n[face] )
+	{
+	  primal_face( primal, face, nodes );
+	  for( i=0; i<3 ; i++ )	  
+	    subset->f2n[i+4*face_o2n[face]] = node_o2n[nodes[i]];
+	  subset->f2n[3+4*face_o2n[face]] = 
+	    bcs_o2n[nodes[3]-1]; /* one-based numbering */
+	}
+    }
+
+  TRYN( primal_establish_all( subset ), "primal_establish_all" );
+
+  return subset;
+}
+
 KNIFE_STATUS primal_export_tri( Primal primal, char *filename )
 {
   FILE *f;

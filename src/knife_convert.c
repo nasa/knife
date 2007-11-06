@@ -39,9 +39,9 @@ int main( int argc, char *argv[] )
   char tri_filename[1025];
   Primal surface_primal;
 
-  if ( 3 != argc ) 
+  if ( 3 > argc ) 
     {
-      printf("usage : %s input.fgrid output.tri\n", argv[0] );
+      printf("usage : %s input.fgrid output.tri [ faceId ... ]\n", argv[0] );
       
       return 1;
     }
@@ -51,14 +51,37 @@ int main( int argc, char *argv[] )
   printf("fast input file %s\n", fast_filename);
 
   sprintf( tri_filename, "%s", argv[2] );
-  printf("tri input file %s\n", tri_filename);
-
+  printf("tri output file %s\n", tri_filename);
 
   surface_primal = primal_from_FAST( fast_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
 
+  if ( 3 < argc ) 
+    {
+      Primal subset;
+      Set bcs;
+      int argument;
+      int bc;
+      bcs = set_create(10,10);
+      NOT_NULL(bcs, "Set bcs NULL");
+      for ( argument = 3; argument < argc ; argument++ )
+	{
+	  bc = atoi(argv[argument]);
+	  printf("bc %d\n",bc);
+	  TRY( set_insert( bcs, bc ), 
+	       "set_insert bc into bcs");
+	}
+      subset = primal_subset( surface_primal, bcs );
+      NOT_NULL(subset, "surface_primal NULL");
+      primal_free( surface_primal );
+      surface_primal = subset;
+    }
+
   TRY( primal_export_tri( surface_primal, tri_filename ), 
        "primal_export_tri failed in main")
+
+  TRY( primal_export_tec( surface_primal, NULL ), 
+       "primal_export_tec failed in main")
 
   return 0;
 }

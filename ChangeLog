@@ -1,3 +1,10 @@
+2007-11-06 13:25 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_subset) to extract boundary subset to new
+	primal.
+	* src/knife_convert.c (main) to read boundary subset list and
+	call primal_subset.
+
 2007-11-06 10:10 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_rotate) to rotate about axis at origin.

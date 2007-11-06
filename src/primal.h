@@ -24,6 +24,7 @@ typedef PrimalStruct * Primal;
 END_C_DECLORATION
 
 #include "adj.h"
+#include "set.h"
 
 BEGIN_C_DECLORATION
 
@@ -162,6 +163,8 @@ KNIFE_STATUS primal_flip_yz( Primal ); /* (y=>z,z=>-y) */
 KNIFE_STATUS primal_flip_zy( Primal ); /* (z=>y,y=>-z) */
 
 KNIFE_STATUS primal_flip_face_normals( Primal );
+
+Primal primal_subset( Primal, Set bcs );
 
 KNIFE_STATUS primal_export_tri( Primal, char *filename );
 KNIFE_STATUS primal_export_tec( Primal, char *filename );
