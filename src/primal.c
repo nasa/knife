@@ -832,6 +832,23 @@ KNIFE_STATUS primal_flip_zy( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_reflect_y( Primal primal )
+{
+  int node;
+  double x, y, z;
+  for( node=0; node<primal->nnode ; node++ ) 
+    {
+      x = primal->xyz[0+3*node];
+      y = primal->xyz[1+3*node];
+      z = primal->xyz[2+3*node];
+      primal->xyz[0+3*node] = x;
+      primal->xyz[1+3*node] = -y;
+      primal->xyz[2+3*node] = z;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_flip_face_normals( Primal primal )
 {
   int face, temp;

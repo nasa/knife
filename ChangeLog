@@ -1,3 +1,9 @@
+2007-11-08 16:45 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_reflect_y) to rotate about axis at origin.
+	* src/knife_fortran.c (knife_required_local_dual_) to read reflect_y
+	option from .knife file.
+
 2007-11-06 13:25 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_subset) to extract boundary subset to new

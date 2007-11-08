@@ -162,6 +162,8 @@ KNIFE_STATUS primal_rotate( Primal,
 KNIFE_STATUS primal_flip_yz( Primal ); /* (y=>z,z=>-y) */
 KNIFE_STATUS primal_flip_zy( Primal ); /* (z=>y,y=>-z) */
 
+KNIFE_STATUS primal_reflect_y( Primal );
+
 KNIFE_STATUS primal_flip_face_normals( Primal );
 
 Primal primal_subset( Primal, Set bcs );

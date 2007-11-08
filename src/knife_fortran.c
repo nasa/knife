@@ -182,6 +182,10 @@ void knife_required_local_dual_( char *knife_input_file_name,
 	TRY( primal_flip_zy( surface_primal ), 
 	     "primal_flip_zy error" );
       }
+      if( strcmp(string,"reflect_y") == 0 ) {
+	TRY( primal_reflect_y( surface_primal ), 
+	     "primal_reflect_y error" );
+      }
       if( strcmp(string,"faces") == 0 ) {
 	read_faces = TRUE;
       }
