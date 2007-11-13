@@ -169,6 +169,7 @@ KNIFE_STATUS primal_flip_face_normals( Primal );
 Primal primal_subset( Primal, Set bcs );
 
 KNIFE_STATUS primal_export_tri( Primal, char *filename );
+KNIFE_STATUS primal_export_fast( Primal, char *filename );
 KNIFE_STATUS primal_export_tec( Primal, char *filename );
 
 END_C_DECLORATION

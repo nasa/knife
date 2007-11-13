@@ -80,6 +80,9 @@ int main( int argc, char *argv[] )
   TRY( primal_export_tri( surface_primal, tri_filename ), 
        "primal_export_tri failed in main")
 
+  TRY( primal_export_fast( surface_primal, NULL ), 
+       "primal_export_fast failed in main")
+
   TRY( primal_export_tec( surface_primal, NULL ), 
        "primal_export_tec failed in main")
 
