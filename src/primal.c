@@ -909,9 +909,15 @@ Primal primal_subset( Primal primal, Set bcs )
 		  nnode++;
 		}
 	    }
-	  if ( EMPTY == bcs_o2n[nodes[3]] )
+	  if ( 1 > nodes[3] ) 
 	    {
-	      bcs_o2n[nodes[3]] = nbcs+1; /* one-based numbering */
+	      printf("low bc index %d\n", nodes[3]);
+	      free( node_o2n ); free( face_o2n ); free( bcs_o2n );
+	      return NULL;
+	    }
+	  if ( EMPTY == bcs_o2n[nodes[3]-1] )
+	    {
+	      bcs_o2n[nodes[3]-1] = nbcs+1; /* one-based numbering */
 	      nbcs++;
 	    }
 	}
