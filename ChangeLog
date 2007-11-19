@@ -1,3 +1,8 @@
+2007-11-19 13:45 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_required_local_dual_) call 
+	primal_from_fast or primal_from_tri depending on file extension.
+
 2007-11-19 12:10 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_from_fast) renamed from primal_from_FAST.
