@@ -1,3 +1,7 @@
+2007-11-19 12:00 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_from_tri) import from tri file.
+
 2007-11-13 15:15 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_export_fast) to export fast format.

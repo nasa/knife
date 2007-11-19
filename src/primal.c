@@ -163,6 +163,60 @@ Primal primal_from_FAST( char *filename )
   return primal;
 }
 
+Primal primal_from_tri( char *filename )
+{
+  Primal primal;
+  int nnode, nface, ncell;
+  int i;
+  FILE *file;
+
+  file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return NULL;
+    }
+
+  fscanf(file,"%d %d",&nnode,&nface);
+  ncell = 0;
+  primal = primal_create( nnode, nface, ncell );
+  if ( NULL == primal )
+    {
+      printf("%s: %d: primal_from_tri: primal creation \n",
+	     __FILE__,__LINE__);
+      return NULL;
+    }
+
+  for( i=0; i<nnode ; i++ ) {
+    fscanf(file,"%lf",&(primal->xyz[0+3*i]));
+    fscanf(file,"%lf",&(primal->xyz[1+3*i]));
+    fscanf(file,"%lf",&(primal->xyz[2+3*i]));
+  }
+
+  for( i=0; i<nface ; i++ ) {
+    fscanf(file,"%d",&(primal->f2n[0+4*i]));
+    fscanf(file,"%d",&(primal->f2n[1+4*i]));
+    fscanf(file,"%d",&(primal->f2n[2+4*i]));
+    primal->f2n[0+4*i]--;
+    primal->f2n[1+4*i]--;
+    primal->f2n[2+4*i]--;
+    adj_add( primal->face_adj, primal->f2n[0+4*i], i);
+    adj_add( primal->face_adj, primal->f2n[1+4*i], i);
+    adj_add( primal->face_adj, primal->f2n[2+4*i], i);
+  }
+
+  for( i=0; i<nface ; i++ ) {
+    fscanf(file,"%d",&(primal->f2n[3+4*i]));
+  }
+
+  fclose(file);
+
+  TRYN( primal_establish_all( primal ), "primal_establish_all" );
+
+  return primal;
+}
+
 void primal_free( Primal primal )
 {
   if ( NULL == primal ) return;

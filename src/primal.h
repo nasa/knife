@@ -59,6 +59,7 @@ struct PrimalStruct {
 
 Primal primal_create( int nnode, int nface, int ncell );
 Primal primal_from_FAST( char *filename );
+Primal primal_from_tri( char *filename );
 
 /* Primal *primal_from_FAST_file( char *filename ); */
 
