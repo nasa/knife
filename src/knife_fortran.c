@@ -31,9 +31,12 @@
     int code;						      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
+      char surface_tecplot_filename[1025];                            \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       fflush(stdout);					      \
       *knife_status = code;				      \
+      sprintf(surface_tecplot_filename,"surface%04d.t",partition);    \
+      surface_export_tec( surface, surface_tecplot_filename );\
       return;						      \
     }							      \
   }
