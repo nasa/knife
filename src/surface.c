@@ -225,3 +225,58 @@ KNIFE_STATUS surface_triangulate( Surface surface )
 
   return KNIFE_SUCCESS;
 }
+
+KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
+{
+  FILE *f;
+  int node, tri;
+  Triangle triangle;
+
+  if (NULL == filename)
+    {
+      f = fopen( "surface.t", "w" );
+    } else {
+      f = fopen( filename, "w" );
+    }
+
+  fprintf( f, "title=\"tecplot knife surface geometry file\"\n" );
+  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
+
+  if ( NULL == f ) return KNIFE_FILE_ERROR;
+
+  fprintf( f,
+	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
+	   surface_nnode(surface), surface_ntriangle(surface) );
+
+  for ( node = 0 ; node < surface_nnode(surface) ; node++ )
+    {
+      fprintf( f, "%25.17e %25.17e %25.17e\n", 
+	       node_x(surface_node(surface, node)),
+	       node_y(surface_node(surface, node)),
+	       node_z(surface_node(surface, node)) );
+    }
+
+
+  printf("tri %d\n",surface_ntriangle(surface));
+
+  printf("tri %p \n", (void *)(surface->node));
+
+  for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
+    {
+      triangle = surface_triangle( surface, tri );
+
+      printf("tri %d 0x%p 0x%p %d\n",tri, (void *)triangle, (void *)triangle_node0(triangle),
+( (int)(triangle_node0(triangle)-(surface->node)) )
+);
+
+      fprintf(f, "%d %d %d\n", 
+	      ( (int)(triangle_node0(triangle)-(surface->node)) )+1,
+	      ( (int)(triangle_node1(triangle)-(surface->node)) )+1,
+	      ( (int)(triangle_node2(triangle)-(surface->node)) )+1);
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}
+
