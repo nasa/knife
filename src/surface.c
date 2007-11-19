@@ -232,6 +232,8 @@ KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
   int node, tri;
   Triangle triangle;
 
+  if (NULL == surface) return KNIFE_NULL;
+
   if (NULL == filename)
     {
       f = fopen( "surface.t", "w" );
