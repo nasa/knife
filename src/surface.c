@@ -258,19 +258,9 @@ KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
 	       node_z(surface_node(surface, node)) );
     }
 
-
-  printf("tri %d\n",surface_ntriangle(surface));
-
-  printf("tri %p \n", (void *)(surface->node));
-
   for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
     {
       triangle = surface_triangle( surface, tri );
-
-      printf("tri %d 0x%p 0x%p %d\n",tri, (void *)triangle, (void *)triangle_node0(triangle),
-( (int)(triangle_node0(triangle)-(surface->node)) )
-);
-
       fprintf(f, "%d %d %d\n", 
 	      ( (int)(triangle_node0(triangle)-(surface->node)) )+1,
 	      ( (int)(triangle_node1(triangle)-(surface->node)) )+1,
