@@ -121,6 +121,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   KnifeBool read_faces;
   Set bcs;
   int bc, bc_found;
+  int end_of_string;
 
   if ( *nodedim != primal_nnode(volume_primal)  )
     {
@@ -136,7 +137,15 @@ void knife_required_local_dual_( char *knife_input_file_name,
   NOT_NULL(f , "could not open knife_input_file_name");
 
   fscanf( f, "%s\n", surface_filename);
-  surface_primal = primal_from_fast( surface_filename );
+  end_of_string = strlen(surface_filename);
+
+  surface_primal = NULL;
+  if( strcmp(&surface_filename[end_of_string-3],"tri") == 0 ) {
+    surface_primal = primal_from_tri( surface_filename );
+  } else if( strcmp(&surface_filename[end_of_string-3],"rid") == 0 ) {
+    surface_primal = primal_from_fast( surface_filename );
+  }
+
   if ( NULL == surface_primal ) 
     printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");
