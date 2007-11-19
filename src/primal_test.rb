@@ -46,7 +46,7 @@ class TestPrimal < Test::Unit::TestCase
  end
  
  def test_from_fast
-  primal = Primal.from_FAST(@fast_file)
+  primal = Primal.from_fast(@fast_file)
   assert_equal 4, primal.nnode
   assert_equal 4, primal.nface
   assert_equal 1, primal.ncell

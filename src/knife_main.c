@@ -121,7 +121,7 @@ int main( int argc, char *argv[] )
 
   if (arguments_require_stop) return 0;
 
-  surface_primal = primal_from_FAST( surface_filename );
+  surface_primal = primal_from_fast( surface_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
 
   if( strcmp(surface_filename,"bump.fgrid") == 0 ) {
@@ -134,7 +134,7 @@ int main( int argc, char *argv[] )
   NOT_NULL(surface, "surface NULL");
 
   printf("read in volume grid\n");
-  volume_primal = primal_from_FAST( volume_filename );
+  volume_primal = primal_from_fast( volume_filename );
   NOT_NULL(volume_primal, "volume_primal NULL");
   if (nnodes0>0) volume_primal->nnode0 = nnodes0;
 

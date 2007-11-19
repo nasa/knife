@@ -18,11 +18,11 @@ static VALUE new( VALUE class, VALUE nnode, VALUE nface, VALUE ncell )
   return obj;
 }
 
-VALUE from_FAST( VALUE class, VALUE rb_filename )
+VALUE from_fast( VALUE class, VALUE rb_filename )
 {
   Primal primal;
   VALUE obj;
-  primal = primal_from_FAST( RSTRING(rb_filename)->ptr );
+  primal = primal_from_fast( RSTRING(rb_filename)->ptr );
   obj = Data_Wrap_Struct( class, 0, this_free, primal );
   return obj;
 }
@@ -51,7 +51,7 @@ void Init_Primal()
 {
   cPrimal = rb_define_class( "Primal", rb_cObject );
   rb_define_singleton_method( cPrimal, "new", new, 3 );
-  rb_define_singleton_method( cPrimal, "from_FAST", from_FAST, 1 );
+  rb_define_singleton_method( cPrimal, "from_fast", from_fast, 1 );
   rb_define_method( cPrimal, "nnode", nnode, 0 );
   rb_define_method( cPrimal, "nface", nface, 0 );
   rb_define_method( cPrimal, "ncell", ncell, 0 );

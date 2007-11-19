@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
   sprintf( tri_filename, "%s", argv[2] );
   printf("tri output file %s\n", tri_filename);
 
-  surface_primal = primal_from_FAST( fast_filename );
+  surface_primal = primal_from_fast( fast_filename );
   NOT_NULL(surface_primal, "surface_primal NULL");
 
   if ( 3 < argc ) 

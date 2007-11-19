@@ -1,3 +1,7 @@
+2007-11-19 12:10 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_from_fast) renamed from primal_from_FAST.
+
 2007-11-19 12:00 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_from_tri) import from tri file.

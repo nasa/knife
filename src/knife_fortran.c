@@ -136,7 +136,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   NOT_NULL(f , "could not open knife_input_file_name");
 
   fscanf( f, "%s\n", surface_filename);
-  surface_primal = primal_from_FAST( surface_filename );
+  surface_primal = primal_from_fast( surface_filename );
   if ( NULL == surface_primal ) 
     printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");

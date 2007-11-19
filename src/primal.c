@@ -97,7 +97,7 @@ Primal primal_create(int nnode, int nface, int ncell)
   return primal;
 }
 
-Primal primal_from_FAST( char *filename )
+Primal primal_from_fast( char *filename )
 {
   Primal primal;
   int nnode, nface, ncell;
@@ -116,7 +116,7 @@ Primal primal_from_FAST( char *filename )
   primal = primal_create( nnode, nface, ncell );
   if ( NULL == primal )
     {
-      printf("%s: %d: primal_from_FAST: primal creation \n",
+      printf("%s: %d: primal_from_fast: primal creation \n",
 	     __FILE__,__LINE__);
       return NULL;
     }
