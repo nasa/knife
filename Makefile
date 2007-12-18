@@ -6,6 +6,7 @@ check:
 
 install:
 	( cd `uname` && $(MAKE) install )
+	( cd `uname`64 && $(MAKE) install )
 
 clean:
 	( cd src && $(MAKE) clean )

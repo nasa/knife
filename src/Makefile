@@ -54,6 +54,7 @@ check:
 
 install:
 	( cd ../`uname` && $(MAKE) install )
+	( cd ../`uname`64 && $(MAKE) install )
 
 clean:
 	rm -rf Adj Primal Near Node
