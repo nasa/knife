@@ -1,4 +1,8 @@
 
+Thursday, January 3, 2008: At version 1.0.0, FUN3D r25733 or later 
+passes triangle_tag and precomupted normal and area. Added 
+example/diamond-airfoil VGrid faux geom example.
+
 Tuesday, April 10, 2007: Accounted for fun3d-23948 c2n index flip.
 At version 0.8.1
 

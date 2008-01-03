@@ -1,3 +1,7 @@
+2008-01-03 15:00 Mike Park  <mike.park@nasa.gov>
+
+	* Made 1.0.0 Release. use FUN3D r25733 or later (triangle_tag)
+
 2008-01-03 13:50 Mike Park  <mike.park@nasa.gov>
 
 	* util/cogsg2fgrid.f90 added convert f90 program.
@@ -39,7 +43,7 @@
 	* src/primal.c (primal_subset) to extract boundary subset to new
 	primal.
 	* src/knife_convert.c (main) to read boundary subset list and
-	call primal_subset.
+ 	call primal_subset.
 
 2007-11-06 10:10 Mike Park  <mike.park@nasa.gov>
 
