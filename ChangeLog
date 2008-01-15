@@ -1,3 +1,8 @@
+2008-01-15  4:45 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_convert.c (main) take first argument as .fgrid or .tri
+	input and output primal.* formats.
+
 2008-01-03 15:00 Mike Park  <mike.park@nasa.gov>
 
 	* Made 1.0.0 Release. use FUN3D r25733 or later (triangle_tag)
