@@ -83,8 +83,11 @@ int main( int argc, char *argv[] )
       surface_primal = subset;
     }
 
-  /* TRY( primal_rotate( surface_primal, 0.0, 0.0, 1.0, 0.0023138 ), "rot");
-     TRY( primal_translate( surface_primal, 0.0, 0.86, 0.0 ), "trans"); */
+  /*
+  TRY( primal_rotate( surface_primal, 0.0, 0.0, 1.0, 0.0023138 ), "rot");
+  TRY( primal_rotate( surface_primal, 0.0, 1.0, 0.0, 0.035081 ), "rot");
+  TRY( primal_translate( surface_primal, 0.0, 0.86, 0.0 ), "trans"); 
+  */
 
   TRY( primal_export_tri( surface_primal, NULL ), 
        "primal_export_tri failed in main")
