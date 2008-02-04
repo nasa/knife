@@ -180,6 +180,8 @@ KNIFE_STATUS poly_activate_all_subtri( Poly poly )
 {
   int mask_index;
 
+  if ( NULL == poly ) return KNIFE_NULL;
+
   for ( mask_index = 0;
 	mask_index < poly_nmask(poly); 
 	mask_index++)
