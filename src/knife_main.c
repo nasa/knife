@@ -145,6 +145,24 @@ int main( int argc, char *argv[] )
   NOT_NULL(volume_primal, "volume_primal NULL");
   if (nnodes0>0) volume_primal->nnode0 = nnodes0;
 
+  if (extra_visualization)
+    {
+      int poly_index;
+      printf("extra visualization for poly\n");
+      domain = domain_create( volume_primal, surface );
+      TRY( domain_all_dual( domain ), "domain_all_dual" );
+      TRY( domain_dual_elements( domain ), "domain_dual_elements" );
+      for ( poly_index = 0 ;
+	    poly_index < domain_npoly(domain) ;
+	    poly_index++ )
+	{
+	  poly_activate_all_subtri( domain_poly(domain,poly_index) );
+	  poly_tecplot( domain_poly(domain,poly_index) );
+	}
+      printf("clean domain\n");
+      domain_free( domain );
+    }
+
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
 
@@ -155,18 +173,6 @@ int main( int argc, char *argv[] )
   else
     {
       TRY( domain_all_dual( domain ), "domain_all_dual" );
-    }
-
-  if (extra_visualization)
-    {
-      int poly_index;
-      printf("extra visualization for poly\n");
-      for ( poly_index = 0 ;
-	    poly_index < domain_npoly(domain) ;
-	    poly_index++ )
-	{
-	  poly_tecplot( domain_poly(domain,poly_index) );
-	}
     }
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
