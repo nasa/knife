@@ -110,6 +110,8 @@ KNIFE_STATUS domain_add_interior_poly( Domain domain, int index );
 KNIFE_STATUS domain_required_dual( Domain domain );
 KNIFE_STATUS domain_all_dual( Domain domain );
 
+KNIFE_STATUS domain_dual_elements( Domain domain );
+
 KNIFE_STATUS domain_boolean_subtract( Domain );
 
 KNIFE_STATUS domain_triangulate( Domain );
