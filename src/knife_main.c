@@ -52,6 +52,7 @@ int main( int argc, char *argv[] )
 
   KnifeBool inward_pointing_surface_normal = TRUE;
   KnifeBool tecplot_output = FALSE;
+  KnifeBool extra_visualization = FALSE;
   KnifeBool arguments_require_stop = FALSE;
   int nnodes0 = EMPTY;
 
@@ -92,6 +93,11 @@ int main( int argc, char *argv[] )
 	printf("-t\n");
       }
 
+      if( strcmp(argv[argument],"-x") == 0 ) {
+	extra_visualization = TRUE;
+	printf("-x\n");
+      }
+
       if( strcmp(argv[argument],"--nnodes0") == 0 ) {
 	argument++;
 	nnodes0 = atoi(argv[argument]);
@@ -105,6 +111,7 @@ int main( int argc, char *argv[] )
 	printf("-b face index of surface grid used to cut\n");
 	printf("-v volume fgrid filename\n");
 	printf("-t tecplot output\n");
+	printf("-x extra visualization\n");
 	printf("--nnodes0 parallel debug mode, number of local nodes\n");
 	printf("-h,--help display help info and exit\n");
 	printf("--version display version info and exit\n");
@@ -148,6 +155,18 @@ int main( int argc, char *argv[] )
   else
     {
       TRY( domain_all_dual( domain ), "domain_all_dual" );
+    }
+
+  if (extra_visualization)
+    {
+      int poly_index;
+      printf("extra visualization for poly\n");
+      for ( poly_index = 0 ;
+	    poly_index < domain_npoly(domain) ;
+	    poly_index++ )
+	{
+	  poly_tecplot( domain_poly(domain,poly_index) );
+	}
     }
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
