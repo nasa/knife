@@ -1407,6 +1407,8 @@ KNIFE_STATUS poly_tecplot( Poly poly )
   char filename[1025];
   FILE *f;
 
+  if ( NULL == poly ) return KNIFE_NULL;
+
   poly_tecplot_frame++;
 
   sprintf(filename, "poly%08d.t",poly_tecplot_frame );
