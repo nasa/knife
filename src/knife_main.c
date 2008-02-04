@@ -161,7 +161,9 @@ int main( int argc, char *argv[] )
 	}
       printf("clean domain\n");
       domain_free( domain );
-    }
+      printf("export surface\n");
+      surface_export_tec( surface, "surface.t" );    
+}
 
   domain = domain_create( volume_primal, surface );
   NOT_NULL(domain, "domain NULL");
