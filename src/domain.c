@@ -19,7 +19,7 @@
 
 #define TRY(fcn,msg)					      \
   {							      \
-    int code;						      \
+    KNIFE_STATUS code;					      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
@@ -29,7 +29,7 @@
 
 #define TRYN(fcn,msg)					      \
   {							      \
-    int code;						      \
+    KNIFE_STATUS code;					      \
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
@@ -1233,6 +1233,8 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   int *touched;
   NearStruct target;
 
+  KNIFE_STATUS cut_status;
+
   TRY( domain_dual_elements( domain ), "domain_dual_elements" );
 
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
@@ -1273,10 +1275,17 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 	near_touched(triangle_tree, &target, &ntouched, max_touched, touched);
 	for (i=0;i<ntouched;i++)
 	  {
-	    TRY( cut_establish_between( domain_triangle(domain,triangle_index),
-					surface_triangle(domain->surface,
-							 touched[i]) ),
-		 "cut establishment failed" );
+	    cut_status = 
+	      cut_establish_between( domain_triangle( domain,triangle_index ),
+				     surface_triangle( domain->surface,
+						       touched[i] ) );
+	    if ( KNIFE_SUCCESS != cut_status)
+	      {
+		triangle_tecplot( domain_triangle( domain,triangle_index ) );
+		triangle_tecplot( surface_triangle( domain->surface,
+						    touched[i] ) );
+	      }
+	    TRY( cut_status, "cut establishment failed" );
 	  }
       }
 
