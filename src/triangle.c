@@ -1049,36 +1049,39 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       TRYQ( triangle_subnode_index( triangle, subtri->n2, &node2), "tec sn2");
       fprintf(f, "%6d %6d %6d\n", 1+node0, 1+node1, 1+node2);
     }
-
-  fprintf(f, "zone t=cut, i=%d, j=%d, f=fepoint, et=triangle\n",
-	  2*triangle_ncut(triangle), triangle_ncut(triangle) );
-
-  for ( cut_index = 0;
-	cut_index < triangle_ncut(triangle); 
-	cut_index++)
+  
+  if ( 0 < triangle_ncut(triangle) )
     {
-      cut = triangle_cut(triangle, cut_index);
-      NOT_NULL( cut, "tecplot cut NULL" );
-      intersection = cut_intersection0(cut);
-      NOT_NULL( intersection, "tecplot intersection0 NULL" );
-      TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
-      TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
-      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
-	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
-      intersection = cut_intersection1(cut);
-      NOT_NULL( intersection, "tecplot intersection1 NULL" );
-      TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
-      TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
-      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
-	      uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
-    }
+      fprintf(f, "zone t=cut, i=%d, j=%d, f=fepoint, et=triangle\n",
+	      2*triangle_ncut(triangle), triangle_ncut(triangle) );
 
-  for ( cut_index = 0;
-	cut_index < triangle_ncut(triangle); 
-	cut_index++)
-    {
-      fprintf(f, "%6d %6d %6d\n", 
-	      1+2*cut_index, 2+2*cut_index, 2+2*cut_index);
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	  cut = triangle_cut(triangle, cut_index);
+	  NOT_NULL( cut, "tecplot cut NULL" );
+	  intersection = cut_intersection0(cut);
+	  NOT_NULL( intersection, "tecplot intersection0 NULL" );
+	  TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+	  TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+	  intersection = cut_intersection1(cut);
+	  NOT_NULL( intersection, "tecplot intersection1 NULL" );
+	  TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
+	  TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
+	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
+	}
+
+      for ( cut_index = 0;
+	    cut_index < triangle_ncut(triangle); 
+	    cut_index++)
+	{
+	  fprintf(f, "%6d %6d %6d\n", 
+		  1+2*cut_index, 2+2*cut_index, 2+2*cut_index);
+	}
     }
 
   fprintf(f, "zone t=parent, i=%d, j=%d, f=fepoint, et=triangle\n",
