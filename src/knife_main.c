@@ -149,6 +149,7 @@ int main( int argc, char *argv[] )
     {
       int poly_index;
       printf("extra visualization for poly\n");
+      primal_export_tec( volume_primal, "volume_primal.t" );
       domain = domain_create( volume_primal, surface );
       TRY( domain_all_dual( domain ), "domain_all_dual" );
       TRY( domain_dual_elements( domain ), "domain_dual_elements" );
