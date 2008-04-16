@@ -65,7 +65,9 @@ ntri = triangles(mesh)
 puts "nodes "+nnode.to_s
 puts "tris  "+ntri.to_s
 
-File.open(ARGV[0]+'.tri','w') do |f|
+output_file = ARGV[0]+'.tri'
+
+File.open(output_file,'w') do |f|
  f.puts "#{nnode} #{ntri}"
  dump_points(mesh,f)
  dump_triangles(mesh,f)
