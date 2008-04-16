@@ -224,6 +224,12 @@ void knife_required_local_dual_( char *knife_input_file_name,
   surface = surface_from( surface_primal, bcs, 
 			  inward_pointing_surface_normal );
   NOT_NULL(surface, "surface NULL");
+  if ( 0 == surface_ntriangle(surface) )
+    {
+      printf("giving up in knife_required_local_dual, surface has no faces\n");
+      *knife_status = KNIFE_NOT_FOUND;
+      return;
+    }
 
   TRY( primal_establish_all( volume_primal ), "primal_establish_all" );
 

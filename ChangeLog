@@ -1,3 +1,8 @@
+2008-04-16 16:30 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_required_local_dual_) give up if no
+	triangles in surface.
+
 2008-01-15  4:45 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_convert.c (main) take first argument as .fgrid or .tri
