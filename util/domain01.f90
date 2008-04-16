@@ -103,12 +103,12 @@ program main
 
   open (unit=60,file='faux_input')
   write(60,'(i1)') 6
-  write(60,'(i1," xplane ",f4.1)') 1, x0
-  write(60,'(i1," xplane ",f4.1)') 2, x1
-  write(60,'(i1," yplane ",f4.1)') 3, y0
-  write(60,'(i1," yplane ",f4.1)') 4, y1
-  write(60,'(i1," zplane ",f4.1)') 5, z0
-  write(60,'(i1," zplane ",f4.1)') 6, z1
+  write(60,'(i1," xplane ",f)') 1, x0
+  write(60,'(i1," xplane ",f)') 2, x1
+  write(60,'(i1," yplane ",f)') 3, y0
+  write(60,'(i1," yplane ",f)') 4, y1
+  write(60,'(i1," zplane ",f)') 5, z0
+  write(60,'(i1," zplane ",f)') 6, z1
   write(60,'(a)') ''
   close (60)
 

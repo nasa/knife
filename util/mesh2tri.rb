@@ -77,8 +77,10 @@ mesh = IO.readlines(ARGV[0])
 
 nnode = vertices(mesh)
 ntri = triangles(mesh)
-puts "nodes "+nnode.to_s
-puts "tris  "+ntri.to_s
+puts "nodes"
+puts nnode.to_s
+puts "tris"
+puts ntri.to_s
 
 output_file = ARGV[0]+'.tri'
 
@@ -89,5 +91,6 @@ File.open(output_file,'w') do |f|
  dump_faceids(mesh,f)
 end
 
+puts "faces"
 puts faceids(mesh)
 
