@@ -50,6 +50,21 @@ def dump_faceids(mesh,f)
  end
 end
 
+def faceids(mesh)
+ output = Array.new
+ line_number = mesh.each_with_index do |line, number|
+  break(number) if (line =~ /Triangles/)
+  nil
+ end
+ n=mesh[line_number+1].to_i
+ (line_number+2).upto(line_number+1+n) do |number|
+  line = mesh[number]
+  numbers = line.scan(/\S+/)
+  output << numbers[3]
+ end
+ output.unique.sort
+end
+
 def triangles(mesh)
  line_number = mesh.each_with_index do |line, number|
   break(number) if (line =~ /Triangles/)
@@ -73,3 +88,6 @@ File.open(output_file,'w') do |f|
  dump_triangles(mesh,f)
  dump_faceids(mesh,f)
 end
+
+puts faceids(mesh)
+
