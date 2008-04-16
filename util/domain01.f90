@@ -83,7 +83,7 @@ program main
   write(*,*) "enter  boundaries of cube"
   write(*,*) "x0"
   read(*,*) x0
-  write(*,*) "x0"
+  write(*,*) "x1"
   read(*,*) x1
   write(*,*) "y0"
   read(*,*) y0
