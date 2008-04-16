@@ -1,6 +1,4 @@
-! f90 -r8 -o box box.f90 && ./box
-
-! $Id$
+! f90 -o domain01 domain01.f90 && ./domain01
 
 module kinds
   integer, parameter :: dp = selected_real_kind(P=15)
@@ -56,7 +54,9 @@ program main
 
   implicit none
 
-  integer, parameter :: l=10,m=5,n=10
+  integer, parameter :: m=5
+  integer, parameter :: l=5
+  integer, parameter :: n=5
   integer, parameter :: nnodes = l*m*n
 
   integer, parameter :: ntet = 6*(l-1)*(m-1)*(n-1)
@@ -80,21 +80,26 @@ program main
 
   continue
 
+  write(*,*) "enter  boundaries of cube"
+  write(*,*) "x0"
+  read(*,*) x0
+  write(*,*) "x0"
+  read(*,*) x1
+  write(*,*) "y0"
+  read(*,*) y0
+  write(*,*) "y1"
+  read(*,*) y1
+  write(*,*) "z0"
+  read(*,*) z0
+  write(*,*) "z1"
+  read(*,*) z1
+
   write(*,*) "grid dimensions"
   write(*,'(3i6)') l,m,n
   write(*,*) "nodes"
   write(*,*) nnodes
   write(*,*) "tets"
   write(*,*) ntet
-
-! boundaries of cube
-
-  x0 =  0.00_dp
-  x1 = 20.00_dp
-  y0 = -1.00_dp
-  y1 =  1.00_dp
-  z0 = 00.00_dp
-  z1 = 20.00_dp
 
   open (unit=60,file='faux_input')
   write(60,'(i1)') 6
@@ -114,6 +119,10 @@ program main
         xyz(in,1) = x0 + (x1-x0)/real(l-1,dp)*real(i-1,dp)
         xyz(in,2) = y0 + (y1-y0)/real(m-1,dp)*real(j-1,dp)
         xyz(in,3) = z0 + (z1-z0)/real(n-1,dp)*real(k-1,dp)
+        if (  xyz(in,1) > 1.0e-8_dp ) then
+          xyz(in,3) = z1 + 0.0174550649282176_dp*xyz(in,1)
+          xyz(in,3) = z0 + (xyz(in,3)-z0)/real(n-1,dp)*real(k-1,dp)
+        end if
 !        write(*,*)i,j,k,xyz(in,1),xyz(in,2),xyz(in,3)
       enddo
     enddo
@@ -133,23 +142,23 @@ program main
 
 ! x=x1 i=l
   itestr(2,1) = 2
-  itestr(2,2) = 5005
+  itestr(2,2) = 5000
 
 ! y=y0 j=1
   itestr(3,1) = 3
-  itestr(3,2) = 3000
+  itestr(3,2) = 5000
 
 ! y=y1 j=n
   itestr(4,1) = 4
-  itestr(4,2) = 3000
+  itestr(4,2) = 5000
 
 ! z=z0 k=1
   itestr(5,1) = 5
-  itestr(5,2) = 3000
+  itestr(5,2) = 5000
 
 ! z=z1 k=m
   itestr(6,1) = 6
-  itestr(6,2) = 3000
+  itestr(6,2) = 5000
 
 ! calculate tet nodes
 
