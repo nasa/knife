@@ -54,9 +54,9 @@ program main
 
   implicit none
 
-  integer, parameter :: m=5
-  integer, parameter :: l=5
-  integer, parameter :: n=5
+  integer, parameter :: m=6
+  integer, parameter :: l=6
+  integer, parameter :: n=6
   integer, parameter :: nnodes = l*m*n
 
   integer, parameter :: ntet = 6*(l-1)*(m-1)*(n-1)
