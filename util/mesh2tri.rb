@@ -60,9 +60,9 @@ def faceids(mesh)
  (line_number+2).upto(line_number+1+n) do |number|
   line = mesh[number]
   numbers = line.scan(/\S+/)
-  output << numbers[3]
+  output << numbers[3].to_i
  end
- output.unique.sort
+ output.uniq.sort
 end
 
 def triangles(mesh)
