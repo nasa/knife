@@ -1,3 +1,8 @@
+2008-04-17 16:05 Mike Park  <mike.park@nasa.gov>
+
+	* src/primal.c (primal_export_single_zone_tec) from primal_export_tec
+	* src/primal.c (primal_export_tec) one zone per face id.
+
 2008-04-16 16:30 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_required_local_dual_) give up if no

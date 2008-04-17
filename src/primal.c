@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "primal.h"
+#include "set.h"
 
 #define primal_test_malloc(ptr,fcn)		       \
   if (NULL == (ptr)) {				       \
@@ -51,7 +52,7 @@
   }
 
 #define NOT_NULL(pointer,msg)				      \
-  if (NULL == pointer){					      \
+  if (NULL == (pointer)){				      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
     return KNIFE_NULL;					      \
   }
@@ -1122,6 +1123,10 @@ KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
   int node, face;
   double xyz[3];
   int nodes[4];
+  int *g2l, *l2g;
+  Set set;
+  int zone, faceid;
+  int nnode, ntri;
 
   if (NULL == filename)
     {
@@ -1130,10 +1135,103 @@ KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
       f = fopen( filename, "w" );
     }
 
+  if ( NULL == f ) return KNIFE_FILE_ERROR;
+
   fprintf( f, "title=\"tecplot knife primal geometry file\"\n" );
   fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
 
+  NOT_NULL( set = set_create( 100, 100 ), "set creation failed");
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      TRY( primal_face( primal, face, nodes ), "face");
+      TRY(set_insert( set, nodes[3] ), "set insert" );
+    }
+
+  NOT_NULL( g2l = (int *) malloc( primal_nnode(primal)*sizeof(int) ),
+	    "allocate g2l" );
+
+  for ( zone = 0 ; zone < set_size(set) ; zone++ )
+    {
+
+      faceid = set_item( set, zone );
+
+      for( node = 0; node < primal_nnode(primal) ; node++ )
+	g2l[node] = EMPTY;
+
+      ntri = 0;
+      for ( face = 0 ; face < primal_nface(primal) ; face++ )
+	{
+	  TRY( primal_face( primal, face, nodes ), "face");
+	  if ( faceid == nodes[3] )
+	    {
+	      ntri++;
+	      g2l[nodes[0]] = 1;
+	      g2l[nodes[1]] = 1;
+	      g2l[nodes[2]] = 1;
+	    }
+	}
+
+      nnode = 0;
+      for( node = 0; node < primal_nnode(primal) ; node++ )
+	if ( EMPTY != g2l[node] )
+	  {
+	    g2l[node] = nnode;
+	    nnode++;
+	  }
+
+      fprintf( f,
+	       "zone t=face%d, i=%d, j=%d, f=fepoint, et=triangle\n",
+	       faceid, nnode, ntri );
+      
+      NOT_NULL( l2g = (int *) malloc( nnode*sizeof(int) ),
+		"allocate l2g" );
+      for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+	if ( EMPTY != g2l[node] )
+	  l2g[g2l[node]] = node;
+
+      for ( node = 0 ; node < nnode ; node++ )
+	{
+	  TRY( primal_xyz( primal, l2g[node], xyz ), "xyz");
+	  fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
+	}
+
+      free( l2g );
+
+      for ( face = 0 ; face < primal_nface(primal) ; face++ )
+	{
+	  TRY( primal_face( primal, face, nodes ), "face");
+	  if ( faceid == nodes[3] )
+	    {
+	      fprintf( f, "%d %d %d\n", 
+		       g2l[nodes[0]]+1, g2l[nodes[1]]+1, g2l[nodes[2]]+1 );
+	    }
+	}
+    }
+
+  free(g2l);
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS primal_export_single_zone_tec( Primal primal, char *filename )
+{
+  FILE *f;
+  int node, face;
+  double xyz[3];
+  int nodes[4];
+
+  if (NULL == filename)
+    {
+      f = fopen( "primal.t", "w" );
+    } else {
+      f = fopen( filename, "w" );
+    }
+
   if ( NULL == f ) return KNIFE_FILE_ERROR;
+
+  fprintf( f, "title=\"tecplot knife primal geometry file\"\n" );
+  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
 
   fprintf( f,
 	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
