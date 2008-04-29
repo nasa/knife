@@ -476,7 +476,7 @@ KNIFE_STATUS primal_establish_surface_node( Primal primal )
 	node = primal->f2n[face_node+4*face_index];
 	if ( node < 0 || node >= primal_nnode(primal) ) 
 	  {
-	    printf("%s: %d: %s: node out ot range: f %d of %d, n %d of %d\n",
+	    printf("%s: %d: %s: node out of range: f %d of %d, n %d of %d\n",
 		   __FILE__,__LINE__,
 		   "primal_establish_surface_node", 
 		   face_index, primal_nface(primal), 
