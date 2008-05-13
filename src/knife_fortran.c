@@ -272,9 +272,11 @@ void knife_cut_( int *nodedim, int *required,
       return;
     }
 
-  logger_message("cut");
+  logger_message("create_dual");
 
   TRY( domain_create_dual( domain, required ), "domain_required_local_dual" );
+
+  logger_message("subtract");
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
