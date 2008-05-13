@@ -25,6 +25,7 @@ library_sources = \
 	subnode.h subnode.c \
 	subtri.h subtri.c \
 	loop.h loop.c \
+	logger.h logger.c \
 	knife_fortran.c
 
 libknife_a_CFLAGS  = $(warning_flags)
@@ -52,7 +53,8 @@ libknife_a_include_HEADERS = \
 	near.h \
 	subnode.h \
 	subtri.h \
-	loop.h
+	loop.h \
+	logger.h
 
 bin_PROGRAMS    = knife knife-convert
 

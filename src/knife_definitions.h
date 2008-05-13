@@ -71,6 +71,25 @@ typedef int KNIFE_STATUS;
 #define KNIFE_INCONSISTENT (18)
 #define KNIFE_FILE_ERROR   (19)
 
+#define TSS(fcn,msg)							\
+  {									\
+    KNIFE_STATUS code;							\
+    code = (fcn);							\
+    if (KNIFE_SUCCESS != code){						\
+      printf("%s: %d: %s: %d %s\n",__FILE__,__LINE__,__func__,code,(msg)); \
+      return code;							\
+    }									\
+  }
+
+#define TNS(ptr,msg)							\
+  {									\
+    if ( NULL == (ptr)){				                \
+      printf("%s: %d: %s: NULL pointer %s\n",                           \
+             __FILE__,__LINE__,__func__,(msg));                         \
+      return KNIFE_NULL;		    			        \
+    }									\
+  }
+
 END_C_DECLORATION
 
 #endif /* KNIFE_DEFINITIONS_H */
