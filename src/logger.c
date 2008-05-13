@@ -57,7 +57,8 @@ KNIFE_STATUS logger_message( char *message )
   if ( NULL != file )
     {
       time( &time_now );      
-      fprintf( file, "%8.4f %s", difftime( time_now, start_time ), message );
+      fprintf( file, "%8.4f %s\n", 
+	       difftime( time_now, start_time ), message );
       fflush( file );
     } 
 
