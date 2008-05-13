@@ -18,9 +18,20 @@
 static FILE *file = NULL;
 static time_t start_time;
 
+KNIFE_STATUS logger_partition( int part_id )
+{
+  char filename[1024];
+
+  sprintf( filename, "knife_log_%05d", part_id );
+
+  TSS( logger_filename( filename ), "set file name" );
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS logger_filename( char *filename )
 {
-  static FILE *file_pointer;
+  FILE *file_pointer;
 
   file_pointer = fopen(filename, "wt" );
   TNS( file_pointer, "could not open file");
@@ -42,12 +53,14 @@ KNIFE_STATUS logger_file_pointer( FILE *file_pointer )
 KNIFE_STATUS logger_message( char *message )
 {
   time_t time_now;
+
   if ( NULL != file )
     {
       time( &time_now );      
       fprintf( file, "%8.4f %s", difftime( time_now, start_time ), message );
       fflush( file );
     } 
+
   return KNIFE_SUCCESS;
 }
 
