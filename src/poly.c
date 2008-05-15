@@ -436,7 +436,6 @@ KNIFE_STATUS poly_paint( Poly poly )
   logger_message("paint:uncut masks");
 
   /* activate poly surfaces that were not cut */
-  if (TRUE) {
   another_coat_of_paint = TRUE;
   while (another_coat_of_paint)
     {
@@ -453,9 +452,6 @@ KNIFE_STATUS poly_paint( Poly poly )
 				   &another_coat_of_paint ), "paint surf ");
 	}
     }
-  }else{
-    /* TRY ( poly_paint_surf_via_front( poly ), "paint surf via front" ); */
-  }
   logger_message("paint:uncut surfs");
 
   verify_code = poly_verify_painting( poly );
