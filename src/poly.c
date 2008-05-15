@@ -546,7 +546,7 @@ KNIFE_STATUS poly_relax_region( Poly poly )
   Mask mask, surf;
   int cut_index;
   Cut cut;
-  int mask_region, surf_region, region;
+  int mask_region, surf_region;
 
   int segment_index;
   Segment segment;
@@ -593,15 +593,7 @@ KNIFE_STATUS poly_relax_region( Poly poly )
 	  if ( mask_region != surf_region )
 	    {
 	      more_relaxation = TRUE;
-	      region = MAX( mask_region, surf_region );
-	      mask_set_intersection_region( mask,
-					    cut_intersection0(cut), 
-					    cut_intersection1(cut),
-					    region);
-	      mask_set_intersection_region( surf,
-					    cut_intersection0(cut), 
-					    cut_intersection1(cut),
-					    region);
+	      poly_collapse_regions( poly, mask_region, surf_region );
 	    }
 	}
     }
@@ -653,7 +645,7 @@ KNIFE_STATUS poly_relax_nodes( Poly poly, Mask mask, Node node0, Node node1,
   Mask other_mask;
   int mask_index;
   int subtri_index0, subtri_index1;
-  int region0, region1, region;
+  int region0, region1;
   KNIFE_STATUS status;
 
   triangle = mask_triangle(mask);
@@ -683,9 +675,7 @@ KNIFE_STATUS poly_relax_nodes( Poly poly, Mask mask, Node node0, Node node1,
 	  else
 	    {
 	      *more_relaxation = TRUE;
-	      region = MAX( region0, region1 );
-	      mask->region[subtri_index0] = region;
-	      other_mask->region[subtri_index1] = region;
+	      poly_collapse_regions( poly, region0, region1 );
 	      return KNIFE_SUCCESS;
 	    }
 	}
@@ -701,7 +691,7 @@ KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment,
   int triangle_index;
   int subtri_index0, subtri_index1;
   KNIFE_STATUS status;
-  int region0, region1, region;
+  int region0, region1;
 
   if ( 0 != segment_nintersection( segment  ) ) return KNIFE_SUCCESS;
 
@@ -732,14 +722,25 @@ KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment,
 	  if ( region0 != region1 )
 	    {
 	      *more_relaxation = TRUE;
-	      region = MAX( region0, region1 );
-	      mask->region[subtri_index0] = region;
-	      other_mask->region[subtri_index1] = region;
+	      poly_collapse_regions( poly, region0, region1 );
 	      return KNIFE_SUCCESS;
 	    }
 	}
     }
   
+
+  return KNIFE_SUCCESS;
+}
+
+KNIFE_STATUS poly_collapse_regions( Poly poly, int region0, int region1 )
+{
+  int mask_index;
+
+  for ( mask_index = 0; mask_index < poly_nmask(poly); mask_index++)
+    mask_collapse_regions( poly_mask(poly, mask_index), region0, region1 );
+
+  for ( mask_index = 0; mask_index < poly_nsurf(poly); mask_index++)
+    mask_collapse_regions( poly_surf(poly, mask_index), region0, region1 );
 
   return KNIFE_SUCCESS;
 }

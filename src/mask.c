@@ -410,6 +410,23 @@ KNIFE_STATUS mask_verify_paint( Mask mask )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS mask_collapse_regions( Mask mask, int region0, int region1 )
+{
+  Triangle triangle;
+  int subtri_index;
+
+  triangle = mask_triangle(mask);
+  
+  for ( subtri_index = 0;
+	subtri_index < triangle_nsubtri(triangle); 
+	subtri_index++)
+    if ( ( mask->region[subtri_index] == region0 ) ||
+	 ( mask->region[subtri_index] == region1 ) )
+	 mask->region[subtri_index] = MAX( region0, region1);
+  
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS mask_dump_geom( Mask mask, FILE *f )
 {
   Triangle triangle;

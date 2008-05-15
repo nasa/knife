@@ -62,6 +62,8 @@ KNIFE_STATUS poly_relax_nodes( Poly poly, Mask mask, Node, Node,
 KNIFE_STATUS poly_relax_segment( Poly poly, Mask mask, Segment segment, 
 				 KnifeBool *more_relaxation );
 
+KNIFE_STATUS poly_collapse_regions( Poly, int region0, int region1 );
+
 KNIFE_STATUS poly_gather_active_surf( Poly, Triangle, int region );
 
 KnifeBool poly_active_mask_with_nodes( Poly, Node n0, Node n1, Node n2, 

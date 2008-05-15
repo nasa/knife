@@ -61,6 +61,7 @@ KNIFE_STATUS mask_set_intersection_region( Mask, Intersection, Intersection,
 
 KNIFE_STATUS mask_paint( Mask );
 KNIFE_STATUS mask_verify_paint( Mask );
+KNIFE_STATUS mask_collapse_regions( Mask, int region0, int region1 );
 
 KNIFE_STATUS mask_dump_geom( Mask, FILE * );
 
