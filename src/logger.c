@@ -17,6 +17,7 @@
 
 static FILE *file = NULL;
 static time_t start_time;
+static time_t last_time;
 
 KNIFE_STATUS logger_partition( int part_id )
 {
@@ -46,6 +47,7 @@ KNIFE_STATUS logger_file_pointer( FILE *file_pointer )
   file = file_pointer;
 
   time( &start_time );
+  last_time = start_time;
 
   return KNIFE_SUCCESS;
 }
@@ -57,9 +59,12 @@ KNIFE_STATUS logger_message( char *message )
   if ( NULL != file )
     {
       time( &time_now );      
-      fprintf( file, "%8.4f %s\n", 
-	       difftime( time_now, start_time ), message );
+      fprintf( file, "%8.4f %8.4f %s\n", 
+	       difftime( time_now, start_time ), 
+	       difftime( time_now, last_time ), 
+	       message );
       fflush( file );
+      last_time = time_now;
     } 
 
   return KNIFE_SUCCESS;
