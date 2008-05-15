@@ -438,9 +438,10 @@ KNIFE_STATUS poly_paint( Poly poly )
 
   /* activate poly surfaces that were not cut */
   number_cut = poly_nsurf(poly);
-  for ( mask_index = 0;
-	mask_index < number_cut; /* do not grow poly_nsurf(poly) */
-	mask_index++)
+  /* backwards for relax speed up, MAX(region) */
+  for ( mask_index = number_cut-1;
+	mask_index >= 0 ;
+	mask_index--)
     {
       mask = poly_surf(poly,mask_index);
       triangle = mask_triangle(mask);
