@@ -19,6 +19,8 @@
 
 #include "logger.h"
 
+#define FORTRAN_LOGGER_LEVEL (0)
+
 #include "primal.h"
 #include "surface.h"
 #include "domain.h"
@@ -67,7 +69,7 @@ void knife_volume_( int *part_id,
 
   /* to enable logging by partition id number */
   logger_partition( *part_id );
-  logger_message("volume");
+  logger_message( FORTRAN_LOGGER_LEVEL, "volume");
 
   /* so tecplot filenames will include processor id */
   triangle_set_frame( 10000*partition);
@@ -102,7 +104,7 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
 		      int *knife_status )
 {
 
-  logger_message("boundary");
+  logger_message( FORTRAN_LOGGER_LEVEL, "boundary");
 
   if ( *nface > 0 )
     TRY( primal_copy_boundary( volume_primal, *face_id, 
@@ -134,7 +136,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   int bc, bc_found;
   int end_of_string;
 
-  logger_message("req loc dual");
+  logger_message( FORTRAN_LOGGER_LEVEL, "req loc dual");
 
   if ( *nodedim != primal_nnode(volume_primal)  )
     {
@@ -272,11 +274,11 @@ void knife_cut_( int *nodedim, int *required,
       return;
     }
 
-  logger_message("create_dual");
+  logger_message( FORTRAN_LOGGER_LEVEL, "create_dual");
 
   TRY( domain_create_dual( domain, required ), "domain_required_local_dual" );
 
-  logger_message("subtract");
+  logger_message( FORTRAN_LOGGER_LEVEL, "subtract");
 
   TRY( domain_boolean_subtract( domain ), "boolean subtract" );
 
@@ -300,7 +302,7 @@ void knife_dual_topo_( int *nodedim, int *topo,
 {
   int node;
 
-  logger_message("topo");
+  logger_message( FORTRAN_LOGGER_LEVEL, "topo");
 
   if ( *nodedim != domain_npoly( domain ) )
     {

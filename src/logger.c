@@ -19,6 +19,13 @@ static FILE *file = NULL;
 static time_t start_time;
 static time_t last_time;
 static clock_t last_clock_time;
+static int verbosity = 0;
+
+KNIFE_STATUS logger_verbosity( int verbosity_arg )
+{
+  verbosity = verbosity_arg;
+  return KNIFE_SUCCESS;
+}
 
 KNIFE_STATUS logger_partition( int part_id )
 {
@@ -54,12 +61,12 @@ KNIFE_STATUS logger_file_pointer( FILE *file_pointer )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS logger_message( char *message )
+KNIFE_STATUS logger_message( int level, char *message )
 {
   time_t time_now;
   clock_t clock_time;
 
-  if ( NULL != file )
+  if ( (verbosity >= level) && (NULL != file)  )
     {
       time_now = time( (time_t *)NULL );
       clock_time = clock(  );      

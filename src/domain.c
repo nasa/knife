@@ -18,6 +18,8 @@
 #include "near.h"
 #include "logger.h"
 
+#define DOMAIN_LOGGER_LEVEL (0)
+
 #define TRY(fcn,msg)					      \
   {							      \
     KNIFE_STATUS code;					      \
@@ -1236,14 +1238,14 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
 
   KNIFE_STATUS cut_status;
 
-  logger_message("subtract:dual_elements");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:dual_elements");
   TRY( domain_dual_elements( domain ), "domain_dual_elements" );
 
   triangle_tree = (NearStruct *)malloc( surface_ntriangle(domain->surface) * 
 					sizeof(NearStruct));
   NOT_NULL( triangle_tree, "triangle_tree NULL");
 
-  logger_message("subtract:surface near");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:surface near");
   for (triangle_index=0;
        triangle_index<surface_ntriangle(domain->surface);
        triangle_index++)
@@ -1263,7 +1265,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   touched = (int *) malloc( max_touched * sizeof(int) );
   NOT_NULL( touched, "touched NULL");
 
-  logger_message("subtract:cut");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:cut");
   for ( triangle_index = 0;
 	triangle_index < domain_ntriangle(domain); 
 	triangle_index++)
@@ -1296,17 +1298,17 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   free(touched);
   free(triangle_tree);
 
-  logger_message("subtract:triangulate");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:triangulate");
   TRY( domain_triangulate(domain), "domain_triangulate" );
 
-  logger_message("subtract:gather_surf");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:gather_surf");
   TRY( domain_gather_surf(domain), "domain_gather_surf" );
 
-  logger_message("subtract:active");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:active");
   TRY( domain_determine_active_subtri(domain), 
        "domain_determine_active_subtri" );
 
-  logger_message("subtract:set_dual_topology");
+  logger_message( DOMAIN_LOGGER_LEVEL, "subtract:set_dual_topology");
   TRY( domain_set_dual_topology( domain ), "domain_set_dual_topology" );
 
   return (KNIFE_SUCCESS);

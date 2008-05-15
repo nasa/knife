@@ -16,6 +16,8 @@
 #include "cut.h"
 #include "logger.h"
 
+#define POLY_LOGGER_LEVEL (1)
+
 static int poly_tecplot_frame = 0;
 
 #define TRY(fcn,msg)					      \
@@ -362,7 +364,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 
   KNIFE_STATUS verify_code;
 
-  logger_message("paint:start");
+  logger_message( POLY_LOGGER_LEVEL, "paint:start");
 
   /* paint poly mask */
   for ( mask_index = 0;
@@ -405,7 +407,7 @@ KNIFE_STATUS poly_paint( Poly poly )
       return verify_code;
     }
 
-  logger_message("paint:masks");
+  logger_message( POLY_LOGGER_LEVEL, "paint:masks");
 
   /* activate poly masks that were not cut */
   another_coat_of_paint = TRUE;
@@ -434,7 +436,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 	}
     }
   
-  logger_message("paint:uncut masks");
+  logger_message( POLY_LOGGER_LEVEL, "paint:uncut masks");
 
   /* activate poly surfaces that were not cut */
   number_cut = poly_nsurf(poly);
@@ -450,7 +452,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 			       triangle_segment(triangle,segment_index)), 
 	      "paint surf ");
     }
-  logger_message("paint:uncut surfs");
+  logger_message( POLY_LOGGER_LEVEL, "paint:uncut surfs");
 
   verify_code = poly_verify_painting( poly );
 
@@ -461,12 +463,12 @@ KNIFE_STATUS poly_paint( Poly poly )
       return verify_code;
     }
 
-  logger_message("paint:active");
+  logger_message( POLY_LOGGER_LEVEL, "paint:active");
 
   /* everyone is active now, relax regions */
   TRY( poly_relax_region( poly ), "region relax" );
 
-  logger_message("paint:relax");
+  logger_message( POLY_LOGGER_LEVEL, "paint:relax");
 
   /* compact region indexes (set counter?) */
   regions = set_create( 10, 10 );
@@ -516,7 +518,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 
   set_free( regions );
 
-  logger_message("paint:compact");
+  logger_message( POLY_LOGGER_LEVEL, "paint:compact");
 
   return KNIFE_SUCCESS;
 }

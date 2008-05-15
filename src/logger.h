@@ -21,10 +21,11 @@
 
 BEGIN_C_DECLORATION
 
+KNIFE_STATUS logger_verbosity( int verbosity );
 KNIFE_STATUS logger_partition( int part_id );
 KNIFE_STATUS logger_filename( char *filename );
 KNIFE_STATUS logger_file_pointer( FILE *file_pointer );
-KNIFE_STATUS logger_message( char *message );
+KNIFE_STATUS logger_message( int level, char *message );
 
 END_C_DECLORATION
 
