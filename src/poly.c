@@ -358,6 +358,7 @@ KNIFE_STATUS poly_paint( Poly poly )
 
   int region;
   Set regions;
+  int number_cut;
 
   KNIFE_STATUS verify_code;
 
@@ -436,21 +437,17 @@ KNIFE_STATUS poly_paint( Poly poly )
   logger_message("paint:uncut masks");
 
   /* activate poly surfaces that were not cut */
-  another_coat_of_paint = TRUE;
-  while (another_coat_of_paint)
+  number_cut = poly_nsurf(poly);
+  for ( mask_index = 0;
+	mask_index < number_cut; /* do not grow poly_nsurf(poly) */
+	mask_index++)
     {
-      another_coat_of_paint = FALSE;
-      for ( mask_index = 0;
-	    mask_index < poly_nsurf(poly); 
-	    mask_index++)
-	{
-	  mask = poly_surf(poly,mask_index);
-	  triangle = mask_triangle(mask);
-	  for ( segment_index = 0; segment_index < 3; segment_index++ )
-	    TRY ( poly_paint_surf( poly, mask,
-				   triangle->segment[segment_index],
-				   &another_coat_of_paint ), "paint surf ");
-	}
+      mask = poly_surf(poly,mask_index);
+      triangle = mask_triangle(mask);
+      for ( segment_index = 0; segment_index < 3; segment_index++ )
+	TRY ( poly_paint_surf( poly, mask,
+			       triangle_segment(triangle,segment_index)), 
+	      "paint surf ");
     }
   logger_message("paint:uncut surfs");
 
@@ -815,8 +812,7 @@ KnifeBool poly_active_mask_with_nodes( Poly poly,
   return FALSE;
 }
 
-KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf, 
-			      Segment segment, KnifeBool *another_pass )
+KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf, Segment segment )
 {
   KNIFE_STATUS status;
   Triangle triangle, other_triangle;
@@ -838,18 +834,20 @@ KNIFE_STATUS poly_paint_surf( Poly poly, Mask surf,
       TRY( triangle_neighbor( triangle, segment, &other_triangle), 
 	   "other tri" );
       TRY( poly_gather_active_surf( poly, other_triangle,
-				    mask_subtri_region(surf,subtri_index),
-				    another_pass ), "gather act surf");
+				    mask_subtri_region(surf,subtri_index)  ), 
+	   "gather act surf");
     }
 
   return KNIFE_SUCCESS;
 }
 
 KNIFE_STATUS poly_gather_active_surf( Poly poly, Triangle triangle,
-				      int region,
-				      KnifeBool *true_if_added )
+				      int region )
 {
   Mask surf;
+  int segment_index;
+  Segment segment;
+  Triangle other_triangle;
 
   if ( poly_has_surf_triangle( poly, triangle ) ) return KNIFE_SUCCESS;
 
@@ -860,7 +858,14 @@ KNIFE_STATUS poly_gather_active_surf( Poly poly, Triangle triangle,
 
   TRY( poly_add_surf(poly,surf), "add surf" );
 
-  (*true_if_added) = TRUE;
+  for ( segment_index = 0; segment_index < 3; segment_index++ )
+    {
+      segment = triangle_segment( triangle, segment_index );
+      TRY( triangle_neighbor( triangle, segment, &other_triangle), 
+	   "other tri" );
+      TRY( poly_gather_active_surf( poly, other_triangle, region ), 
+	   "rec gather" );
+    }
 
   return KNIFE_SUCCESS;
 }
