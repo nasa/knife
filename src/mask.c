@@ -49,10 +49,6 @@ Mask mask_create( Triangle traingle, KnifeBool inward_pointing_normal )
   mask->inward_pointing_normal = inward_pointing_normal;
   mask->region   = NULL;
 
-  mask->other_masks[0] = NULL;
-  mask->other_masks[1] = NULL;
-  mask->other_masks[2] = NULL;
-
   return mask;
 }
 
