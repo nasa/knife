@@ -17,6 +17,6 @@ echo "Running bootstrap ..."
 
 top_level=`pwd`
 
-echo "Running ../configure --prefix=$top_level $* ..."
-( cd $arch && ../configure --prefix=$top_level $* )
+( cd $arch && echo "Running ../configure --prefix=`pwd` $* ..." )
+( cd $arch && ../configure --prefix=`pwd` $* )
 
