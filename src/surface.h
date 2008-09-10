@@ -58,6 +58,8 @@ void surface_free( Surface );
 
 KNIFE_STATUS surface_triangulate( Surface );
 
+KNIFE_STATUS surface_export_array( Surface, double *xyz, int *t2n );
+
 KNIFE_STATUS surface_export_tec( Surface, char *filename );
 
 END_C_DECLORATION

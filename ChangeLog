@@ -1,3 +1,7 @@
+2008-09-10 11:00 Mike Park  <mike.park@nasa.gov>
+
+	* src/surface.c (surface_export_array) added to export surf to arrays.
+
 2008-04-17 16:05 Mike Park  <mike.park@nasa.gov>
 
 	* src/primal.c (primal_export_single_zone_tec) from primal_export_tec

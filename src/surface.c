@@ -226,6 +226,30 @@ KNIFE_STATUS surface_triangulate( Surface surface )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS surface_export_array( Surface surface, double *xyz, int *t2n )
+{
+  int node, tri;
+  Triangle triangle;
+
+  for ( node = 0 ; node < surface_nnode(surface) ; node++ )
+    {
+      xyz[0+3*node] = node_x(surface_node(surface, node));
+      xyz[1+3*node] = node_y(surface_node(surface, node));
+      xyz[2+3*node] = node_z(surface_node(surface, node));
+    }
+
+  for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
+    {
+      triangle = surface_triangle( surface, tri );
+      t2n[0+4*tri] = surface_node_index(surface, triangle_node0(triangle) );
+      t2n[1+4*tri] = surface_node_index(surface, triangle_node1(triangle) );
+      t2n[2+4*tri] = surface_node_index(surface, triangle_node2(triangle) );
+      t2n[3+4*tri] = triangle_boundary_face_index(triangle);
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
 {
   FILE *f;
