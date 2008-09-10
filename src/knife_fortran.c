@@ -53,6 +53,15 @@
     return;						\
   }
 
+#define ASSERT_INT_EQ(int1,int2,msg)			\
+  if ( (int1) != (int2) ) {				\
+    printf("%s: %d: %d != %d %s\n",                     \
+           __FILE__,__LINE__,(int1),(int2),(msg));	\
+    fflush(stdout);					\
+    *knife_status = KNIFE_INCONSISTENT;			\
+    return;						\
+  }
+
 static Primal  surface_primal = NULL;
 static Surface surface        = NULL;
 static Primal  volume_primal  = NULL;
@@ -627,6 +636,59 @@ void knife_boundary_triangles__( int *node, int *face, int *region,
 			     triangle_normal,
 			     triangle_area,
 			     knife_status );
+}
+
+void knife_cut_surface_dim_( int *nnode, int *ntriangle, int *knife_status )
+{
+
+  if ( NULL == surface )
+    {
+      *nnode = 0;
+      *ntriangle  = 0;
+      *knife_status = KNIFE_NULL;
+      return;
+    }
+
+  *nnode     = surface_nnode(surface);
+  *ntriangle = surface_ntriangle(surface);
+
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_cut_surface_dim__( int *nnode, int *ntriangle, int *knife_status )
+{
+  knife_cut_surface_dim_( nnode, ntriangle, knife_status );
+}
+
+void knife_cut_surface_( int *nnode, double *xyz, 
+			 int *ntriangle, int *t2n, 
+			 int *knife_status )
+{
+  int tri;
+
+  if ( NULL == surface )
+    {
+      *knife_status = KNIFE_NULL;
+      return;
+    }
+  ASSERT_INT_EQ( *nnode, surface_nnode(surface), "number of nodes" );
+  ASSERT_INT_EQ( *ntriangle, surface_ntriangle(surface),"number of triangles");
+
+  TRY( surface_export_array( surface, xyz, t2n ), "surface_export_array" );
+
+  for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
+    {
+      t2n[0+4*tri]++;
+      t2n[1+4*tri]++;
+      t2n[2+4*tri]++;
+    }
+
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_cut_surface__( int *nnode, double *xyz, 
+			  int *ntriangle, int *t2n, 
+			  int *knife_status )
+{
+  knife_cut_surface_( nnode, xyz, ntriangle, t2n, knife_status );
 }
 
 void knife_free_( int *knife_status )

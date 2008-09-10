@@ -1,3 +1,8 @@
+2008-09-10 11:15 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_cut_surface_dim_,knife_cut_surface_)
+	added to export surf to fortran arrays.
+
 2008-09-10 11:00 Mike Park  <mike.park@nasa.gov>
 
 	* src/surface.c (surface_export_array) added to export surf to arrays.
