@@ -262,9 +262,9 @@ KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
     {
       triangle = surface_triangle( surface, tri );
       fprintf(f, "%d %d %d\n", 
-	      ( (int)(triangle_node0(triangle)-(surface->node)) )+1,
-	      ( (int)(triangle_node1(triangle)-(surface->node)) )+1,
-	      ( (int)(triangle_node2(triangle)-(surface->node)) )+1);
+	      surface_node_index(surface, triangle_node0(triangle) )+1,
+	      surface_node_index(surface, triangle_node1(triangle) )+1,
+	      surface_node_index(surface, triangle_node2(triangle) )+1 );
     }
 
   fclose(f);

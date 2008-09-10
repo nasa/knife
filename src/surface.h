@@ -45,6 +45,8 @@ void surface_free( Surface );
 #define surface_nnode(surface) ((surface)->nnode)
 #define surface_node(surface,node_index) \
   (&((surface)->node[(node_index)]))
+#define surface_node_index(surface,this_node) \
+  ( (int)( (this_node) - ((surface)->node) ) )
 
 #define surface_nsegment(surface) ((surface)->nsegment)
 #define surface_segment(surface,segment_index) \
