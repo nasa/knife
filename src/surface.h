@@ -55,6 +55,8 @@ void surface_free( Surface );
 #define surface_ntriangle(surface) ((surface)->ntriangle)
 #define surface_triangle(surface,triangle_index) \
   (&((surface)->triangle[(triangle_index)]))
+#define surface_triangle_index(surface,this_triangle) \
+  ( (int)( (this_triangle) - ((surface)->triangle) ) )
 
 KNIFE_STATUS surface_triangulate( Surface );
 
