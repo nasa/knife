@@ -573,6 +573,39 @@ void knife_surface_triangles__( int *node, int *region,
 			    knife_status );
 }
 
+void knife_surface_sens_( int *node, int *region, int *nsubtri,
+			  int *parent,
+			  double *triangle_uvw0,
+			  double *triangle_uvw1,
+			  double *triangle_uvw2,
+			  int *knife_status )
+{
+  Poly poly;
+
+  poly = domain_poly( domain, (*node)-1 );
+  NOT_NULL(poly, "poly NULL in knife_surface_triangles_");
+
+  TRY( poly_surface_sens( poly, *region, *nsubtri, 
+			  parent,
+			  triangle_uvw0, triangle_uvw1, triangle_uvw2,
+			  surface ), 
+       "poly_surface_sens" );
+  
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_surface_sens__( int *node, int *region, int *nsubtri,
+			   int *parent,
+			   double *triangle_uvw0,
+			   double *triangle_uvw1,
+			   double *triangle_uvw2,
+			   int *knife_status )
+{
+  knife_surface_sens_( node, region, nsubtri,
+		       parent,
+		       triangle_uvw0, triangle_uvw1, triangle_uvw2,
+		       knife_status );
+}
+
 void knife_number_of_boundary_triangles_( int *node, int *face, int *region,
 					  int *nsubtri,
 					  int *knife_status )

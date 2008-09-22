@@ -26,6 +26,7 @@ END_C_DECLORATION
 #include "array.h"
 #include "triangle.h"
 #include "mask.h"
+#include "surface.h"
 
 BEGIN_C_DECLORATION
 
@@ -114,6 +115,13 @@ KNIFE_STATUS poly_surface_subtri( Poly, int region, int nsubtri,
 				  double *triangle_normal,
 				  double *triangle_area,
 				  int *triangle_tag );
+
+KNIFE_STATUS poly_surface_sens( Poly, int region, int nsubtri, 
+				int *parent,
+				double *triangle_uvw0, 
+				double *triangle_uvw1,
+				double *triangle_uvw2,
+				Surface surface );
 
 KNIFE_STATUS poly_boundary_nsubtri( Poly, int face_index, int region, 
 				    int *nsubtri );

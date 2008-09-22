@@ -1,3 +1,10 @@
+2008-09-22 14:40 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_surface_sens_)
+	to get cut poly connection to surface.
+	* src/poly.c (poly_surface_sens)
+	to get uvw of subtrianges that are part of the cut surface
+
 2008-09-10 11:15 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_cut_surface_dim_,knife_cut_surface_)

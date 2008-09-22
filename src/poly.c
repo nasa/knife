@@ -1263,6 +1263,66 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri, 
+				int *parent,
+				double *triangle_uvw0, 
+				double *triangle_uvw1,
+				double *triangle_uvw2, 
+				Surface surface )
+{
+  int surf_index;
+  Mask surf;
+  Triangle triangle;
+  Subtri subtri;
+  int subtri_index;
+  int n;
+
+  n = 0;
+  for ( surf_index = 0;
+	surf_index < poly_nsurf(poly); 
+	surf_index++)
+    {
+      surf = poly_surf(poly,surf_index);
+      triangle = mask_triangle(surf);
+      for ( subtri_index = 0 ; 
+	    subtri_index < triangle_nsubtri( triangle);
+	    subtri_index++ )
+	if ( region == mask_subtri_region(surf,subtri_index) )
+	  {
+	    if ( n >= nsubtri )
+	      {
+		printf("%s: %d: too many subtri found for argument\n",
+		       __FILE__,__LINE__);
+		return KNIFE_ARRAY_BOUND;
+	      }
+	    parent[n] = surface_triangle_index(surface,triangle);
+	    subtri = triangle_subtri( triangle, subtri_index );
+	    if ( mask_inward_pointing_normal( surf ) )
+	      {
+		subnode_xyz( subtri_n1(subtri), &(triangle_uvw0[3*n]) );
+		subnode_xyz( subtri_n0(subtri), &(triangle_uvw1[3*n]) );
+		subnode_xyz( subtri_n2(subtri), &(triangle_uvw2[3*n]) );
+	      }
+	    else
+	      {
+		subnode_xyz( subtri_n0(subtri), &(triangle_uvw0[3*n]) );
+		subnode_xyz( subtri_n1(subtri), &(triangle_uvw1[3*n]) );
+		subnode_xyz( subtri_n2(subtri), &(triangle_uvw2[3*n]) );
+	      }
+	    n++;
+	  }
+    }
+
+  if ( n != nsubtri )
+    {
+      printf("%s: %d: not enough subtri found %d of %d\n",
+	     __FILE__,__LINE__, n, nsubtri);
+      return KNIFE_MISSING;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_boundary_nsubtri( Poly poly, int face_index, int region, 
 				    int *nsubtri )
 {
