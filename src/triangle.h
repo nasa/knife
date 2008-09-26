@@ -73,6 +73,8 @@ void triangle_free( Triangle );
 #define triangle_node1(triangle) ((triangle)->node1)
 #define triangle_node2(triangle) ((triangle)->node2)
 
+int triangle_node_index(Triangle, Node);
+
 #define triangle_xyz0(triangle) (node_xyz(triangle_node0(triangle)))
 #define triangle_xyz1(triangle) (node_xyz(triangle_node1(triangle)))
 #define triangle_xyz2(triangle) (node_xyz(triangle_node2(triangle)))

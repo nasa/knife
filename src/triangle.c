@@ -155,6 +155,16 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
+int triangle_node_index( Triangle triangle, Node node )
+{
+  if ( NULL == triangle ) return EMPTY;
+  if ( NULL == node ) return EMPTY;
+  if ( triangle_node0(triangle) == node ) return 0;
+  if ( triangle_node1(triangle) == node ) return 1;
+  if ( triangle_node2(triangle) == node ) return 2;
+  return EMPTY;
+}
+
 KNIFE_STATUS triangle_set_frame( int frame )
 {
   triangle_eps_frame     = frame;
