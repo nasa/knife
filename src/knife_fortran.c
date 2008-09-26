@@ -591,6 +591,11 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
 			  surface ), 
        "poly_surface_sens" );
   
+  for ( tri = 0 ; tri < nsubtri ; tri++ )
+    {
+      parent[tri]++;
+    }
+
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_surface_sens__( int *node, int *region, int *nsubtri,
