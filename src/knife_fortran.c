@@ -594,7 +594,10 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
   
   for ( tri = 0 ; tri < (*nsubtri) ; tri++ )
     {
-      parent[tri]++;
+      parent[0+4*tri]++;
+      parent[1+4*tri]++;
+      parent[2+4*tri]++;
+      parent[3+4*tri]++;
     }
 
   *knife_status = KNIFE_SUCCESS;

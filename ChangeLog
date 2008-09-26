@@ -1,3 +1,8 @@
+2008-09-26 11:00 Mike Park  <mike.park@nasa.gov>
+
+	* src/poly.c (poly_surface_sens) parent is dim 4 for subnode parent.
+	* src/knife_fortran.c (knife_surface_sens_) parent is dim 4.
+
 2008-09-22 14:40 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_surface_sens_)

@@ -1295,8 +1295,14 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		       __FILE__,__LINE__);
 		return KNIFE_ARRAY_BOUND;
 	      }
-	    parent[n] = surface_triangle_index(surface,triangle);
 	    subtri = triangle_subtri( triangle, subtri_index );
+	    parent[0+4*n] = 
+	      triangle_node_index(triangle, subnode_node(subtri_n0(subtri)) );
+	    parent[1+4*n] = 
+	      triangle_node_index(triangle, subnode_node(subtri_n1(subtri)) );
+	    parent[2+4*n] = 
+	      triangle_node_index(triangle, subnode_node(subtri_n2(subtri)) );
+	    parent[3+4*n] = surface_triangle_index(surface,triangle);
 	    if ( mask_inward_pointing_normal( surf ) )
 	      {
 		subnode_xyz( subtri_n1(subtri), &(triangle_uvw0[3*n]) );
