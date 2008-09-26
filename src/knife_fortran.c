@@ -581,6 +581,7 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
 			  int *knife_status )
 {
   Poly poly;
+  int tri;
 
   poly = domain_poly( domain, (*node)-1 );
   NOT_NULL(poly, "poly NULL in knife_surface_triangles_");
@@ -591,7 +592,7 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
 			  surface ), 
        "poly_surface_sens" );
   
-  for ( tri = 0 ; tri < nsubtri ; tri++ )
+  for ( tri = 0 ; tri < (*nsubtri) ; tri++ )
     {
       parent[tri]++;
     }
