@@ -118,9 +118,9 @@ KNIFE_STATUS poly_surface_subtri( Poly, int region, int nsubtri,
 
 KNIFE_STATUS poly_surface_sens( Poly, int region, int nsubtri, 
 				int *parent,
-				double *triangle_uvw0, 
-				double *triangle_uvw1,
-				double *triangle_uvw2,
+				double *constraint_xyz0, 
+				double *constriant_xyz1,
+				double *constraint_xyz2,
 				Surface surface );
 
 KNIFE_STATUS poly_boundary_nsubtri( Poly, int face_index, int region, 

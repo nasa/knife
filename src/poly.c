@@ -1265,9 +1265,9 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
 
 KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri, 
 				int *parent,
-				double *triangle_uvw0, 
-				double *triangle_uvw1,
-				double *triangle_uvw2, 
+				double *constraint_xyz0, 
+				double *constraint_xyz1,
+				double *constraint_xyz2, 
 				Surface surface )
 {
   int surf_index;
@@ -1303,15 +1303,15 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 	    parent[3+4*n] = surface_triangle_index(surface,triangle);
 	    if ( mask_inward_pointing_normal( surf ) )
 	      {
-		subnode_xyz( subtri_n1(subtri), &(triangle_uvw0[3*n]) );
-		subnode_xyz( subtri_n0(subtri), &(triangle_uvw1[3*n]) );
-		subnode_xyz( subtri_n2(subtri), &(triangle_uvw2[3*n]) );
+		subnode_xyz( subtri_n1(subtri), &(constraint_xyz0[3*n]) );
+		subnode_xyz( subtri_n0(subtri), &(constraint_xyz1[3*n]) );
+		subnode_xyz( subtri_n2(subtri), &(constraint_xyz2[3*n]) );
 	      }
 	    else
 	      {
-		subnode_xyz( subtri_n0(subtri), &(triangle_uvw0[3*n]) );
-		subnode_xyz( subtri_n1(subtri), &(triangle_uvw1[3*n]) );
-		subnode_xyz( subtri_n2(subtri), &(triangle_uvw2[3*n]) );
+		subnode_xyz( subtri_n0(subtri), &(constraint_xyz0[3*n]) );
+		subnode_xyz( subtri_n1(subtri), &(constraint_xyz1[3*n]) );
+		subnode_xyz( subtri_n2(subtri), &(constraint_xyz2[3*n]) );
 	      }
 	    for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 	      {
@@ -1329,15 +1329,15 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		    if ( EMPTY != parent[subnode_index+4*n] )
 		      {
 			parent[subnode_index+4*n] += 3;
-			triangle_uvw0[0+3*n] = segment_xyz0(segment)[0];
-			triangle_uvw0[1+3*n] = segment_xyz0(segment)[1];
-			triangle_uvw0[2+3*n] = segment_xyz0(segment)[2];
-			triangle_uvw1[0+3*n] = segment_xyz1(segment)[0];
-			triangle_uvw1[1+3*n] = segment_xyz1(segment)[1];
-			triangle_uvw1[2+3*n] = segment_xyz1(segment)[2];
-			triangle_uvw2[0+3*n] = segment_xyz0(segment)[0];
-			triangle_uvw2[1+3*n] = segment_xyz0(segment)[1];
-			triangle_uvw2[2+3*n] = segment_xyz0(segment)[2];
+			constraint_xyz0[0+3*n] = segment_xyz0(segment)[0];
+			constraint_xyz0[1+3*n] = segment_xyz0(segment)[1];
+			constraint_xyz0[2+3*n] = segment_xyz0(segment)[2];
+			constraint_xyz1[0+3*n] = segment_xyz1(segment)[0];
+			constraint_xyz1[1+3*n] = segment_xyz1(segment)[1];
+			constraint_xyz1[2+3*n] = segment_xyz1(segment)[2];
+			constraint_xyz2[0+3*n] = segment_xyz0(segment)[0];
+			constraint_xyz2[1+3*n] = segment_xyz0(segment)[1];
+			constraint_xyz2[2+3*n] = segment_xyz0(segment)[2];
 		      }
 		  }
 	      }
