@@ -1275,6 +1275,10 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
   Triangle triangle;
   Subtri subtri;
   int subtri_index;
+  Subnode subnode;
+  int subnode_index;
+  Intersection intersection;
+  Segment segment;
   int n;
 
   n = 0;
@@ -1296,12 +1300,21 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		return KNIFE_ARRAY_BOUND;
 	      }
 	    subtri = triangle_subtri( triangle, subtri_index );
-	    parent[0+4*n] = 
-	      triangle_node_index(triangle, subnode_node(subtri_n0(subtri)) );
-	    parent[1+4*n] = 
-	      triangle_node_index(triangle, subnode_node(subtri_n1(subtri)) );
-	    parent[2+4*n] = 
-	      triangle_node_index(triangle, subnode_node(subtri_n2(subtri)) );
+	    for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
+	      {
+		subnode = subtri_subnode(subtri,subnode_index);
+		parent[subnode_index+4*n] = 
+		  triangle_node_index(triangle, subnode_node(subnode) );
+		if ( EMPTY == parent[subnode_index+4*n] )
+		  {
+		    intersection = subnode_intersection(subnode);
+		    NOT_NULL( intersection,
+			      "subnode (without node) intersection NULL");
+		    segment = intersection_segment( intersection );
+		    parent[subnode_index+4*n] = 
+		      triangle_segment_index( triangle, segment );
+		  }
+	      }
 	    parent[3+4*n] = surface_triangle_index(surface,triangle);
 	    if ( mask_inward_pointing_normal( surf ) )
 	      {
