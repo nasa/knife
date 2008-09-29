@@ -47,6 +47,8 @@ void subtri_free( Subtri );
 #define subtri_has1(subtri,n)						\
   ( ((subtri)->n0==(n)) || ((subtri)->n1==(n)) || ((subtri)->n2==(n)) )
 
+Subnode subtri_subnode( Subtri, int index );
+
 KNIFE_STATUS subtri_replace_node( Subtri, Subnode old_node, Subnode new_node );
 
 KNIFE_STATUS subtri_orient( Subtri, Subnode, 

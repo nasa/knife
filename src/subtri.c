@@ -68,6 +68,17 @@ void subtri_free( Subtri subtri )
   free( subtri );
 }
 
+Subnode subtri_subnode( Subtri subtri, int index )
+{
+  if ( NULL == subtri ) return NULL;
+
+  if ( 0 == index ) return subtri_n0(subtri);
+  if ( 1 == index ) return subtri_n1(subtri);
+  if ( 2 == index ) return subtri_n2(subtri);
+
+  return NULL;
+}
+
 KNIFE_STATUS subtri_replace_node( Subtri subtri, 
 				  Subnode old_node, Subnode new_node )
 {
