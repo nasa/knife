@@ -1313,6 +1313,10 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		    segment = intersection_segment( intersection );
 		    parent[subnode_index+4*n] = 
 		      triangle_segment_index( triangle, segment );
+		    if ( EMPTY != parent[subnode_index+4*n] )
+		      {
+			parent[subnode_index+4*n] += 3;
+		      }
 		  }
 	      }
 	    parent[3+4*n] = surface_triangle_index(surface,triangle);
