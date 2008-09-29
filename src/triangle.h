@@ -54,6 +54,8 @@ void triangle_free( Triangle );
 #define triangle_segment(triangle,segment_index)	\
   ((triangle)->segment[segment_index])
 
+int triangle_segment_index(Triangle, Segment);
+
 #define triangle_has1(triangle,node)		\
   ( (triangle)->node0 == node ||		\
     (triangle)->node1 == node ||		\

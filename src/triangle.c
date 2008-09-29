@@ -155,6 +155,16 @@ void triangle_free( Triangle triangle )
   free( triangle );
 }
 
+int triangle_segment_index( Triangle triangle, Segment segment )
+{
+  if ( NULL == triangle ) return EMPTY;
+  if ( NULL == segment ) return EMPTY;
+  if ( triangle_segment(triangle,0) == segment ) return 0;
+  if ( triangle_segment(triangle,1) == segment ) return 1;
+  if ( triangle_segment(triangle,2) == segment ) return 2;
+  return EMPTY;
+}
+
 int triangle_node_index( Triangle triangle, Node node )
 {
   if ( NULL == triangle ) return EMPTY;
