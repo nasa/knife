@@ -1272,14 +1272,14 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 {
   int surf_index;
   Mask surf;
-  Triangle triangle;
+  Triangle triangle, other;
   Subtri subtri;
   int subtri_index;
   Subnode subnode;
   int subnode_index;
   Intersection intersection;
   Segment segment;
-  int n;
+  int n, ixyz;
 
   n = 0;
   for ( surf_index = 0;
@@ -1301,17 +1301,11 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 	      }
 	    subtri = triangle_subtri( triangle, subtri_index );
 	    parent[3+4*n] = surface_triangle_index(surface,triangle);
-	    if ( mask_inward_pointing_normal( surf ) )
+	    for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 	      {
-		subnode_xyz( subtri_n1(subtri), &(constraint_xyz0[3*n]) );
-		subnode_xyz( subtri_n0(subtri), &(constraint_xyz1[3*n]) );
-		subnode_xyz( subtri_n2(subtri), &(constraint_xyz2[3*n]) );
-	      }
-	    else
-	      {
-		subnode_xyz( subtri_n0(subtri), &(constraint_xyz0[3*n]) );
-		subnode_xyz( subtri_n1(subtri), &(constraint_xyz1[3*n]) );
-		subnode_xyz( subtri_n2(subtri), &(constraint_xyz2[3*n]) );
+		constraint_xyz0[ixyz+3*n] = 0.0;
+		constraint_xyz1[ixyz+3*n] = 0.0;
+		constraint_xyz2[ixyz+3*n] = 0.0;
 	      }
 	    for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 	      {
@@ -1326,18 +1320,34 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		    segment = intersection_segment( intersection );
 		    parent[subnode_index+4*n] = 
 		      triangle_segment_index( triangle, segment );
-		    if ( EMPTY != parent[subnode_index+4*n] )
+		    if ( EMPTY == parent[subnode_index+4*n] )
+		      {
+			parent[subnode_index+4*n] = 6;
+			other = intersection_triangle( intersection );
+			NOT_NULL( other,
+				  "intersection other tri NULL");
+			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
+			  {
+			    constraint_xyz0[ixyz+3*n] = 
+			      triangle_xyz0(other)[ixyz];
+			    constraint_xyz1[ixyz+3*n] = 
+			      triangle_xyz1(other)[ixyz];
+			    constraint_xyz2[ixyz+3*n] = 
+			      triangle_xyz2(other)[ixyz];
+			  }
+		      }
+		    else
 		      {
 			parent[subnode_index+4*n] += 3;
-			constraint_xyz0[0+3*n] = segment_xyz0(segment)[0];
-			constraint_xyz0[1+3*n] = segment_xyz0(segment)[1];
-			constraint_xyz0[2+3*n] = segment_xyz0(segment)[2];
-			constraint_xyz1[0+3*n] = segment_xyz1(segment)[0];
-			constraint_xyz1[1+3*n] = segment_xyz1(segment)[1];
-			constraint_xyz1[2+3*n] = segment_xyz1(segment)[2];
-			constraint_xyz2[0+3*n] = segment_xyz0(segment)[0];
-			constraint_xyz2[1+3*n] = segment_xyz0(segment)[1];
-			constraint_xyz2[2+3*n] = segment_xyz0(segment)[2];
+			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
+			  {
+			    constraint_xyz0[ixyz+3*n] = 
+			      segment_xyz0(segment)[ixyz];
+			    constraint_xyz1[ixyz+3*n] = 
+			      segment_xyz1(segment)[ixyz];
+			    constraint_xyz2[ixyz+3*n] = 
+			      segment_xyz0(segment)[ixyz];
+			  }
 		      }
 		  }
 	      }
