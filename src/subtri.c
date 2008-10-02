@@ -248,6 +248,41 @@ KNIFE_STATUS subtri_echo_uvw( Subtri subtri )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS subtri_echo( Subtri subtri )
+{
+  char uvw_format[]="subnode %d xyz %.16e %.16e %.16e\n";
+  char xyz_format[]="subnode %d uvw %.16e %.16e %.16e\n";
+  if (NULL == subtri) return KNIFE_NULL;
+
+  printf( xyz_format,0,
+	  subnode_x(subtri_n0(subtri)),
+	  subnode_y(subtri_n0(subtri)),
+	  subnode_z(subtri_n0(subtri)));
+  printf( xyz_format,1,
+	  subnode_x(subtri_n1(subtri)),
+	  subnode_y(subtri_n1(subtri)),
+	  subnode_z(subtri_n1(subtri)));
+  printf( xyz_format,3,
+	  subnode_x(subtri_n2(subtri)),
+	  subnode_y(subtri_n2(subtri)),
+	  subnode_z(subtri_n2(subtri)));
+
+  printf( uvw_format,0,
+	  subnode_u(subtri_n0(subtri)),
+	  subnode_v(subtri_n0(subtri)),
+	  subnode_w(subtri_n0(subtri)));
+  printf( uvw_format,1,
+	  subnode_u(subtri_n1(subtri)),
+	  subnode_v(subtri_n1(subtri)),
+	  subnode_w(subtri_n1(subtri)));
+  printf( uvw_format,3,
+	  subnode_u(subtri_n2(subtri)),
+	  subnode_v(subtri_n2(subtri)),
+	  subnode_w(subtri_n2(subtri)));
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS subtri_center( Subtri subtri, double *center )
 {
   center[0] = ( subnode_x(subtri_n0(subtri)) +
