@@ -925,7 +925,10 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
     }
 
   if ( best_area < 1.0e-14 )
-    {    
+    {
+      printf("from %20.16f %20.16f %20.16f\n  to %20.16f %20.16f %20.16f\n",
+	     subnode_u( node2 ), subnode_v( node2 ), subnode_w( node2 ),
+	     subnode_u( node3 ), subnode_v( node3 ), subnode_w( node3 ) );
       printf("%s: %d: best area %e\n",__FILE__,__LINE__,best_area);
       return KNIFE_NOT_FOUND;
     }
