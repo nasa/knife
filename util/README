@@ -2,3 +2,5 @@ http://people.nas.nasa.gov/~aftosmis/cart3d/surfaceModeling.html
 
 stl->admesh->off2tri->tri
 
+admesh --write-off=project.off project.stl
+~/knife/util/off2tri.rb project.off
