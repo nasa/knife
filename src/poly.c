@@ -1329,8 +1329,6 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		      {
 			/* subnode parent is intersection with triangle [6] */
 			parent[subnode_index+4*n] = 6;
-			NOT_NULL( other,
-				  "intersection other tri NULL");
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
 			    constraint_xyz0[ixyz+3*n] = 
@@ -1346,6 +1344,8 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 			/* subnode parent is intersection with dual tri [3-5]*/
 			parent[subnode_index+4*n] += 3;
 			other = intersection_triangle( intersection );
+			NOT_NULL( other,
+				  "intersection other tri NULL");
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
 			    constraint_xyz0[ixyz+3*n] = 
