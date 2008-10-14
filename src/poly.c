@@ -1314,6 +1314,7 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 	    for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 	      {
 		subnode = subtri_subnode(subtri,subnode_index);
+		/* subnode parent is triangle node [0-2] */
 		parent[subnode_index+4*n] = 
 		  triangle_node_index(triangle, subnode_node(subnode) );
 		if ( EMPTY == parent[subnode_index+4*n] )
@@ -1326,6 +1327,7 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		      triangle_segment_index( triangle, segment );
 		    if ( EMPTY == parent[subnode_index+4*n] )
 		      {
+			/* subnode parent is intersection with triangle [6] */
 			parent[subnode_index+4*n] = 6;
 			other = intersection_triangle( intersection );
 			NOT_NULL( other,
@@ -1342,6 +1344,7 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		      }
 		    else
 		      {
+			/* subnode parent is intersection with dual tri [3-5]*/
 			parent[subnode_index+4*n] += 3;
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
