@@ -1329,23 +1329,8 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		      {
 			/* subnode parent is intersection with triangle [6] */
 			parent[subnode_index+4*n] = 6;
-			other = intersection_triangle( intersection );
 			NOT_NULL( other,
 				  "intersection other tri NULL");
-			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
-			  {
-			    constraint_xyz0[ixyz+3*n] = 
-			      triangle_xyz0(other)[ixyz];
-			    constraint_xyz1[ixyz+3*n] = 
-			      triangle_xyz1(other)[ixyz];
-			    constraint_xyz2[ixyz+3*n] = 
-			      triangle_xyz2(other)[ixyz];
-			  }
-		      }
-		    else
-		      {
-			/* subnode parent is intersection with dual tri [3-5]*/
-			parent[subnode_index+4*n] += 3;
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
 			    constraint_xyz0[ixyz+3*n] = 
@@ -1354,6 +1339,21 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 			      segment_xyz1(segment)[ixyz];
 			    constraint_xyz2[ixyz+3*n] = 
 			      segment_xyz0(segment)[ixyz];
+			  }
+		      }
+		    else
+		      {
+			/* subnode parent is intersection with dual tri [3-5]*/
+			parent[subnode_index+4*n] += 3;
+			other = intersection_triangle( intersection );
+			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
+			  {
+			    constraint_xyz0[ixyz+3*n] = 
+			      triangle_xyz0(other)[ixyz];
+			    constraint_xyz1[ixyz+3*n] = 
+			      triangle_xyz1(other)[ixyz];
+			    constraint_xyz2[ixyz+3*n] = 
+			      triangle_xyz2(other)[ixyz];
 			  }
 		      }
 		  }
