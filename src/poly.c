@@ -1268,10 +1268,8 @@ KNIFE_STATUS poly_surface_subtri( Poly poly, int region, int nsubtri,
 }
 
 KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri, 
-				int *parent,
-				double *constraint_xyz0, 
-				double *constraint_xyz1,
-				double *constraint_xyz2, 
+				int *constraint_type,
+				double *constraint_xyz, 
 				Surface surface )
 {
   int surf_index;
@@ -1304,55 +1302,53 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		return KNIFE_ARRAY_BOUND;
 	      }
 	    subtri = triangle_subtri( triangle, subtri_index );
-	    parent[3+4*n] = surface_triangle_index(surface,triangle);
+	    constraint_type[3+4*n] = surface_triangle_index(surface,triangle);
 	    for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 	      {
-		for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
+		for ( ixyz = 0 ; ixyz < 9 ; ixyz++ )
 		  {
-		    constraint_xyz0[ixyz+3*subnode_index+9*n] = 0.0;
-		    constraint_xyz1[ixyz+3*subnode_index+9*n] = 0.0;
-		    constraint_xyz2[ixyz+3*subnode_index+9*n] = 0.0;
+		    constraint_xyz[ixyz+9*subnode_index+27*n] = 0.0;
 		  }
 		subnode = subtri_subnode(subtri,subnode_index);
 		/* subnode parent is triangle node [0-2] */
-		parent[subnode_index+4*n] = 
+		constraint_type[subnode_index+4*n] = 
 		  triangle_node_index(triangle, subnode_node(subnode) );
-		if ( EMPTY == parent[subnode_index+4*n] )
+		if ( EMPTY == constraint_type[subnode_index+4*n] )
 		  {
 		    intersection = subnode_intersection(subnode);
 		    NOT_NULL( intersection,
 			      "subnode (without node) intersection NULL");
 		    segment = intersection_segment( intersection );
-		    parent[subnode_index+4*n] = 
+		    constraint_type[subnode_index+4*n] = 
 		      triangle_segment_index( triangle, segment );
-		    if ( EMPTY == parent[subnode_index+4*n] )
+		    if ( EMPTY == constraint_type[subnode_index+4*n] )
 		      {
 			/* subnode parent is intersection with triangle [6] */
-			parent[subnode_index+4*n] = 6;
+			constraint_type[subnode_index+4*n] = 6;
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
-			    constraint_xyz0[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+0+9*subnode_index+27*n] = 
 			      segment_xyz0(segment)[ixyz];
-			    constraint_xyz1[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+3+9*subnode_index+27*n] = 
 			      segment_xyz1(segment)[ixyz];
-			    constraint_xyz2[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+6+9*subnode_index+27*n] = 
 			      segment_xyz0(segment)[ixyz];
 			  }
 		      }
 		    else
 		      {
 			/* subnode parent is intersection with dual tri [3-5]*/
-			parent[subnode_index+4*n] += 3;
+			constraint_type[subnode_index+4*n] += 3;
 			other = intersection_triangle( intersection );
 			NOT_NULL( other,
 				  "intersection other tri NULL");
 			for ( ixyz = 0 ; ixyz < 3 ; ixyz++ )
 			  {
-			    constraint_xyz0[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+0+9*subnode_index+27*n] = 
 			      triangle_xyz0(other)[ixyz];
-			    constraint_xyz1[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+3+9*subnode_index+27*n] = 
 			      triangle_xyz1(other)[ixyz];
-			    constraint_xyz2[ixyz+3*subnode_index+9*n] = 
+			    constraint_xyz[ixyz+6+9*subnode_index+27*n] = 
 			      triangle_xyz2(other)[ixyz];
 			  }
 		      }

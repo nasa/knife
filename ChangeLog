@@ -1,3 +1,8 @@
+2008-10-16  8:25 Mike Park  <mike.park@nasa.gov>
+
+	* src/poly.c (poly_surface_sens) combined constraint_xyz.
+	* src/knife_fortran.c (knife_surface_sens_) combined constraint_xyz.
+
 2008-09-26 11:00 Mike Park  <mike.park@nasa.gov>
 
 	* src/poly.c (poly_surface_sens) parent is dim 4 for subnode parent.

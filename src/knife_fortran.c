@@ -574,10 +574,8 @@ void knife_surface_triangles__( int *node, int *region,
 }
 
 void knife_surface_sens_( int *node, int *region, int *nsubtri,
-			  int *parent,
-			  double *constraint_xyz0,
-			  double *constraint_xyz1,
-			  double *constraint_xyz2,
+			  int *constraint_type,
+			  double *constraint_xyz,
 			  int *knife_status )
 {
   Poly poly;
@@ -587,31 +585,29 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
   NOT_NULL(poly, "poly NULL in knife_surface_triangles_");
 
   TRY( poly_surface_sens( poly, *region, *nsubtri, 
-			  parent,
-			  constraint_xyz0, constraint_xyz1, constraint_xyz2,
+			  constraint_type,
+			  constraint_xyz,
 			  surface ), 
        "poly_surface_sens" );
   
   for ( tri = 0 ; tri < (*nsubtri) ; tri++ )
     {
-      parent[0+4*tri]++;
-      parent[1+4*tri]++;
-      parent[2+4*tri]++;
-      parent[3+4*tri]++;
+      constraint_type[0+4*tri]++;
+      constraint_type[1+4*tri]++;
+      constraint_type[2+4*tri]++;
+      constraint_type[3+4*tri]++;
     }
 
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_surface_sens__( int *node, int *region, int *nsubtri,
-			   int *parent,
-			   double *constraint_xyz0,
-			   double *constraint_xyz1,
-			   double *constraint_xyz2,
+			   int *constraint_type,
+			   double *constraint_xyz,
 			   int *knife_status )
 {
   knife_surface_sens_( node, region, nsubtri,
-		       parent,
-		       constraint_xyz0, constraint_xyz1, constraint_xyz2,
+		       constraint_type,
+		       constraint_xyz,
 		       knife_status );
 }
 
