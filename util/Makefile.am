@@ -5,5 +5,6 @@ EXTRA_DIST = \
 	off2tri.rb \
 	mesh2tri.rb \
 	domain01.sh \
-	domain01.f90
+	domain01.f90 \
+	primitive_from_conserved_tecplot.eqn
 
