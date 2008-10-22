@@ -119,12 +119,16 @@ Surface surface_from( Primal primal, Set bcs,
     {
       global_iface = face_l2g[local_iface];
       primal_face(primal, global_iface, face);
-      for (i=0;i<3;i++)
-	if (EMPTY == node_g2l[face[i]]) 
-	  {
-	    node_g2l[face[i]] = surface_nnode(surface);
-	    (surface->nnode)++;
-	  }
+      for (i=0;i<3;i++) node_g2l[face[i]] = 1;
+    }
+
+  for (global_node=0;global_node<primal_nnode(primal);global_node++)
+    {
+      if (EMPTY != node_g2l[global_node]) 
+	{
+	  node_g2l[global_node] = surface_nnode(surface);
+	  (surface->nnode)++;
+	}
     }
 
   surface->node = (NodeStruct *) malloc( surface_nnode(surface) * 

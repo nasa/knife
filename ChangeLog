@@ -1,3 +1,7 @@
+2008-10-22 16:25 Mike Park  <mike.park@nasa.gov>
+
+	* src/surface.c (surface_from) maintain primal node order.
+
 2008-10-16  8:25 Mike Park  <mike.park@nasa.gov>
 
 	* src/poly.c (poly_surface_sens) combined constraint_xyz.
