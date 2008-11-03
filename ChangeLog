@@ -1,3 +1,9 @@
+2008-11-03  9:05 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_between_poly_sens_)
+	to get cut edge connection to surface.
+	* src/poly.c (poly_between_sens) to get cut edge connection to surface.
+
 2008-10-22 16:25 Mike Park  <mike.park@nasa.gov>
 
 	* src/surface.c (surface_from) maintain primal node order.

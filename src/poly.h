@@ -107,6 +107,13 @@ KNIFE_STATUS poly_subtri_between( Poly poly1, int region1,
 				  double *triangle_normal,
 				  double *triangle_area );
 
+KNIFE_STATUS poly_between_sens( Poly poly1, int region1, 
+				Poly poly2, int region2,
+				Node node, int nsubtri,
+				int *parent_int,
+				double *parent_xyz, 
+				Surface surface );
+
 KNIFE_STATUS poly_surface_nsubtri( Poly, int region, int *nsubtri );
 KNIFE_STATUS poly_surface_subtri( Poly, int region, int nsubtri, 
 				  double *triangle_node0, 

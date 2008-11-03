@@ -506,6 +506,50 @@ void knife_triangles_between_poly__( int *node1, int *region1,
 				 knife_status );
 }
 
+void knife_between_poly_sens_( int *node1, int *region1,
+			       int *node2, int *region2,
+			       int *nsubtri,
+			       int *parent_int,
+			       double *parent_xyz,
+			       int *knife_status )
+{
+  int edge;
+  Poly poly1, poly2;
+  Node node;
+
+  poly1 = domain_poly( domain, (*node1)-1 );
+  NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_sens_");
+
+  poly2 = domain_poly( domain, (*node2)-1 );
+  NOT_NULL( poly2, "poly2 NULL in knife_ntriangles_between_sens_");
+
+  TRY( primal_find_edge( volume_primal, (*node1)-1,  (*node2)-1, &edge ), 
+       "no edge found by primal_edge_between"); 
+
+  node = domain_node_at_edge_center( domain, edge );
+  NOT_NULL(node, "edge node NULL in knife_triangles_between_");
+
+  TRY( poly_between_sens( poly1, *region1, poly2, *region2, node, *nsubtri, 
+			  parent_int, parent_xyz, surface ), 
+       "poly_subtri_between" );
+  
+  *knife_status = KNIFE_SUCCESS;
+}
+void knife_between_poly_sens__( int *node1, int *region1,
+				int *node2, int *region2,
+				int *nsubtri,
+				int *parent_int,
+				double *parent_xyz,
+				int *knife_status )
+{
+  knife_between_poly_sens_( node1, region1,
+			    node2, region2,
+			    nsubtri,
+			    parent_int,
+			    parent_xyz,
+			    knife_status );
+}
+
 void knife_number_of_surface_triangles_( int *node, int *region,
 					 int *nsubtri,
 					 int *knife_status )
