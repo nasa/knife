@@ -516,6 +516,7 @@ void knife_between_poly_sens_( int *node1, int *region1,
   int edge;
   Poly poly1, poly2;
   Node node;
+  int tri;
 
   poly1 = domain_poly( domain, (*node1)-1 );
   NOT_NULL( poly1, "poly1 NULL in knife_ntriangles_between_sens_");
