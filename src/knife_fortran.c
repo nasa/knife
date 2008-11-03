@@ -533,6 +533,11 @@ void knife_between_poly_sens_( int *node1, int *region1,
 			  parent_int, parent_xyz, surface ), 
        "poly_subtri_between" );
   
+  for ( tri = 0 ; tri < 9*(*nsubtri) ; tri++ )
+    {
+      parent_int[tri]++;
+    }
+
   *knife_status = KNIFE_SUCCESS;
 }
 void knife_between_poly_sens__( int *node1, int *region1,
