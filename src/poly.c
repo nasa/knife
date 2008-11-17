@@ -1584,8 +1584,8 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
 	      area = entire_triangle_area * subtri_reference_area( subtri );
 	      triangle_area[n] = area;
 	      n++;
-	    }
-    }
+	    } /* face_index subtri_index region */
+    } /* mask_index */
 
   if ( n != nsubtri )
     {
@@ -1702,11 +1702,11 @@ KNIFE_STATUS poly_boundary_sens( Poly poly, int face_index, int region,
 			      return KNIFE_ARRAY_BOUND;
 			    }
 			}
-		    }
-		}
+		    } 
+		} /* subnode_index */
 	      n++;
-	    }
-    }
+	    }  /* face_index subtri_index region */
+    } /* mask_index */
 
   if ( n != nsubtri )
     {
