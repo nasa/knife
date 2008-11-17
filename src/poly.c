@@ -1597,6 +1597,127 @@ KNIFE_STATUS poly_boundary_subtri( Poly poly, int face_index, int region,
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS poly_boundary_sens( Poly poly, int face_index, int region, 
+				 int nsubtri, 
+				 int *parent_int,
+				 double *parent_xyz, 
+				 Surface surface )
+
+{
+  int n;
+  int ixyz;
+  int mask_index;
+  Mask mask;
+  int triangle_index;
+  Triangle triangle, other;
+  int subtri_index;
+  Subtri subtri;
+  int subnode_index;
+  Subnode subnode;
+  Intersection intersection;
+  Segment segment;
+
+  n = 0;
+  for ( mask_index = 0;
+	mask_index < poly_nmask(poly); 
+	mask_index++)
+    {
+      mask = poly_mask(poly,mask_index);
+      triangle = mask_triangle(mask);
+      if ( face_index == triangle_boundary_face_index(triangle) )
+	for ( subtri_index = 0 ; 
+	      subtri_index < triangle_nsubtri( triangle);
+	      subtri_index++ )
+	  if ( region == mask_subtri_region(mask,subtri_index) )
+	    {
+	      if ( n >= nsubtri )
+		{
+		  printf("%s: %d: too many subtri found for argument\n",
+			 __FILE__,__LINE__);
+		  return KNIFE_ARRAY_BOUND;
+		}
+	      subtri = triangle_subtri( triangle, subtri_index );
+	      for ( ixyz = 0 ; ixyz < 3 ; ixyz++ ) 
+		{
+		  parent_xyz[ixyz+3*0+9*n]=triangle_xyz0(triangle)[ixyz];
+		  parent_xyz[ixyz+3*1+9*n]=triangle_xyz1(triangle)[ixyz];
+		  parent_xyz[ixyz+3*2+9*n]=triangle_xyz2(triangle)[ixyz];
+		}
+
+	      for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
+		{
+		  subnode = subtri_subnode(subtri,subnode_index);
+		  intersection = subnode_intersection(subnode);
+		  if ( NULL == intersection )
+		    { /* this subnode is a triangle node, no sensitivity */
+		      parent_int[0+3*subnode_index+9*n] = 4;
+		      parent_int[1+3*subnode_index+9*n] = EMPTY;
+		      parent_int[2+3*subnode_index+9*n] = EMPTY;
+		    }
+		  else
+		    { /* this subnode is an intersection */
+		      segment = intersection_segment( intersection );
+		      parent_int[0+3*subnode_index+9*n] = 
+			triangle_segment_index( triangle, segment );
+		      if ( EMPTY == parent_int[0+3*subnode_index+9*n] )
+			{ /* this subnode int has background tri */
+			  /* so find cut surface segment nodes */
+			  parent_int[0+3*subnode_index+9*n] = 3;
+			  parent_int[1+3*subnode_index+9*n] =
+			    surface_node_index( surface,
+						segment_node0(segment) );
+			  parent_int[2+3*subnode_index+9*n] =
+			    surface_node_index( surface,
+						segment_node1(segment) );
+			    
+			  if ( ( 0 > parent_int[1+3*subnode_index+9*n] ) || 
+			       ( surface_nsegment(surface) <=
+				 parent_int[1+3*subnode_index+9*n] ) ||
+			       (0 > parent_int[2+3*subnode_index+9*n] ) || 
+			       ( surface_nsegment(surface) <=
+				 parent_int[2+3*subnode_index+9*n] ) )
+			    { /* error, the seg nodes are not in cut surf */
+			      printf("%s: %d: seg node is not in cut surf\n",
+				     __FILE__,__LINE__);
+			      return KNIFE_ARRAY_BOUND;
+			    }
+			}
+		      else
+			{ /* this subnode int has background segment */
+			  /* so find cut surface triangle index */
+			  other = intersection_triangle( intersection );
+			  triangle_index = 
+			    surface_triangle_index(surface,other);
+			  if ( 0 <= triangle_index && 
+			       surface_ntriangle(surface) > triangle_index )
+			    { /* this subnode int has surf tri */
+			      parent_int[1+3*subnode_index+9*n] = 
+				triangle_index;
+			      parent_int[2+3*subnode_index+9*n] = EMPTY;
+			    }
+			  else
+			    { /* error, the tri is not part of cut surf */
+			      printf("%s: %d: int tri is not in cut surf\n",
+				     __FILE__,__LINE__);
+			      return KNIFE_ARRAY_BOUND;
+			    }
+			}
+		    }
+		}
+	      n++;
+	    }
+    }
+
+  if ( n != nsubtri )
+    {
+      printf("%s: %d: not enough subtri found %d of %d\n",
+	     __FILE__,__LINE__, n, nsubtri);
+      return KNIFE_MISSING;
+    }
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS poly_boundary_face_geometry( Poly poly, int face_index, FILE *f )
 {
   int mask_index;

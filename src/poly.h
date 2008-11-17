@@ -138,6 +138,12 @@ KNIFE_STATUS poly_boundary_subtri( Poly, int face_index, int region,
 				   double *triangle_normal,
 				   double *triangle_area );
 
+KNIFE_STATUS poly_boundary_sens( Poly, int face_index, int region, 
+				 int nsubtri, 
+				 int *parent_int,
+				 double *parent_xyz, 
+				 Surface surface );
+
 KNIFE_STATUS poly_boundary_face_geometry( Poly, int face_index, FILE * );
 KNIFE_STATUS poly_surf_geometry( Poly, FILE * );
 

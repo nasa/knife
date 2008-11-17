@@ -726,6 +726,46 @@ void knife_boundary_triangles__( int *node, int *face, int *region,
 			     knife_status );
 }
 
+void knife_boundary_sens_( int *node, int *face, int *region, 
+			   int *nsubtri,
+			   int *parent_int,
+			   double *parent_xyz,
+			   int *knife_status )
+{
+  Poly poly;
+  int i;
+
+  poly = domain_poly( domain, (*node)-1 );
+  NOT_NULL(poly, "poly NULL in knife_boundary_triangles_");
+
+  TRY( poly_boundary_sens( poly, *face, *region, 
+			   *nsubtri, 
+			   parent_int,
+			   parent_xyz,
+			   surface ), 
+       "poly_boundary_sens" );
+  
+  for ( i = 0 ; i < 9*(*nsubtri) ; i++ )
+    {
+      parent_int[i]++;
+    }
+
+  *knife_status = KNIFE_SUCCESS;
+}
+
+void knife_boundary_sens__( int *node, int *face, int *region, 
+			   int *nsubtri,
+			   int *parent_int,
+			   double *parent_xyz,
+			   int *knife_status )
+{
+  knife_boundary_sens_( node, face, region,
+			nsubtri,
+			parent_int,
+			parent_xyz,
+			knife_status );
+}
+
 void knife_cut_surface_dim_( int *nnode, int *ntriangle, int *knife_status )
 {
 

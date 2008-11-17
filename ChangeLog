@@ -1,3 +1,10 @@
+2008-11-17  8:45 Mike Park  <mike.park@nasa.gov>
+
+	* src/knife_fortran.c (knife_boundary_sens_)
+	to get cut boundary face connection to surface.
+	* src/poly.c (poly_boundary_sens) to get cut boundary face
+	connection to surface.
+
 2008-11-03  9:05 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_between_poly_sens_)
