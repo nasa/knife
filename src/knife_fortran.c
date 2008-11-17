@@ -738,7 +738,7 @@ void knife_boundary_sens_( int *node, int *face, int *region,
   poly = domain_poly( domain, (*node)-1 );
   NOT_NULL(poly, "poly NULL in knife_boundary_triangles_");
 
-  TRY( poly_boundary_sens( poly, *face, *region, 
+  TRY( poly_boundary_sens( poly, (*face)-1, *region, 
 			   *nsubtri, 
 			   parent_int,
 			   parent_xyz,
