@@ -47,6 +47,9 @@ static int poly_tecplot_frame = 0;
     return KNIFE_NULL;					      \
   }
 
+static int  inward_subnode_order[] = {1, 0, 2};
+static int outward_subnode_order[] = {0, 1, 2};
+
 Poly poly_create( void )
 {
   Poly poly;
@@ -1217,7 +1220,18 @@ KNIFE_STATUS poly_between_sens( Poly poly1, int region1,
 		  }
 		for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 		  {
-		    subnode = subtri_subnode(subtri,subnode_index);
+		    if ( mask_inward_pointing_normal( mask1 ) )
+		      {
+			subnode = 
+			  subtri_subnode(subtri,
+					 inward_subnode_order[subnode_index]);
+		      }
+		    else
+		      {
+			subnode = 
+			  subtri_subnode(subtri,
+					 outward_subnode_order[subnode_index]);
+		      }
 		    intersection = subnode_intersection(subnode);
 		    if ( NULL == intersection )
 		      { /* this subnode is a triangle node, no sensitivity */
@@ -1434,7 +1448,18 @@ KNIFE_STATUS poly_surface_sens( Poly poly, int region, int nsubtri,
 		  {
 		    constraint_xyz[ixyz+9*subnode_index+27*n] = 0.0;
 		  }
-		subnode = subtri_subnode(subtri,subnode_index);
+		  if ( mask_inward_pointing_normal( surf ) )
+		    {
+		      subnode = 
+			subtri_subnode(subtri,
+				        inward_subnode_order[subnode_index]);
+		    }
+		  else
+		    {
+		      subnode = 
+			subtri_subnode(subtri,
+				       outward_subnode_order[subnode_index]);
+		    }
 		/* subnode parent is triangle node [0-2] */
 		constraint_type[subnode_index+4*n] = 
 		  triangle_node_index(triangle, subnode_node(subnode) );
@@ -1646,7 +1671,18 @@ KNIFE_STATUS poly_boundary_sens( Poly poly, int face_index, int region,
 
 	      for ( subnode_index = 0 ; subnode_index < 3 ; subnode_index++ )
 		{
-		  subnode = subtri_subnode(subtri,subnode_index);
+		  if ( mask_inward_pointing_normal( mask ) )
+		    {
+		      subnode = 
+			subtri_subnode(subtri,
+				        inward_subnode_order[subnode_index]);
+		    }
+		  else
+		    {
+		      subnode = 
+			subtri_subnode(subtri,
+				       outward_subnode_order[subnode_index]);
+		    }
 		  intersection = subnode_intersection(subnode);
 		  if ( NULL == intersection )
 		    { /* this subnode is a triangle node, no sensitivity */

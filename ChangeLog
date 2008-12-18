@@ -1,3 +1,9 @@
+2008-12-18 10:55 Mike Park  <mike.park@nasa.gov>
+
+	* src/poly.c (poly_surface_sens) to flip subnodes with normal.
+	* src/poly.c (poly_boundary_sens) to flip subnodes with normal.
+	* src/poly.c (poly_between_sens) to flip subnodes with normal.
+
 2008-11-17  8:45 Mike Park  <mike.park@nasa.gov>
 
 	* src/knife_fortran.c (knife_boundary_sens_)
