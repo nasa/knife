@@ -3,7 +3,7 @@
 lib_LIBRARIES    = libknife.a
 noinst_LIBRARIES = libknife-profile.a
 
-warning_flags = -pedantic-errors -Wall -Wextra -Werror
+warning_flags = -pedantic -Wall -Wextra -Werror
 profiling_flags = -pg $(warning_flags)
 
 library_sources = \
