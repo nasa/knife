@@ -1,4 +1,11 @@
 
+At a Future Date: At version Next, FUN3D rXXXXX or later add
+knife_cut_surface_dim_ and knife_cut_surface_ to API to request cut
+surface geometry as it was used.  added subtriangle parent information
+for cut surfaces (knife_surface_sens_), cut edges
+(knife_between_poly_sens_), and cut boundaries (knife_boundary_sens_)
+to build sensitivity
+
 Thursday, January 3, 2008: At version 1.0.0, FUN3D r25733 or later 
 passes triangle_tag and precomupted normal and area. Added 
 example/diamond-airfoil VGrid faux geom example.
