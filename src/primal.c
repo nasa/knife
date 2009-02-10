@@ -1117,6 +1117,46 @@ KNIFE_STATUS primal_export_fast( Primal primal, char *filename )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_export_single_zone_tec( Primal primal, char *filename )
+{
+  FILE *f;
+  int node, face;
+  double xyz[3];
+  int nodes[4];
+
+  if (NULL == filename)
+    {
+      f = fopen( "primal.t", "w" );
+    } else {
+      f = fopen( filename, "w" );
+    }
+
+  if ( NULL == f ) return KNIFE_FILE_ERROR;
+
+  fprintf( f, "title=\"tecplot knife primal geometry file\"\n" );
+  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
+
+  fprintf( f,
+	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
+	   primal_nnode(primal), primal_nface(primal) );
+
+  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+    {
+      primal_xyz( primal, node, xyz );
+      fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
+    }
+
+  for ( face = 0 ; face < primal_nface(primal) ; face++ )
+    {
+      primal_face( primal, face, nodes );
+      fprintf( f, "%d %d %d\n", nodes[0]+1, nodes[1]+1, nodes[2]+1 );
+    }
+
+  fclose(f);
+
+  return KNIFE_SUCCESS;
+}
+
 KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
 {
   FILE *f;
@@ -1214,42 +1254,128 @@ KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS primal_export_single_zone_tec( Primal primal, char *filename )
+KNIFE_STATUS primal_export_vtk( Primal primal, char *filename )
 {
   FILE *f;
   int node, face;
   double xyz[3];
   int nodes[4];
+  int *g2l, *l2g;
+  Set set;
+  int zone, faceid;
+  int nnode, ntri;
 
   if (NULL == filename)
     {
-      f = fopen( "primal.t", "w" );
+      f = fopen( "primal.vtu", "w" );
     } else {
       f = fopen( filename, "w" );
     }
 
   if ( NULL == f ) return KNIFE_FILE_ERROR;
 
-  fprintf( f, "title=\"tecplot knife primal geometry file\"\n" );
-  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
+  fprintf( f, "<?xml version=\"1.0\"?>\n" );
+  fprintf( f, "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n" );
+  fprintf( f, "  <UnstructuredGrid>\n" );
 
-  fprintf( f,
-	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
-	   primal_nnode(primal), primal_nface(primal) );
-
-  for ( node = 0 ; node < primal_nnode(primal) ; node++ )
-    {
-      primal_xyz( primal, node, xyz );
-      fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
-    }
-
+  NOT_NULL( set = set_create( 100, 100 ), "set creation failed");
   for ( face = 0 ; face < primal_nface(primal) ; face++ )
     {
-      primal_face( primal, face, nodes );
-      fprintf( f, "%d %d %d\n", nodes[0]+1, nodes[1]+1, nodes[2]+1 );
+      TRY( primal_face( primal, face, nodes ), "face");
+      TRY(set_insert( set, nodes[3] ), "set insert" );
     }
 
+  NOT_NULL( g2l = (int *) malloc( primal_nnode(primal)*sizeof(int) ),
+	    "allocate g2l" );
+
+  for ( zone = 0 ; zone < set_size(set) ; zone++ )
+    {
+
+      faceid = set_item( set, zone );
+
+      for( node = 0; node < primal_nnode(primal) ; node++ )
+	g2l[node] = EMPTY;
+
+      ntri = 0;
+      for ( face = 0 ; face < primal_nface(primal) ; face++ )
+	{
+	  TRY( primal_face( primal, face, nodes ), "face");
+	  if ( faceid == nodes[3] )
+	    {
+	      ntri++;
+	      g2l[nodes[0]] = 1;
+	      g2l[nodes[1]] = 1;
+	      g2l[nodes[2]] = 1;
+	    }
+	}
+
+      nnode = 0;
+      for( node = 0; node < primal_nnode(primal) ; node++ )
+	if ( EMPTY != g2l[node] )
+	  {
+	    g2l[node] = nnode;
+	    nnode++;
+	  }
+
+      fprintf( f,
+	       "    <Piece NumberOfPoints=\"%d\" NumberOfCells=\"%d\">\n",
+	       nnode, ntri );
+      
+      NOT_NULL( l2g = (int *) malloc( nnode*sizeof(int) ),
+		"allocate l2g" );
+      for ( node = 0 ; node < primal_nnode(primal) ; node++ )
+	if ( EMPTY != g2l[node] )
+	  l2g[g2l[node]] = node;
+
+      fprintf( f,"      <Points Scalars=\"my_scalars\">\n" );
+      fprintf( f,"        <DataArray type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n" );
+      
+      for ( node = 0 ; node < nnode ; node++ )
+	{
+	  TRY( primal_xyz( primal, l2g[node], xyz ), "xyz");
+	  fprintf( f, "%25.17e %25.17e %25.17e\n", xyz[0], xyz[1], xyz[2] );
+	}
+      fprintf( f,"        </DataArray>\n" );
+      fprintf( f,"      </Points>\n" );
+
+      free( l2g );
+
+      fprintf( f,"      <Cells>\n" );
+      fprintf( f,"        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\">\n" );
+      for ( face = 0 ; face < primal_nface(primal) ; face++ )
+	{
+	  TRY( primal_face( primal, face, nodes ), "face");
+	  if ( faceid == nodes[3] )
+	    {
+	      fprintf( f, "%d %d %d\n", 
+		       g2l[nodes[0]], g2l[nodes[1]], g2l[nodes[2]] );
+	    }
+	}
+      fprintf( f,"        </DataArray>\n" );
+
+      fprintf( f,"        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\">\n" );
+      for ( face = 0 ; face < ntri ; face++ )
+	{
+	  fprintf( f, "%d\n", 3*(face+1) );
+	}
+      fprintf( f,"        </DataArray>\n" );
+
+      fprintf( f,"        <DataArray type=\"Int32\" Name=\"types\" format=\"ascii\">\n" );
+      for ( face = 0 ; face < ntri ; face++ )
+	{
+	  fprintf( f, "%d\n", 5 );
+	}
+      fprintf( f,"        </DataArray>\n" );
+
+      fprintf( f,"      </Cells>\n" );
+      fprintf( f,"    </Piece>\n" );
+    }
+  fprintf( f,"  </UnstructuredGrid>\n" );
+  fprintf( f,"</VTKFile>\n" );
+
+  free(g2l);
   fclose(f);
 
   return KNIFE_SUCCESS;
 }
+

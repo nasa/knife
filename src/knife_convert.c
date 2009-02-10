@@ -98,6 +98,9 @@ int main( int argc, char *argv[] )
   TRY( primal_export_tec( surface_primal, NULL ), 
        "primal_export_tec failed in main")
 
+  TRY( primal_export_vtk( surface_primal, NULL ), 
+       "primal_export_vtk failed in main")
+
   return 0;
 }
 
