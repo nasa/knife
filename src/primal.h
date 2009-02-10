@@ -171,6 +171,7 @@ KNIFE_STATUS primal_export_tri( Primal, char *filename );
 KNIFE_STATUS primal_export_fast( Primal, char *filename );
 KNIFE_STATUS primal_export_tec( Primal, char *filename );
 KNIFE_STATUS primal_export_single_zone_tec( Primal, char *filename );
+KNIFE_STATUS primal_export_vtk( Primal, char *filename );
 
 END_C_DECLORATION
 
