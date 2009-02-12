@@ -57,6 +57,14 @@
     return KNIFE_NULL;					      \
   }
 
+#define AEN(thing1,thing2,msg)						\
+  {									\
+    if ((thing1) != (thing2)){						\
+      printf("%s: %d: %s: %s\n",__FILE__,__LINE__,__func__,(msg));	\
+      return NULL;						        \
+    }									\
+  }
+
 Primal primal_create(int nnode, int nface, int ncell)
 {
   Primal primal;
@@ -171,6 +179,9 @@ Primal primal_from_tri( char *filename )
   int i;
   FILE *file;
 
+  int greatest_read_face_id;
+  KnifeBool read_error;
+
   file = fopen(filename,"r");
   if ( NULL == file )
     {
@@ -190,15 +201,15 @@ Primal primal_from_tri( char *filename )
     }
 
   for( i=0; i<nnode ; i++ ) {
-    fscanf(file,"%lf",&(primal->xyz[0+3*i]));
-    fscanf(file,"%lf",&(primal->xyz[1+3*i]));
-    fscanf(file,"%lf",&(primal->xyz[2+3*i]));
+    AEN( 1, fscanf(file,"%lf",&(primal->xyz[0+3*i])), "x read error" );
+    AEN( 1, fscanf(file,"%lf",&(primal->xyz[1+3*i])), "y read error");
+    AEN( 1, fscanf(file,"%lf",&(primal->xyz[2+3*i])), "z read error");
   }
 
   for( i=0; i<nface ; i++ ) {
-    fscanf(file,"%d",&(primal->f2n[0+4*i]));
-    fscanf(file,"%d",&(primal->f2n[1+4*i]));
-    fscanf(file,"%d",&(primal->f2n[2+4*i]));
+    AEN( 1, fscanf(file,"%d",&(primal->f2n[0+4*i])), "face index0 read error");
+    AEN( 1, fscanf(file,"%d",&(primal->f2n[1+4*i])), "face index1 read error");
+    AEN( 1, fscanf(file,"%d",&(primal->f2n[2+4*i])), "face index2 read error");
     primal->f2n[0+4*i]--;
     primal->f2n[1+4*i]--;
     primal->f2n[2+4*i]--;
@@ -207,8 +218,18 @@ Primal primal_from_tri( char *filename )
     adj_add( primal->face_adj, primal->f2n[2+4*i], i);
   }
 
+  greatest_read_face_id = 0;
+  read_error = FALSE;
   for( i=0; i<nface ; i++ ) {
-    fscanf(file,"%d",&(primal->f2n[3+4*i]));
+    if ( !read_error && (1 == fscanf(file,"%d",&(primal->f2n[3+4*i]))) )
+      {
+	greatest_read_face_id = MAX(primal->f2n[3+4*i], greatest_read_face_id);
+      }
+    else
+      {
+	read_error = TRUE;
+	primal->f2n[3+4*i] = greatest_read_face_id + 1;
+      }
   }
 
   fclose(file);
