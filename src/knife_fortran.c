@@ -77,7 +77,9 @@ void knife_volume_( int *part_id,
   partition = *part_id;
 
   /* to enable logging by partition id number */
-  logger_partition( *part_id );
+
+  /* logger_partition( *part_id ); logging disabled with this comment! */
+
   logger_message( FORTRAN_LOGGER_LEVEL, "volume");
 
   /* so tecplot filenames will include processor id */
