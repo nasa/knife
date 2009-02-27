@@ -66,6 +66,14 @@
     }									\
   }
 
+#define AEF(thing1,thing2,msg)						\
+  {									\
+    if ((thing1) != (thing2)){						\
+      printf("%s: %d: %s: %s\n",__FILE__,__LINE__,__func__,(msg));	\
+      return KNIFE_FAILURE;						\
+    }									\
+  }
+
 Primal primal_create(int nnode, int nface, int ncell)
 {
   Primal primal;
@@ -942,12 +950,14 @@ KNIFE_STATUS primal_flip_face_normals( Primal primal )
 KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename, 
 				   KnifeBool verbose )
 {
-  int nvar;
+  int var, nvar;
   char line[32768];
+  int node, nnode;
   FILE *file;
+  double x,y,z;
+  int global;
 
-  if (verbose) printf("applying massoud : %s %d\n",
-		      massoud_filename,primal_nnode(primal));
+  if (verbose) printf("applying massoud : %s\n", massoud_filename);
 
   file = fopen(massoud_filename,"r");
   if ( NULL == file )
@@ -960,22 +970,60 @@ KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename,
   strcpy(line,"");
   while ( strcmp( line, "VARIABLES" ) != 0 ) 
     {
-      fscanf(file,"%s",line);
+      AEF(1,fscanf(file,"%s",line),"massoud read to 'VARIABLES' failed");
     }
   if (verbose) printf("%s\n",line);
 
-  fscanf(file,"%s",line); /* equals */
-  fscanf(file,"%s",line); /* first var */
+  AEF(1,fscanf(file,"%s",line),"massoud read of = after 'VARIABLES' failed");
+  AEF(1,fscanf(file,"%s",line),"massoud read of first var failed"); 
 
   nvar = 0;
   while ( strcmp( line, "ZONE" ) != 0 ) 
     {
       nvar++;
       if (verbose) printf("%6d %s\n",nvar,line);
-      fscanf(file,"%s",line);
+      AEF(1,fscanf(file,"%s",line),"massoud read to 'ZONE' failed");
     }
 
+  while ( strcmp( line, "I" ) != 0 ) 
+    {
+      AEF(1,fscanf(file,"%s",line),"massoud read to 'I' failed");
+    }
 
+  AEF(1,fscanf(file,"%s",line),"massoud read of = after 'T' failed");
+  AEF(1,fscanf(file,"%d",&nnode),"massoud read of number of nodes");
+
+  if (verbose) printf("%d nodes in massoud file\n",nnode);
+
+  while ( strcmp( line, "F=FEPOINT" ) != 0 ) 
+    {
+      AEF(1,fscanf(file,"%s",line),"massoud read to 'F=FEPOINT' failed");
+    }
+  
+  for ( node = 0; node < nnode; node++ )
+    {
+      AEF(4,fscanf(file,"%lf %lf %lf %d",&x,&y,&z,&global),
+	  "massoud read of new xyz failed");
+      global--;
+      if ( global >= 0 && global < primal_nnode(primal) )
+	{
+	  primal->xyz[0+3*global] = x;
+	  primal->xyz[1+3*global] = y;
+	  primal->xyz[2+3*global] = z;
+	}
+      else
+	{
+	  fclose(file);
+	  printf("%s: %d: massoud id %d not within %d nodes\n",
+		 __FILE__,__LINE__,global,primal_nnode(primal));
+	  return KNIFE_FAILURE;
+	}
+      for ( var = 4; var < nvar; var++ )
+	AEF(1,fscanf(file,"%lf",&x),
+	    "massoud read of sensitivity variables failed");
+    }
+
+  fclose(file);
 
   return KNIFE_SUCCESS;
 }
