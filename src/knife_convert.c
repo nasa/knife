@@ -99,7 +99,16 @@ int main( int argc, char *argv[] )
        "primal_export_tec failed in main")
 
   TRY( primal_export_vtk( surface_primal, NULL ), 
-       "primal_export_vtk failed in main")
+       "primal_export_vtk failed in main");
+
+  if( strcmp(filename,"om6inviscid.fgrid") == 0 )
+    {
+      TRY( primal_apply_massoud( surface_primal, "model.tec.1.sd1" ), 
+	   "primal_apply_massoud failed in main");
+
+      TRY( primal_export_tec( surface_primal, "pert.t" ), 
+	   "primal_export_tec failed in main");
+    }
 
   return 0;
 }

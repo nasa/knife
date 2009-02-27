@@ -938,6 +938,14 @@ KNIFE_STATUS primal_flip_face_normals( Primal primal )
   return KNIFE_SUCCESS;
 }
 
+KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename )
+{
+
+  printf("%d: %s\n",primal_nnode(primal),massoud_filename);
+
+  return KNIFE_SUCCESS;
+}
+
 Primal primal_subset( Primal primal, Set bcs )
 {
   Primal subset;
