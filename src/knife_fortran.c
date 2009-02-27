@@ -184,6 +184,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
       double dx, dy, dz;
       double scale;
       double angle;
+      char massoud_filename[1024];
 
       fscanf( f, "%s\n", string );
       if( strcmp(string,"outward") == 0 ) {
@@ -220,6 +221,12 @@ void knife_required_local_dual_( char *knife_input_file_name,
       if( strcmp(string,"reflect_y") == 0 ) {
 	TRY( primal_reflect_y( surface_primal ), 
 	     "primal_reflect_y error" );
+      }
+      if( strcmp(string,"massoud") == 0 ) {
+	fscanf( f, "%s\n", massoud_filename );
+	TRY( primal_apply_massoud( surface_primal, massoud_filename, 
+				   (0 == partition) ),
+	     "primal_apply_massoud error" );
       }
       if( strcmp(string,"faces") == 0 ) {
 	read_faces = TRUE;
