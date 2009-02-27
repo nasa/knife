@@ -101,7 +101,7 @@ int main( int argc, char *argv[] )
   TRY( primal_export_vtk( surface_primal, NULL ), 
        "primal_export_vtk failed in main");
 
-  if( strcmp(filename,"om6inviscid.fgrid") == 0 )
+  if( strcmp(filename,"inviscid.fgrid") == 0 )
     {
       TRY( primal_apply_massoud( surface_primal, "model.tec.1.sd1", TRUE ), 
 	   "primal_apply_massoud failed in main");
