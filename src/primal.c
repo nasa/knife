@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "primal.h"
 #include "set.h"
 
@@ -938,10 +939,43 @@ KNIFE_STATUS primal_flip_face_normals( Primal primal )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename )
+KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename, 
+				   KnifeBool verbose )
 {
+  int nvar;
+  char line[32768];
+  FILE *file;
 
-  printf("%d: %s\n",primal_nnode(primal),massoud_filename);
+  if (verbose) printf("applying massoud : %s %d\n",
+		      massoud_filename,primal_nnode(primal));
+
+  file = fopen(massoud_filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,massoud_filename);
+      return KNIFE_FAILURE;
+    }
+
+  strcpy(line,"");
+  while ( strcmp( line, "VARIABLES" ) != 0 ) 
+    {
+      fscanf(file,"%s",line);
+    }
+  if (verbose) printf("%s\n",line);
+
+  fscanf(file,"%s",line); /* equals */
+  fscanf(file,"%s",line); /* first var */
+
+  nvar = 0;
+  while ( strcmp( line, "ZONE" ) != 0 ) 
+    {
+      nvar++;
+      if (verbose) printf("%6d %s\n",nvar,line);
+      fscanf(file,"%s",line);
+    }
+
+
 
   return KNIFE_SUCCESS;
 }

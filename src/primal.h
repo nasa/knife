@@ -165,7 +165,8 @@ KNIFE_STATUS primal_reflect_y( Primal );
 
 KNIFE_STATUS primal_flip_face_normals( Primal );
 
-KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename );
+KNIFE_STATUS primal_apply_massoud( Primal primal, char *massoud_filename,
+				   KnifeBool verbose );
 
 Primal primal_subset( Primal, Set bcs );
 

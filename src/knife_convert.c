@@ -103,7 +103,7 @@ int main( int argc, char *argv[] )
 
   if( strcmp(filename,"om6inviscid.fgrid") == 0 )
     {
-      TRY( primal_apply_massoud( surface_primal, "model.tec.1.sd1" ), 
+      TRY( primal_apply_massoud( surface_primal, "model.tec.1.sd1", TRUE ), 
 	   "primal_apply_massoud failed in main");
 
       TRY( primal_export_tec( surface_primal, "pert.t" ), 
