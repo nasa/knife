@@ -796,11 +796,11 @@ void knife_cut_surface_dim__( int *nnode, int *ntriangle, int *knife_status )
   knife_cut_surface_dim_( nnode, ntriangle, knife_status );
 }
 
-void knife_cut_surface_( int *nnode, double *xyz, 
+void knife_cut_surface_( int *nnode, double *xyz, int *global,
 			 int *ntriangle, int *t2n, 
 			 int *knife_status )
 {
-  int tri;
+  int node, tri;
 
   if ( NULL == surface )
     {
@@ -810,7 +810,11 @@ void knife_cut_surface_( int *nnode, double *xyz,
   ASSERT_INT_EQ( *nnode, surface_nnode(surface), "number of nodes" );
   ASSERT_INT_EQ( *ntriangle, surface_ntriangle(surface),"number of triangles");
 
-  TRY( surface_export_array( surface, xyz, t2n ), "surface_export_array" );
+  TRY( surface_export_array( surface, xyz, global, t2n ), 
+       "surface_export_array" );
+
+  for ( node = 0 ; node < surface_nnode(surface) ; node++ )
+    global[node]++;
 
   for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
     {
@@ -821,11 +825,11 @@ void knife_cut_surface_( int *nnode, double *xyz,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_cut_surface__( int *nnode, double *xyz, 
+void knife_cut_surface__( int *nnode, double *xyz, int *global, 
 			  int *ntriangle, int *t2n, 
 			  int *knife_status )
 {
-  knife_cut_surface_( nnode, xyz, ntriangle, t2n, knife_status );
+  knife_cut_surface_( nnode, xyz, global, ntriangle, t2n, knife_status );
 }
 
 void knife_free_( int *knife_status )

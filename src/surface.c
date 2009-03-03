@@ -133,6 +133,8 @@ Surface surface_from( Primal primal, Set bcs,
 
   surface->node = (NodeStruct *) malloc( surface_nnode(surface) * 
 					 sizeof(NodeStruct) );
+  surface->primal_node_index = (int *) malloc( surface_nnode(surface) * 
+					       sizeof(int) );
   for (global_node=0;global_node<primal_nnode(primal);global_node++) 
     {
       local_node = node_g2l[global_node]; 
@@ -140,6 +142,7 @@ Surface surface_from( Primal primal, Set bcs,
 	{
 	  primal_xyz(primal, global_node, xyz);
 	  node_initialize( surface_node(surface,local_node), xyz );
+	  surface->primal_node_index[local_node] = global_node;
 	}
     }
 
@@ -212,6 +215,7 @@ void surface_free( Surface surface )
 {
   if ( NULL == surface ) return;
   free( surface->node );
+  free( surface->primal_node_index );
   free( surface->segment );
   free( surface->triangle );
   free( surface );
@@ -230,7 +234,8 @@ KNIFE_STATUS surface_triangulate( Surface surface )
   return KNIFE_SUCCESS;
 }
 
-KNIFE_STATUS surface_export_array( Surface surface, double *xyz, int *t2n )
+KNIFE_STATUS surface_export_array( Surface surface, 
+				   double *xyz, int *global, int *t2n )
 {
   int node, tri;
   Triangle triangle;
@@ -241,6 +246,9 @@ KNIFE_STATUS surface_export_array( Surface surface, double *xyz, int *t2n )
       xyz[1+3*node] = node_y(surface_node(surface, node));
       xyz[2+3*node] = node_z(surface_node(surface, node));
     }
+
+  for ( node = 0 ; node < surface_nnode(surface) ; node++ )
+    global[node] = surface->primal_node_index[node];
 
   for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
     {
