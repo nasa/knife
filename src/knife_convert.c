@@ -103,11 +103,14 @@ int main( int argc, char *argv[] )
 
   if( strcmp(filename,"inviscid.fgrid") == 0 )
     {
-      TRY( primal_apply_massoud( surface_primal, "model.tec.1.sd1", TRUE ), 
+      TRY( primal_apply_massoud( surface_primal, 
+				 "Rubberize/model.tec.1.sd1", TRUE ), 
 	   "primal_apply_massoud failed in main");
 
       TRY( primal_export_tec( surface_primal, "pert.t" ), 
 	   "primal_export_tec failed in main");
+      TRY( primal_export_vtk( surface_primal, "pert.vtu" ), 
+	   "primal_export_vtk failed in main");
     }
 
   return 0;
