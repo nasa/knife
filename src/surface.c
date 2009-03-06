@@ -277,29 +277,31 @@ KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
       f = fopen( filename, "w" );
     }
 
-  fprintf( f, "title=\"tecplot knife surface geometry file\"\n" );
-  fprintf( f, "variables=\"x\",\"y\",\"z\"\n" );
+  fprintf( f, "title=\"MASSOUD Surface Info\"\n" );
+  fprintf( f, "VARIABLES=\"X     \",\"Y     \",\"Z     \",\"ID    \"\n" );
 
   if ( NULL == f ) return KNIFE_FILE_ERROR;
 
   fprintf( f,
-	   "zone t=surf, i=%d, j=%d, f=fepoint, et=triangle\n",
-	   surface_nnode(surface), surface_ntriangle(surface) );
+	   "ZONE T=%s, I=%8d, J=%8d, F=FEPOINT\n",
+	   "\"nb.1\"",surface_nnode(surface), surface_ntriangle(surface) );
 
   for ( node = 0 ; node < surface_nnode(surface) ; node++ )
     {
-      fprintf( f, "%25.17e %25.17e %25.17e\n", 
+      fprintf( f, "  %23.15e   %23.15e   %23.15e   %10d\n", 
 	       node_x(surface_node(surface, node)),
 	       node_y(surface_node(surface, node)),
-	       node_z(surface_node(surface, node)) );
+	       node_z(surface_node(surface, node)),
+	       surface->primal_node_index[node]);
     }
 
   for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
     {
       triangle = surface_triangle( surface, tri );
-      fprintf(f, "%d %d %d\n", 
+      fprintf(f, "%d %d %d %d\n", 
 	      surface_node_index(surface, triangle_node0(triangle) )+1,
 	      surface_node_index(surface, triangle_node1(triangle) )+1,
+	      surface_node_index(surface, triangle_node2(triangle) )+1,
 	      surface_node_index(surface, triangle_node2(triangle) )+1 );
     }
 
