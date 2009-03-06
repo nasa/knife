@@ -16,6 +16,7 @@
 #include <string.h>
 #include "knife_definitions.h"
 #include "primal.h"
+#include "surface.h"
 
 #define TRY(fcn,msg)					      \
   {							      \
@@ -38,6 +39,7 @@ int main( int argc, char *argv[] )
   char filename[1025];
   int end_of_string;
   Primal surface_primal;
+  Surface surface;
 
   if ( 2 > argc ) 
     {
@@ -106,6 +108,11 @@ int main( int argc, char *argv[] )
       TRY( primal_export_vtk( surface_primal, "pert.vtu" ), 
 	   "primal_export_vtk failed in main");
     }
+
+  surface = surface_from( surface_primal, NULL, TRUE );
+  NOT_NULL(surface, "surface NULL");
+
+  TRY( surface_export_tec( surface, "massoud.t" ), "surface_export_tec" );
 
   return 0;
 }
