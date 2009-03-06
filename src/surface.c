@@ -292,7 +292,7 @@ KNIFE_STATUS surface_export_tec( Surface surface, char *filename )
 	       node_x(surface_node(surface, node)),
 	       node_y(surface_node(surface, node)),
 	       node_z(surface_node(surface, node)),
-	       surface->primal_node_index[node]);
+	       surface->primal_node_index[node] + 1); /* 1-based ID */
     }
 
   for ( tri = 0 ; tri < surface_ntriangle(surface) ; tri++ )
