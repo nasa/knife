@@ -59,7 +59,7 @@ Surface surface_from( Primal primal, Set bcs,
 	global_iface++ )
     {
       primal_face(primal, global_iface, face);
-      if (set_contains(bcs,face[3])) 
+      if ( (NULL==bcs) || set_contains(bcs,face[3]) ) 
 	{
 	  face_g2l[global_iface] = local_nface;
 	  local_nface++;
