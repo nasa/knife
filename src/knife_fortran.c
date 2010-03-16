@@ -233,22 +233,21 @@ void knife_required_local_dual_( char *knife_input_file_name,
       }
     }
 
-  if ( !read_faces )
+  if ( read_faces )
     {
-      printf("%s: %d: knife input file error: missing faces keyword \n",
-	     __FILE__,__LINE__);
-      *knife_status = KNIFE_FILE_ERROR;
-      return;
+      bcs = set_create(10,10);
+      NOT_NULL(bcs, "Set bcs NULL");
+      
+      while ( !feof( f ) )
+	{
+	  bc_found = fscanf( f, "%d", &bc );
+	  if ( 1 == bc_found )
+	    TRY( set_insert( bcs, bc ), "set_insert bc into bcs");
+	}
     }
-
-  bcs = set_create(10,10);
-  NOT_NULL(bcs, "Set bcs NULL");
-
-  while ( !feof( f ) )
+  else
     {
-      bc_found = fscanf( f, "%d", &bc );
-      if ( 1 == bc_found )
-	TRY( set_insert( bcs, bc ), "set_insert bc into bcs");
+      bcs = NULL;
     }
 
   surface = surface_from( surface_primal, bcs, 
