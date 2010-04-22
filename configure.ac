@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.53)
 AC_INIT([src/knife_definitions.h])
-AM_INIT_AUTOMAKE([knife],[1.0.1_rc1])
+AM_INIT_AUTOMAKE([knife],[`git describe --tags`])
 
 AC_PROG_RANLIB
 
