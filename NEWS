@@ -1,5 +1,5 @@
 
-At a Future Date: At version Next, FUN3D rXXXXX or later
+Thursday, April 22, 2010: At version 1.1.0, fun3d-10.7-38759 or later
 Use all surfaces faces when faces keyword is missing from [project].knife
 Added knife_cut_surface_dim_ and knife_cut_surface_ to API to request cut
 surface geometry as it was used.  added subtriangle parent information
