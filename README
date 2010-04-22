@@ -3,8 +3,6 @@ knife
 
 Boolean Subtraction Library for Polyhedra
 
-CVS package release tag (version) : $Name$
-
 The knife library calculates the boolean subtraction of arbitrary
 watertight triangular polyhedra. The result of this subtraction is
 also watertight triangular polyhedra. The triangular faces of the
@@ -20,12 +18,11 @@ to perform dual tetrahedra cut cell flow and adjoint solutions.
 
 See the INSTALL file for build instructions.
 
-Contact Mike Park <Mike.Park@NASA.Gov> (757) 864-6604 for more information.
+Mike Park
+FUN3D-Support@Lists.NASA.Gov
+Mike.Park@NASA.Gov
+(757) 864-6604
 
-To gain cvs access, you will need a NASA Langley CFDLAB account. Then
-run:
+Obtaining the lastest version with
+% git clone ssh://cmb20.larc.nasa.gov/~mikepark/git/knife.git/
 
-% setenv CVS_RSH ssh  # for csh
-% export=CVS_RSH ssh  # for sh
-
-% cvs -d :ext:cfdlab.larc.nasa.gov:/ump/fldmd/home/mikepark/cvsroot co -P knife
