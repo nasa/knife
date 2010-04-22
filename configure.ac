@@ -2,7 +2,9 @@
 
 AC_PREREQ(2.53)
 
-AC_INIT([knife], [1.0.1_rc1])
+define([git_describe], esyscmd([sh -c "git describe --tag | tr -d '\n'"]))dnl
+
+AC_INIT([knife], [git_describe], [fun3d-support@lists.nasa.gov])
 AC_CONFIG_SRCDIR([src/knife_definitions.h])
 AM_INIT_AUTOMAKE
 
