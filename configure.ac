@@ -1,8 +1,10 @@
 # -*- Autoconf -*-
 
 AC_PREREQ(2.53)
-AC_INIT([src/knife_definitions.h])
-AM_INIT_AUTOMAKE([knife],[`git describe --tags`])
+
+AC_INIT([knife], [1.0.1_rc1])
+AC_CONFIG_SRCDIR([src/knife_definitions.h])
+AM_INIT_AUTOMAKE
 
 AC_PROG_RANLIB
 
