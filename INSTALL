@@ -4,6 +4,30 @@ Foundation, Inc.
    This file is free documentation; the Free Software Foundation gives
 unlimited permission to copy, distribute and modify it.
 
+(Quick Start) If You Received a *.tar.gz File to run with FUN3D
+===============================================================
+
+run (replace `x.x.x' with the current version number):
+
+ % gunzip knife-x.x.x.tar.gz
+ % tar xvf knife-x.x.x.tar
+ % cd knife-x.x.x
+ % ./configure --prefix=`pwd`
+ % make
+ % make install
+
+This will place libknife.a in lib 
+
+Read the `Basic Installation' section for more detailed instructions.
+
+Note To FUN3D Users
+===================
+
+You will need to run/rerun the FUN3D ./configure script. Add this
+argument
+
+  --with-knife=/my/path/to/knife-x.x.x
+
 Basic Installation
 ==================
 
