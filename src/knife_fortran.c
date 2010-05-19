@@ -244,6 +244,12 @@ void knife_required_local_dual_( char *knife_input_file_name,
 	  if ( 1 == bc_found )
 	    TRY( set_insert( bcs, bc ), "set_insert bc into bcs");
 	}
+
+      if ( 0 == set_size(bcs) )
+	{
+	  TRY( KNIFE_FAILURE, 
+	       "error specifying faces for cut surface in knife input file" );
+	}
     }
   else
     {
