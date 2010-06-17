@@ -457,6 +457,13 @@ KNIFE_STATUS triangle_area_normal( Triangle triangle,
 		  normal[1]*normal[1] +
 		  normal[2]*normal[2] );
 
+  if ( 0.0 == (*area) )
+    {
+      printf("%s: %d: triangle area %15.7e norm %15.7e %15.7e %15.7e\n",
+	     __FILE__,__LINE__,(*area), normal[0], normal[1], normal[2]);
+      return KNIFE_SUCCESS;
+    }
+
   normal[0] /= (*area);
   normal[1] /= (*area);
   normal[2] /= (*area);

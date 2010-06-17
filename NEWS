@@ -1,5 +1,7 @@
 
 Future Date: At version ?.?.?, fun3d-?-? or later
+Now will ignore zero area cut curface triangles durring normal and area
+computations.
 
 Thursday, April 22, 2010: At version 1.1.0, fun3d-10.7-38759 or later
 Use all surfaces faces when faces keyword is missing from [project].knife
