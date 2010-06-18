@@ -15,3 +15,7 @@ env G95_ENDIAN=LITTLE ./tri
 mv cylinder-unf.tri cylinder-unf-little.tri
 
 od -D -f cylinder-unf-little.tri
+
+head -1 cylinder-ascii.tri > cylinder-header.tri
+
+od -D -f cylinder-header.tri
