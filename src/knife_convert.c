@@ -48,6 +48,13 @@ int main( int argc, char *argv[] )
       return 1;
     }
 
+  if ( 0 == strncmp( argv[1], "-i", 2 ) )
+    {
+      sprintf( filename, "%s", argv[2] );
+      TRY( primal_interrogate_tri( filename ), "interrogation");
+      return 0;
+    }
+
   sprintf( filename, "%s", argv[1] );
 
   end_of_string = strlen(filename);
