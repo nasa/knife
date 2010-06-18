@@ -248,6 +248,23 @@ Primal primal_from_tri( char *filename )
   return primal;
 }
 
+KNIFE_STATUS primal_interrogate_tri( char *filename )
+{
+  FILE *file;
+
+  file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return KNIFE_FILE_ERROR;
+    }
+
+  fclose(file);
+
+  return KNIFE_SUCCESS;
+}
+
 void primal_free( Primal primal )
 {
   if ( NULL == primal ) return;

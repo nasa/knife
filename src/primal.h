@@ -61,6 +61,8 @@ Primal primal_create( int nnode, int nface, int ncell );
 Primal primal_from_fast( char *filename );
 Primal primal_from_tri( char *filename );
 
+KNIFE_STATUS primal_interrogate_tri( char *filename );
+
 void primal_free( Primal );
 
 KNIFE_STATUS primal_copy_volume( Primal, 
