@@ -19,3 +19,8 @@ od -D -f cylinder-unf-little.tri
 head -1 cylinder-ascii.tri > cylinder-header.tri
 
 od -D -f cylinder-header.tri
+
+~/knife/Linux/bin/knife-convert -i cylinder-unf-big.tri
+~/knife/Linux/bin/knife-convert -i cylinder-unf-little.tri
+~/knife/Linux/bin/knife-convert -i cylinder-header.tri
+

@@ -260,6 +260,8 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
       return KNIFE_FILE_ERROR;
     }
 
+  printf( "%s :\n",filename);
+
   fclose(file);
 
   return KNIFE_SUCCESS;
