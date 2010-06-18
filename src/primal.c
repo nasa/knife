@@ -248,9 +248,21 @@ Primal primal_from_tri( char *filename )
   return primal;
 }
 
+#define SWAP_2(x) ( (((x) & 0xff) << 8) | ((unsigned short)(x) >> 8) )
+#define SWAP_4(x) ( ((x) << 24) | (((x) << 8) & 0x00ff0000) | \
+         (((x) >> 8) & 0x0000ff00) | ((x) >> 24) )
+#define FIX_SHORT(x) (*(unsigned short *)&(x) = SWAP_2(*(unsigned short *)&(x)))
+#define FIX_LONG(x) (*(unsigned *)&(x) = SWAP_4(*(unsigned *)&(x)))
+#define FIX_FLOAT(x) FIX_LONG(x)
+
+
 KNIFE_STATUS primal_interrogate_tri( char *filename )
 {
   FILE *file;
+
+  int record_header, record_footer;
+  int nnode, nface;
+  KnifeBool big_endian;
 
   file = fopen(filename,"r");
   if ( NULL == file )
@@ -261,6 +273,24 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
     }
 
   printf( "%s :\n",filename);
+
+  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  AEF( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
+  AEF( 1, fread( &nface, sizeof(int), 1, file), "nface" );
+  AEF( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+
+  big_endian = ( 134217728 == record_header );
+  if ( big_endian )
+    {
+      FIX_LONG(record_header);
+      FIX_LONG(nnode);
+      FIX_LONG(nface);
+      FIX_LONG(record_footer);
+
+    }
+
+  printf( " %d %d %d %d\n", record_header, nnode, nface, record_footer );
+
 
   fclose(file);
 
