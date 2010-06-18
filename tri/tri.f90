@@ -21,4 +21,12 @@ program main
 
   close(f)
 
+  filename = 'cylinder-unf.tri'
+
+  open(f, file=filename, form='unformatted', status='unknown' )
+
+  write(f) nnode, nface
+
+  close(f)
+
 end program main
