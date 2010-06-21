@@ -287,7 +287,9 @@ Primal primal_from_unformatted_tri( char *filename )
   int record_header, record_footer;
   int nnode, nface, ncell;
   int real_byte_size;
-
+  float real4;
+  double real8;
+  int i,j;
   file = fopen(filename,"r");
   if ( NULL == file )
     {
@@ -301,7 +303,7 @@ Primal primal_from_unformatted_tri( char *filename )
   AEN( 1, fread( &nface, sizeof(int), 1, file), "nface" );
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
 
-  AEN( record_header, record_footer, "first record missmatch");
+  AEN( record_header, record_footer, "sizing record mismatch");
 
   ncell = 0;
   primal = primal_create( nnode, nface, ncell );
@@ -316,7 +318,60 @@ Primal primal_from_unformatted_tri( char *filename )
 
   real_byte_size = record_header / 3 / nnode;
 
-  return NULL;
+  for( i=0; i<3*nnode ; i++ ) 
+    {
+      switch (real_byte_size )
+	{
+	case 4:
+	  AEN( 1, fread( &real4, sizeof(float), 1, file), "4 byte xyz" );
+	  primal->xyz[i] = (double)real4;
+	  break;
+	case 8:
+	  AEN( 1, fread( &real8, sizeof(double), 1, file), "8 byte xyz" );
+	  primal->xyz[i] = (double)real8;
+	  break;
+	default:
+	  printf("%s: %d: primal_from_tri: xyz byte size %d \n",
+		 __FILE__,__LINE__,real_byte_size);
+	  return NULL;
+	}
+    }
+
+  AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  AEN( record_header, record_footer, "xyz record mismatch");
+
+  AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  AEN( record_header, 3*nface*4, "vertex record wrong size");
+
+  for( j=0; j<nface ; j++ ) 
+    {
+      for( i=0; i<3 ; i++ ) 
+	{
+	  AEN( 1, fread( &(primal->f2n[i+4*j]), sizeof(int), 1, file), 
+	       "4 byte vertex" );
+	  primal->f2n[i+4*j]--;
+	  adj_add( primal->face_adj, primal->f2n[i+4*j], j);
+	}
+    }
+  
+  AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  AEN( record_header, record_footer, "vertex record mismatch");
+
+  AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  AEN( record_header, nface*4, "component record wrong size");
+
+  for( j=0; j<nface ; j++ ) 
+    {
+      AEN( 1, fread( &(primal->f2n[3+4*j]), sizeof(int), 1, file), 
+	   "4 byte component" );
+    }
+  
+  AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  AEN( record_header, record_footer, "componet record mismatch");
+
+  TRYN( primal_establish_all( primal ), "primal_establish_all" );
+
+  return primal;
 }
 
 #define SWAP_2(x) ( (((x) & 0xff) << 8) | ((unsigned short)(x) >> 8) )
