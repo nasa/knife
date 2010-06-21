@@ -183,6 +183,38 @@ Primal primal_from_fast( char *filename )
 
 Primal primal_from_tri( char *filename )
 {
+  FILE *file;
+  int record_header;
+  
+  file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return NULL;
+    }
+
+  AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+
+  fclose( file );
+
+  switch ( record_header )
+    {
+    case 8 :
+      return primal_from_unformatted_tri( filename );
+      break;
+    case 134217728 :
+      printf("%s: %d: unable to read big endian %d %s\n",
+	     __FILE__,__LINE__,record_header,filename);
+      return NULL;
+      break;
+    }
+
+  return primal_from_ascii_tri( filename );
+}
+
+Primal primal_from_ascii_tri( char *filename )
+{
   Primal primal;
   int nnode, nface, ncell;
   int i;
@@ -248,13 +280,51 @@ Primal primal_from_tri( char *filename )
   return primal;
 }
 
+Primal primal_from_unformatted_tri( char *filename )
+{
+  Primal primal;
+  FILE *file;
+  int record_header, record_footer;
+  int nnode, nface, ncell;
+  int real_byte_size;
+
+  file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return NULL;
+    }
+
+  AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  AEN( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
+  AEN( 1, fread( &nface, sizeof(int), 1, file), "nface" );
+  AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+
+  AEN( record_header, record_footer, "first record missmatch");
+
+  ncell = 0;
+  primal = primal_create( nnode, nface, ncell );
+  if ( NULL == primal )
+    {
+      printf("%s: %d: primal_from_tri: primal creation \n",
+	     __FILE__,__LINE__);
+      return NULL;
+    }
+
+  AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+
+  real_byte_size = record_header / 3 / nnode;
+
+  return primal;
+}
+
 #define SWAP_2(x) ( (((x) & 0xff) << 8) | ((unsigned short)(x) >> 8) )
 #define SWAP_4(x) ( ((x) << 24) | (((x) << 8) & 0x00ff0000) | \
          (((x) >> 8) & 0x0000ff00) | ((x) >> 24) )
 #define FIX_SHORT(x) (*(unsigned short *)&(x) = SWAP_2(*(unsigned short *)&(x)))
 #define FIX_LONG(x) (*(unsigned *)&(x) = SWAP_4(*(unsigned *)&(x)))
 #define FIX_FLOAT(x) FIX_LONG(x)
-
 
 KNIFE_STATUS primal_interrogate_tri( char *filename )
 {
@@ -310,6 +380,8 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
 
   return KNIFE_SUCCESS;
 }
+
+
 
 void primal_free( Primal primal )
 {

@@ -29,6 +29,7 @@ program main
   open(f, file=filename, form='formatted', status='old' )
 
   read(f,*) nnode, nface
+
   write(*,*)" nnode ",nnode
   write(*,*)" nface ",nface
   allocate( xyz(3,nnode) )
