@@ -263,6 +263,7 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
   int record_header, record_footer;
   int nnode, nface;
   KnifeBool big_endian;
+  int real_byte_size;
 
   file = fopen(filename,"r");
   if ( NULL == file )
@@ -279,6 +280,12 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
   AEF( 1, fread( &nface, sizeof(int), 1, file), "nface" );
   AEF( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
 
+  if ( ( 134217728 != record_header ) && ( 8 != record_header ) )
+    {
+      printf(" is ascii, %d\n",record_header);
+      return KNIFE_SUCCESS;
+    }
+
   big_endian = ( 134217728 == record_header );
   if ( big_endian )
     {
@@ -289,8 +296,15 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
 
     }
 
-  printf( " %d %d %d %d\n", record_header, nnode, nface, record_footer );
+  printf( "first recoard %d %d %d %d\n", 
+	  record_header, nnode, nface, record_footer );
 
+  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  if ( big_endian ) FIX_LONG(record_header);
+
+  real_byte_size = record_header / 3 / nnode;
+
+  printf( "xyzs are %d bytes each\n", real_byte_size );
 
   fclose(file);
 

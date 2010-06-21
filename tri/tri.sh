@@ -12,7 +12,7 @@ fi
 
 src=../Linux/src
 
-( cd ${src} && make )
+( cd ${src} && make ) || exit 1
 
 ${f90} -o tri tri.f90 || exit 1
 
@@ -20,19 +20,15 @@ env G95_ENDIAN=BIG ./tri
 
 mv cylinder-unf.tri cylinder-unf-big.tri
 
-od -D -f cylinder-unf-big.tri
+od -D -f cylinder-unf-big.tri | head -10
 
 env G95_ENDIAN=LITTLE ./tri
 
 mv cylinder-unf.tri cylinder-unf-little.tri
 
-od -D -f cylinder-unf-little.tri
-
-head -1 cylinder-ascii.tri > cylinder-header.tri
-
-od -D -f cylinder-header.tri
+od -D -f cylinder-unf-little.tri  | head -10
 
 ${src}/knife-convert -i cylinder-unf-big.tri
 ${src}/knife-convert -i cylinder-unf-little.tri
-${src}/knife-convert -i cylinder-header.tri
+${src}/knife-convert -i cylinder-ascii.tri
 
