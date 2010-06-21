@@ -32,3 +32,5 @@ ${src}/knife-convert -i cylinder-unf-big.tri
 ${src}/knife-convert -i cylinder-unf-little.tri
 ${src}/knife-convert -i cylinder-ascii.tri
 
+${src}/knife-convert cylinder-unf-little.tri
+

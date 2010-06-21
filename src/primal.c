@@ -316,7 +316,7 @@ Primal primal_from_unformatted_tri( char *filename )
 
   real_byte_size = record_header / 3 / nnode;
 
-  return primal;
+  return NULL;
 }
 
 #define SWAP_2(x) ( (((x) & 0xff) << 8) | ((unsigned short)(x) >> 8) )
