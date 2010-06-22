@@ -36,7 +36,8 @@
     code = (fcn);					      \
     if (KNIFE_SUCCESS != code){				      \
       char surface_tecplot_filename[1025];                            \
-      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      printf("%s: %d: code %d, part %d, %s\n",			      \
+	     __FILE__,__LINE__,code,partition,(msg));	      \
       fflush(stdout);					      \
       *knife_status = code;				      \
       sprintf(surface_tecplot_filename,"surface%04d.t",partition);    \
