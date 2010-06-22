@@ -32,6 +32,15 @@ ${src}/knife-convert -i cylinder-unf-big.tri
 ${src}/knife-convert -i cylinder-unf-little.tri
 ${src}/knife-convert -i cylinder-ascii.tri
 
+rm -f primal.*
 ${src}/knife-convert cylinder-unf-little.tri
+diff cylinder-ascii.tri primal.tri || exit 1
+
+rm -f primal.*
 ${src}/knife-convert cylinder-unf-big.tri
+diff cylinder-ascii.tri primal.tri || exit 1
+
+rm -f cylinder-unf-big.tri cylinder-unf-little.tri
+rm -f massoud.t primal.*
+rm -f tri
 
