@@ -18,6 +18,59 @@
 #include "primal.h"
 #include "set.h"
 
+/*
+#define SWAP_4(x) ( ((x) << 24) | \
+		    (((x) << 8) & 0x00ff0000) |	\
+		    (((x) >> 8) & 0x0000ff00) | \
+		    ((x) >> 24) )
+#define SWAP_8(x) ( ((x) >> 56) | \
+		    (((x)<<40) & 0x00FF000000000000) | \
+		    (((x)<<24) & 0x0000FF0000000000) | \
+		    (((x)<<8)  & 0x000000FF00000000) | \
+		    (((x)>>8)  & 0x00000000FF000000) | \
+		    (((x)>>24) & 0x0000000000FF0000) | \
+		    (((x)>>40) & 0x000000000000FF00) | \
+		    ((x) << 56) )
+#define SWAP_INT(x) (*(unsigned *)&(x) = SWAP_4(*(unsigned *)&(x)))
+#define SWAP_FLOAT(x) (*(float *)&(x) = SWAP_4(*(unsigned *)&(x)))
+#define SAWP_DOUBLE(x) (*(double *)&(x) = SWAP_8(*(unsigned *)&(x)))
+*/
+
+#define SWAP_INT(x) { \
+    int y; \
+    char *xp = (char *)&(x); \
+    char *yp = (char *)&(y); \
+    *(yp+3) = *(xp+0); \
+    *(yp+2) = *(xp+1); \
+    *(yp+1) = *(xp+2); \
+    *(yp+0) = *(xp+3); \
+    (x) = y; \
+  }
+#define SWAP_FLOAT(x) { \
+    float y; \
+    char *xp = (char *)&(x); \
+    char *yp = (char *)&(y); \
+    *(yp+3) = *(xp+0); \
+    *(yp+2) = *(xp+1); \
+    *(yp+1) = *(xp+2); \
+    *(yp+0) = *(xp+3); \
+    (x) = y; \
+  }
+#define SWAP_DOUBLE(x) { \
+    double y; \
+    char *xp = (char *)&(x); \
+    char *yp = (char *)&(y); \
+    *(yp+7) = *(xp+0); \
+    *(yp+6) = *(xp+1); \
+    *(yp+5) = *(xp+2); \
+    *(yp+4) = *(xp+3); \
+    *(yp+3) = *(xp+4); \
+    *(yp+2) = *(xp+5); \
+    *(yp+1) = *(xp+6); \
+    *(yp+0) = *(xp+7); \
+    (x) = y; \
+  }
+
 #define primal_test_malloc(ptr,fcn)		       \
   if (NULL == (ptr)) {				       \
     printf("%s: %d: malloc failed in %s\n",	       \
@@ -200,13 +253,9 @@ Primal primal_from_tri( char *filename )
 
   switch ( record_header )
     {
-    case 8 :
+    case 8 : /* two 4 byte integers */
+    case 134217728 :  /* two 4 byte integers - big endian */
       return primal_from_unformatted_tri( filename );
-      break;
-    case 134217728 :
-      printf("%s: %d: unable to read big endian %d %s\n",
-	     __FILE__,__LINE__,record_header,filename);
-      return NULL;
       break;
     }
 
@@ -290,6 +339,9 @@ Primal primal_from_unformatted_tri( char *filename )
   float real4;
   double real8;
   int i,j;
+
+  KnifeBool big_endian;
+
   file = fopen(filename,"r");
   if ( NULL == file )
     {
@@ -302,6 +354,11 @@ Primal primal_from_unformatted_tri( char *filename )
   AEN( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
   AEN( 1, fread( &nface, sizeof(int), 1, file), "nface" );
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  big_endian = ( 134217728 == record_header );
+  if ( big_endian ) SWAP_INT(record_header);
+  if ( big_endian ) SWAP_INT(nnode);
+  if ( big_endian ) SWAP_INT(nface);
+  if ( big_endian ) SWAP_INT(record_footer);
 
   AEN( record_header, record_footer, "sizing record mismatch");
 
@@ -315,6 +372,7 @@ Primal primal_from_unformatted_tri( char *filename )
     }
 
   AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  if ( big_endian ) SWAP_INT(record_header);
 
   real_byte_size = record_header / 3 / nnode;
 
@@ -324,10 +382,12 @@ Primal primal_from_unformatted_tri( char *filename )
 	{
 	case 4:
 	  AEN( 1, fread( &real4, sizeof(float), 1, file), "4 byte xyz" );
+	  if ( big_endian ) SWAP_FLOAT(real4);
 	  primal->xyz[i] = (double)real4;
 	  break;
 	case 8:
 	  AEN( 1, fread( &real8, sizeof(double), 1, file), "8 byte xyz" );
+	  if ( big_endian ) SWAP_DOUBLE(real8);
 	  primal->xyz[i] = (double)real8;
 	  break;
 	default:
@@ -338,9 +398,11 @@ Primal primal_from_unformatted_tri( char *filename )
     }
 
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  if ( big_endian ) SWAP_INT(record_footer);
   AEN( record_header, record_footer, "xyz record mismatch");
 
   AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  if ( big_endian ) SWAP_INT(record_header);
   AEN( record_header, 3*nface*4, "vertex record wrong size");
 
   for( j=0; j<nface ; j++ ) 
@@ -349,37 +411,35 @@ Primal primal_from_unformatted_tri( char *filename )
 	{
 	  AEN( 1, fread( &(primal->f2n[i+4*j]), sizeof(int), 1, file), 
 	       "4 byte vertex" );
+	  if ( big_endian ) SWAP_INT(primal->f2n[i+4*j]);
 	  primal->f2n[i+4*j]--;
 	  adj_add( primal->face_adj, primal->f2n[i+4*j], j);
 	}
     }
   
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  if ( big_endian ) SWAP_INT(record_footer);
   AEN( record_header, record_footer, "vertex record mismatch");
 
   AEN( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  if ( big_endian ) SWAP_INT(record_header);
   AEN( record_header, nface*4, "component record wrong size");
 
   for( j=0; j<nface ; j++ ) 
     {
       AEN( 1, fread( &(primal->f2n[3+4*j]), sizeof(int), 1, file), 
 	   "4 byte component" );
+      if ( big_endian ) SWAP_INT(primal->f2n[3+4*j]);
     }
   
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+  if ( big_endian ) SWAP_INT(record_footer);
   AEN( record_header, record_footer, "componet record mismatch");
 
   TRYN( primal_establish_all( primal ), "primal_establish_all" );
 
   return primal;
 }
-
-#define SWAP_2(x) ( (((x) & 0xff) << 8) | ((unsigned short)(x) >> 8) )
-#define SWAP_4(x) ( ((x) << 24) | (((x) << 8) & 0x00ff0000) | \
-         (((x) >> 8) & 0x0000ff00) | ((x) >> 24) )
-#define FIX_SHORT(x) (*(unsigned short *)&(x) = SWAP_2(*(unsigned short *)&(x)))
-#define FIX_LONG(x) (*(unsigned *)&(x) = SWAP_4(*(unsigned *)&(x)))
-#define FIX_FLOAT(x) FIX_LONG(x)
 
 KNIFE_STATUS primal_interrogate_tri( char *filename )
 {
@@ -414,10 +474,10 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
   big_endian = ( 134217728 == record_header );
   if ( big_endian )
     {
-      FIX_LONG(record_header);
-      FIX_LONG(nnode);
-      FIX_LONG(nface);
-      FIX_LONG(record_footer);
+      SWAP_INT(record_header);
+      SWAP_INT(nnode);
+      SWAP_INT(nface);
+      SWAP_INT(record_footer);
 
     }
 
@@ -425,7 +485,7 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
 	  record_header, nnode, nface, record_footer );
 
   AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
-  if ( big_endian ) FIX_LONG(record_header);
+  if ( big_endian ) SWAP_INT(record_header);
 
   real_byte_size = record_header / 3 / nnode;
 
