@@ -1,7 +1,9 @@
 
-Future Date: At version ?.?.?, fun3d-?-? or later
-Now will ignore zero area cut curface triangles durring normal and area
-computations.
+Tuesday, June 22, 2010: At version 1.2.0, fun3d-10.7-38759 or later
+Now will ignore zero area cut surface triangles during normal and area
+computations. Added a more general .tri surface file reader that
+auto-detects ASCII and either little-endian or big-endian Fortran
+unformatted. 
 
 Thursday, April 22, 2010: At version 1.1.0, fun3d-10.7-38759 or later
 Use all surfaces faces when faces keyword is missing from [project].knife
