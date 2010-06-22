@@ -23,4 +23,5 @@ AC_OUTPUT( \
 	   example/diamond-airfoil/surface/Makefile \
 	   example/diamond-airfoil/background/Makefile \
 	   example/diamond-airfoil/cutcell/Makefile \
+	   tri/Makefile \
 	   )
