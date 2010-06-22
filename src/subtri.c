@@ -250,8 +250,8 @@ KNIFE_STATUS subtri_echo_uvw( Subtri subtri )
 
 KNIFE_STATUS subtri_echo( Subtri subtri )
 {
-  char uvw_format[]="subnode %d xyz %.16e %.16e %.16e\n";
-  char xyz_format[]="subnode %d uvw %.16e %.16e %.16e\n";
+  char uvw_format[]="subnode %d uvw %.16e %.16e %.16e\n";
+  char xyz_format[]="subnode %d xyz %.16e %.16e %.16e\n";
   if (NULL == subtri) return KNIFE_NULL;
 
   printf( xyz_format,0,
