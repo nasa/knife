@@ -58,12 +58,13 @@ struct PrimalStruct {
 };
 
 Primal primal_create( int nnode, int nface, int ncell );
+
 Primal primal_from_fast( char *filename );
+
+KNIFE_STATUS primal_interrogate_tri( char *filename );
 Primal primal_from_tri( char *filename );
 Primal primal_from_ascii_tri( char *filename );
 Primal primal_from_unformatted_tri( char *filename );
-
-KNIFE_STATUS primal_interrogate_tri( char *filename );
 
 void primal_free( Primal );
 

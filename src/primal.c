@@ -18,24 +18,6 @@
 #include "primal.h"
 #include "set.h"
 
-/*
-#define SWAP_4(x) ( ((x) << 24) | \
-		    (((x) << 8) & 0x00ff0000) |	\
-		    (((x) >> 8) & 0x0000ff00) | \
-		    ((x) >> 24) )
-#define SWAP_8(x) ( ((x) >> 56) | \
-		    (((x)<<40) & 0x00FF000000000000) | \
-		    (((x)<<24) & 0x0000FF0000000000) | \
-		    (((x)<<8)  & 0x000000FF00000000) | \
-		    (((x)>>8)  & 0x00000000FF000000) | \
-		    (((x)>>24) & 0x0000000000FF0000) | \
-		    (((x)>>40) & 0x000000000000FF00) | \
-		    ((x) << 56) )
-#define SWAP_INT(x) (*(unsigned *)&(x) = SWAP_4(*(unsigned *)&(x)))
-#define SWAP_FLOAT(x) (*(float *)&(x) = SWAP_4(*(unsigned *)&(x)))
-#define SAWP_DOUBLE(x) (*(double *)&(x) = SWAP_8(*(unsigned *)&(x)))
-*/
-
 #define SWAP_INT(x) { \
     int y; \
     char *xp = (char *)&(x); \
@@ -232,6 +214,61 @@ Primal primal_from_fast( char *filename )
   TRYN( primal_establish_all( primal ), "primal_establish_all" );
 
   return primal;
+}
+
+KNIFE_STATUS primal_interrogate_tri( char *filename )
+{
+  FILE *file;
+
+  int record_header, record_footer;
+  int nnode, nface;
+  KnifeBool big_endian;
+  int real_byte_size;
+
+  file = fopen(filename,"r");
+  if ( NULL == file )
+    {
+      printf("%s: %d: NULL file pointer to %s\n",
+	     __FILE__,__LINE__,filename);
+      return KNIFE_FILE_ERROR;
+    }
+
+  printf( "%s :\n",filename);
+
+  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  AEF( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
+  AEF( 1, fread( &nface, sizeof(int), 1, file), "nface" );
+  AEF( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
+
+  if ( ( 134217728 != record_header ) && ( 8 != record_header ) )
+    {
+      printf(" is ascii, %d\n",record_header);
+      return KNIFE_SUCCESS;
+    }
+
+  big_endian = ( 134217728 == record_header );
+  if ( big_endian )
+    {
+      SWAP_INT(record_header);
+      SWAP_INT(nnode);
+      SWAP_INT(nface);
+      SWAP_INT(record_footer);
+
+    }
+
+  printf( "first recoard %d %d %d %d\n", 
+	  record_header, nnode, nface, record_footer );
+
+  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
+  if ( big_endian ) SWAP_INT(record_header);
+
+  real_byte_size = record_header / 3 / nnode;
+
+  printf( "xyzs are %d bytes each\n", real_byte_size );
+
+  fclose(file);
+
+  return KNIFE_SUCCESS;
 }
 
 Primal primal_from_tri( char *filename )
@@ -440,63 +477,6 @@ Primal primal_from_unformatted_tri( char *filename )
 
   return primal;
 }
-
-KNIFE_STATUS primal_interrogate_tri( char *filename )
-{
-  FILE *file;
-
-  int record_header, record_footer;
-  int nnode, nface;
-  KnifeBool big_endian;
-  int real_byte_size;
-
-  file = fopen(filename,"r");
-  if ( NULL == file )
-    {
-      printf("%s: %d: NULL file pointer to %s\n",
-	     __FILE__,__LINE__,filename);
-      return KNIFE_FILE_ERROR;
-    }
-
-  printf( "%s :\n",filename);
-
-  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
-  AEF( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
-  AEF( 1, fread( &nface, sizeof(int), 1, file), "nface" );
-  AEF( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
-
-  if ( ( 134217728 != record_header ) && ( 8 != record_header ) )
-    {
-      printf(" is ascii, %d\n",record_header);
-      return KNIFE_SUCCESS;
-    }
-
-  big_endian = ( 134217728 == record_header );
-  if ( big_endian )
-    {
-      SWAP_INT(record_header);
-      SWAP_INT(nnode);
-      SWAP_INT(nface);
-      SWAP_INT(record_footer);
-
-    }
-
-  printf( "first recoard %d %d %d %d\n", 
-	  record_header, nnode, nface, record_footer );
-
-  AEF( 1, fread( &record_header, sizeof(int), 1, file), "record header" );
-  if ( big_endian ) SWAP_INT(record_header);
-
-  real_byte_size = record_header / 3 / nnode;
-
-  printf( "xyzs are %d bytes each\n", real_byte_size );
-
-  fclose(file);
-
-  return KNIFE_SUCCESS;
-}
-
-
 
 void primal_free( Primal primal )
 {
