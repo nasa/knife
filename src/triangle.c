@@ -931,7 +931,7 @@ KNIFE_STATUS triangle_first_blocking_side( Triangle triangle,
 
   if ( best_area < 1.0e-14 )
     {
-      printf("from %20.16f %20.16f %20.16f\n  to %20.16f %20.16f %20.16f\n",
+      printf("from %20.17f %20.17f %20.17f\n  to %20.17f %20.17f %20.17f\n",
 	     subnode_u( node2 ), subnode_v( node2 ), subnode_w( node2 ),
 	     subnode_u( node3 ), subnode_v( node3 ), subnode_w( node3 ) );
       printf("%s: %d: best area %e\n",__FILE__,__LINE__,best_area);
@@ -1063,7 +1063,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       subnode = triangle_subnode(triangle, subnode_index);
       NOT_NULL( subnode, "tecplot subnode NULL" );
       TRYQ( subnode_xyz( subnode, xyz ), "tecplot subnode xyz");
-      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 	      subnode_v(subnode), subnode_w(subnode), xyz[0], xyz[1], xyz[2] );
     }
 
@@ -1093,13 +1093,13 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	  NOT_NULL( intersection, "tecplot intersection0 NULL" );
 	  TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
 	  TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
-	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	  fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
 	  intersection = cut_intersection1(cut);
 	  NOT_NULL( intersection, "tecplot intersection1 NULL" );
 	  TRYQ( intersection_uvw( intersection, triangle, uvw ), "int uvw" );
 	  TRYQ( intersection_xyz( intersection, xyz ), "int xyz" );
-	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	  fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		  uvw[1], uvw[2], xyz[0], xyz[1], xyz[2] );
 	}
 
@@ -1123,7 +1123,7 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
       node = subnode_node( subnode );
       if ( NULL != node )
 	for ( i = 0 ; i < 3; i++ )
-	  fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	  fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		  subnode_v(subnode), subnode_w(subnode), 
 		  node_x(node), node_y(node), node_z(node) );
       intersection = subnode_intersection( subnode );
@@ -1133,29 +1133,29 @@ KNIFE_STATUS triangle_tecplot( Triangle triangle)
 	    {
 	      segment = intersection_segment( intersection );
 	      node = segment_node0(segment);
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
 	      node = segment_node1(segment);
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
 	    }
 	  else
 	    {
 	      node = triangle_node0(intersection_triangle( intersection ));
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
 	      node = triangle_node1(intersection_triangle( intersection ));
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
 	      node = triangle_node2(intersection_triangle( intersection ));
-	      fprintf(f, " %.16e %.16e %.16e %.16e %.16e\n",
+	      fprintf(f, " %20.17f %20.17f %.16e %.16e %.16e\n",
 		      subnode_v(subnode), subnode_w(subnode),
 		      node_x(node), node_y(node), node_z(node) );
 	    }
