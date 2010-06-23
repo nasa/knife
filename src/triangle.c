@@ -22,7 +22,6 @@ static int triangle_export_frame = 0;
 #define POSITIVE_AREA( subtri )					\
   if (TRUE) {							\
     if (subtri_reference_area(subtri) <= 0.0 ) {		\
-      triangle_tecplot(triangle);				\
       printf("%s: %d: neg area %30.22e\n",			\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
       subtri_echo( subtri );					\

@@ -1299,7 +1299,7 @@ KNIFE_STATUS domain_boolean_subtract( Domain domain )
   free(triangle_tree);
 
   logger_message( DOMAIN_LOGGER_LEVEL, "subtract:triangulate");
-  TRY( domain_triangulate(domain), "domain_triangulate" );
+  TRY( domain_triangulate(domain), "domain_triangulate\n--> the triangulation step of the cut cell process failed <--" );
 
   logger_message( DOMAIN_LOGGER_LEVEL, "subtract:gather_surf");
   TRY( domain_gather_surf(domain), "domain_gather_surf" );
