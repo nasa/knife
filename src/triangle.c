@@ -25,7 +25,7 @@ static int triangle_export_frame = 0;
       triangle_tecplot(triangle);				\
       printf("%s: %d: neg area %30.22e\n",			\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
-      subtri_echo_uvw( subtri );				\
+      subtri_echo( subtri );					\
       return KNIFE_NEG_AREA;					\
     }								\
   }
