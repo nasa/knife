@@ -26,7 +26,6 @@ static int triangle_export_frame = 0;
       printf("%s: %d: neg area %30.22e\n",			\
 	     __FILE__,__LINE__,subtri_reference_area(subtri));	\
       subtri_echo_uvw( subtri );				\
-      triangle_examine_subnodes(triangle);			\
       return KNIFE_NEG_AREA;					\
     }								\
   }
@@ -38,7 +37,6 @@ static int triangle_export_frame = 0;
     if (KNIFE_SUCCESS != code){				      \
       printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
       triangle_tecplot(triangle);			      \
-      triangle_export(triangle);			      \
       return code;					      \
     }							      \
   }
@@ -1372,7 +1370,7 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 
 KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
 {
-  char export_file_name[1025];
+  char import_file_name[1025];
   FILE *f;
   Subnode subnode0, subnode1, subnode2;
   int subnode_index, subtri_index, cut_index;
@@ -1388,9 +1386,9 @@ KNIFE_STATUS triangle_import( Triangle triangle, char *file_name )
   f = NULL;
   if ( NULL == file_name )
     {
-      sprintf(export_file_name, "triangle%08d.1.ele", triangle_export_frame );
-      printf("importing %s\n",export_file_name);
-      f = fopen(export_file_name, "r");
+      sprintf(import_file_name, "triangle%08d.1.ele", triangle_export_frame );
+      printf("importing %s\n",import_file_name);
+      f = fopen(import_file_name, "r");
     }
   else
     {
