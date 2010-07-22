@@ -287,7 +287,7 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 
 	  if ( ( volume01 > 0.0 && volume10 > 0.0 ) ||
 	       ( volume01 < 0.0 && volume10 < 0.0 ) ||
-	       volume01 == 0.0 || volume01 == 0.0 )
+	       knife_double_zero(volume01) || knife_double_zero(volume10) )
 	    {
 	      subtri_echo( triang_subtri01 );
 	      subtri_echo( triang_subtri10 );
@@ -314,9 +314,9 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	    }
 
 	  subtri = triang_subtri01;
-	  if ( subtri_reference_area( triang_subtri10 ) >
-	       subtri_reference_area( triang_subtri01 ) )
-	    subtri = triang_subtri10;
+	  area10 = subtri_reference_area( triang_subtri10 );
+	  area01 = subtri_reference_area( triang_subtri01 );
+	  if ( area10 > area01 ) subtri = triang_subtri10;
 
 	  TRY( subtri_contained_volume6( subtri, cutter_subtri01, 
 					 &volume01), "vol");
@@ -326,7 +326,7 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 
 	  if ( ( volume01 > 0.0 && volume10 > 0.0 ) ||
 	       ( volume01 < 0.0 && volume10 < 0.0 ) ||
-	       volume01 == 0.0 || volume01 == 0.0 )
+	       knife_double_zero(volume01) || knife_double_zero(volume10) )
 	    {
 	      subtri_echo( cutter_subtri01 );
 	      subtri_echo( cutter_subtri10 );

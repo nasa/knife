@@ -48,6 +48,8 @@ typedef short KnifeBool;
 #define MIN3(a) (MIN((a)[0],MIN((a)[1],(a)[2]))) 
 #endif
 
+#define knife_double_zero(x) ( !(0.0 > (x)) && !(0.0 < (x)) )
+
 typedef int KNIFE_STATUS;
 
 #define KNIFE_SUCCESS       (0)
