@@ -61,6 +61,16 @@ static int triangle_export_frame = 0;
     }							      \
   }
 
+#define TRYF(fcn,msg)					      \
+  {							      \
+    int code;						      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return FALSE;					      \
+    }							      \
+  }
+
 #define NOT_NULL(pointer,msg)				      \
   if (NULL == pointer){					      \
     printf("%s: %d: %s\n",__FILE__,__LINE__,(msg));	      \
@@ -1492,12 +1502,12 @@ static KnifeBool triangle_swap_positive( Triangle triangle,
   Subnode node2, node3;
   Subnode n0, n1, n2;
 
-  TRY( triangle_subtri_with_subnodes(triangle, node0, node1, &subtri0 ), "s0" );
-  TRY( triangle_subtri_with_subnodes(triangle, node1, node0, &subtri1 ), "s1" );
+  TRYF( triangle_subtri_with_subnodes(triangle, node0, node1, &subtri0 ), "s0");
+  TRYF( triangle_subtri_with_subnodes(triangle, node1, node0, &subtri1 ), "s1");
 
-  TRY( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
+  TRYF( subtri_orient( subtri0, node0, &n0, &n1, &n2 ), "orient0");
   node2 = n2;
-  TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
+  TRYF( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
   node3 = n2;
 
   return (KnifeBool)( 1.0e-20 <= subnode_area( node1, node2, node3 ) &&
