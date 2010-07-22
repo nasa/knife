@@ -1483,8 +1483,8 @@ KNIFE_STATUS triangle_delaunay( Triangle triangle, Subnode subnode )
   return KNIFE_SUCCESS;
 }
 
-KnifeBool triangle_swap_positive( Triangle triangle, 
-				  Subnode node0, Subnode node1 )
+static KnifeBool triangle_swap_positive( Triangle triangle, 
+					Subnode node0, Subnode node1 )
 {
   Subtri subtri0, subtri1;
   Subnode node2, node3;
@@ -1604,8 +1604,9 @@ KNIFE_STATUS triangle_recover_side( Triangle triangle,
   return triangle_recover_side(triangle, node0, node1);
 }
 
-KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
-					      Subnode node0, Subnode node1)
+static KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
+						     Subnode node0, 
+						     Subnode node1)
 {
   Subtri subtri0, subtri1;
   Subnode n0, n1, n2;
