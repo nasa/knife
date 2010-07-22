@@ -232,6 +232,7 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
   Subtri triang_subtri01, triang_subtri10;
   Mask mask, surf;
   double volume01, volume10;
+  double area01, area10;
   int region;
 
   region = 0;
@@ -274,9 +275,9 @@ KNIFE_STATUS poly_activate_subtri_at_cuts( Poly poly )
 	       "triang_subtri10");
 
 	  subtri = cutter_subtri01;
-	  if ( subtri_reference_area( cutter_subtri10 ) >
-	       subtri_reference_area( cutter_subtri01 ) )
-	    subtri = cutter_subtri10;
+	  area10 = subtri_reference_area( cutter_subtri10 );
+	  area01 = subtri_reference_area( cutter_subtri01 );
+	  if ( area10 > area01 ) subtri = cutter_subtri10;
 
 	  TRY( subtri_contained_volume6( subtri, triang_subtri01, 
 					 &volume01), "vol");
