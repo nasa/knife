@@ -113,13 +113,3 @@ double subnode_area( Subnode n0, Subnode n1, Subnode n2 )
   return (0.5*(a*d-b*c));
 }
 
-double subnode_area_not_factored( Subnode n0, Subnode n1, Subnode n2 )
-{
-  return ( 0.5 *( n0->uvw[1]*n1->uvw[2] +
-		  n1->uvw[1]*n2->uvw[2] +
-		  n2->uvw[1]*n0->uvw[2] -
-		  n0->uvw[1]*n2->uvw[2] -
-		  n1->uvw[1]*n0->uvw[2] -
-		  n2->uvw[1]*n1->uvw[2] ) );
-}
-
