@@ -132,7 +132,7 @@ KNIFE_STATUS array_remove( Array array, ArrayItem item )
 
 KnifeBool array_contains_item( Array array, ArrayItem target )
 {
-  return ( EMPTY != array_index_of( array, target ) ? TRUE : FALSE );
+  return (KnifeBool)( EMPTY != array_index_of( array, target ) ? TRUE : FALSE );
 }
 
 int array_index_of( Array array, ArrayItem target )

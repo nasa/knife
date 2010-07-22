@@ -246,7 +246,7 @@ KNIFE_STATUS primal_interrogate_tri( char *filename )
       return KNIFE_SUCCESS;
     }
 
-  big_endian = ( 134217728 == record_header );
+  big_endian = (KnifeBool)( 134217728 == record_header );
   if ( big_endian )
     {
       SWAP_INT(record_header);
@@ -391,7 +391,7 @@ Primal primal_from_unformatted_tri( char *filename )
   AEN( 1, fread( &nnode, sizeof(int), 1, file), "nnode" );
   AEN( 1, fread( &nface, sizeof(int), 1, file), "nface" );
   AEN( 1, fread( &record_footer, sizeof(int), 1, file), "record footer" );
-  big_endian = ( 134217728 == record_header );
+  big_endian = (KnifeBool)( 134217728 == record_header );
   if ( big_endian ) SWAP_INT(record_header);
   if ( big_endian ) SWAP_INT(nnode);
   if ( big_endian ) SWAP_INT(nface);

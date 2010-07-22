@@ -99,7 +99,7 @@ KNIFE_STATUS set_remove( Set set, int item )
 
 KnifeBool set_contains( Set set, int target )
 {
-  return ( EMPTY != set_index_of( set, target ) ? TRUE : FALSE );
+  return (KnifeBool)( EMPTY != set_index_of( set, target ) ? TRUE : FALSE );
 }
 
 int set_index_of( Set set, int target )

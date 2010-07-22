@@ -185,7 +185,7 @@ KnifeBool adj_exists( Adj adj, int node, int item )
   for ( it = adj_first(adj,node); 
 	!exist && adj_valid(it); 
 	it = adj_next(it)) 
-    exist = (item == adj_item(it));
+    exist = (KnifeBool)(item == adj_item(it));
   return exist;
 }
 
