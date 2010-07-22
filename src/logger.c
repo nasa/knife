@@ -17,7 +17,6 @@
 
 static FILE *file = NULL;
 static time_t start_time;
-static time_t last_time;
 static clock_t last_clock_time;
 static int verbosity = 0;
 
@@ -55,7 +54,6 @@ KNIFE_STATUS logger_file_pointer( FILE *file_pointer )
   file = file_pointer;
 
   start_time = time( (time_t *)NULL );
-  last_time = start_time;
   last_clock_time = clock(  );
 
   return KNIFE_SUCCESS;
@@ -75,7 +73,6 @@ KNIFE_STATUS logger_message( int level, char *message )
 	       ((double)(clock_time-last_clock_time))/((double)CLOCKS_PER_SEC),
 	       message );
       fflush( file );
-      last_time = time_now;
       last_clock_time = clock_time;
     } 
 
