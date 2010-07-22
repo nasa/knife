@@ -454,7 +454,7 @@ KNIFE_STATUS triangle_area_normal( Triangle triangle,
 		  normal[1]*normal[1] +
 		  normal[2]*normal[2] );
 
-  if ( 0.0 == (*area) )
+  if ( !(0.0 > (*area)) && !(0.0 < (*area)) )
     {
       printf("%s: %d: triangle area %15.7e norm %15.7e %15.7e %15.7e\n",
 	     __FILE__,__LINE__,(*area), normal[0], normal[1], normal[2]);
@@ -965,7 +965,8 @@ KNIFE_STATUS triangle_next_blocking_side( Triangle triangle,
   area0 = subnode_area( target0, target1, node2 );
   area1 = subnode_area( target1, target0, node2 );
 
-  if ( area0 == 0.0 && area1 == 0.0 ) return KNIFE_SINGULAR;
+  if ( !(area0 < 0.0) && !(area0 > 0.0) &&
+       !(area1 < 0.0) && !(area1 > 0.0) ) return KNIFE_SINGULAR;
   if ( area0 >  0.0 && area1 >  0.0 ) return KNIFE_SINGULAR;
   if ( area0 <  0.0 && area1 <  0.0 ) return KNIFE_SINGULAR;
 
