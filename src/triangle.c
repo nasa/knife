@@ -1192,6 +1192,8 @@ KNIFE_STATUS triangle_export( Triangle triangle)
   int nseg;
   double uvw[3], uvw0[3], uvw1[3];
 
+  int segment_node0, segment_node1;
+
   for (i = 0; i<3; i++)
     {
       seg[i] = array_create( 10, 10 );
@@ -1262,20 +1264,19 @@ KNIFE_STATUS triangle_export( Triangle triangle)
 	cut_index++) {
     cut = triangle_cut(triangle,cut_index);
     nseg++;
-    fprintf( f, "%3d %3d %3d\n",nseg,
-	     4+array_index_of( ints, (ArrayItem)cut_intersection0(cut)),
-	     4+array_index_of( ints, (ArrayItem)cut_intersection1(cut)) );
+    segment_node0 = 4+array_index_of( ints, (ArrayItem)cut_intersection0(cut));
+    segment_node1 = 4+array_index_of( ints, (ArrayItem)cut_intersection1(cut));
+    fprintf( f, "%3d %3d %3d\n",nseg, segment_node0, segment_node1 );
   }
   
   for (i = 0; i<3; i++)
     for ( indx = 1; indx < array_size(seg[i]); indx++ )
       {
 	nseg++;
-	fprintf( f, "%3d %3d %3d\n",nseg,
-		 4+array_index_of( ints, array_item(seg[i],indx-1) ),
-		 4+array_index_of( ints, array_item(seg[i],indx)   ) );
+	segment_node0 = 4+array_index_of( ints, array_item(seg[i],indx-1));
+	segment_node1 = 4+array_index_of( ints, array_item(seg[i],indx));
+	fprintf( f, "%3d %3d %3d\n",nseg, segment_node0, segment_node1);
       }
-
 
   i = 0;
   if ( 0 == array_size(seg[i]) )
@@ -1613,6 +1614,7 @@ static KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
 
   Cut cut;
   double orig_area, new_area;
+  double area0, area1;
 
   if ( KNIFE_SUCCESS == triangle_cut_with_subnodes( triangle, 
 						    node0, node1,
@@ -1627,11 +1629,13 @@ static KNIFE_STATUS triangle_swap_min_area_increase( Triangle triangle,
   TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
   node3 = n2;
 
-  orig_area = MIN( subtri_reference_area( subtri0 ),
-		   subtri_reference_area( subtri1 ) );
+  area0 = subtri_reference_area( subtri0 );
+  area1 = subtri_reference_area( subtri1 );
+  orig_area = MIN( area0, area1 );
 
-  new_area = MIN( subnode_area( node1, node2, node3 ),
-		  subnode_area( node0, node3, node2 ) );
+  area0 = subnode_area( node1, node2, node3 );
+  area1 = subnode_area( node0, node3, node2 );
+  new_area = MIN( area0, area1 );
 
   if ( new_area > orig_area ) 
     return triangle_swap_side( triangle, node0, node1 );
