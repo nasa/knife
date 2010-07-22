@@ -1499,10 +1499,8 @@ static KnifeBool triangle_swap_positive( Triangle triangle,
   TRY( subtri_orient( subtri1, node1, &n0, &n1, &n2 ), "orient1");
   node3 = n2;
 
-  return ( 1.0e-20 <= subnode_area( node1, node2, node3 ) &&
-	   1.0e-20 <= subnode_area( node0, node3, node2 ) );
- 
-  return KNIFE_SUCCESS;
+  return (KnifeBool)( 1.0e-20 <= subnode_area( node1, node2, node3 ) &&
+		      1.0e-20 <= subnode_area( node0, node3, node2 ) );
 }
 
 KNIFE_STATUS triangle_suspect_edge( Triangle triangle, 
