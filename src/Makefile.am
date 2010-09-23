@@ -51,11 +51,7 @@ libknife_a_include_HEADERS = \
 	loop.h \
 	logger.h
 
-bin_PROGRAMS    = knife knife-convert
-
-knife_CFLAGS  = $(warning_flags)
-knife_SOURCES = knife_main.c
-knife_LDADD   = libknife.a -lm
+bin_PROGRAMS = knife-convert
 
 knife_convert_CFLAGS  = $(warning_flags)
 knife_convert_SOURCES = knife_convert.c
