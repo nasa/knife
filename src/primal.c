@@ -1601,6 +1601,8 @@ KNIFE_STATUS primal_export_tec( Primal primal, char *filename )
     }
 
   free(g2l);
+  set_free(set);
+
   fclose(f);
 
   return KNIFE_SUCCESS;
