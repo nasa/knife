@@ -1,7 +1,7 @@
 
 /* a logging facility */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

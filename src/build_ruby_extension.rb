@@ -2,7 +2,7 @@
 #
 # Creates a ruby c extension from the args
 #
-# $Id$
+
 
 unless extension_name = ARGV[0] 
  puts "ERROR: usage: ruby #{__FILE__} RubyExtensionName [extra_files.(c|h)]"

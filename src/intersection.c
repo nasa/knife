@@ -1,7 +1,7 @@
 
 /* intersection of a Segment and Triangle */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

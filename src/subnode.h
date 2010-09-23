@@ -1,7 +1,7 @@
 
 /* double u-v-w triplet with Node parent */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

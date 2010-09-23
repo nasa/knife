@@ -1,7 +1,7 @@
 
 /* a near tree to speed up geometric searches */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

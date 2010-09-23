@@ -1,7 +1,7 @@
 
 /* double x-y-z triplet with int index */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

@@ -1,7 +1,7 @@
 
 /* defined by three segments and their three shared nodes */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

@@ -1,7 +1,7 @@
 
 /* growable set (list) of ints */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

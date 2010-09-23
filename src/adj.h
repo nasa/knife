@@ -1,7 +1,7 @@
 
 /* adjacency tool for assoicated objects */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

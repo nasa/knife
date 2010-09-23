@@ -1,7 +1,7 @@
 
 /* connection between two Nodes */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

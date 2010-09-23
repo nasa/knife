@@ -2,7 +2,7 @@
 #
 # Mobility test for node c lib
 #
-# $Id$
+
 
 Dir.chdir ENV['srcdir'] if ENV['srcdir']
 

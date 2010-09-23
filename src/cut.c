@@ -1,7 +1,7 @@
 
 /* cut between two Triangles of two Intersections */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

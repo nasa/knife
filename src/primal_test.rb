@@ -2,7 +2,7 @@
 #
 # Mobility test for primal c lib
 #
-# $Id$
+
 
 Dir.chdir ENV['srcdir'] if ENV['srcdir']
 

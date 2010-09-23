@@ -1,7 +1,7 @@
 
 /* loop of subtri sides used for provable boundary recovery */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

@@ -1,6 +1,6 @@
 # Ruby C extension build for knife package
 #
-# $Id$
+
 
 class RubyExtensionBuilder
 

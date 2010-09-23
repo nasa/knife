@@ -1,7 +1,7 @@
 
 /* commonly used #define's for knife package */
   
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

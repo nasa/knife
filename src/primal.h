@@ -1,7 +1,7 @@
 
 /* storage for a primal tetrahedral grid */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

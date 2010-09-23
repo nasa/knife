@@ -1,7 +1,7 @@
 
 /* growable list of objects (void pointers) */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

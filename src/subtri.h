@@ -1,7 +1,7 @@
 
 /* three subnodes and three sides */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

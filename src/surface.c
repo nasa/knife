@@ -1,7 +1,7 @@
 
 /* collection of segments and triangles defining a surface */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch

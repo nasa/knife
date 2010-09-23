@@ -1,7 +1,7 @@
 
 /* a triangle wrapper that extends to include orientation and active subtri */
 
-/* $Id$ */
+
 
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch
