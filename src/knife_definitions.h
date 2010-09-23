@@ -83,12 +83,31 @@ typedef int KNIFE_STATUS;
     }									\
   }
 
+#define TSN(fcn,msg)					      \
+  {							      \
+    KNIFE_STATUS code;					      \
+    code = (fcn);					      \
+    if (KNIFE_SUCCESS != code){				      \
+      printf("%s: %d: %d %s\n",__FILE__,__LINE__,code,(msg)); \
+      return NULL;					      \
+    }							      \
+  }
+
 #define TNS(ptr,msg)							\
   {									\
     if ( NULL == (ptr)){				                \
       printf("%s: %d: %s: NULL pointer %s\n",                           \
              __FILE__,__LINE__,__func__,(msg));                         \
       return KNIFE_NULL;		    			        \
+    }									\
+  }
+
+#define TNN(ptr,msg)							\
+  {									\
+    if ( NULL == (ptr)){				                \
+      printf("%s: %d: %s: NULL pointer %s\n",                           \
+             __FILE__,__LINE__,__func__,(msg));                         \
+      return NULL;							\
     }									\
   }
 
