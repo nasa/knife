@@ -7,6 +7,9 @@ check:
 install:
 	( cd ../`uname` && $(MAKE) install )
 
+distcheck:
+	( cd ../`uname` && $(MAKE) distcheck )
+
 clean:
 	rm -rf Adj Primal Near Node
 

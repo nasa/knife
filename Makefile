@@ -7,6 +7,9 @@ check:
 install:
 	if [ -d `uname` ]; then ( cd `uname` && $(MAKE) install ) ; fi
 
+distcheck:
+	( cd ../`uname` && $(MAKE) distcheck )
+
 clean:
 	( cd src && $(MAKE) clean )
 	( cd `uname` && $(MAKE) clean )
