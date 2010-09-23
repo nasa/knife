@@ -16,7 +16,6 @@
 
 int main( int argc, char *argv[] )
 {
-  char filename[1025];
   Primal primal;
 
   if ( 2 > argc ) 
@@ -26,7 +25,7 @@ int main( int argc, char *argv[] )
       return 1;
     }
 
-  primal = primal_from_file( filename );
+  primal = primal_from_file( argv[1] );
   TNS(primal, "primal NULL");
 
   if ( 2 < argc ) 
