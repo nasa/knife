@@ -59,6 +59,8 @@ struct PrimalStruct {
 
 Primal primal_create( int nnode, int nface, int ncell );
 
+Primal primal_from_file( char *filename );
+
 Primal primal_from_fast( char *filename );
 
 KNIFE_STATUS primal_interrogate_tri( char *filename );

@@ -150,6 +150,27 @@ Primal primal_create(int nnode, int nface, int ncell)
   return primal;
 }
 
+Primal primal_from_file( char *filename )
+{
+  Primal primal;
+  int end_of_string;
+
+  end_of_string = strlen(filename);
+
+  if( strcmp(&filename[end_of_string-3],"tri") == 0 ) {
+    primal = primal_from_tri( filename );
+  } else if( strcmp(&filename[end_of_string-3],"rid") == 0 ) {
+    primal = primal_from_fast( filename );
+  } else {
+    printf("%s: %d: %s %s\n",__FILE__,__LINE__,
+	   "input file name extension unknown", filename);
+    return NULL;
+  }
+  TNN( primal, "unable to create primal_from_file" );
+
+  return primal;
+}
+
 Primal primal_from_fast( char *filename )
 {
   Primal primal;
@@ -158,21 +179,11 @@ Primal primal_from_fast( char *filename )
   FILE *file;
 
   file = fopen(filename,"r");
-  if ( NULL == file )
-    {
-      printf("%s: %d: NULL file pointer to %s\n",
-	     __FILE__,__LINE__,filename);
-      return NULL;
-    }
+  TNN( file, "unable to open fast file");
 
   fscanf(file,"%d %d %d",&nnode,&nface,&ncell);
   primal = primal_create( nnode, nface, ncell );
-  if ( NULL == primal )
-    {
-      printf("%s: %d: primal_from_fast: primal creation \n",
-	     __FILE__,__LINE__);
-      return NULL;
-    }
+  TNN( primal, "unable to create primal");
 
   for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[0+3*i]));
   for( i=0; i<nnode ; i++ ) fscanf(file,"%lf",&(primal->xyz[1+3*i]));
@@ -211,7 +222,7 @@ Primal primal_from_fast( char *filename )
 
   fclose(file);
 
-  TRYN( primal_establish_all( primal ), "primal_establish_all" );
+  TSN( primal_establish_all( primal ), "primal_establish_all" );
 
   return primal;
 }

@@ -166,13 +166,7 @@ void knife_required_local_dual_( char *knife_input_file_name,
   fscanf( f, "%s\n", surface_filename);
   end_of_string = strlen(surface_filename);
 
-  surface_primal = NULL;
-  if( strcmp(&surface_filename[end_of_string-3],"tri") == 0 ) {
-    surface_primal = primal_from_tri( surface_filename );
-  } else if( strcmp(&surface_filename[end_of_string-3],"rid") == 0 ) {
-    surface_primal = primal_from_fast( surface_filename );
-  }
-
+  surface_primal = primal_from_file(surface_filename);
   if ( NULL == surface_primal ) 
     printf("surface filename: %s\n",surface_filename);
   NOT_NULL(surface_primal, "surface_primal NULL");
