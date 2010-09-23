@@ -28,15 +28,6 @@ int main( int argc, char *argv[] )
       return 1;
     }
 
-  if ( 0 == strncmp( argv[1], "-i", 2 ) )
-    {
-      sprintf( filename, "%s", argv[2] );
-      TSS( primal_interrogate_tri( filename ), "interrogation");
-      return 0;
-    }
-
-  sprintf( filename, "%s", argv[1] );
-
   end_of_string = strlen(filename);
   if( strcmp(&filename[end_of_string-3],"tri") == 0 ) {
     printf("tri input file %s\n", filename);
@@ -77,29 +68,6 @@ int main( int argc, char *argv[] )
 
   TSS( primal_export_fast( surface_primal, NULL ), 
        "primal_export_fast failed in main")
-
-  TSS( primal_export_tec( surface_primal, NULL ), 
-       "primal_export_tec failed in main")
-
-  TSS( primal_export_vtk( surface_primal, NULL ), 
-       "primal_export_vtk failed in main");
-
-  if( strcmp(filename,"inviscid.fgrid") == 0 )
-    {
-      TSS( primal_apply_massoud( surface_primal, 
-				 "Rubberize/model.tec.1.sd1", TRUE ), 
-	   "primal_apply_massoud failed in main");
-
-      TSS( primal_export_tec( surface_primal, "pert.t" ), 
-	   "primal_export_tec failed in main");
-      TSS( primal_export_vtk( surface_primal, "pert.vtu" ), 
-	   "primal_export_vtk failed in main");
-    }
-
-  surface = surface_from( surface_primal, NULL, TRUE );
-  TNS(surface, "surface NULL");
-
-  TSS( surface_export_tec( surface, "massoud.t" ), "surface_export_tec" );
 
   return 0;
 }
