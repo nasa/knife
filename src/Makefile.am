@@ -2,7 +2,6 @@
 
 lib_LIBRARIES    = libknife.a
 
-warning_flags = -pedantic -Wall -Wextra -Werror
 
 library_sources = \
 	knife_definitions.h \
@@ -26,7 +25,6 @@ library_sources = \
 	logger.h logger.c \
 	knife_fortran.c
 
-libknife_a_CFLAGS  = $(warning_flags)
 libknife_a_SOURCES = $(library_sources)
 
 libknife_a_includedir = @prefix@/include
@@ -53,11 +51,9 @@ libknife_a_include_HEADERS = \
 
 bin_PROGRAMS = knife-convert knife-vis
 
-knife_convert_CFLAGS  = $(warning_flags)
 knife_convert_SOURCES = knife_convert.c
 knife_convert_LDADD   = libknife.a -lm
 
-knife_vis_CFLAGS  = $(warning_flags)
 knife_vis_SOURCES = knife_vis.c
 knife_vis_LDADD   = libknife.a -lm
 
