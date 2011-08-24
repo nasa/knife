@@ -4,6 +4,7 @@ Future Date: At version ??, fun3d-10.7-38759 or later
 - improved debugging output due to non-manifold geometry inputs
 - repaired intel 10 reported warnings/errors
 - created a knife-viz tool to export to tecplot
+- updated example/diamond-airfoil scripts
 
 Tuesday, June 22, 2010: At version 1.2.0, fun3d-10.7-38759 or later
 Now will ignore zero area cut surface triangles during normal and area
