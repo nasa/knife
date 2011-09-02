@@ -37,12 +37,17 @@ int main( int argc, char *argv[] )
     {
       sprintf(output_ext, ".t" );
       TSS( primal_export_tec( primal, output ), 
-	   "primal_export_tri failed in main");
+	   "primal_export_tec failed in main");
+      sprintf(output_ext, ".vtk" );
+      TSS( primal_export_vtk( primal, output ), 
+	   "primal_export_vtk failed in main");
     }
   else
     {
       TSS( primal_export_tec( primal, NULL ), 
-	   "primal_export_tri failed in main");
+	   "primal_export_tec failed in main");
+      TSS( primal_export_vtk( primal, NULL ), 
+	   "primal_export_vtk failed in main");
     }
 
   primal_free(primal);
