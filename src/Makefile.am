@@ -49,13 +49,16 @@ libknife_a_include_HEADERS = \
 	loop.h \
 	logger.h
 
-bin_PROGRAMS = knife-convert knife-vis
+bin_PROGRAMS = knife-convert knife-vis knife-cut
 
 knife_convert_SOURCES = knife_convert.c
 knife_convert_LDADD   = libknife.a -lm
 
 knife_vis_SOURCES = knife_vis.c
 knife_vis_LDADD   = libknife.a -lm
+
+knife_cut_SOURCES = knife_cut.c
+knife_cut_LDADD   = libknife.a -lm
 
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
 	adj_ruby.c adj_test.rb \
