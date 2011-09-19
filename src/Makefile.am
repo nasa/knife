@@ -2,7 +2,6 @@
 
 lib_LIBRARIES    = libknife.a
 
-
 library_sources = \
 	knife_definitions.h \
 	adj.h adj.c \
@@ -49,7 +48,7 @@ libknife_a_include_HEADERS = \
 	loop.h \
 	logger.h
 
-bin_PROGRAMS = knife-convert knife-vis knife-cut
+bin_PROGRAMS = knife-convert knife-vis knife-cut knife-profile
 
 knife_convert_SOURCES = knife_convert.c
 knife_convert_LDADD   = libknife.a -lm
@@ -59,6 +58,10 @@ knife_vis_LDADD   = libknife.a -lm
 
 knife_cut_SOURCES = knife_cut.c
 knife_cut_LDADD   = libknife.a -lm
+
+knife_profile_SOURCES = knife_cut.c ${library_sources}
+knife_profile_CFLAGS = -pg
+knife_profile_LDADD = -lm
 
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
 	adj_ruby.c adj_test.rb \
