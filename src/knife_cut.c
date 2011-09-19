@@ -47,6 +47,11 @@ int main( int argc, char *argv[] )
   TSS( domain_required_local_dual( domain, required ), 
        "domain_required_local_dual" );
 
+  TSS( domain_create_dual( domain, required ), "domain_required_local_dual" );
+
+  TSS( domain_boolean_subtract( domain ), "boolean subtract" );
+
+  free( required );
   domain_free(domain);
   surface_free(surface);
   primal_free(surface_primal);
