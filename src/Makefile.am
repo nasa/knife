@@ -61,6 +61,7 @@ knife_cut_LDADD   = libknife.a -lm
 
 knife_profile_SOURCES = knife_cut.c ${library_sources}
 knife_profile_CFLAGS = -pg
+knife_profile_LDFLAGS = -pg
 knife_profile_LDADD = -lm
 
 EXTRA_DIST = build_ruby_extension.rb RubyExtensionBuilder.rb test_runner.rb \
