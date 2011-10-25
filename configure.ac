@@ -18,10 +18,5 @@ AC_OUTPUT( \
 	   Makefile \
 	   src/Makefile \
 	   util/Makefile \
-	   example/Makefile \
-	   example/diamond-airfoil/Makefile \
-	   example/diamond-airfoil/surface/Makefile \
-	   example/diamond-airfoil/background/Makefile \
-	   example/diamond-airfoil/cutcell/Makefile \
 	   tri/Makefile \
 	   )

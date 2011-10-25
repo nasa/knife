@@ -1,4 +1,6 @@
 
+- moved example to fun3d tutorials
+
 Wednesday, August 24, 2011: At version 1.2.1, fun3d-10.7-38759 or later
 
 - improved debugging output due to non-manifold geometry inputs
