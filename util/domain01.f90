@@ -119,11 +119,6 @@ program main
         xyz(in,1) = x0 + (x1-x0)/real(l-1,dp)*real(i-1,dp)
         xyz(in,2) = y0 + (y1-y0)/real(m-1,dp)*real(j-1,dp)
         xyz(in,3) = z0 + (z1-z0)/real(n-1,dp)*real(k-1,dp)
-        if (  xyz(in,1) > 1.0e-8_dp ) then
-          xyz(in,3) = z1 + 0.0174550649282176_dp*xyz(in,1)
-          xyz(in,3) = z0 + (xyz(in,3)-z0)/real(n-1,dp)*real(k-1,dp)
-        end if
-!        write(*,*)i,j,k,xyz(in,1),xyz(in,2),xyz(in,3)
       enddo
     enddo
   enddo
