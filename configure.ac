@@ -18,5 +18,4 @@ AC_OUTPUT( \
 	   Makefile \
 	   src/Makefile \
 	   util/Makefile \
-	   tri/Makefile \
 	   )

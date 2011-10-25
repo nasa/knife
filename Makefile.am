@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS = src util tri
+SUBDIRS = src util
 
 AUTOMAKE_OPTIONS = 1.7
 
