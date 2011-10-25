@@ -14,7 +14,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+
+#ifdef __APPLE__       /* Not needed on Mac OS X */
+#include <float.h>
+#else
+#include <malloc.h>
 #include <values.h>
+#endif
+
 #include "intersection.h"
 
 #define TRY(fcn,msg)					      \
