@@ -1,18 +1,22 @@
 ! f90 -o domain01 domain01.f90 && ./domain01
 
 module kinds
-  integer, parameter :: dp = selected_real_kind(P=15)
+  implicit none
+  private
+  integer, parameter, public :: dp = selected_real_kind(P=15)
 end module kinds
 
 module fast
+
+  implicit none
+  private
+  public :: write_fast
 
 contains
 
   subroutine write_fast(nnodes,ntface,ntet,xyz,inode,itag,c2nt,nbcs,itestr)
 
     use kinds, only : dp
-
-    implicit none
 
     integer :: nnodes,ntface,ntet,nbcs
 
@@ -25,7 +29,7 @@ contains
     integer :: i, j
 
     open (unit=60,file='domain01.fgrid')
-    open (unit=61,file='domain01.fastbc')
+    open (unit=61,file='domain01.mapbc')
 
     write(60,'(3i15)')    nnodes,ntface,ntet
     write(60,'(3e25.15)') (xyz(i,1),i=1,nnodes)
@@ -47,22 +51,35 @@ contains
 
 end module fast
 
-program main
+module uniform_grid
+
+  implicit none
+  private
+  public :: size, create
+
+contains
+
+  subroutine size(l,m,n, nnodes, ntet, ntface)
+
+    integer, intent(in) :: l,m,n
+    integer, intent(out) :: nnodes, ntet, ntface
+
+    continue
+
+    nnodes = l*m*n
+    ntet = 6*(l-1)*(m-1)*(n-1)
+    ntface=4*(l-1)*(m-1)+4*(m-1)*(n-1)+4*(n-1)*(l-1)
+  end subroutine size
+
+  subroutine create(l,m,n,nnodes,ntet,ntface)
 
   use kinds, only : dp
   use fast, only : write_fast
 
-  implicit none
+  integer, intent(in) :: l,m,n
+  integer, intent(in) :: nnodes,ntet,ntface
 
-  integer, parameter :: m=6
-  integer, parameter :: l=6
-  integer, parameter :: n=6
-  integer, parameter :: nnodes = l*m*n
-
-  integer, parameter :: ntet = 6*(l-1)*(m-1)*(n-1)
-  integer, parameter :: ntface=4*(l-1)*(m-1)+4*(m-1)*(n-1)+4*(n-1)*(l-1)
   integer, parameter :: nbcs=6
-
 
   real(dp), dimension(nnodes,3) :: xyz
   integer,  dimension(ntface,3) :: inode
@@ -79,6 +96,21 @@ program main
   integer :: is, iseg
 
   continue
+
+  if ( nnodes /= l*m*n ) then
+    write(*,*)'wrong nnodes', nnodes, l*m*n
+    return
+  end if
+
+  if ( ntet /= 6*(l-1)*(m-1)*(n-1) ) then
+    write(*,*)'wrong ntet', ntet, 6*(l-1)*(m-1)*(n-1)
+    return
+  end if
+
+  if ( ntface /= 4*(l-1)*(m-1)+4*(m-1)*(n-1)+4*(n-1)*(l-1) ) then
+    write(*,*)'wrong nnodes', ntface, 4*(l-1)*(m-1)+4*(m-1)*(n-1)+4*(n-1)*(l-1)
+    return
+  end if
 
   write(*,*) "enter  boundaries of cube"
   write(*,*) "x0"
@@ -125,35 +157,34 @@ program main
 
 ! calc fast.fc file info
 
-! inv  3k
-! visc 4k
-! free 5k
-! extrap 5005
-! back press 5010
+! inviscid  3000
+! viscous 4000
+! free 5000
+! extrap 5026
 
 ! x=x0 i=1
   itestr(1,1) = 1
-  itestr(1,2) = 5000
+  itestr(1,2) = 5050
 
 ! x=x1 i=l
   itestr(2,1) = 2
-  itestr(2,2) = 5000
+  itestr(2,2) = 5050
 
 ! y=y0 j=1
   itestr(3,1) = 3
-  itestr(3,2) = 5000
+  itestr(3,2) = 3000
 
 ! y=y1 j=n
   itestr(4,1) = 4
-  itestr(4,2) = 5000
+  itestr(4,2) = 3000
 
 ! z=z0 k=1
   itestr(5,1) = 5
-  itestr(5,2) = 5000
+  itestr(5,2) = 5050
 
 ! z=z1 k=m
   itestr(6,1) = 6
-  itestr(6,2) = 5000
+  itestr(6,2) = 5050
 
 ! calculate tet nodes
 
@@ -409,8 +440,33 @@ program main
     enddo
   enddo
 
-
   call write_fast(nnodes,ntface,ntet,xyz,inode,itag,c2nt,nbcs,itestr)
+
+end subroutine create
+
+end module uniform_grid
+
+program main
+
+  use uniform_grid, only : size, create
+
+  implicit none
+
+  integer :: l,m,n
+  integer ::  nnodes, ntet, ntface
+
+  continue
+
+  write(*,*) "enter dimensions cube"
+  write(*,*) "l"
+  read(*,*) l
+  write(*,*) "m"
+  read(*,*) m
+  write(*,*) "n"
+  read(*,*) n
+
+  call size(l,m,n, nnodes, ntet, ntface)
+  call create(l,m,n, nnodes, ntet, ntface)
 
 end program main
 
