@@ -1,5 +1,10 @@
 
+Tuesday, October 31, 2011: At version 1.2.2
+
+knife is now distributed as a subpackage of fun3d
+
 - moved example to fun3d tutorials
+- cleaned up cruft before dumping into fun3d repo
 
 Wednesday, August 24, 2011: At version 1.2.1, fun3d-10.7-38759 or later
 
