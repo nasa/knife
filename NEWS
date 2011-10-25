@@ -1,4 +1,9 @@
 
+Tuesday, October 31, 2011: At version 1.2.3
+
+- updated domain01.* to fun3d fortran std
+- only build required execuatables for subpackage
+
 Tuesday, October 31, 2011: At version 1.2.2
 
 knife is now distributed as a subpackage of fun3d

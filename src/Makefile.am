@@ -48,7 +48,9 @@ libknife_a_include_HEADERS = \
 	loop.h \
 	logger.h
 
-bin_PROGRAMS = knife-convert knife-vis knife-cut knife-profile
+bin_PROGRAMS = knife-convert knife-vis
+
+EXTRA_PROGRAMS = knife-cut knife-profile
 
 knife_convert_SOURCES = knife_convert.c
 knife_convert_LDADD   = libknife.a -lm
