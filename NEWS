@@ -1,4 +1,8 @@
 
+Monday, November 7, 2011: At version 1.2.5
+
+- to allow bootstrap outside of git repo
+
 Tuesday, October 31, 2011: At version 1.2.4
 
 - compile on Mac OSX when __APPLE__ defined.
