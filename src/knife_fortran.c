@@ -69,10 +69,11 @@ static Primal  volume_primal  = NULL;
 static Domain  domain         = NULL;
 static int partition = EMPTY;
 
-void knife_volume_( int *part_id,
-		    int *nnode0, int *nnode, double *x, double *y, double *z,
-		    int *nface, int *ncell, int *c2n, 
-		    int *knife_status )
+void FC_FUNC_(knife_volume,KNIFE_VOLUME)
+  ( int *part_id,
+    int *nnode0, int *nnode, double *x, double *y, double *z,
+    int *nface, int *ncell, int *c2n, 
+    int *knife_status )
 {
 
   partition = *part_id;
@@ -99,21 +100,11 @@ void knife_volume_( int *part_id,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_volume__( int *part_id,
-		     int *nnode0, int *nnode, double *x, double *y, double *z,
-		     int *nface, int *ncell, int *c2n, 
-		     int *knife_status )
-{
-  knife_volume_( part_id,
-		 nnode0, nnode, x, y, z,
-		 nface, ncell, c2n, 
-		 knife_status );
-}
 
-
-void knife_boundary_( int *face_id, int *nodedim, int *inode,
-		      int *leading_dim, int *nface, int *f2n, 
-		      int *knife_status )
+void FC_FUNC_(knife_boundary,KNIFE_BOUNDARY)
+  ( int *face_id, int *nodedim, int *inode,
+    int *leading_dim, int *nface, int *f2n, 
+    int *knife_status )
 {
 
   logger_message( FORTRAN_LOGGER_LEVEL, "boundary");
@@ -126,18 +117,11 @@ void knife_boundary_( int *face_id, int *nodedim, int *inode,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_boundary__( int *face_id, int *nodedim, int *inode,
-		      int *leading_dim, int *nface, int *f2n, 
-		      int *knife_status )
-{
-  knife_boundary_( face_id, nodedim, inode,
-		   leading_dim, nface, f2n, 
-		   knife_status );
-}
 
-void knife_required_local_dual_( char *knife_input_file_name, 
-				 int *nodedim, int *required,
-				 int *knife_status )
+void FC_FUNC_(knife_required_local_dual,KNIFE_REQUIRED_LOCAL_DUAL)
+  ( char *knife_input_file_name, 
+    int *nodedim, int *required,
+    int *knife_status )
 {
   FILE *f;
   char surface_filename[1025];
@@ -271,17 +255,10 @@ void knife_required_local_dual_( char *knife_input_file_name,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_required_local_dual__( char *knife_input_file_name,
-				  int *nodedim, int *required,
-				  int *knife_status )
-{
-  knife_required_local_dual_( knife_input_file_name,
-			      nodedim, required,
-			      knife_status );
-}
 
-void knife_cut_( int *nodedim, int *required,
-		 int *knife_status )
+void FC_FUNC_(knife_cut,KNIFE_CUT)
+  ( int *nodedim, int *required,
+    int *knife_status )
 {
   char tecplot_file_name[1025];
   if ( *nodedim != primal_nnode(volume_primal) )
@@ -308,15 +285,10 @@ void knife_cut_( int *nodedim, int *required,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_cut__( int *nodedim, int *required,
-		 int *knife_status )
-{
-  knife_cut_( nodedim, required, 
-	      knife_status );
-}
 
-void knife_dual_topo_( int *nodedim, int *topo,
-		       int *knife_status )
+void FC_FUNC_(knife_dual_topo,KNIFE_DUAL_TOPO)
+  ( int *nodedim, int *topo,
+    int *knife_status )
 {
   int node;
 
@@ -337,14 +309,9 @@ void knife_dual_topo_( int *nodedim, int *topo,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_dual_topo__( int *nodedim, int *topo,
-			int *knife_status )
-{
-  knife_dual_topo_( nodedim, topo,
-		    knife_status );
-}
 
-void knife_make_dual_required_( int *node, int *knife_status )
+void FC_FUNC_(knife_make_dual_required,KNIFE_MAKE_DUAL_REQUIRED)
+  ( int *node, int *knife_status )
 {
 
   *knife_status = KNIFE_SUCCESS;
@@ -353,12 +320,9 @@ void knife_make_dual_required_( int *node, int *knife_status )
   TRY( domain_add_interior_poly( domain, (*node)-1 ), 
        "domain_add_interior_poly" );
 }
-void knife_make_dual_required__( int *node, int *knife_status )
-{
-  knife_make_dual_required_( node, knife_status );
-}
 
-void knife_dual_regions_( int *node, int *regions, int *knife_status )
+void FC_FUNC_(knife_dual_regions,KNIFE_DUAL_REGIONS)
+  ( int *node, int *regions, int *knife_status )
 {
   Poly poly;
 
@@ -369,15 +333,12 @@ void knife_dual_regions_( int *node, int *regions, int *knife_status )
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_dual_regions__( int *node, int *regions, int *knife_status )
-{
-  knife_dual_regions_( node, regions, knife_status );
-}
 
-void knife_poly_centroid_volume_( int *node, int *region,
-				  double *x, double *y, double *z, 
-				  double *volume,
-				  int *knife_status )
+void FC_FUNC_(knife_poly_centroid_volume,KNIFE_POLY_CENTRIOD_VOLUME)
+  ( int *node, int *region,
+    double *x, double *y, double *z, 
+    double *volume,
+    int *knife_status )
 {
   double xyz[3], center[3];
   Poly poly;
@@ -397,21 +358,12 @@ void knife_poly_centroid_volume_( int *node, int *region,
   *y = center[1];
   *z = center[2];
 }
-void knife_poly_centroid_volume__( int *node, int *region,
-				   double *x, double *y, double *z, 
-				   double *volume,
-				   int *knife_status )
-{
-  knife_poly_centroid_volume_( node, region, 
-			       x, y, z, 
-			       volume,
-			       knife_status );
-}
 
-void knife_ntriangles_between_poly_( int *node1, int *region1, 
-				     int *node2, int *region2,
-				     int *nsubtri,
-				     int *knife_status )
+void FC_FUNC_(knife_ntriangles_between_poly,KNIFE_NTRIANGLES_BETWEEN_POLY)
+  ( int *node1, int *region1, 
+    int *node2, int *region2,
+    int *nsubtri,
+    int *knife_status )
 {
   int n;
   int edge;
@@ -450,26 +402,17 @@ void knife_ntriangles_between_poly_( int *node1, int *region1,
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_ntriangles_between_poly__( int *node1, int *region1, 
-				      int *node2, int *region2,
-				      int *nsubtri,
-				      int *knife_status )
-{
-  knife_ntriangles_between_poly_( node1, region1,
-				  node2, region2,
-				  nsubtri,
-				  knife_status );
-}
 
-void knife_triangles_between_poly_( int *node1, int *region1,
-				    int *node2, int *region2,
-				    int *nsubtri,
-				    double *triangle_node0,
-				    double *triangle_node1,
-				    double *triangle_node2,
-				    double *triangle_normal,
-				    double *triangle_area,
-				    int *knife_status )
+void FC_FUNC_(knife_triangles_between_poly,KNIFE_TRIANGLES_BETWEEN_POLY)
+  ( int *node1, int *region1,
+    int *node2, int *region2,
+    int *nsubtri,
+    double *triangle_node0,
+    double *triangle_node1,
+    double *triangle_node2,
+    double *triangle_normal,
+    double *triangle_area,
+    int *knife_status )
 {
   int edge;
   Poly poly1, poly2;
@@ -494,33 +437,14 @@ void knife_triangles_between_poly_( int *node1, int *region1,
   
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_triangles_between_poly__( int *node1, int *region1,
-				     int *node2, int *region2,
-				     int *nsubtri,
-				     double *triangle_node0,
-				     double *triangle_node1,
-				     double *triangle_node2,
-				     double *triangle_normal,
-				     double *triangle_area,
-				     int *knife_status )
-{
-  knife_triangles_between_poly_( node1, region1,
-				 node2, region2,
-				 nsubtri,
-				 triangle_node0,
-				 triangle_node1,
-				 triangle_node2,
-				 triangle_normal,
-				 triangle_area,
-				 knife_status );
-}
 
-void knife_between_poly_sens_( int *node1, int *region1,
-			       int *node2, int *region2,
-			       int *nsubtri,
-			       int *parent_int,
-			       double *parent_xyz,
-			       int *knife_status )
+void FC_FUNC_(knife_between_poly_sens,KNIFE_BETWEEN_POLY_SENS)
+  ( int *node1, int *region1,
+    int *node2, int *region2,
+    int *nsubtri,
+    int *parent_int,
+    double *parent_xyz,
+    int *knife_status )
 {
   int edge;
   Poly poly1, poly2;
@@ -550,24 +474,11 @@ void knife_between_poly_sens_( int *node1, int *region1,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_between_poly_sens__( int *node1, int *region1,
-				int *node2, int *region2,
-				int *nsubtri,
-				int *parent_int,
-				double *parent_xyz,
-				int *knife_status )
-{
-  knife_between_poly_sens_( node1, region1,
-			    node2, region2,
-			    nsubtri,
-			    parent_int,
-			    parent_xyz,
-			    knife_status );
-}
 
-void knife_number_of_surface_triangles_( int *node, int *region,
-					 int *nsubtri,
-					 int *knife_status )
+void FC_FUNC_(knife_number_of_surface_triangles,KNIFE_NUMBER_OF_SURFACE_TRIANGLES)
+  ( int *node, int *region,
+    int *nsubtri,
+    int *knife_status )
 {
   int n;
   Poly poly;
@@ -580,24 +491,17 @@ void knife_number_of_surface_triangles_( int *node, int *region,
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_number_of_surface_triangles__( int *node, int *region,
-					  int *nsubtri,
-					  int *knife_status )
-{
-  knife_number_of_surface_triangles_( node, region,
-				      nsubtri,
-				      knife_status );
-}
 
-void knife_surface_triangles_( int *node, int *region,
-                               int *nsubtri,
-                               double *triangle_node0,
-                               double *triangle_node1,
-                               double *triangle_node2,
-			       double *triangle_normal,
-			       double *triangle_area,
-			       int *triangle_tag,
-                               int *knife_status )
+void FC_FUNC_(knife_surface_triangles,KNIFE_SURFACE_TRIANGLES)
+  ( int *node, int *region,
+    int *nsubtri,
+    double *triangle_node0,
+    double *triangle_node1,
+    double *triangle_node2,
+    double *triangle_normal,
+    double *triangle_area,
+    int *triangle_tag,
+    int *knife_status )
 {
   Poly poly;
 
@@ -611,31 +515,12 @@ void knife_surface_triangles_( int *node, int *region,
   
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_surface_triangles__( int *node, int *region,
-                               int *nsubtri,
-                               double *triangle_node0,
-                               double *triangle_node1,
-                               double *triangle_node2,
-			       double *triangle_normal,
-			       double *triangle_area,
-			       int *triangle_tag,
-                               int *knife_status )
-{
-  knife_surface_triangles_( node, region,
-			    nsubtri,
-			    triangle_node0,
-			    triangle_node1,
-			    triangle_node2,
-			    triangle_normal,
-			    triangle_area,
-			    triangle_tag,
-			    knife_status );
-}
 
-void knife_surface_sens_( int *node, int *region, int *nsubtri,
-			  int *constraint_type,
-			  double *constraint_xyz,
-			  int *knife_status )
+void FC_FUNC_(knife_surface_sens,KNIFE_SURFACE_SENS)
+  ( int *node, int *region, int *nsubtri,
+    int *constraint_type,
+    double *constraint_xyz,
+    int *knife_status )
 {
   Poly poly;
   int tri;
@@ -659,20 +544,11 @@ void knife_surface_sens_( int *node, int *region, int *nsubtri,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_surface_sens__( int *node, int *region, int *nsubtri,
-			   int *constraint_type,
-			   double *constraint_xyz,
-			   int *knife_status )
-{
-  knife_surface_sens_( node, region, nsubtri,
-		       constraint_type,
-		       constraint_xyz,
-		       knife_status );
-}
 
-void knife_number_of_boundary_triangles_( int *node, int *face, int *region,
-					  int *nsubtri,
-					  int *knife_status )
+void FC_FUNC_(knife_number_of_boundary_triangles,KNIFE_NUMBER_OF_BOUNDARY_TRIANGLES)
+  ( int *node, int *face, int *region,
+    int *nsubtri,
+    int *knife_status )
 {
   int n;
   Poly poly;
@@ -686,23 +562,16 @@ void knife_number_of_boundary_triangles_( int *node, int *face, int *region,
   *nsubtri = n;
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_number_of_boundary_triangles__( int *node, int *face, int *region,
-					   int *nsubtri,
-					   int *knife_status )
-{
-  knife_number_of_boundary_triangles_( node, face, region,
-				       nsubtri,
-				       knife_status ); 
-}
 
-void knife_boundary_triangles_( int *node, int *face, int *region,
-				int *nsubtri,
-				double *triangle_node0,
-				double *triangle_node1,
-				double *triangle_node2,
-				double *triangle_normal,
-				double *triangle_area,
-				int *knife_status )
+void FC_FUNC_(knife_boundary_triangles,KNIFE_BOUNDARY_TRIANGLES)
+  ( int *node, int *face, int *region,
+    int *nsubtri,
+    double *triangle_node0,
+    double *triangle_node1,
+    double *triangle_node2,
+    double *triangle_normal,
+    double *triangle_area,
+    int *knife_status )
 {
   Poly poly;
 
@@ -716,30 +585,13 @@ void knife_boundary_triangles_( int *node, int *face, int *region,
   
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_boundary_triangles__( int *node, int *face, int *region,
-				 int *nsubtri,
-				 double *triangle_node0,
-				 double *triangle_node1,
-				 double *triangle_node2,
-				 double *triangle_normal,
-				 double *triangle_area,
-				 int *knife_status )
-{
-  knife_boundary_triangles_( node, face, region,
-			     nsubtri,
-			     triangle_node0,
-			     triangle_node1,
-			     triangle_node2,
-			     triangle_normal,
-			     triangle_area,
-			     knife_status );
-}
 
-void knife_boundary_sens_( int *node, int *face, int *region, 
-			   int *nsubtri,
-			   int *parent_int,
-			   double *parent_xyz,
-			   int *knife_status )
+void FC_FUNC_(knife_boundary_sens,KNIFE_BOUNDARY_SENS)
+  ( int *node, int *face, int *region, 
+    int *nsubtri,
+    int *parent_int,
+    double *parent_xyz,
+    int *knife_status )
 {
   Poly poly;
   int i;
@@ -762,20 +614,9 @@ void knife_boundary_sens_( int *node, int *face, int *region,
   *knife_status = KNIFE_SUCCESS;
 }
 
-void knife_boundary_sens__( int *node, int *face, int *region, 
-			   int *nsubtri,
-			   int *parent_int,
-			   double *parent_xyz,
-			   int *knife_status )
-{
-  knife_boundary_sens_( node, face, region,
-			nsubtri,
-			parent_int,
-			parent_xyz,
-			knife_status );
-}
 
-void knife_cut_surface_dim_( int *nnode, int *ntriangle, int *knife_status )
+void FC_FUNC_(knife_cut_surface_dim,KNIFE_CUT_SURFACE_DIM)
+  ( int *nnode, int *ntriangle, int *knife_status )
 {
 
   if ( NULL == surface )
@@ -791,14 +632,11 @@ void knife_cut_surface_dim_( int *nnode, int *ntriangle, int *knife_status )
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_cut_surface_dim__( int *nnode, int *ntriangle, int *knife_status )
-{
-  knife_cut_surface_dim_( nnode, ntriangle, knife_status );
-}
 
-void knife_cut_surface_( int *nnode, double *xyz, int *global,
-			 int *ntriangle, int *t2n, 
-			 int *knife_status )
+void FC_FUNC_(knife_cut_surface,KNIFE_CUT_SURFACE)
+  ( int *nnode, double *xyz, int *global,
+    int *ntriangle, int *t2n, 
+    int *knife_status )
 {
   int node, tri;
 
@@ -825,14 +663,9 @@ void knife_cut_surface_( int *nnode, double *xyz, int *global,
 
   *knife_status = KNIFE_SUCCESS;
 }
-void knife_cut_surface__( int *nnode, double *xyz, int *global, 
-			  int *ntriangle, int *t2n, 
-			  int *knife_status )
-{
-  knife_cut_surface_( nnode, xyz, global, ntriangle, t2n, knife_status );
-}
 
-void knife_free_( int *knife_status )
+
+void FC_FUNC_(knife_free,KNIFE_FREE)( int *knife_status )
 {
   primal_free( surface_primal );
   surface_primal = NULL;
@@ -849,8 +682,4 @@ void knife_free_( int *knife_status )
   partition = EMPTY;
 
   *knife_status = KNIFE_SUCCESS;
-}
-void knife_free__( int *knife_status )
-{
-  knife_free_( knife_status );
 }
