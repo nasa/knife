@@ -1,5 +1,5 @@
 
-- use autoconf standard FC_FUNC_ macros to name mangle fortran interaface
+- use autoconf standard FC_FUNC_ macros to name mangle fortran interface
 
 Thursday, November 17, 2011: At version 1.2.6
 
