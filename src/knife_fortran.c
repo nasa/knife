@@ -1,8 +1,6 @@
 
 /* fortran API for knife package */
 
-
-
 /* Michael A. Park (Mike Park)
  * Computational AeroSciences Branch
  * NASA Langley Research Center
@@ -14,6 +12,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "knife_definitions.h"
 
