@@ -14,6 +14,8 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_HEADER_STDC
 
+AC_FC_WRAPPERS
+
 AC_OUTPUT( \
 	   Makefile \
 	   src/Makefile \
