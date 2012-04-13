@@ -1,4 +1,6 @@
 
+Friday, April 13, 2012: At version 1.2.7
+
 - use autoconf standard FC_FUNC_ macros to name mangle fortran interface
 - use config.h to define FC_FUNC_ (for xlf and xlc)
 
