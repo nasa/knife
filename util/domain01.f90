@@ -51,6 +51,49 @@ contains
 
 end module fast
 
+module ugrid
+
+  implicit none
+  private
+  public :: stream_ugrid
+
+contains
+
+  subroutine stream_ugrid(nnodes,ntface,ntet,xyz,inode,itag,c2nt,nbcs,itestr)
+
+    use kinds, only : dp
+
+    integer :: nnodes,ntface,ntet,nbcs
+
+    real(dp), dimension(nnodes,3) :: xyz
+    integer,  dimension(ntface,3) :: inode
+    integer,  dimension(ntface)   :: itag(ntface)
+    integer,  dimension(ntet,4)   :: c2nt
+    integer,  dimension(nbcs,2)   :: itestr
+
+    integer :: i, j
+
+    open (unit=60,file='domain01.b8.ugrid',form='unformatted',access='stream')
+    open (unit=61,file='domain01.mapbc')
+
+    write(60) nnodes,ntface,0,ntet,0,0,0
+    write(60) ((xyz(i,j),j=1,3),i=1,nnodes)
+    write(60) ((inode(i,j),j=1,3),i=1,ntface)
+    write(60) (itag(i),i=1,ntface)
+    write(60) ((c2nt(i,j),j=1,4),i=1,ntet)
+
+    write(61,*) nbcs                        ! No. of BC's
+    do i = 1,nbcs
+      write(61,*) itestr(i,1),itestr(i,2)
+    enddo
+
+    close(60)
+    close(61)
+
+  end subroutine stream_ugrid
+
+end module ugrid
+
 module uniform_grid
 
   implicit none
@@ -74,7 +117,7 @@ contains
   subroutine create(l,m,n,nnodes,ntet,ntface)
 
   use kinds, only : dp
-  use fast, only : write_fast
+  use ugrid, only : stream_ugrid
 
   integer, intent(in) :: l,m,n
   integer, intent(in) :: nnodes,ntet,ntface
@@ -440,7 +483,7 @@ contains
     enddo
   enddo
 
-  call write_fast(nnodes,ntface,ntet,xyz,inode,itag,c2nt,nbcs,itestr)
+  call stream_ugrid(nnodes,ntface,ntet,xyz,inode,itag,c2nt,nbcs,itestr)
 
 end subroutine create
 
