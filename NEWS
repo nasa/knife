@@ -1,5 +1,5 @@
 
-- domain01.* now exports sream ugrid (filename assumes big endian)
+- domain01.* now exports stream ugrid (filename assumes big endian)
 
 Friday, April 13, 2012: At version 1.2.7
 
